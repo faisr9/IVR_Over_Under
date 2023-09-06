@@ -1,2 +1,2 @@
 # IVR_Over_Under
-Illinois VEX Robotics Over Under robot code and libraries.
+Illini VEX Robotics' robot code and libraries for the 2023-24 VEX U Over Under season.
