@@ -1,7 +1,9 @@
 #include "controls.h"
 
+using namespace pros;
+
 void control() {
-    pros::lcd::set_text(4, "Hi!");
-    pros::lcd::set_text(5, "Is this working?");
+    lcd::set_text(4, "Hi!");
+    lcd::set_text(5, "Is this working?");
 
 }
