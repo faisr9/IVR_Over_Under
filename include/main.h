@@ -53,6 +53,15 @@
 ///////////////////////////////////////
 
 /**
+ * These files are used to check whether a robot's program matches
+ * the robot the program is downloaded to
+*/
+// #define COMP_15_CHECKFILE "usd/comp15_checkfile.txt"
+// #define COMP_18_CHECKFILE "usd/comp18_checkfile.txt"
+// #define SKILLS_15_CHECKFILE "usd/skills15_checkfile.txt"
+// #define SKILLS_18_CHECKFILE "usd/skills18_checkfile.txt"
+
+/**
  * If defined, some commonly used enums will have preprocessor macros which give
  * a shorter, more convenient naming pattern. If this isn't desired, simply
  * comment the following line out.
