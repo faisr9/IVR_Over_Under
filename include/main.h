@@ -32,7 +32,6 @@
  */
 #include "api.h" // DO NOT REMOVE //
 #include "pros/apix.h"
-
 ///////////////////////////////////////
 
 /**

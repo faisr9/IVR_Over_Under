@@ -1,11 +1,12 @@
 ###############################################################
 ###                Robot Type Configuration                 ###
 ###############################################################
+# Author; Anissh G
 
 # In an effort to organize the robotics code repository into a single
 # project folder, this file will be used to specify which robot program
 # will compile and run allowing all four robots to share the same common
-# algorithms while, remaining in one project.
+# algorithms while remaining in one project.
 
 # This variable is the only thing to modify in this file!!!
 # Comp 15in Robot = 0
@@ -13,7 +14,7 @@
 # Skills 15in Robot = 2
 # Skills 18in Robot = 3
 # NOTE: Once you change the robot type perform a clean build!
-ROBOT_MODE := 2
+ROBOT_MODE := 0
 
 
 ###############################################################
