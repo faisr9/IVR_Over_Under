@@ -52,13 +52,18 @@
 ///////////////////////////////////////
 
 /**
- * These files are used to check whether a robot's program matches
+ * These files and defines are used to check whether a robot's program matches
  * the robot the program is downloaded to
 */
-// #define COMP_15_CHECKFILE "usd/comp15_checkfile.txt"
-// #define COMP_18_CHECKFILE "usd/comp18_checkfile.txt"
-// #define SKILLS_15_CHECKFILE "usd/skills15_checkfile.txt"
-// #define SKILLS_18_CHECKFILE "usd/skills18_checkfile.txt"
+static short int rtype_warn = 0; // 0 = no warning, 1 = warning, 2 = error
+#define COMP_15_CHECKFILE "usd/comp15_checkfile.txt"
+#define COMP_15_CHECKVALUE "comp15-small-bot"
+#define COMP_18_CHECKFILE "usd/comp18_checkfile.txt"
+#define COMP_18_CHECKVALUE "comp18-big-bot"
+#define SKILLS_15_CHECKFILE "usd/skills15_checkfile.txt"
+#define SKILLS_15_CHECKVALUE "skills15-smart-bot"
+#define SKILLS_18_CHECKFILE "usd/skills18_checkfile.txt"
+#define SKILLS_18_CHECKVALUE "skills18-dumb-bot"
 
 /**
  * If defined, some commonly used enums will have preprocessor macros which give
