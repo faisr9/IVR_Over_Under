@@ -1,3 +1,3 @@
-void controls(){
-    
-}
+#pragma once
+
+void controls();
