@@ -3,11 +3,17 @@
 // To relocate to common_code.cpp
 static bool fileExists(std::string fileName)
 {
-	std::fstream fileChecker;
-	fileChecker.open("s", std::ios::in);
-	bool ex = fileChecker.is_open();
-	fileChecker.close();
-	return ex;
+	// std::fstream fileChecker;
+	// fileChecker.open("s", std::ios::in);
+	// bool ex = fileChecker.is_open();
+	// fileChecker.close();
+	// return ex;
+
+	FILE *fileChecker = fopen(fileName.c_str(), "r");
+	if(fileChecker == NULL)
+	{ fclose(fileChecker); return false; }
+	else
+	{ fclose(fileChecker); return true; }
 }
 void start(){rtype_warn=0;}
 
@@ -23,16 +29,11 @@ void initialize() {
 		fread(&checkValue, sizeof(checkValue), 1, comp_15_check_r);
 		fclose(comp_15_check_r);
 
-		if(checkValue != COMP_15_CHECKVALUE) // If value doesn't match, print rtype_warn
+		if(checkValue != COMP_15_CHECKVALUE) // If value doesn't match, print error
 			rtype_warn = 2;
 	}
-	else // If file doesn't exist, create it, but still print rtype_warn
-	{
-		FILE *comp_15_check_w = fopen(COMP_15_CHECKFILE, "w");
-		fwrite(COMP_15_CHECKVALUE, sizeof(COMP_15_CHECKVALUE), 1, comp_15_check_w);
-		fclose(comp_15_check_w);
+	else // If file doesn't exist, prompt msg, then create it
 		rtype_warn = 1;
-	}
 
 	// Temporary until custom GUI msg
 	if(rtype_warn==1)
@@ -47,6 +48,10 @@ void initialize() {
 			if(rtype_warn==0)
 				break;
 		}
+		FILE *comp_15_check_w = fopen(COMP_15_CHECKFILE, "w");
+		fwrite(COMP_15_CHECKVALUE, sizeof(COMP_15_CHECKVALUE), 1, comp_15_check_w);
+		fclose(comp_15_check_w);
+		lcd::shutdown();
 	}
 	else if(rtype_warn==2)
 	{
