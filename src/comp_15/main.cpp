@@ -21,10 +21,42 @@ void start(){rtype_warn=0;}
 void initialize() {
 	lcd::initialize(); // Temp until custom GUI
 
+	if(!usd::is_installed())
+	{
+		lcd::print(0, "SD Card Not Installed");
+		lcd::print(1, "Locking up program to prevent");
+		lcd::print(2, "damage to robot!");
+		while(1)
+		{
+			Task::delay(1000); // Lock up program
+			// std::abort();
+		}
+	}
+	// else
+	// {
+	// 	FILE *comp_15_check_w = fopen(COMP_15_CHECKFILE, "w");
+	// 	fputs(COMP_15_CHECKVALUE, comp_15_check_w);
+	// 	fclose(comp_15_check_w);
+	// }
+}
+
+/* Runs when robot is disabled from competition controller after driver/auton */
+void disabled() {}
+
+/* If connected to competition controller, this runs after initialize */
+void competition_initialize() {}
+
+/* Autonomous method */
+void autonomous() {}
+
+/* Opcontrol method runs by default (unless connected to comp controller )*/
+void opcontrol() {
+	// lcd::print(0,"15 Comp");
+
 	/* Robot Config Check */
 	if(fileExists(COMP_15_CHECKFILE)) // If file exists, check value
 	{
-		FILE *comp_15_check_r = fopen(COMP_15_CHECKFILE, "r");
+		FILE *comp_15_check_r = fopen(COMP_15_CHECKFILE, "w");
 		std::string checkValue;
 		fread(&checkValue, sizeof(checkValue), 1, comp_15_check_r);
 		fclose(comp_15_check_r);
@@ -40,7 +72,8 @@ void initialize() {
 	{
 		lcd::print(0, "Robot Type File Missing");
 		lcd::print(1, "To confirm, press middle button");
-		lcd::print(2, "Locking up program to prevent damage to robot!");
+		lcd::print(2, "Locking up program to prevent");
+		lcd::print(3, "damage to robot!");
 		lcd::register_btn1_cb(start);
 		while(1)
 		{
@@ -49,35 +82,22 @@ void initialize() {
 				break;
 		}
 		FILE *comp_15_check_w = fopen(COMP_15_CHECKFILE, "w");
-		fwrite(COMP_15_CHECKVALUE, sizeof(COMP_15_CHECKVALUE), 1, comp_15_check_w);
+		fputs(COMP_15_CHECKVALUE, comp_15_check_w);
 		fclose(comp_15_check_w);
 		lcd::shutdown();
 	}
 	else if(rtype_warn==2)
 	{
 		lcd::print(0, "Robot Type Mismatch");
-		lcd::print(1, "Check ./robot_Type.mk and rebuild");
-		lcd::print(2, "Locking up program to prevent damage to robot!");
+		lcd::print(1, "Check ./robot_type.mk & rebuild");
+		lcd::print(2, "Locking up program to prevent");
+		lcd::print(3, "damage to robot!");
 		while(1)
 		{
-			// Task::delay(1000); // Lock up program
-			std::abort();
+			Task::delay(1000); // Lock up program
+			// std::abort();
 		}
 	}
-}
-
-/* Runs when robot is disabled from competition controller after driver/auton */
-void disabled() {}
-
-/* If connected to competition controller, this runs after initialize */
-void competition_initialize() {}
-
-/* Autonomous method */
-void autonomous() {}
-
-/* Opcontrol method runs by default (unless connected to comp controller )*/
-void opcontrol() {
-	lcd::print(0,"15 Comp");
 
 	while(1)
 		Task::delay(1000);

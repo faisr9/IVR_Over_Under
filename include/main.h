@@ -56,7 +56,7 @@
  * the robot the program is downloaded to
 */
 static short int rtype_warn = 0; // 0 = no warning, 1 = warning, 2 = error
-#define COMP_15_CHECKFILE "usd/comp15_checkfile.txt"
+#define COMP_15_CHECKFILE "/usd/comp15_checkfile.txt"
 #define COMP_15_CHECKVALUE "comp15-small-bot"
 #define COMP_18_CHECKFILE "usd/comp18_checkfile.txt"
 #define COMP_18_CHECKVALUE "comp18-big-bot"

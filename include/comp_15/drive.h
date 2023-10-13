@@ -1,5 +1,5 @@
 #pragma once
-#include "robot.h"
+// #include "robot.h"
 #include <string>
 
 extern int drive_mode_idx;
@@ -15,7 +15,7 @@ void dylan_drive();
 void akap_drive();
 
 
-extern std::vector<std::pair<std::string,std::function<void()>>> drive_modes;
+// extern std::vector<std::pair<std::string,std::function<void()>>> drive_modes;
 
 // Utility functions
 double normalize_joysticks(double input);
