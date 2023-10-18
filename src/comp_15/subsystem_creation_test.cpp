@@ -11,6 +11,7 @@ void my_function() {
     SubsystemParent* test_parent = new ExampleSubsystem(subsystem_name, motor);
 
     std::cout << test_parent->get_subsystem_name() << std::endl;
+    pros::lcd::set_text(3, test_parent->get_subsystem_name());
     // would need an actual brain to test this, guess that's what I'm doing tomorrow :)
 
     delete test_parent;
