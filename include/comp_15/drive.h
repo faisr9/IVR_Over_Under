@@ -1,6 +1,7 @@
 #pragma once
-#include "robot.h"
 #include <string>
+#include <vector>
+#include <functional>
 
 extern int drive_mode_idx;
 

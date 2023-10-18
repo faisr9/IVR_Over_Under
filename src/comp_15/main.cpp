@@ -1,4 +1,5 @@
 #include "main.h"
+#include "comp_15/subsystem_creation_test.h"
 
 /* First method to run when program starts */
 void initialize() {
@@ -17,6 +18,8 @@ void autonomous() {}
 /* Opcontrol method runs by default (unless connected to comp controller )*/
 void opcontrol() {
 	lcd::print(0,"15 Comp");
+
+	my_function(); // from subsystem_creation_test. Should remove that whole file before merging!
 
 	while(1)
 		Task::delay(1000);
