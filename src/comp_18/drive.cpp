@@ -1,5 +1,3 @@
-#pragma once
-
 #include "comp_18/drive.h"
 
 // Need to define drive_modes and drive_mode_idx 

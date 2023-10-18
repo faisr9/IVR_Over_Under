@@ -6,12 +6,15 @@ std::vector<std::pair<std::string,std::function<void()>>> drive_modes = {{"dyl",
 
 // normalize joystick values to -1 to 1
 double normalize_joystick(double input) {
+    return 0;
 }
 // apply smooth sin scaling 
 double sin_scale(double input, double sin_scale_factor) {
+    return 0;
 }
 // apply square scaling
 double square_scale(double input) {
+    return 0;
 }
 
 // operator control drive
@@ -21,6 +24,7 @@ void op_drive() {
 void toggle_drive_mode() {
 }
 std::string get_drive_name() {
+    return "";
 }
 
 
