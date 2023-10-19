@@ -1,2 +1,0 @@
-
-void my_function();
