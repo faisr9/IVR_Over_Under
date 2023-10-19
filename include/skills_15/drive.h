@@ -1,6 +1,9 @@
 #pragma once
-#include "robot.h"
 #include <string>
+#include <vector>
+#include <functional>
+#include "api.h"
+
 
 extern int drive_mode_idx;
 
@@ -11,9 +14,6 @@ std::string get_drive_name();
 void tank_drive();
 void arcade_drive();
 void hybrid_drive();
-void dylan_drive();
-void akap_drive();
-
 
 extern std::vector<std::pair<std::string,std::function<void()>>> drive_modes;
 
