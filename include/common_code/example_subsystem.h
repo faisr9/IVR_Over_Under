@@ -4,13 +4,23 @@
 
 class ExampleSubsystem : public SubsystemParent {
     public:
-        ExampleSubsystem(std::string subsystem_name, pros::Motor& subsystem_motor);
+        static ExampleSubsystem* createInstance(pros::Motor& subsystem_motor);
+        static ExampleSubsystem* getInstance(); // static because need to be able to access without ExampleSubsystem objecct
+        ~ExampleSubsystem();
 
         void stop();
-        std::string get_subsystem_name() const;
     private:
         // reference to passed in motor so it doesn't create a new motor object 
         // (which wouldn't be the end of the world but still)
-        pros::Motor& subsystem_motor_;
+        ExampleSubsystem(pros::Motor& subsystem_motor);
 
+        // using std::unique_ptr instead of normal pointer because it has
+        // defined behvaior of always returning nullptr if no instance
+        // has been assigned!
+        static std::unique_ptr<ExampleSubsystem> instance_;
+
+        pros::Motor& subsystem_motor_;
+        const std::string kSubsystemName = "Example Subsystem";
+
+        
 };
