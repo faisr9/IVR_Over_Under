@@ -14,15 +14,20 @@
 #define _PROS_MAIN_H_
 
 /**
+ * IMPORTANT: Disables all safety checks
+ */
+static bool devMode = false;
+
+/**
  * Add global defines/constants here;
  */
 #define M_PI 3.14159265358979323846
 
 //// Useful only when using multitasking ////
-// #define TASK_PRIORITY_LOW 4
+// #define TASK_PRIORITY_LOW 5
 // #define TASK_PRIORITY_MEDIUM_LOW 7
 // #define TASK_PRIORITY_MEDIUM_HIGH 11
-// #define TASK_PRIORITY_HIGH 14
+// #define TASK_PRIORITY_HIGH 13
 // #define TASK_PRIORITY_DEFAULT TASK_PRIORITY_DEFAULT
 ///////////////////////////////////////
 
@@ -55,7 +60,7 @@
  * These files and defines are used to check whether a robot's program matches
  * the robot the program is downloaded to
 */
-static short int rtype_warn = 0; // 0 = no warning, 1 = warning, 2 = error
+static uint8_t rtype_warn = 0; // 0 = no warning, 1 = warning, 2 = error
 #define COMP_15_CHECKFILE "/usd/comp15_checkfile.txt"
 #define COMP_15_CHECKVALUE "comp15-small-bot"
 #define COMP_18_CHECKFILE "usd/comp18_checkfile.txt"

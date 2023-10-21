@@ -9,7 +9,9 @@ static bool fileExists(std::string fileName)
 	else { fclose(fileChecker); return true; }
 }
 
-void clear_rType_warn(){rtype_warn=0;}
+void clear_rType_warn(void){rtype_warn=0;}
+void allow_override(void){rtype_warn=7;lcd::clear();}
+void secret_override(void){lcd::register_btn2_cb(allow_override);}
 
 // void initialize()
 // {
@@ -20,9 +22,63 @@ void clear_rType_warn(){rtype_warn=0;}
 
 /* First method to run when program starts */
 void initialize() {
-	lcd::initialize(); // Used for warning messages of robot type
+	lcd::initialize(); // Used for warning messages
 
-	if(!usd::is_installed())
+	if(!devMode) {
+	if(!usd::is_installed()) // No SD card installed 
+		rtype_warn = 3;
+	else if(fileExists(COMP_15_CHECKFILE)) // If file exists, check value
+	{
+		FILE *comp_15_check_r = fopen(COMP_15_CHECKFILE, "r");
+		std::string checkValue;
+		fread(&checkValue, sizeof(checkValue), 1, comp_15_check_r);
+		fclose(comp_15_check_r);
+
+		if(checkValue != COMP_15_CHECKVALUE)
+			rtype_warn = 2;
+	}
+	else // If file doesn't exist, prompt warn msg, then create it
+		rtype_warn = 1;
+
+	if(rtype_warn==1)
+	{
+		mismatch_override:
+		lcd::print(0, "Robot Type File Missing");
+		lcd::print(1, "To confirm and save robot,"); 
+		lcd::print(2, "type, press middle button");
+		lcd::print(3, "Locking up program to prevent");
+		lcd::print(4, "damage to robot!");
+		lcd::register_btn1_cb(clear_rType_warn);
+		while(1)
+		{
+			Task::delay(1000); // Lock up program
+			if(rtype_warn==0)
+				break;
+		}
+		lcd::clear();
+		lcd::print(0, "Saving Robot Type...");
+		lcd::print(1, "Comp 15 Bot");
+		FILE *comp_15_check_w = fopen(COMP_15_CHECKFILE, "w");
+		fputs(COMP_15_CHECKVALUE, comp_15_check_w);
+		fclose(comp_15_check_w);
+		delay(2500);
+		lcd::shutdown();
+	}
+	else if(rtype_warn==2)
+	{
+		lcd::print(0, "Robot Type Mismatch");
+		lcd::print(1, "Check ./robot_type.mk & rebuild");
+		lcd::print(2, "Locking up program to prevent");
+		lcd::print(3, "damage to robot!");
+		lcd::register_btn0_cb(secret_override);
+		while(1)
+		{
+			Task::delay(1000); // Lock up program
+			if(rtype_warn==7)
+				goto mismatch_override;
+		}
+	}
+	else if(rtype_warn==3)
 	{
 		lcd::print(0, "SD Card Not Installed!");
 		lcd::print(1, "Locking up program to prevent");
@@ -35,51 +91,7 @@ void initialize() {
 			if(rtype_warn==0)
 				break;
 		}
-	}
-	else {	/* Robot Config Check */
-	if(fileExists(COMP_15_CHECKFILE)) // If file exists, check value
-	{
-		FILE *comp_15_check_r = fopen(COMP_15_CHECKFILE, "r");
-		std::string checkValue;
-		fread(&checkValue, sizeof(checkValue), 1, comp_15_check_r);
-		fclose(comp_15_check_r);
-
-		if(checkValue != COMP_15_CHECKVALUE) // If value doesn't match, print error
-			rtype_warn = 2;
-	}
-	else // If file doesn't exist, prompt warn msg, then create it
-		rtype_warn = 1;
-
-	if(rtype_warn==1)
-	{
-		lcd::print(0, "Robot Type File Missing");
-		lcd::print(1, "To confirm and save robot,"); 
-		lcd::print(2, "press middle button");
-		lcd::print(3, "Locking up program to prevent");
-		lcd::print(4, "damage to robot!");
-		lcd::register_btn1_cb(clear_rType_warn);
-		while(1)
-		{
-			Task::delay(1000); // Lock up program
-			if(rtype_warn==0)
-				break;
-		}
-		FILE *comp_15_check_w = fopen(COMP_15_CHECKFILE, "w");
-		fputs(COMP_15_CHECKVALUE, comp_15_check_w);
-		fclose(comp_15_check_w);
 		lcd::shutdown();
-	}
-	else if(rtype_warn==2)
-	{
-		lcd::print(0, "Robot Type Mismatch");
-		lcd::print(1, "Check ./robot_type.mk & rebuild");
-		lcd::print(2, "Locking up program to prevent");
-		lcd::print(3, "damage to robot!");
-		while(1)
-		{
-			Task::delay(1000); // Lock up program
-			// std::abort();
-		}
 	}}
 }
 
