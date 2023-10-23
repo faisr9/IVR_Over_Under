@@ -13,29 +13,23 @@ void clear_rType_warn(void){rtype_warn=0;}
 void allow_override(void){rtype_warn=7;lcd::clear();}
 void secret_override(void){lcd::register_btn2_cb(allow_override);}
 
-// void initialize()
-// {
-// 	FILE *comp_15_check_w = fopen(COMP_15_CHECKFILE, "w");
-// 	fputs(COMP_15_CHECKVALUE, comp_15_check_w);
-// 	fclose(comp_15_check_w);
-// }
-
-/* First method to run when program starts */
+// /* First method to run when program starts */
 void initialize() {
 	lcd::initialize(); // Used for warning messages
 
-	if(!devMode) {
+	if(rTypeCheck) {
 	if(!usd::is_installed()) // No SD card installed 
 		rtype_warn = 3;
 	else if(fileExists(COMP_15_CHECKFILE)) // If file exists, check value
 	{
 		FILE *comp_15_check_r = fopen(COMP_15_CHECKFILE, "r");
-		std::string checkValue;
-		fread(&checkValue, sizeof(checkValue), 1, comp_15_check_r);
+		char checkValue[17];
+		fread(checkValue, 1, 17, comp_15_check_r);
 		fclose(comp_15_check_r);
 
-		if(checkValue != COMP_15_CHECKVALUE)
-			rtype_warn = 2;
+		std::string checkValueStr(checkValue);
+		if(strcmp(checkValueStr.c_str(), COMP_15_CHECKVALUE) != 0)
+			rtype_warn = 2;	
 	}
 	else // If file doesn't exist, prompt warn msg, then create it
 		rtype_warn = 1;
@@ -44,10 +38,11 @@ void initialize() {
 	{
 		mismatch_override:
 		lcd::print(0, "Robot Type File Missing");
-		lcd::print(1, "To confirm and save robot,"); 
-		lcd::print(2, "type, press middle button");
+		lcd::print(1, "To confirm and save robot type,"); 
+		lcd::print(2, "press middle button");
 		lcd::print(3, "Locking up program to prevent");
 		lcd::print(4, "damage to robot!");
+		lcd::print(6, "Robot Type: Comp 15 Bot");
 		lcd::register_btn1_cb(clear_rType_warn);
 		while(1)
 		{
@@ -62,7 +57,7 @@ void initialize() {
 		fputs(COMP_15_CHECKVALUE, comp_15_check_w);
 		fclose(comp_15_check_w);
 		delay(2500);
-		lcd::shutdown();
+		// lcd::shutdown();
 	}
 	else if(rtype_warn==2)
 	{
@@ -91,7 +86,7 @@ void initialize() {
 			if(rtype_warn==0)
 				break;
 		}
-		lcd::shutdown();
+		// lcd::shutdown();
 	}}
 }
 
@@ -106,7 +101,8 @@ void autonomous() {}
 
 /* Opcontrol method runs by default (unless connected to comp controller )*/
 void opcontrol() {
-	// lcd::print(0,"15 Comp");
+	lcd::clear();
+	lcd::print(0,"15 Comp");
 
 	while(1)
 		Task::delay(1000);

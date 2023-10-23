@@ -14,9 +14,10 @@
 #define _PROS_MAIN_H_
 
 /**
- * IMPORTANT: Disables all safety checks
+ * IMPORTANT: Robot type checksum
+ * Set to false to disable checksum
  */
-static bool devMode = false;
+static bool rTypeCheck = false;
 
 /**
  * Add global defines/constants here;
@@ -61,14 +62,14 @@ static bool devMode = false;
  * the robot the program is downloaded to
 */
 static uint8_t rtype_warn = 0; // 0 = no warning, 1 = warning, 2 = error
-#define COMP_15_CHECKFILE "/usd/comp15_checkfile.txt"
-#define COMP_15_CHECKVALUE "comp15-small-bot"
-#define COMP_18_CHECKFILE "usd/comp18_checkfile.txt"
-#define COMP_18_CHECKVALUE "comp18-big-bot"
-#define SKILLS_15_CHECKFILE "usd/skills15_checkfile.txt"
-#define SKILLS_15_CHECKVALUE "skills15-smart-bot"
-#define SKILLS_18_CHECKFILE "usd/skills18_checkfile.txt"
-#define SKILLS_18_CHECKVALUE "skills18-dumb-bot"
+#define COMP_15_CHECKFILE    "/usd/comp15_checkfile.txt"
+static char COMP_15_CHECKVALUE[17] = "comp15-small-bot";
+#define COMP_18_CHECKFILE    "usd/comp18_checkfile.txt"
+static char COMP_18_CHECKVALUE[15] = "comp18-big-bot";
+#define SKILLS_15_CHECKFILE  "usd/skills15_checkfile.txt"
+static char SKILLS_15_CHECKVALUE[19] = "skills15-smart-bot";
+#define SKILLS_18_CHECKFILE  "usd/skills18_checkfile.txt"
+static char SKILLS_18_CHECKVALUE[18] = "skills18-dumb-bot";
 
 /**
  * If defined, some commonly used enums will have preprocessor macros which give
