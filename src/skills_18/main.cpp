@@ -92,6 +92,7 @@ void autonomous() {}
 
 /* Opcontrol method runs by default (unless connected to comp controller )*/
 void opcontrol() {
+	lcd::clear();
 	lcd::print(3,"18 Skills");
 
 	while(1)
