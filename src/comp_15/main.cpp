@@ -1,14 +1,5 @@
 #include "main.h"
 
-// To relocate to common_code.cpp
-static bool fileExists(std::string fileName)
-{
-	FILE *fileChecker = fopen(fileName.c_str(), "r");
-	if(fileChecker == NULL)
-	{ fclose(fileChecker); return false; }
-	else { fclose(fileChecker); return true; }
-}
-
 void clear_rType_warn(void){rtype_warn=0;}
 void allow_override(void){rtype_warn=7;lcd::clear();}
 void secret_override(void){lcd::register_btn2_cb(allow_override);}

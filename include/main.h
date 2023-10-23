@@ -17,7 +17,16 @@
  * IMPORTANT: Robot type checksum
  * Set to false to disable checksum
  */
-static bool rTypeCheck = false;
+static const bool rTypeCheck = false;
+
+// To relocate to common_code.cpp
+static bool fileExists(std::string fileName)
+{
+	FILE *fileChecker = fopen(fileName.c_str(), "r");
+	if(fileChecker == 0) // If NULL
+	{ fclose(fileChecker); return false; }
+	else { fclose(fileChecker); return true; }
+}
 
 /**
  * Add global defines/constants here;
