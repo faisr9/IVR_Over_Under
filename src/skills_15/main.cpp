@@ -41,6 +41,7 @@ void initialize() {
 			if(rtype_warn==0)
 				break;
 		}
+			
 		lcd::clear();
 		lcd::print(0, "Saving Robot Type...");
 		lcd::print(1, "Skills 15 Bot");
@@ -63,6 +64,14 @@ void initialize() {
 			if(rtype_warn==7)
 				goto mismatch_override;
 		}
+		if(fileExists(COMP_15_CHECKFILE))
+			std::remove(COMP_15_CHECKFILE);
+		if(fileExists(COMP_18_CHECKFILE))
+			std::remove(COMP_18_CHECKFILE);
+		if(fileExists(SKILLS_15_CHECKFILE))
+			std::remove(SKILLS_15_CHECKFILE);
+		if(fileExists(SKILLS_18_CHECKFILE))
+			std::remove(SKILLS_18_CHECKFILE);
 	}
 	else if(rtype_warn==3)
 	{
