@@ -1,3 +1,4 @@
+#pragma once
 #include <string>
 
 // want (this to be) abstract base class
