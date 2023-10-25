@@ -1,4 +1,7 @@
 #include "main.h"
+#include "comp_15/example_sub_test.h"
+#include "comp_15/example_test_two.h"
+#include "common_code/example_subsystem.h"
 
 /* First method to run when program starts */
 void initialize() {
@@ -17,6 +20,36 @@ void autonomous() {}
 /* Opcontrol method runs by default (unless connected to comp controller )*/
 void opcontrol() {
 	lcd::print(0,"15 Comp");
+
+	my_funct();
+
+	my_funct_two();
+
+
+	// pros::Motor the_motor(8);
+
+	// ExampleSubsystem* inst = ExampleSubsystem::getInstance();
+
+	// if (inst == nullptr) {
+	// 	lcd::set_text(6, "NULLPTR");
+	// }
+	// inst->set_power(-50);
+
+	// lcd::set_text(2, "Set the power to -50");
+
+
+	// pros::delay(1000);
+	// if (inst == nullptr) {
+	// 	lcd::set_text(6, "NULLPTR");
+	// }
+
+	// try {
+	// 	inst->set_power(-50);
+	// } catch (...) {
+	// 	lcd::set_text(3, "CAUGHT AN ERROR");
+	// }
+	// lcd::set_text(2, "Stopped it");
+
 
 	while(1)
 		Task::delay(1000);
