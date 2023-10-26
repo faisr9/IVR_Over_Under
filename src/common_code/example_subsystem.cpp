@@ -4,6 +4,8 @@
 
 // extern std::unique_ptr<ExampleSubsystem> ExampleSubsystem::instance_;
 extern ExampleSubsystem* ExampleSubsystem::instance_ = nullptr;
+// extern pros::MutexVar<ExampleSubsystem*> inst_two_(nullptr);
+
 
 // note that this setup does not handle a lot of edge cases:
 // What if we call getInstance before createInstance? Then nullptr is just returned
@@ -35,10 +37,19 @@ ExampleSubsystem* ExampleSubsystem::getInstance() {
     // TODO: handle case of instance_.get() == nullptr. Do we want to throw an error or someting?
     // but we won't want to crash the code during a potentially real run.
     // return instance_.get(); // will return nullptr if nothing stored
+
+    // for now will put error to help with debugging
+    // TO-DO: remove error once done debugging
+
+    if (instance_ == nullptr) {
+        throw std::runtime_error("Attempting to getInstance while instance_ is nullptr");
+    }
+
     return instance_;
 }
 
-ExampleSubsystem::ExampleSubsystem(pros::Motor& motor): subsystem_motor_(motor) {
+// TO-DO: add back parent class
+ExampleSubsystem::ExampleSubsystem(pros::Motor& motor): SubsystemParent("ExampleSubsystem"), subsystem_motor_(motor) {
     pros::lcd::set_text(5, "In constructor");
 }
 
