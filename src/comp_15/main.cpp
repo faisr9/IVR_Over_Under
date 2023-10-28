@@ -1,5 +1,4 @@
 #include "main.h"
-#include "comp_15/test_drive_parent.h"
 
 /* First method to run when program starts */
 void initialize() {
@@ -18,8 +17,6 @@ void autonomous() {}
 /* Opcontrol method runs by default (unless connected to comp controller )*/
 void opcontrol() {
 	lcd::print(0,"15 Comp");
-
-	my_funct();
 
 	while(1)
 		Task::delay(1000);
