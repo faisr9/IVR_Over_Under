@@ -4,7 +4,7 @@
 DriveParent::DriveParent(pros::Imu imu, std::string drive_type): imu_(imu), kDriveType(drive_type) {}
 
 std::string DriveParent::get_drive_type() const {
-    return kDriveType;
+  return kDriveType;
 }
 
 // normalize joystick values to -1 to 1

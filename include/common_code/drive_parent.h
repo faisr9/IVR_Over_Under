@@ -9,8 +9,15 @@ class DriveParent {
 
     public:
         DriveParent(pros::Imu imu, std::string drive_type);
-        // public implementation is up to child class. It should supply methods that
-        // take user input and convert it to the two private methods
+
+        // Of course, the child class is free to define its own movement methods too. 
+        // These two generic ones are so programs without knowledge of the child drive 
+        // type can still move the robot.
+
+        // two methods that move the robot either field centrically or robot centrically
+        virtual void robot_centric_move(std::pair<double, double> movement_vector) = 0;
+        virtual void field_centric_move(std::pair<double, double> movement_vector) = 0;
+
         std::string get_drive_type() const;
 
         // normalize joystick values to -1 to 1
@@ -24,9 +31,4 @@ class DriveParent {
         // motors stored at child level
         pros::Imu imu_;
         const std::string kDriveType;
-
-        // two methods that move the robot either field centrically or robot centrically
-        virtual void robot_centric_move(std::pair<double, double> movement_vector) = 0;
-        virtual void field_centric_move(std::pair<double, double> movement_vector) = 0;
-
 };
