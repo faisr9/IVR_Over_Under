@@ -3,7 +3,6 @@
 // want (this to be) abstract base class
 
 
-
 class SubsystemParent {
     public:
         // abstract classes can have a constructor
