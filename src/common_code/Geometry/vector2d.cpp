@@ -59,7 +59,7 @@ Vector2d Vector2d::plus(Vector2d other)
 
 Vector2d Vector2d::minus(Vector2d other)
 {
-    return this->plus(other);
+    return this->plus(other.inverse());
 }
 
 Vector2d Vector2d::inverse()
