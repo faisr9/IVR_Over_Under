@@ -1,4 +1,4 @@
-
+#pragma once
 #include "angle2d.h"
 #include <string>
 
