@@ -6,3 +6,5 @@ ExampleSubsystem::ExampleSubsystem(std::string subsystem_name, pros::Motor& moto
 void ExampleSubsystem::stop() {
     subsystem_motor_.move_voltage(0);
 }
+
+// don't need to define get_subsystem_name because we can just use the version in SubsystemParent
