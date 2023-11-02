@@ -14,9 +14,11 @@ class Odom {
     void initTracker(double initial_x, double initial_y, double initial_heading);
     double headingCorrection(double currentRotation);
     void updatePosition();
+    double getX();
+    double getY();
 
     static void tasks(Odom odometer) {
-        pros::Task odom_task(someFunction, (void*)functionArg);
+        pros::Task odom_task(updatePosition);
     }
 
     private:
@@ -24,8 +26,8 @@ class Odom {
     double radialWheelRad;
     double lastTransverseValue;
     double lastRadialValue;
-    double last_x_tracking_offset;
-    double last_y_tracking_offset;
+    // double last_x_tracking_offset;
+    // double last_y_tracking_offset;
     double positionX;
     double positionY;
     const double TICKS_PER_ROTATION = 19600.0;

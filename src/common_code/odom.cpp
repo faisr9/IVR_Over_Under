@@ -6,37 +6,53 @@
 #include "main.h"
 #include "pros/imu.h"
 
+/*
+Authors: Reid Faistl, Ethan Lenning
+Originally adapted from 2022-23 club repository
+https://github.com/upai02/IVR-Spin-Up/blob/master/15-inch/spin-up-15/src/misc/PositionTracker.cpp
+
+The Odom class acts as an odometer for the robot which calls it. A robot should instantiate its own Odom object. The goal of the odometer is to track the
+robot's position at any given time, by tracking how far the tracking wheels move and what angle the robot is facing when the wheels are moved.
+
+The tracking wheels cannot tell if the robot turns, so the heading (angle) needs to be updated during the process in order to calculate the actual signs
+and magnitudes of the x and y movements. Thus, if it moves right 1m and then turns 180 degrees and moves "right" 1m (in the robot's frame of reference), 
+currentTransverseValue will be the equivalent of 2m even though from an outside perspective it moved right 1m and then left 1m and is back at its origin.
+This class has accounted for that, so that other code can assume the position of the robot is reliable.
+*/
+
 Odom::Odom(pros::IMU theImu): imu(theImu), vertical_track(3,4,false), horizontal_track(1,2,true) {
 
-    transverseWheelRad = 1.96 * 0.0254 / 2; // 3.25 * 0.0254 / 2;
-    radialWheelRad = 1.96 * 0.0254 / 2;
-    lastTransverseValue = 0;
+    transverseWheelRad = 1.96 * 0.0254 / 2; // transverse wheel tracks left to right movements
+    radialWheelRad = 1.96 * 0.0254 / 2;     // radial wheel tracks forward and backward movements (has nothing to do with radians)
+    lastTransverseValue = 0;                // these variables track what the last value was in order to determine how far the robot has moved
     lastRadialValue = 0;
-    last_x_tracking_offset = 0;
-    last_y_tracking_offset = 0;
-    positionX = 0;
+    // last_x_tracking_offset = 0;
+    // last_y_tracking_offset = 0;
+    positionX = 0;                          
     positionY = 0;
-    initHeading = 90;
-    currentHeading = initHeading;
+    initHeading = 90;               // gets overwritten when initTracker is called so potentially redundant
+    currentHeading = initHeading;   // ^ see above comment
     scale_factor_heading = 1.0;
 
     pros::Task odom_task();
 }
 
-double Odom::toMeters(double value, double wheelRadius) {
+double Odom::toMeters(double value, double wheelRadius) {   // Accepts a value (in ticks) and returns the corresponding amount of meters moved
     return ((value / TICKS_PER_ROTATION) * 2 * M_PI * wheelRadius);
+    // (value / TICKS_PER_ROTATION) is the number of total revolutions
 }
-void Odom::initTracker(double initial_x, double initial_y, double initial_heading) {
-    double currentTransverseValue = toMeters(horizontal_track.get_value()*4.0, transverseWheelRad); //*4.0
-    double currentRadialValue = toMeters(vertical_track.get_value(), radialWheelRad); // *1.0
+
+void Odom::initTracker(double initial_x, double initial_y, double initial_heading) {    // initializes the tracking variables so they can begin to be updated
+    double currentTransverseValue = toMeters(horizontal_track.get_value()*4.0, transverseWheelRad);
+    double currentRadialValue = toMeters(vertical_track.get_value(), radialWheelRad);
     
     positionX = initial_x;
     positionY = initial_y;
     initHeading = initial_heading;
     currentHeading = initHeading;
     imu.set_heading(initHeading);
-    last_x_tracking_offset = RADIAL_TRACKING_WHEEL_OFFSET * cos(initHeading * M_PI / 180.0);
-    last_y_tracking_offset = RADIAL_TRACKING_WHEEL_OFFSET * sin(initHeading * M_PI / 180.0);
+    // last_x_tracking_offset = RADIAL_TRACKING_WHEEL_OFFSET * cos(initHeading * M_PI / 180.0);
+    // last_y_tracking_offset = RADIAL_TRACKING_WHEEL_OFFSET * sin(initHeading * M_PI / 180.0);
 }
 
 double Odom::headingCorrection (double currentRotation) {
@@ -53,7 +69,7 @@ double Odom::headingCorrection (double currentRotation) {
     return correctedHeading;
 }
 
-void Odom::updatePosition() {
+void Odom::updatePosition() {       // updatePosition does all the math with the heading and the sensor values to update the actual position coordinate
     imu.set_rotation(0);
     while (true) {
         // TEAL ROBOT:
@@ -88,8 +104,8 @@ void Odom::updatePosition() {
         // pros::lcd::set_text(2, "Position X: " + std::to_string(positionX));
         // pros::lcd::set_text(3, "Position Y: " + std::to_string(positionY));
 
-        double x_tracking_offset = TRANSVERSE_TRACKING_WHEEL_OFFSET * sine;
-        double y_tracking_offset = TRANSVERSE_TRACKING_WHEEL_OFFSET * cosine;
+        // double x_tracking_offset = TRANSVERSE_TRACKING_WHEEL_OFFSET * sine;
+        // double y_tracking_offset = TRANSVERSE_TRACKING_WHEEL_OFFSET * cosine;
 
         // when pure rotating (x_tracking_offset - last_x_tracking_offset) should = deltaX
 
@@ -120,6 +136,5 @@ void Odom::updatePosition() {
     }
 }
 
-void main() {
-
-};
+double Odom::getX() { return positionX; }
+double Odom::getY() { return positionY; }
