@@ -4,14 +4,20 @@
 #include <string>
 #include "pros/adi.hpp"
 #include "main.h"
+#include "pros/imu.h"
 
 class Odom {
     public:
-    Odom();
+    Odom(pros::IMU theImu);
+
     double toMeters(double value, double wheelRadius);
     void initTracker(double initial_x, double initial_y, double initial_heading);
     double headingCorrection(double currentRotation);
     void updatePosition();
+
+    static void tasks(Odom odometer) {
+        pros::Task odom_task(someFunction, (void*)functionArg);
+    }
 
     private:
     double transverseWheelRad;
@@ -25,6 +31,8 @@ class Odom {
     const double TICKS_PER_ROTATION = 19600.0;
     const double FEET_TO_METERS = 0.304;
     const double ADJUSTMENT_MULTIPLIER = 1.015;
+    const double RADIAL_TRACKING_WHEEL_OFFSET = 0;
+    const double TRANSVERSE_TRACKING_WHEEL_OFFSET = 0.1;
 
     double initHeading;
     double currentHeading;
@@ -32,4 +40,5 @@ class Odom {
 
     pros::ADIEncoder vertical_track;
     pros::ADIEncoder horizontal_track;
+    pros::IMU imu;
 };

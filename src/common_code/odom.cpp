@@ -4,10 +4,9 @@
 #include <string>
 #include "pros/adi.hpp"
 #include "main.h"
+#include "pros/imu.h"
 
-Odom::Odom() {
-    pros::ADIEncoder vertical_track(3,4,false);
-    pros::ADIEncoder horizontal_track(1,2,true);
+Odom::Odom(pros::IMU theImu): imu(theImu), vertical_track(3,4,false), horizontal_track(1,2,true) {
 
     transverseWheelRad = 1.96 * 0.0254 / 2; // 3.25 * 0.0254 / 2;
     radialWheelRad = 1.96 * 0.0254 / 2;
@@ -22,7 +21,7 @@ Odom::Odom() {
     scale_factor_heading = 1.0;
 
     pros::Task odom_task();
-};
+}
 
 double Odom::toMeters(double value, double wheelRadius) {
     return ((value / TICKS_PER_ROTATION) * 2 * M_PI * wheelRadius);
@@ -40,7 +39,7 @@ void Odom::initTracker(double initial_x, double initial_y, double initial_headin
     last_y_tracking_offset = RADIAL_TRACKING_WHEEL_OFFSET * sin(initHeading * M_PI / 180.0);
 }
 
-double headingCorrection (double currentRotation) {
+double Odom::headingCorrection (double currentRotation) {
     double correctedHeading = fmod((currentRotation*scale_factor_heading), 360.0) + initHeading;
 
     if (correctedHeading > 360) {
@@ -54,7 +53,7 @@ double headingCorrection (double currentRotation) {
     return correctedHeading;
 }
 
-void updatePosition() {
+void Odom::updatePosition() {
     imu.set_rotation(0);
     while (true) {
         // TEAL ROBOT:
@@ -94,8 +93,8 @@ void updatePosition() {
 
         // when pure rotating (x_tracking_offset - last_x_tracking_offset) should = deltaX
 
-        positionX += isnanf(deltaX) ? 0 : deltaX;
-        positionY += isnanf(deltaY) ? 0 : deltaY;
+        positionX += isnan(deltaX) ? 0 : deltaX;
+        positionY += isnan(deltaY) ? 0 : deltaY;
         // positionX += deltaX - (x_tracking_offset - last_x_tracking_offset);
         // positionY += deltaY + (y_tracking_offset - last_y_tracking_offset);
 
