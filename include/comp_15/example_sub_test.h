@@ -1,3 +1,2 @@
 
-
-void my_funct();
+void my_funct(int power);
