@@ -76,6 +76,4 @@ void ExampleSubsystem::set_power(int power) {
     }
 }
 
-
 // don't need to define get_subsystem_name because we can just use the verison in SubsystemParent
-
