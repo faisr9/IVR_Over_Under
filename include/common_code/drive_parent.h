@@ -15,8 +15,21 @@ class DriveParent {
         // type can still move the robot.
 
         // two methods that move the robot either field centrically or robot centrically
-        virtual void robot_centric_move(std::pair<double, double> movement_vector) = 0;
-        virtual void field_centric_move(std::pair<double, double> movement_vector) = 0;
+
+        /**
+         * @param mag_angle_vector An std::pair of doubles containing (first) the magnitude of the desired
+         * movement vector and (second) the angle of the movement in [0, 360) in degrees
+         * 
+         * @return Moves the robot according to the given std::pair
+        */
+        virtual void robot_centric_move(std::pair<double, double> mag_angle_vector) = 0;
+        /**
+         * @param mag_angle_vector An std::pair of doubles containing (first) the magnitude of the desired
+         * movement vector and (second) the angle of the movement in [0, 360) in degrees
+         * 
+         * @return Moves the robot according to the given std::pair
+        */
+        virtual void field_centric_move(std::pair<double, double> mag_angle_vector) = 0;
 
         std::string get_drive_type() const;
 
