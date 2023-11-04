@@ -9,8 +9,6 @@ class ExampleSubsystem : public SubsystemParent {
         ~ExampleSubsystem();
         ExampleSubsystem(const ExampleSubsystem& other) = delete;
 
-        void set_power(int power);
-
         void stop();
     private:
         // reference to passed in motor so it doesn't create a new motor object 
