@@ -20,6 +20,7 @@ static double square_scale(double input)
     return copysign(pow(input, 2), input);
 };
 
+// drive systems
 class traditional_drive : public SubsystemParent
 {
     private:
@@ -73,8 +74,8 @@ class traditional_drive : public SubsystemParent
         {
             do{
                 // get joystick values and apply square scaling
-                fwd = square_scale(normalize_joystick(master->get_analog(E_CONTROLLER_ANALOG_LEFT_Y)));
-                turn = square_scale(normalize_joystick(master->get_analog(E_CONTROLLER_ANALOG_RIGHT_Y)));
+                fwd = square_scale(normalize_joystick(master->get_analog(E_CONTROLLER_ANALOG_LEFT_Y))); // vertical input from left joystick
+                turn = square_scale(normalize_joystick(master->get_analog(E_CONTROLLER_ANALOG_RIGHT_X))); // horizontal input from right joystick
                 // use fwd and turn to calculate voltage to send to motors
                 left *= fwd + turn;
                 right *= fwd - turn;
@@ -91,8 +92,8 @@ class traditional_drive : public SubsystemParent
         {
             do{
                 // get joystick values and apply square scaling
-                left *= square_scale(normalize_joystick(master->get_analog(E_CONTROLLER_ANALOG_LEFT_Y)));
-                right *= square_scale(normalize_joystick(master->get_analog(E_CONTROLLER_ANALOG_RIGHT_Y)));
+                left *= square_scale(normalize_joystick(master->get_analog(E_CONTROLLER_ANALOG_LEFT_Y))); // vertical input from left joystick
+                right *= square_scale(normalize_joystick(master->get_analog(E_CONTROLLER_ANALOG_RIGHT_Y))); // vertical input from right joystick
 
                 setV();
 
@@ -106,13 +107,14 @@ class traditional_drive : public SubsystemParent
         {
             do{
                 // get joystick values and apply square scaling
-                fwd = square_scale(normalize_joystick(master->get_analog(E_CONTROLLER_ANALOG_LEFT_Y)));
-                turn = square_scale(normalize_joystick(master->get_analog(E_CONTROLLER_ANALOG_RIGHT_Y)));
+                fwd = square_scale(normalize_joystick(master->get_analog(E_CONTROLLER_ANALOG_LEFT_Y))); // vertical input from left joystick
+                turn = square_scale(normalize_joystick(master->get_analog(E_CONTROLLER_ANALOG_RIGHT_Y))); // vertical input from right joystick
                 // use fwd and turn to calculate voltage to send to motors
                 left*=fwd-turn;
                 right*=fwd+turn;
 
                 delay(std_delay);
+
             }while(master->get_digital(E_CONTROLLER_DIGITAL_A)==0); // while a is not pressed (change to button of choice)
             stop();
         };
@@ -133,5 +135,4 @@ class traditional_drive : public SubsystemParent
             right_side->move_voltage(right);
             left=right=12000; // reset voltage to be multiplied by scalar
         };
-    
 };
