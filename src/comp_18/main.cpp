@@ -25,16 +25,27 @@ void opcontrol() {
 	Imu imu(18);
 	x_drive x = x_drive(master, front_left, front_right, back_left, back_right, imu);
 	while(1){
-		double magni = sqrt(pow(master.get_analog(E_CONTROLLER_ANALOG_RIGHT_X),2) + pow(master.get_analog(E_CONTROLLER_ANALOG_RIGHT_Y),2));
-		double param = master.get_analog(E_CONTROLLER_ANALOG_RIGHT_X) / magni;
-		double r = acos(param);
-		
-		if (master.get_analog(E_CONTROLLER_ANALOG_RIGHT_Y) <= 0){
-			r = 2*M_PI - r;
+		double r;
+		double magni;
+		if (pow(master.get_analog(E_CONTROLLER_ANALOG_LEFT_X),2) + pow(master.get_analog(E_CONTROLLER_ANALOG_LEFT_Y),2) <= 0){
+			r = 0;
+			magni = 0;
+		}
+		else{
+			magni = sqrt(pow(master.get_analog(E_CONTROLLER_ANALOG_LEFT_X),2) + pow(master.get_analog(E_CONTROLLER_ANALOG_LEFT_Y),2));
+			double param = master.get_analog(E_CONTROLLER_ANALOG_LEFT_X) / magni;
+			r = acos(param);
 		}
 
+		if (master.get_analog(E_CONTROLLER_ANALOG_LEFT_Y) <= 0){
+			r = 2*M_PI - r;
+		}
+		
 		std::pair<double, double> movement_vector(magni,r);
-		x.robot_centric_move(movement_vector);
+		double right_x = (double)master.get_analog(E_CONTROLLER_ANALOG_RIGHT_X);
+		x.field_centric_move(movement_vector,right_x);
+		
+
 		pros::delay(50);
 	}
 	
