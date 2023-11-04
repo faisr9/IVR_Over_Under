@@ -6,6 +6,24 @@ pros::Rotation yEnc(10);
 pros::Rotation xEnc(14);
 pros::IMU imu(20);
 
+PID::PID(double Kp, double Ki, double Kd){
+    //FWD PID constants
+    KP = Kp;
+    KI = Ki;
+    KD = Kd;
+}
+
+PID::PID(double Kp, double Ki, double Kd, double turnKp, double turnKi, double turnKd){
+    //FWD PID constants
+    KP = Kp;
+    KI = Ki;
+    KD = Kd;
+    //Turn PID constants
+    turnKP = turnKp;
+    turnKI = turnKi;
+    turnKD = turnKd;
+}
+
 PID::PID(double Kp, double Ki, double Kd, double turnKp, double turnKi, double turnKd, double strafeKp, double strafeKi, double strafeKd){
     //FWD PID constants
     KP = Kp;
@@ -171,7 +189,7 @@ void PID::drivePID(double target, int angle, double strafeTarget){
     while(std::abs(error) > 1 && std::abs(tError) > 1 && std::abs(sError) > 1){
 
         ////////////////////////////
-        //        FWD PID         //
+        //      Forward PID       //
         ////////////////////////////
         sensorValue = 2*M_PI*(1.96/2)*(yEnc.get_angle()/360); //2*pi*r*(degrees/360)
         
