@@ -21,6 +21,7 @@ class Odom {
         pros::Task odom_task(updatePosition);
         return odom_task;
     }
+    Odom();
 
     private:
     double transverseWheelRad;

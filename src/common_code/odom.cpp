@@ -34,7 +34,6 @@ Odom::Odom(pros::IMU theImu): imu(theImu), vertical_track(3,4,false), horizontal
     currentHeading = initHeading;   // ^ see above comment
     scale_factor_heading = 1.0;
 
-    pros::Task odom_task();
 }
 
 double Odom::toMeters(double value, double wheelRadius) {   // Accepts a value (in ticks) and returns the corresponding amount of meters moved
@@ -138,3 +137,34 @@ void Odom::updatePosition() {       // updatePosition does all the math with the
 
 double Odom::getX() { return positionX; }
 double Odom::getY() { return positionY; }
+
+void main() {
+    pros::Motor front_left(8);
+    front_left.set_reversed(true);
+    Motor front_right(9);
+    Motor back_left(7);
+    back_left.set_reversed(true);
+    Motor back_right(10);
+    Controller master(E_CONTROLLER_MASTER);
+    pros::Imu imu(4);
+
+    Odom odometer(imu);    
+
+    while(true) {
+        lcd::print(0, "%d %d %d",   (lcd::read_buttons() & LCD_BTN_LEFT)>>2, // no clue what this does
+                                (lcd::read_buttons() & LCD_BTN_RIGHT)>>1,
+                                (lcd::read_buttons() & LCD_BTN_CENTER)>>0);
+        int forward = master.get_analog(E_CONTROLLER_ANALOG_LEFT_Y); // sets forward to left analog's up/down input
+        int steer = master.get_analog(E_CONTROLLER_ANALOG_RIGHT_X);  // sets steer to right analog's left/right input
+
+        front_left.move(forward+steer);
+        front_right.move(forward-steer);
+        back_left.move(forward+steer);
+        back_right.move(forward-steer);
+
+        odometer.updatePosition();
+        pros::lcd::print(0,"%lf",odometer.getX());
+        pros::lcd::print(1,"%lf",odometer.getY());
+        delay(20);
+    }
+}
