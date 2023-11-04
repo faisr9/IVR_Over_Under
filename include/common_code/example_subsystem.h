@@ -10,6 +10,8 @@ class ExampleSubsystem : public SubsystemParent {
         ExampleSubsystem(const ExampleSubsystem& other) = delete;
 
         void stop();
+
+        void set_power(int power);
     private:
         // reference to passed in motor so it doesn't create a new motor object 
         ExampleSubsystem(pros::Motor& subsystem_motor);
@@ -17,5 +19,5 @@ class ExampleSubsystem : public SubsystemParent {
         //instance_ is set to nullptr in cpp file
         static ExampleSubsystem* instance_;
 
-        pros::Motor& subsystem_motor_;
+        pros::Motor subsystem_motor_ = pros::Motor(14);
 };
