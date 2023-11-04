@@ -57,3 +57,6 @@ void ExampleSubsystem::stop() {
     subsystem_motor_.move_voltage(0);
 }
 
+void ExampleSubsystem::set_power(int power) {
+    subsystem_motor_.move(power);
+}
