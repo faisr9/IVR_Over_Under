@@ -115,7 +115,7 @@ class traditional_drive : public SubsystemParent
 
                 delay(std_delay);
 
-            }while(master->get_digital(E_CONTROLLER_DIGITAL_A)==0); // while a is not pressed (change to button of choice)
+            }while(master->get_digital(E_CONTROLLER_DIGITAL_A)==0); // while a is not pressed (change to button of choice or different condition)
             stop();
         };
         
