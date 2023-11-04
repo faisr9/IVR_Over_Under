@@ -36,6 +36,7 @@ class traditional_drive : public SubsystemParent
 
         traditional_drive(Controller *mstr, Motor_Group *l, Motor_Group *r, int mode) : SubsystemParent(drive_mode[mode])
         {
+            // set controller and motor groups
             master = mstr;
             left_side = l;
             right_side = r;
@@ -49,16 +50,16 @@ class traditional_drive : public SubsystemParent
             switch(mode)
             {
                 case 0:
-                    arcade_drive();
+                    arcade_drive(); // call arcade drive
                     break;
                 case 1:
-                    tank_drive();
+                    tank_drive(); // call tank drive
                     break;
                 case 2:
-                    hybrid_drive();
+                    hybrid_drive(); // call hybrid drive
                     break;
                 default:
-                    stop();
+                    stop(); // stop motors
                     break;
             }
         };
@@ -71,14 +72,16 @@ class traditional_drive : public SubsystemParent
         void arcade_drive()
         {
             do{
-            fwd = square_scale(normalize_joystick(master->get_analog(E_CONTROLLER_ANALOG_LEFT_Y)));
-            turn = square_scale(normalize_joystick(master->get_analog(E_CONTROLLER_ANALOG_RIGHT_Y)));
-            left *= fwd + turn;
-            right *= fwd - turn;
+                // get joystick values and apply square scaling
+                fwd = square_scale(normalize_joystick(master->get_analog(E_CONTROLLER_ANALOG_LEFT_Y)));
+                turn = square_scale(normalize_joystick(master->get_analog(E_CONTROLLER_ANALOG_RIGHT_Y)));
+                // use fwd and turn to calculate voltage to send to motors
+                left *= fwd + turn;
+                right *= fwd - turn;
 
-            setV();
+                setV();
 
-            delay(std_delay);
+                delay(std_delay);
 
             }while(master->get_digital(E_CONTROLLER_DIGITAL_A)==0); // while a is not pressed (change to button of choice)
             stop();
@@ -87,12 +90,13 @@ class traditional_drive : public SubsystemParent
         void tank_drive()
         {
             do{
-            left *= square_scale(normalize_joystick(master->get_analog(E_CONTROLLER_ANALOG_LEFT_Y)));
-            right *= square_scale(normalize_joystick(master->get_analog(E_CONTROLLER_ANALOG_RIGHT_Y)));
+                // get joystick values and apply square scaling
+                left *= square_scale(normalize_joystick(master->get_analog(E_CONTROLLER_ANALOG_LEFT_Y)));
+                right *= square_scale(normalize_joystick(master->get_analog(E_CONTROLLER_ANALOG_RIGHT_Y)));
 
-            setV();
+                setV();
 
-            delay(std_delay);
+                delay(std_delay);
 
             }while(master->get_digital(E_CONTROLLER_DIGITAL_A)==0); // while a is not pressed (change to button of choice)
             stop();
@@ -101,12 +105,14 @@ class traditional_drive : public SubsystemParent
         void hybrid_drive()
         {
             do{
-            fwd = square_scale(normalize_joystick(master->get_analog(E_CONTROLLER_ANALOG_LEFT_Y)));
-            turn = square_scale(normalize_joystick(master->get_analog(E_CONTROLLER_ANALOG_RIGHT_Y)));
-            left*=fwd-turn;
-            right*=fwd+turn;
+                // get joystick values and apply square scaling
+                fwd = square_scale(normalize_joystick(master->get_analog(E_CONTROLLER_ANALOG_LEFT_Y)));
+                turn = square_scale(normalize_joystick(master->get_analog(E_CONTROLLER_ANALOG_RIGHT_Y)));
+                // use fwd and turn to calculate voltage to send to motors
+                left*=fwd-turn;
+                right*=fwd+turn;
 
-            delay(std_delay);
+                delay(std_delay);
             }while(master->get_digital(E_CONTROLLER_DIGITAL_A)==0); // while a is not pressed (change to button of choice)
             stop();
         };
@@ -114,6 +120,7 @@ class traditional_drive : public SubsystemParent
         // turn off motors
         void stop()
         {
+            // set voltage to 0 for both groups
             left=0;
             right=0;
             setV();
@@ -124,7 +131,7 @@ class traditional_drive : public SubsystemParent
         {
             left_side->move_voltage(left);
             right_side->move_voltage(right);
-            left=right=12000;
+            left=right=12000; // reset voltage to be multiplied by scalar
         };
     
 };
