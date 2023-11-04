@@ -17,8 +17,9 @@ class Odom {
     double getX();
     double getY();
 
-    static void tasks(Odom odometer) {
+    static pros::Task initTask(Odom odometer) {
         pros::Task odom_task(updatePosition);
+        return odom_task;
     }
 
     private:
