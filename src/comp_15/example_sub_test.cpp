@@ -1,7 +1,6 @@
 #include "comp_15/example_sub_test.h"
 #include "common_code/example_subsystem.h"
 #include "api.h"
-#include <sstream>
 
 void my_funct() {
 
@@ -10,13 +9,6 @@ void my_funct() {
     pros::Motor test_mtr(8);
 
     ExampleSubsystem* instance = ExampleSubsystem::createInstance(test_mtr);
-
-	const void* address = static_cast<const void*>(instance);
-	std::stringstream ss;
-	ss << address;  
-	std::string name = ss.str(); 
-	pros::lcd::set_text(5, "Earlier address = " + name);
-
     pros::lcd::set_text(2, "Instance created");
 
     if (instance == nullptr) {
@@ -55,6 +47,4 @@ void my_funct() {
 		pros::lcd::set_text(3, "CAUGHT AN ERROR");
 	}
 	pros::lcd::set_text(2, "Stopped it");
-
-    pros::lcd::set_text(3, inst->get_subsystem_name());
 }

@@ -2,8 +2,8 @@
 #include "common_code/subsystem_parent.h"
 #include "api.h"
 
-// class ExampleSubsystem {
-class ExampleSubsystem : public SubsystemParent {
+class ExampleSubsystem {
+//class ExampleSubsystem : public SubsystemParent {
     public:
         static ExampleSubsystem* createInstance(pros::Motor& subsystem_motor);
         static ExampleSubsystem* getInstance(); // static because need to be able to access without ExampleSubsystem objecct
