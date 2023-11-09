@@ -5,7 +5,7 @@
 // class ExampleSubsystem {
 class ExampleSubsystem : public SubsystemParent {
     public:
-        static ExampleSubsystem* createInstance(pros::Motor& motor);
+        static ExampleSubsystem* createInstance(pros::Motor& subsystem_motor);
         static ExampleSubsystem* getInstance(); // static because need to be able to access without ExampleSubsystem objecct
         ~ExampleSubsystem();
         ExampleSubsystem(const ExampleSubsystem& other) = delete;
