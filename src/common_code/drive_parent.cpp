@@ -1,7 +1,7 @@
 #include "common_code/drive_parent.h"
 #include "pros/adi.hpp"
 
-DriveParent::DriveParent(pros::Imu imu, std::string drive_type): imu_(imu), kDriveType(drive_type) {}
+DriveParent::DriveParent(pros::Imu& imu, std::string drive_type): imu_(imu), kDriveType(drive_type) {}
 
 std::string DriveParent::get_drive_type() const {
   return kDriveType;

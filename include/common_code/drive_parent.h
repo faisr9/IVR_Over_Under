@@ -8,7 +8,7 @@ class DriveParent {
     // pure virtual probably because doesn't make sense to have undefined drive
 
     public:
-        DriveParent(pros::Imu imu, std::string drive_type);
+        DriveParent(pros::Imu& imu, std::string drive_type);
 
         // Of course, the child class is free to define its own movement methods too. 
         // These two generic ones are so programs without knowledge of the child drive 
@@ -18,18 +18,29 @@ class DriveParent {
 
         /**
          * @param mag_angle_vector An std::pair of doubles containing (first) the magnitude of the desired
-         * movement vector and (second) the angle of the movement in [0, 360) in degrees
+         * movement vector and (second) the angle of the movement in [0, 360) in degrees.
+         * To only turn the robot simply pass a magnitude of 0 and the desired angle.
          * 
          * @return Moves the robot according to the given std::pair
         */
         virtual void robot_centric_move(std::pair<double, double> mag_angle_vector) = 0;
         /**
          * @param mag_angle_vector An std::pair of doubles containing (first) the magnitude of the desired
-         * movement vector and (second) the angle of the movement in [0, 360) in degrees
+         * movement vector and (second) the angle of the movement in [0, 360) in degrees.
+         * To only turn the robot simply pass a magnitude of 0 and the desired angle.
          * 
          * @return Moves the robot according to the given std::pair
         */
         virtual void field_centric_move(std::pair<double, double> mag_angle_vector) = 0;
+        /**
+         * Turns the robot on a point.
+         * 
+         * @param power The power to turn with normalized to [-1, 1] where +/- 1 is the maximum turning speed.
+         * Positive for clockwise (increasing theta), negative for counterclockwise (decreasing theta).
+         * 
+         * @return Turns the robot with a rotational speed relative to power
+        */
+        virtual void turn_with_power(double power) = 0;
 
         std::string get_drive_type() const;
 
@@ -42,6 +53,6 @@ class DriveParent {
         
     private:
         // motors stored at child level
-        pros::Imu imu_;
+        pros::Imu& imu_;
         const std::string kDriveType;
 };
