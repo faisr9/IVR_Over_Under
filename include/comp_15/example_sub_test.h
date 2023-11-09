@@ -1,3 +1,0 @@
-
-
-void my_funct();
