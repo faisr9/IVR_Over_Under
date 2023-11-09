@@ -57,3 +57,12 @@ void ExampleSubsystem::stop() {
     subsystem_motor_.move_voltage(0);
 }
 
+//sets the power for subsystem_motor
+void ExampleSubsystem::set_power(int power) {
+    subsystem_motor_.move(power);
+
+    if (instance_ == nullptr) {
+        pros::lcd::set_text(6, "NOW NULLPTR");
+    }
+}
+
