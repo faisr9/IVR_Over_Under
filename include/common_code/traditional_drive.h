@@ -1,3 +1,11 @@
+//
+// Description: traditional drive system
+// Dependencies: main.h, subsystem_parent.h
+// Path: include/common_code/traditional_drive.h
+// Implementation: src/common_code/traditional_drive.cpp
+// Last Modified: 11/9/23 by Zach Martin
+//
+
 #pragma once
 #include "main.h"
 #include "subsystem_parent.h"
@@ -25,114 +33,27 @@ class traditional_drive : public SubsystemParent
 {
     private:
 
-        double left=12000, right=12000; // voltage to send to motors
+        double left=12000, right=12000; // voltage to send to motors (scalar factor of 12000)
         double fwd, turn; //helper variables
-        int std_delay = 20; // delay between loops (ms)
         Controller *master; // controller to get input from
         string drive_mode[3] = {"arcade", "tank", "hybrid"}; // drive mode names
         Motor_Group *left_side, *right_side; // motor groups to send voltage to
+        // drive mode methods
+        void arcade_drive();
+        void tank_drive();
+        void hybrid_drive();
+
+        void stop(); // turn off motors
+
+        void setV(); // set voltage to motors
 
     public:
-        traditional_drive(Controller *mstr, Motor_Group *l, Motor_Group *r) : traditional_drive(mstr, l, r, 0){};
+        // constructors
+        //traditional_drive(): SubsystemParent(drive_mode[0]){}; // default constructor
+        // overloaded constructors
+        traditional_drive(Controller *mstr, Motor_Group *l, Motor_Group *r); // converts to other constructor
+        traditional_drive(Controller *mstr, Motor_Group *l, Motor_Group *r, int mode); // initialize variables
+        ~traditional_drive(); // destructor
 
-        traditional_drive(Controller *mstr, Motor_Group *l, Motor_Group *r, int mode) : SubsystemParent(drive_mode[mode])
-        {
-            // set controller and motor groups
-            master = mstr;
-            left_side = l;
-            right_side = r;
-            toggle_drive_mode(mode);
-        };
-
-        // toggle drive mode (arcade, tank, hybrid)
-        void toggle_drive_mode(int mode=0)
-        {
-            // 0 = arcade, 1 = tank, 2 = hybrid
-            switch(mode)
-            {
-                case 0:
-                    arcade_drive(); // call arcade drive
-                    break;
-                case 1:
-                    tank_drive(); // call tank drive
-                    break;
-                case 2:
-                    hybrid_drive(); // call hybrid drive
-                    break;
-                default:
-                    stop(); // stop motors
-                    break;
-            }
-        };
-
-        // void op_drive()
-        // {
-
-        // };
-
-        void arcade_drive()
-        {
-            do{
-                // get joystick values and apply square scaling
-                fwd = square_scale(normalize_joystick(master->get_analog(E_CONTROLLER_ANALOG_LEFT_Y))); // vertical input from left joystick
-                turn = square_scale(normalize_joystick(master->get_analog(E_CONTROLLER_ANALOG_RIGHT_X))); // horizontal input from right joystick
-                // use fwd and turn to calculate voltage to send to motors
-                left *= fwd + turn;
-                right *= fwd - turn;
-
-                setV();
-
-                delay(std_delay);
-
-            }while(master->get_digital(E_CONTROLLER_DIGITAL_A)==0); // while a is not pressed (change to button of choice)
-            stop();
-        };
-
-        void tank_drive()
-        {
-            do{
-                // get joystick values and apply square scaling
-                left *= square_scale(normalize_joystick(master->get_analog(E_CONTROLLER_ANALOG_LEFT_Y))); // vertical input from left joystick
-                right *= square_scale(normalize_joystick(master->get_analog(E_CONTROLLER_ANALOG_RIGHT_Y))); // vertical input from right joystick
-
-                setV();
-
-                delay(std_delay);
-
-            }while(master->get_digital(E_CONTROLLER_DIGITAL_A)==0); // while a is not pressed (change to button of choice)
-            stop();
-        };
-
-        void hybrid_drive()
-        {
-            do{
-                // get joystick values and apply square scaling
-                fwd = square_scale(normalize_joystick(master->get_analog(E_CONTROLLER_ANALOG_LEFT_Y))); // vertical input from left joystick
-                turn = square_scale(normalize_joystick(master->get_analog(E_CONTROLLER_ANALOG_RIGHT_Y))); // vertical input from right joystick
-                // use fwd and turn to calculate voltage to send to motors
-                left*=fwd-turn;
-                right*=fwd+turn;
-
-                delay(std_delay);
-
-            }while(master->get_digital(E_CONTROLLER_DIGITAL_A)==0); // while a is not pressed (change to button of choice or different condition)
-            stop();
-        };
-        
-        // turn off motors
-        void stop()
-        {
-            // set voltage to 0 for both groups
-            left=0;
-            right=0;
-            setV();
-        };
-
-        // set voltage to motors
-        void setV() 
-        {
-            left_side->move_voltage(left);
-            right_side->move_voltage(right);
-            left=right=12000; // reset voltage to be multiplied by scalar
-        };
+        void toggle_drive_mode(int mode); // toggle drive mode (arcade, tank, hybrid)
 };
