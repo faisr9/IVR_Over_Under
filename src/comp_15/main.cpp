@@ -1,4 +1,5 @@
 #include "main.h"
+#include "common_code/example_subsystem.h"
 
 /* First method to run when program starts */
 void initialize() {
@@ -12,12 +13,9 @@ void disabled() {}
 void competition_initialize() {}
 
 /* Autonomous method */
-void autonomous() {}
+void autonomous() {
+}
 
 /* Opcontrol method runs by default (unless connected to comp controller )*/
 void opcontrol() {
-	lcd::print(0,"15 Comp");
-
-	while(1)
-		Task::delay(1000);
 }
