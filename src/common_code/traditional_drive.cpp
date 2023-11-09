@@ -5,7 +5,7 @@
 // Last Modified: 11/9/23 by Zach Martin
 //
 
-#include "traditional_drive.h"
+#include "common_code/traditional_drive.h"
 
 // default to arcade drive and then run constructor with mode
 traditional_drive::traditional_drive(Controller *mstr, Motor_Group *l, Motor_Group *r) : traditional_drive(mstr, l, r, 0){};
