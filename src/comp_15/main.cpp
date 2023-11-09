@@ -1,5 +1,5 @@
 #include "main.h"
-#include "common_code/example_subsystem.h"
+#include "initializer.cpp"
 
 /* First method to run when program starts */
 void initialize() {
