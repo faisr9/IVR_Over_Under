@@ -1,6 +1,32 @@
 #include "api.h"
 
 class PID{
+    private:
+        struct PIDConstants{
+            double kP;
+            double kI;
+            double kD;
+        };
+
+        PIDConstants fwdPID_consts;
+        PIDConstants turnPID_consts;
+        PIDConstants strafePID_consts;
+
+        // //Fwd PID constants
+        // double KP;
+        // double KI;
+        // double KD;
+
+        // //Turn PID constants
+        // double turnKP;
+        // double turnKI;
+        // double turnKD;
+
+        // //Strafe PID constants
+        // double strafeKP;
+        // double strafeKI;
+        // double strafeKD;
+    
     public:
         PID(double Kp, double Ki, double Kd);
         PID(double Kp, double Ki, double Kd, double turnKp, double turnKi, double turnKd);
@@ -16,19 +42,5 @@ class PID{
         void turnPID(int angle);
         void strafePID(double strafeTarget);
 
-    private:    
-        //Fwd PID constants
-        double KP;
-        double KI;
-        double KD;
-
-        //Turn PID constants
-        double turnKP;
-        double turnKI;
-        double turnKD;
-
-        //Strafe PID constants
-        double strafeKP;
-        double strafeKI;
-        double strafeKD;
+    
 };
