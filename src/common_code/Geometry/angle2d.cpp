@@ -1,8 +1,9 @@
 #include "common_code/geometry/angle2d.h"
 #include <cmath>
 #include <string>
+#include "angle2d.h"
 
-#define PI 3.14159265358979
+#define PI atan2(0,-1)  //verified that this is accurate than just typing the digits
 
 Angle2d::~Angle2d()
 {
@@ -53,19 +54,55 @@ Angle2d Angle2d::plus(Angle2d other)
     return Angle2d(this->_radians + other.getRadians());
 }
 
-Angle2d Angle2d::inverse()
+Angle2d Angle2d::unaryMinus()
 {
     return Angle2d(this->_radians*-1);
 }
 
 Angle2d Angle2d::minus(Angle2d other)
 {
-    return this->plus(other.inverse());
+    return this->plus(other.unaryMinus());
+}
+
+Angle2d Angle2d::oppositeAngle()
+{
+    return Angle2d(this->_radians+PI); //current radian + PI
 }
 
 Angle2d Angle2d::times(double scalar)
 {
     return Angle2d(scalar * this->_radians);
+}
+
+Angle2d Angle2d::getAngleIn1Rotation()
+{
+    return Angle2d(getRadians0to2PI());
+}
+
+Angle2d Angle2d::getAngleIn1RotationSymmetricAbout0()
+{
+    return Angle2d(getRadiansNegPItoPI());
+}
+
+double Angle2d::getRadians0to2PI()
+{
+    double temp_angle = atan2(_sin_value, _cos_value); // [-PI, PI)
+    return temp_angle < 0?temp_angle+2*PI:temp_angle;
+}
+
+double Angle2d::getRadiansNegPItoPI()
+{
+    return atan2(_sin_value, _cos_value);
+}
+
+double Angle2d::getDegrees0to360()
+{
+    return this->getRadians0to2PI()/PI*180;
+}
+
+double Angle2d::getDegreesN180to180()
+{
+    return getRadiansNegPItoPI()/PI*180;
 }
 
 double Angle2d::getRadians()
