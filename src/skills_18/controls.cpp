@@ -5,5 +5,9 @@
 #include "intake.h"
 
 void controls() {
-    
+    while (true) {
+        // do cool stuff
+
+        pros::delay(50);
+    }
 }
