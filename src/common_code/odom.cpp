@@ -20,14 +20,33 @@ currentTransverseValue will be the equivalent of 2m even though from an outside 
 This class has accounted for that, so that other code can assume the position of the robot is reliable.
 */
 
+pros::Motor FrontTopRight(11, pros::E_MOTOR_GEARSET_06, true);
+pros::Motor FrontBottomRight(12, pros::E_MOTOR_GEARSET_06);
+pros::Motor BackRight(13, pros::E_MOTOR_GEARSET_06);
+pros::Motor FrontTopLeft(20, pros::E_MOTOR_GEARSET_06);
+pros::Motor FrontBottomLeft(19, pros::E_MOTOR_GEARSET_06, true);
+pros::Motor BackLeft(18, pros::E_MOTOR_GEARSET_06, true);
+
+pros::MotorGroup RightDrive({FrontTopRight, FrontBottomRight, BackRight});
+pros::MotorGroup LeftDrive({FrontTopLeft, FrontBottomLeft, BackLeft});
+Controller master(E_CONTROLLER_MASTER);
+Imu imu(2);
+Odom odometer(imu);
+
+void initialize() {
+	pros::lcd::initialize(); // Temp until custom GUI
+	imu.reset();
+    odometer.initTracker(0, 0, 0);
+}
+
 Odom::Odom(pros::IMU theImu): imu(theImu), vertical_track(3,4,false), horizontal_track(1,2,true) {
 
     transverseWheelRad = 1.96 * 0.0254 / 2; // transverse wheel tracks left to right movements
     radialWheelRad = 1.96 * 0.0254 / 2;     // radial wheel tracks forward and backward movements (has nothing to do with radians)
     lastTransverseValue = 0;                // these variables track what the last value was in order to determine how far the robot has moved
     lastRadialValue = 0;
-    // last_x_tracking_offset = 0;
-    // last_y_tracking_offset = 0;
+    last_x_tracking_offset = 0;
+    last_y_tracking_offset = 0;
     positionX = 0;                          
     positionY = 0;
     initHeading = 90;               // gets overwritten when initTracker is called so potentially redundant
@@ -36,22 +55,27 @@ Odom::Odom(pros::IMU theImu): imu(theImu), vertical_track(3,4,false), horizontal
 
 }
 
+/*pros::Task initTask(Odom odometer) {
+        pros::Task odom_task(Odom::updatePosition);
+        return odom_task;
+}*/
+
 double Odom::toMeters(double value, double wheelRadius) {   // Accepts a value (in ticks) and returns the corresponding amount of meters moved
     return ((value / TICKS_PER_ROTATION) * 2 * M_PI * wheelRadius);
     // (value / TICKS_PER_ROTATION) is the number of total revolutions
 }
 
 void Odom::initTracker(double initial_x, double initial_y, double initial_heading) {    // initializes the tracking variables so they can begin to be updated
-    double currentTransverseValue = toMeters(horizontal_track.get_value()*4.0, transverseWheelRad);
-    double currentRadialValue = toMeters(vertical_track.get_value(), radialWheelRad);
+    currentTransverseValue = toMeters(horizontal_track.get_value()*4.0, transverseWheelRad);
+    currentRadialValue = toMeters(vertical_track.get_value(), radialWheelRad);
     
     positionX = initial_x;
     positionY = initial_y;
     initHeading = initial_heading;
     currentHeading = initHeading;
     imu.set_heading(initHeading);
-    // last_x_tracking_offset = RADIAL_TRACKING_WHEEL_OFFSET * cos(initHeading * M_PI / 180.0);
-    // last_y_tracking_offset = RADIAL_TRACKING_WHEEL_OFFSET * sin(initHeading * M_PI / 180.0);
+    last_x_tracking_offset = RADIAL_TRACKING_WHEEL_OFFSET * cos(initHeading * M_PI / 180.0);
+    last_y_tracking_offset = RADIAL_TRACKING_WHEEL_OFFSET * sin(initHeading * M_PI / 180.0);
 }
 
 double Odom::headingCorrection (double currentRotation) {
@@ -76,8 +100,8 @@ void Odom::updatePosition() {       // updatePosition does all the math with the
         // double currentRadialValue = toMeters(vertical_track.get_value()*4.0, radialWheelRad); // *4.0
 
         // PINK ROBOT:
-        double currentTransverseValue = toMeters(horizontal_track.get_value()*4.0, transverseWheelRad); //*4.0
-        double currentRadialValue = toMeters(vertical_track.get_value(), radialWheelRad); // *1.0
+        currentTransverseValue = toMeters(horizontal_track.get_value()*4.0, transverseWheelRad); //*4.0
+        currentRadialValue = toMeters(vertical_track.get_value(), radialWheelRad); // *1.0
 
         currentHeading = headingCorrection(imu.get_rotation());
 
@@ -103,18 +127,18 @@ void Odom::updatePosition() {       // updatePosition does all the math with the
         // pros::lcd::set_text(2, "Position X: " + std::to_string(positionX));
         // pros::lcd::set_text(3, "Position Y: " + std::to_string(positionY));
 
-        // double x_tracking_offset = TRANSVERSE_TRACKING_WHEEL_OFFSET * sine;
-        // double y_tracking_offset = TRANSVERSE_TRACKING_WHEEL_OFFSET * cosine;
+        x_tracking_offset = TRANSVERSE_TRACKING_WHEEL_OFFSET * sine;
+        y_tracking_offset = TRANSVERSE_TRACKING_WHEEL_OFFSET * cosine;
 
         // when pure rotating (x_tracking_offset - last_x_tracking_offset) should = deltaX
 
         positionX += isnan(deltaX) ? 0 : deltaX;
         positionY += isnan(deltaY) ? 0 : deltaY;
-        // positionX += deltaX - (x_tracking_offset - last_x_tracking_offset);
-        // positionY += deltaY + (y_tracking_offset - last_y_tracking_offset);
+        positionX -= isnan(x_tracking_offset - last_x_tracking_offset) ? 0 : (x_tracking_offset - last_x_tracking_offset);
+        positionY += isnan(y_tracking_offset - last_y_tracking_offset) ? 0 : (y_tracking_offset - last_y_tracking_offset);
 
-        // last_x_tracking_offset = x_tracking_offset;
-        // last_y_tracking_offset = y_tracking_offset;
+        last_x_tracking_offset = x_tracking_offset;
+        last_y_tracking_offset = y_tracking_offset;
 
         pros::lcd::set_text(5, "Position X: " + std::to_string(positionX));
         pros::lcd::set_text(6, "Position Y: " + std::to_string(positionY));
@@ -138,33 +162,26 @@ void Odom::updatePosition() {       // updatePosition does all the math with the
 double Odom::getX() { return positionX; }
 double Odom::getY() { return positionY; }
 
-void main() {
-    pros::Motor front_left(8);
+void opcontrol() {
+    
+    /*Motor front_left(8);
     front_left.set_reversed(true);
     Motor front_right(9);
     Motor back_left(7);
     back_left.set_reversed(true);
-    Motor back_right(10);
-    Controller master(E_CONTROLLER_MASTER);
-    pros::Imu imu(4);
-
-    Odom odometer(imu);    
+    Motor back_right(10);*/   
 
     while(true) {
-        lcd::print(0, "%d %d %d",   (lcd::read_buttons() & LCD_BTN_LEFT)>>2, // no clue what this does
-                                (lcd::read_buttons() & LCD_BTN_RIGHT)>>1,
-                                (lcd::read_buttons() & LCD_BTN_CENTER)>>0);
+        
         int forward = master.get_analog(E_CONTROLLER_ANALOG_LEFT_Y); // sets forward to left analog's up/down input
         int steer = master.get_analog(E_CONTROLLER_ANALOG_RIGHT_X);  // sets steer to right analog's left/right input
 
-        front_left.move(forward+steer);
-        front_right.move(forward-steer);
-        back_left.move(forward+steer);
-        back_right.move(forward-steer);
+        LeftDrive.move(forward+steer);
+        RightDrive.move(forward-steer);
 
         odometer.updatePosition();
-        pros::lcd::print(0,"%lf",odometer.getX());
-        pros::lcd::print(1,"%lf",odometer.getY());
-        delay(20);
+        pros::lcd::print(1,"%lf",odometer.getX());
+        pros::lcd::print(2,"%lf",odometer.getY());
+        delay(30);
     }
 }

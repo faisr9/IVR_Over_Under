@@ -17,26 +17,26 @@ class Odom {
     double getX();
     double getY();
 
-    static pros::Task initTask(Odom odometer) {
-        pros::Task odom_task(updatePosition);
-        return odom_task;
-    }
-    Odom();
+    //static pros::Task initTask(Odom odometer);
 
     private:
     double transverseWheelRad;
     double radialWheelRad;
+    double currentTransverseValue;
+    double currentRadialValue;
     double lastTransverseValue;
     double lastRadialValue;
-    // double last_x_tracking_offset;
-    // double last_y_tracking_offset;
+    double x_tracking_offset;
+    double y_tracking_offset;
+    double last_x_tracking_offset;
+    double last_y_tracking_offset;
     double positionX;
     double positionY;
     const double TICKS_PER_ROTATION = 19600.0;
     const double FEET_TO_METERS = 0.304;
     const double ADJUSTMENT_MULTIPLIER = 1.015;
-    const double RADIAL_TRACKING_WHEEL_OFFSET = 0;
-    const double TRANSVERSE_TRACKING_WHEEL_OFFSET = 0.1;
+    const double RADIAL_TRACKING_WHEEL_OFFSET = 0.0746125;
+    const double TRANSVERSE_TRACKING_WHEEL_OFFSET = 0.104775;
 
     double initHeading;
     double currentHeading;
