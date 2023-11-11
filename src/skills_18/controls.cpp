@@ -3,3 +3,7 @@
 #include "robot.h"
 #include "drive.h"
 #include "intake.h"
+
+void controls() {
+    
+}
