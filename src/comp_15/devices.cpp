@@ -7,6 +7,9 @@
  * be active incase a port is damaged.
 */
 
+// Controllers //
+pros::Controller ctrl_master (CONTROLLER_MASTER);
+
 // Motors //
 pros::Motor FrontTopRight       (11, GEARSET_06, true);
 pros::Motor FrontBottomRight    (12, GEARSET_06);
