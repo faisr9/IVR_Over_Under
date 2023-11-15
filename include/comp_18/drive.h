@@ -1,8 +1,5 @@
 #pragma once
-
-#include <string>
-#include <vector>
-#include <functional>
+#include "main.h"
 
 extern int drive_mode_idx;
 

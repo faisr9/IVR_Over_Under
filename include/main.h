@@ -18,14 +18,6 @@
  */
 #define M_PI 3.14159265358979323846
 
-//// Useful only when using multitasking ////
-// #define TASK_PRIORITY_LOW 4
-// #define TASK_PRIORITY_MEDIUM_LOW 7
-// #define TASK_PRIORITY_MEDIUM_HIGH 11
-// #define TASK_PRIORITY_HIGH 14
-// #define TASK_PRIORITY_DEFAULT TASK_PRIORITY_DEFAULT
-///////////////////////////////////////
-
 /**
  * Add PROS header files here;
  * NOTE: There shouldn't be anything else here
@@ -35,9 +27,24 @@
 ///////////////////////////////////////
 
 /**
- * Add other header files here;
- */
+ * When multitasking, these values indicate the priority levels of tasks, and
+ * how often they will run relative to other tasks.
+ * 
+ * Range; 2 (lowest) - 15 (highest)
+ * IMPORTANT: Use these values to set task priorities
+*/
+#define TASK_PRIORITY_LOW 4
+#define TASK_PRIORITY_MEDIUM_LOW 7
+#define TASK_PRIORITY_MEDIUM_HIGH 11
+#define TASK_PRIORITY_HIGH 14
+///////////////////////////////////////
 
+/**
+ * Add other header files here;
+ * Add the common code headers here
+ */
+#include "common_code/subsystem_parent.h"
+#include "common_code/example_subsystem.h"
 ///////////////////////////////////////
 
 /**
@@ -52,15 +59,6 @@
 ///////////////////////////////////////
 
 /**
- * These files are used to check whether a robot's program matches
- * the robot the program is downloaded to
-*/
-// #define COMP_15_CHECKFILE "usd/comp15_checkfile.txt"
-// #define COMP_18_CHECKFILE "usd/comp18_checkfile.txt"
-// #define SKILLS_15_CHECKFILE "usd/skills15_checkfile.txt"
-// #define SKILLS_18_CHECKFILE "usd/skills18_checkfile.txt"
-
-/**
  * If defined, some commonly used enums will have preprocessor macros which give
  * a shorter, more convenient naming pattern. If this isn't desired, simply
  * comment the following line out.
@@ -73,7 +71,6 @@
 #define GEARSET_06          pros::E_MOTOR_GEARSET_06
 #define GEARSET_18          pros::E_MOTOR_GEARSET_18
 #define GEARSET_36          pros::E_MOTOR_GEARSET_36
-#define GEARSET_INVALID     pros::E_MOTOR_GEARSET_INVALID
 #define BRAKETYPE_BRAKE     pros::E_MOTOR_BRAKE_BRAKE
 #define BRAKETYPE_COAST     pros::E_MOTOR_BRAKE_COAST
 #define BRAKETYPE_HOLD      pros::E_MOTOR_BRAKE_HOLD
