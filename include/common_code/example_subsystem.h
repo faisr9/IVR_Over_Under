@@ -1,16 +1,22 @@
-#include "common_code/subsystem_parent.h"
-#include "api.h"
-
+#pragma once
+#include "main.h"
 
 class ExampleSubsystem : public SubsystemParent {
     public:
-        ExampleSubsystem(std::string subsystem_name, pros::Motor& subsystem_motor);
+        static ExampleSubsystem* createInstance(pros::Motor& motor);
+        static ExampleSubsystem* getInstance(); // static because need to be able to access without ExampleSubsystem objecct
+        ~ExampleSubsystem();
+        ExampleSubsystem(const ExampleSubsystem& other) = delete;
 
         void stop();
-        std::string get_subsystem_name() const;
+
+        void set_power(int power);
     private:
         // reference to passed in motor so it doesn't create a new motor object 
-        // (which wouldn't be the end of the world but still)
-        pros::Motor& subsystem_motor_;
+        ExampleSubsystem(pros::Motor& subsystem_motor);
 
+        //instance_ is set to nullptr in cpp file
+        static ExampleSubsystem* instance_;
+
+        pros::Motor subsystem_motor_ = pros::Motor(14);
 };

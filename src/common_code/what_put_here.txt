@@ -1,4 +1,0 @@
-This directory will contain all the algorithms and other code files
-that all robots will be sharing/using.
-
-Ex; PID, Odom, PurePursuit
