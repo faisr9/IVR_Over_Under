@@ -22,5 +22,5 @@ class Pneumatics : public SubsystemParent {
         //instance_ is set to nullptr in cpp file
         static Pneumatics* instance_;
 
-        pros::ADIDigitalOut piston1 = pros::ADIDigitalOut(3);
+        pros::ADIDigitalOut piston1 = pros::ADIDigitalOut('H');
 };
