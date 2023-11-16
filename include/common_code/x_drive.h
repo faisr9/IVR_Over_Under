@@ -6,8 +6,8 @@ using namespace pros;
 class x_drive{
     public:
         x_drive(Controller master, Motor front_left, Motor front_right, Motor back_left, Motor back_right, Imu imu);
-        void robot_centric_move(std::pair<double, double> movement_vector, double right_x);
-        void field_centric_move(std::pair<double, double> movement_vector, double right_x);
+        void robot_centric_move(std::pair<double, double> movement_vector, double turn_right_x);
+        void field_centric_move(std::pair<double, double> movement_vector, double turn_right_x);
     private:
         Controller master_;
         Motor front_left_;

@@ -42,8 +42,8 @@ void opcontrol() {
 		}
 		
 		std::pair<double, double> movement_vector(magni,r);
-		double right_x = (double)master.get_analog(E_CONTROLLER_ANALOG_RIGHT_X);
-		x.field_centric_move(movement_vector,right_x);
+		double turn_right_x = (double)master.get_analog(E_CONTROLLER_ANALOG_RIGHT_X);
+		x.field_centric_move(movement_vector,turn_right_x);
 		
 
 		pros::delay(50);
