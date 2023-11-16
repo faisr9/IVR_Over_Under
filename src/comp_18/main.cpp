@@ -17,6 +17,8 @@ void autonomous() {
 
 /* Opcontrol method runs by default (unless connected to comp controller )*/
 void opcontrol() {
+
+	//this was x drive testing, you can delete if needed.
 	lcd::print(1,"18 Comp");
 	Controller master(E_CONTROLLER_MASTER);
 	Motor front_left(19);
