@@ -1,4 +1,4 @@
-#include "main.h"
+#include "comp_18/comp18_includeList.h"
 
 /* First method to run when program starts */
 void initialize() {
@@ -12,7 +12,8 @@ void disabled() {}
 void competition_initialize() {}
 
 /* Autonomous method */
-void autonomous() {}
+void autonomous() {
+}
 
 /* Opcontrol method runs by default (unless connected to comp controller )*/
 void opcontrol() {
