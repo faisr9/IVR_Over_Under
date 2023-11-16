@@ -1,4 +1,6 @@
 #include "main.h"
+#include "skills_18/skills.h"
+#include "skills_18/controls.h"
 
 /* First method to run when program starts */
 void initialize() {
@@ -12,12 +14,13 @@ void disabled() {}
 void competition_initialize() {}
 
 /* Autonomous method */
-void autonomous() {}
+void autonomous() {
+	skills();
+}
 
 /* Opcontrol method runs by default (unless connected to comp controller )*/
 void opcontrol() {
 	lcd::print(3,"18 Skills");
 
-	while(1)
-		Task::delay(1000);
+	controls();
 }

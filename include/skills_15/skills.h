@@ -3,4 +3,4 @@
 #include <vector>
 
 void drivePID(double inches);
-void auton();
+void skills();
