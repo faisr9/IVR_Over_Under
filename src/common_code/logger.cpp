@@ -1,5 +1,40 @@
 #include "main.h"
 
+ /**
+  * @brief Creates the single instance of the class. This is done here to ensure
+  * the object is created before main() is called allowing the autoLogger to function
+  * properly.
+  */
+AutoLogger* autoLogger = AutoLogger::createInstance();
+
+AutoLogger::AutoLogger() {
+    FILE* autoLogWrite = fopen(auto_log_file_name.c_str(), "a");
+    const char* break_message = "---------------------------\nStart of new log\n---------------------------\n";
+    if (autoLogWrite)
+        fwrite(break_message, sizeof(char), strlen(break_message), autoLogWrite);
+
+}
+AutoLogger::~AutoLogger() {
+    if (instance_ != nullptr) {
+        delete instance_;
+        instance_ = nullptr;
+    }
+}
+
+AutoLogger* AutoLogger::createInstance() {
+    if (!instance_)
+        instance_ = new AutoLogger();
+
+    return instance_;
+}
+
+AutoLogger* AutoLogger::getInstance() {
+    if (instance_ == nullptr)
+        throw std::runtime_error("AutoLogger: Attempting to getInstance while instance_ is nullptr");
+
+    return instance_;
+}
+
 Logger::Logger(std::string file_name, bool overwrite, bool append, bool log_time) {
     this->log_time = log_time;
     file_mode = "w"; // default to overwrite
