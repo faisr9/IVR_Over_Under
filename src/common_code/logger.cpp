@@ -1,3 +1,7 @@
+// The auto logger will log all the vital data like device connections and important initiation events.
+
+// There needs to be a master file that stores the name of every log file created when reading to the computer 
+
 #include "main.h"
 
  /**
