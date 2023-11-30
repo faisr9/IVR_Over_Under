@@ -55,10 +55,10 @@ void ExampleSubsystem::stop() {
     subsystem_motor_.move_voltage(0);
 }
 
-//<<<<<<< traditional_drive
+
 // don't need to define get_subsystem_name because we can just use the version in SubsystemParent
-//=======
-//void ExampleSubsystem::set_power(int power) {
-//    subsystem_motor_.move(power);
-//}
-//>>>>>>> master
+
+void ExampleSubsystem::set_power(int power) {
+    subsystem_motor_.move(power);
+}
+
