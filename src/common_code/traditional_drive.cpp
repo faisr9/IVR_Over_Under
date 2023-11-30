@@ -2,18 +2,22 @@
 // Description: implementations for traditional drive system
 // Path: src/common_code/traditional_drive.cpp
 // Header: include/common_code/traditional_drive.h
-// Last Modified: 11/9/23 by Zach Martin
+// Last Modified: 11/29/23 by Zach Martin
 //
 
 #include "common_code/traditional_drive.h"
+#include <cmath>
 
 // default to arcade drive and then run constructor with mode
-traditional_drive::traditional_drive(Controller *mstr, Motor_Group *l, Motor_Group *r) : traditional_drive(mstr, l, r, 0){};
+traditional_drive::traditional_drive(Imu&imu,Controller *mstr, Motor_Group *l, Motor_Group *r) 
+    : traditional_drive(imu,mstr, l, r, 0) {};
 
 // overloaded constructor
-traditional_drive::traditional_drive(Controller *mstr, Motor_Group *l, Motor_Group *r, int mode) : SubsystemParent(drive_mode[mode])
+traditional_drive::traditional_drive(Imu&imu,Controller *mstr, Motor_Group *l, Motor_Group *r, int mode) 
+    : DriveParent(imu, drive_mode[mode])
 {
     // set controller and motor groups
+    this->imu=&imu;
     master = mstr;
     left_side = l;
     right_side = r;
@@ -100,3 +104,64 @@ void traditional_drive::arcade_drive()
 
     setV(); // set voltage to motors
 };
+
+
+/**
+ * @param mag_angle_vector An std::pair of doubles containing (first) the magnitude of the desired
+ * movement vector and (second) the angle of the movement in [0, 360) in degrees.
+ * To only turn the robot simply pass a magnitude of 0 and the desired angle.
+ *
+ * @return Moves the robot according to the given std::pair
+ */
+void traditional_drive::robot_centric_move(pair<double, double> movement_vector)
+{
+    // rads = deg * pi / 180
+    movement_vector.second *= M_PI / 180;
+
+    // x and y components of movement vector
+    double x = cos(movement_vector.second) * movement_vector.first; 
+    double y = sin(movement_vector.second) * movement_vector.first;
+
+    // determine voltage to send to motors
+    left *=(y - x);
+    right *=(y + x);
+
+    // send voltage to motors
+    setV();
+}
+
+
+/**
+ * @param mag_angle_vector An std::pair of doubles containing (first) the magnitude of the desired
+ * movement vector and (second) the angle of the movement in [0, 360) in degrees.
+ * To only turn the robot simply pass a magnitude of 0 and the desired angle.
+ *
+ * @return Moves the robot according to the given std::pair
+ */
+void traditional_drive::field_centric_move(pair<double, double> movement_vector)
+{
+    // get heading from inertial sensor and subtract from desired angle
+    movement_vector.second = movement_vector.second + imu->get_heading() - 360; 
+
+    // call robot centric move with adjusted movement vector
+    robot_centric_move(movement_vector);
+}
+
+
+/**
+ * Turns the robot on a point.
+ *
+ * @param power The power to turn with normalized to [-1, 1] where +/- 1 is the maximum turning speed.
+ * Positive for clockwise (increasing theta), negative for counterclockwise (decreasing theta).
+ *
+ * @return Turns the robot with a rotational speed relative to power
+ */
+void traditional_drive::turn_with_power(double power)
+{
+    // multiply voltage by power factor
+    left*=power;
+    right*=power;
+
+    // send voltage to motors
+    setV();
+}
