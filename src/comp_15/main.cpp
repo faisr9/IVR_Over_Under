@@ -17,7 +17,9 @@ void autonomous() {
 
 /* Opcontrol method runs by default (unless connected to comp controller )*/
 void opcontrol() {
-	CompetitionCatapult::getInstance();
+	// CompetitionCatapult* competition_catapult_instance = CompetitionCatapult::getInstance();
+	// competition_catapult_instance.load();
+
 	
 	
 }
