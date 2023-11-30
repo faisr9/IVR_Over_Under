@@ -1,5 +1,6 @@
 #include "main.h"
 #include "common_code/example_subsystem.h"
+#include "comp_15/competition_catapult.h"
 
 /* First method to run when program starts */
 void initialize() {
@@ -18,4 +19,7 @@ void autonomous() {
 
 /* Opcontrol method runs by default (unless connected to comp controller )*/
 void opcontrol() {
+	CompetitionCatapult::getInstance();
+	
+	
 }

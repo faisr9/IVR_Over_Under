@@ -3,15 +3,15 @@
 // note: velocity in rpm
 extern CompetitionCatapult* CompetitionCatapult::instance_ = nullptr;
 
-CompetitionCatapult* CompetitionCatapult::createInstance(pros::Motor& motor1, pros::Motor& motor2, int load, int launch) {
+CompetitionCatapult* CompetitionCatapult::createInstance(pros::Motor& motor1, pros::Motor& motor2, pros::ADIDigitalIn& killswitch, int load, int launch) {
     if (!instance_) {
-        instance_ = new CompetitionCatapult(motor1, motor2, load, launch);
+        instance_ = new CompetitionCatapult(motor1, motor2, killswitch, load, launch);
     }
     return instance_;
 }
-CompetitionCatapult::CompetitionCatapult(pros::Motor& motor1, pros::Motor& motor2, int load, int launch) 
-    : SubsystemParent("Competition Catapult"), left_motor(motor1), right_motor(motor2), left_start(motor1.get_position()), right_start(motor2.get_position()),
-        load_voltage(load), launch_voltage(launch) {
+CompetitionCatapult::CompetitionCatapult(pros::Motor& motor1, pros::Motor& motor2, pros::ADIDigitalIn& killswitch, int load, int launch) 
+    : SubsystemParent("Competition Catapult"), left_motor(motor1), right_motor(motor2), kill_switch(killswitch),
+        left_start(motor1.get_position()), right_start(motor2.get_position()), load_voltage(load), launch_voltage(launch) {
     
     pros::lcd::set_text(5, "In constructor");
 
@@ -45,8 +45,15 @@ void CompetitionCatapult::starting_position() {
     right_motor.move_absolute(right_start, 10);
 }
 void CompetitionCatapult::load() {
-    left_motor.move_voltage(load_voltage);
-    right_motor.move_voltage(load_voltage);
+    while (true) {
+        if (kill_switch.get_value()) {
+            stop();
+            break;
+        }
+        left_motor.move_voltage(-load_voltage);
+        right_motor.move_voltage(-load_voltage);
+        pros::delay(20);
+    }
 }
 void CompetitionCatapult::launch() {
     left_motor.move_voltage(launch_voltage);
