@@ -1,6 +1,6 @@
 //
 // Description: traditional drive system
-// Dependencies: main.h, subsystem_parent.h
+// Dependencies: main.h, drive_parent.h
 // Path: include/common_code/traditional_drive.h
 // Implementation: src/common_code/traditional_drive.cpp
 // Last Modified: 11/29/23 by Zach Martin
@@ -34,7 +34,7 @@ class traditional_drive : public DriveParent
 
     public:
         // constructors
-        //traditional_drive(): SubsystemParent(drive_mode[0]){}; // default constructor
+        // traditional_drive(): SubsystemParent(drive_mode[0]){}; // default constructor
         // overloaded constructors
         traditional_drive(Imu&imu,Controller *mstr, Motor_Group *l, Motor_Group *r); // converts to other constructor
         traditional_drive(Imu &imu,Controller *mstr, Motor_Group *l, Motor_Group *r, int mode); // initialize variables

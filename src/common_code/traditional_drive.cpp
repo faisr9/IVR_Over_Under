@@ -6,7 +6,7 @@
 //
 
 #include "common_code/traditional_drive.h"
-#include <cmath>
+#include <cmath> // for sin and cos functions and M_PI
 
 // default to arcade drive and then run constructor with mode
 traditional_drive::traditional_drive(Imu&imu,Controller *mstr, Motor_Group *l, Motor_Group *r) 
