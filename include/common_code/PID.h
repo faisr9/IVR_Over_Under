@@ -36,9 +36,9 @@ class PID{
         void setTurnConstants(double kp, double ki, double kd);
         void setStrafeConstants(double kp, double ki, double kd);
 
-        void drivePID(double target);
-        void drivePID(double target, int angle);
-        void drivePID(double target, int angle, double strafeTarget);
+        void PID::drivePID(double target, pros::ADIEncoder* yEnc);
+        void PID::drivePID(double target, pros::ADIEncoder* yENC, int angle);
+        void PID::drivePID(double target, pros::ADIEncoder* yEnc, int angle, double strafeTarget, pros::ADIEncoder* xEnc);
 
         void turnPID(int angle);
         void strafePID(double strafeTarget);

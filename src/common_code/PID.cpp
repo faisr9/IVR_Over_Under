@@ -87,27 +87,27 @@ void PID::setStrafeConstants(double kp, double ki, double kd){
     strafePID_consts.kD = kd;
 }
 
-void PID::drivePID(double target){
-    pros::Task drivePID_lt{[=]{
-        pros::Rotation yEnc(10);
-        double error = target;
-        double sensorValue = 0;
+void PID::drivePID(double target, pros::ADIEncoder* yEnc){
+    double error = target;
+    double sensorValue = 0;
 
-        double lastError = 0;
-        double derivative = 0;
-        double integral = 0;
+    double startValue = 2*M_PI*(1.96/2)*(yEnc->get_value()/360);
 
-        double fwdSpd;
-        yEnc.reset();
+    double lastError = 0;
+    double derivative = 0;
+    double integral = 0;
 
-        while(std::abs(error) > .3){
-            sensorValue = 2*M_PI*(1.96/2)*(yEnc.get_angle()/360); //2*pi*r*(degrees/360)
+    double fwdSpd;
+
+    pros::Task drivePID_lt{[&]{
+        if(std::abs(error) > .3){
+            sensorValue = startValue - 2*M_PI*(1.96/2)*(yEnc->get_value()/360); //2*pi*r*(degrees/360)
             
             error = target - sensorValue;
 
             integral += error;
             //Ensures integral doesn't get too large
-            if(error=0||sensorValue>error)
+            if(error==0||sensorValue>error)
                 integral = 0;
             else if(error<=0)
                 integral = 0;
@@ -122,11 +122,11 @@ void PID::drivePID(double target){
     }};
 }
 
-void PID::drivePID(double target, int angle){
+void PID::drivePID(double target, pros::ADIEncoder* yEnc, int angle){
     //FWD PID
     double error = target;
-    yEnc.reset();
-    double sensorValue = 0;
+    double startValue = 2*M_PI*(1.96/2)*(yEnc->get_value()/360);
+    double sensorValue=0;
 
     double lastError = 0;
     double derivative = 0;
@@ -143,55 +143,58 @@ void PID::drivePID(double target, int angle){
     double tIntegral = 0;
 
     double turnSpd;
-    while(std::abs(error) > .3 && std::abs(tError) > 1){
 
-        ////////////////////////////
-        //        FWD PID         //
-        ////////////////////////////
-        sensorValue = 2*M_PI*(1.96/2)*(yEnc.get_angle()/360); //2*pi*r*(degrees/360)
-        
-        error = target - sensorValue;
+    pros::Task drivePID_lt{[&]{
+        if(std::abs(error) > .3 && std::abs(tError) > 1){
 
-        integral += error;
-        //Ensures integral doesn't get too large
-        if(error=0||sensorValue>error)
-            integral = 0;
-        else if(error<=0)
-            integral = 0;
-        
-        //updates derivative and lastError
-        derivative = error - lastError;
-        lastError = error;
+            ////////////////////////////
+            //        FWD PID         //
+            ////////////////////////////
+            sensorValue = startValue - 2*M_PI*(1.96/2)*(yEnc->get_value()/360); //2*pi*r*(degrees/360)
+            
+            error = target - sensorValue;
 
-        fwdSpd = fwdPID_consts.kP * error + fwdPID_consts.kI * integral + fwdPID_consts.kD * derivative;  
+            integral += error;
+            //Ensures integral doesn't get too large
+            if(error==0||sensorValue>error)
+                integral = 0;
+            else if(error<=0)
+                integral = 0;
+            
+            //updates derivative and lastError
+            derivative = error - lastError;
+            lastError = error;
 
-        ////////////////////////////
-        //        Turn PID        //
-        ////////////////////////////
-        heading = imu.get_heading(); //IMU Sensor returns current heading in degrees from 0-360
-        
-        tError = angle - heading;
+            fwdSpd = fwdPID_consts.kP * error + fwdPID_consts.kI * integral + fwdPID_consts.kD * derivative;  
 
-        tIntegral += tError;
-        if(tError=0||heading>tError)
-            tIntegral = 0;
-        else if(tError<=0)
-            tIntegral = 0;
-        
-        tDerivative = tError - lastTError;
-        lastTError = tError;
+            ////////////////////////////
+            //        Turn PID        //
+            ////////////////////////////
+            heading = imu.get_heading(); //IMU Sensor returns current heading in degrees from 0-360
+            
+            tError = angle - heading;
 
-        turnSpd = turnPID_consts.kP * tError + turnPID_consts.kI * tIntegral + turnPID_consts.kD * tDerivative;   
+            tIntegral += tError;
+            if(tError==0||heading>tError)
+                tIntegral = 0;
+            else if(tError<=0)
+                tIntegral = 0;
+            
+            tDerivative = tError - lastTError;
+            lastTError = tError;
 
-        ///////////////////////////
-        // drive(fwdSpd, turnSpd); //TODO: Implement drive+turn function
-    }
+            turnSpd = turnPID_consts.kP * tError + turnPID_consts.kI * tIntegral + turnPID_consts.kD * tDerivative;   
+
+            ///////////////////////////
+            // drive(fwdSpd, turnSpd); //TODO: Implement drive+turn function
+        }
+    }};
 }
 
-void PID::drivePID(double target, int angle, double strafeTarget){
+void PID::drivePID(double target, pros::ADIEncoder* yEnc, int angle, double strafeTarget, pros::ADIEncoder* xEnc){
     //FWD PID
     double error = target;
-    yEnc.reset();
+    double startValueY = 2*M_PI*(1.96/2)*(yEnc->get_value()/360);
     double sensorValue = 0;
 
     double lastError = 0;
@@ -212,7 +215,7 @@ void PID::drivePID(double target, int angle, double strafeTarget){
 
     //Strafe PID
     double sError = strafeTarget;
-    xEnc.reset();
+    double startValueX = 2*M_PI*(1.96/2)*(xEnc->get_value()/360);
     double sSensorValue = 0;
 
     double lastSError = 0;
@@ -220,69 +223,71 @@ void PID::drivePID(double target, int angle, double strafeTarget){
     double sIntegral = 0;
 
     double strafeSpd;
-    while(std::abs(error) > .3 && std::abs(tError) > 1 && std::abs(sError) > .3){
+    pros::Task drivePID_lt{[&]{
+        if(std::abs(error) > .3 && std::abs(tError) > 1 && std::abs(sError) > .3){
 
-        ////////////////////////////
-        //      Forward PID       //
-        ////////////////////////////
-        sensorValue = 2*M_PI*(1.96/2)*(yEnc.get_angle()/360); //2*pi*r*(degrees/360)
-        
-        error = target - sensorValue;
+            ////////////////////////////
+            //      Forward PID       //
+            ////////////////////////////
+            sensorValue = startValueY - 2*M_PI*(1.96/2)*(yEnc->get_value()/360); //2*pi*r*(degrees/360)
+            
+            error = target - sensorValue;
 
-        integral += error;
-        //Ensures integral doesn't get too large
-        if(error=0||sensorValue>error)
-            integral = 0;
-        else if(error<=0)
-            integral = 0;
-        
-        //updates derivative and lastError
-        derivative = error - lastError;
-        lastError = error;
+            integral += error;
+            //Ensures integral doesn't get too large
+            if(error==0||sensorValue>error)
+                integral = 0;
+            else if(error<=0)
+                integral = 0;
+            
+            //updates derivative and lastError
+            derivative = error - lastError;
+            lastError = error;
 
-        fwdSpd = fwdPID_consts.kP * error + fwdPID_consts.kI * integral + fwdPID_consts.kD * derivative;  
+            fwdSpd = fwdPID_consts.kP * error + fwdPID_consts.kI * integral + fwdPID_consts.kD * derivative;  
 
-        ////////////////////////////
-        //        Turn PID        //
-        ////////////////////////////
-        heading = imu.get_heading(); //IMU Sensor returns current heading in degrees from 0-360
-        
-        tError = angle - heading;
+            ////////////////////////////
+            //        Turn PID        //
+            ////////////////////////////
+            heading = imu.get_heading(); //IMU Sensor returns current heading in degrees from 0-360
+            
+            tError = angle - heading;
 
-        tIntegral += tError;
-        if(tError=0||heading>tError)
-            tIntegral = 0;
-        else if(tError<=0)
-            tIntegral = 0;
-        
-        tDerivative = tError - lastTError;
-        lastTError = tError;
+            tIntegral += tError;
+            if(tError==0||heading>tError)
+                tIntegral = 0;
+            else if(tError<=0)
+                tIntegral = 0;
+            
+            tDerivative = tError - lastTError;
+            lastTError = tError;
 
-        turnSpd = turnPID_consts.kP * tError + turnPID_consts.kI * tIntegral + turnPID_consts.kD * tDerivative;   
+            turnSpd = turnPID_consts.kP * tError + turnPID_consts.kI * tIntegral + turnPID_consts.kD * tDerivative;   
 
-        ////////////////////////////
-        //        Strafe PID      //
-        ////////////////////////////
-        sSensorValue = 2*M_PI*(1.96/2)*(xEnc.get_angle()/360); //2*pi*r*(degrees/360)
-        
-        sError = strafeTarget - sSensorValue;
+            ////////////////////////////
+            //        Strafe PID      //
+            ////////////////////////////
+            sSensorValue = startValueX - 2*M_PI*(1.96/2)*(xEnc->get_value()/360); //2*pi*r*(degrees/360)
+            
+            sError = strafeTarget - sSensorValue;
 
-        sIntegral += sError;
-        //Ensures integral doesn't get too large
-        if(sError=0||sSensorValue>error)
-            sIntegral = 0;
-        else if(error<=0)
-            sIntegral = 0;
-        
-        //updates derivative and lastError
-        sDerivative = sError - lastSError;
-        lastSError = sError;
+            sIntegral += sError;
+            //Ensures integral doesn't get too large
+            if(sError==0||sSensorValue>error)
+                sIntegral = 0;
+            else if(error<=0)
+                sIntegral = 0;
+            
+            //updates derivative and lastError
+            sDerivative = sError - lastSError;
+            lastSError = sError;
 
-        strafeSpd = strafePID_consts.kP * sError + strafePID_consts.kI * sIntegral + strafePID_consts.kD * sDerivative;   
-        
-        ////////////////////////////
-        // drive(fwdSpd, turnSpd, strafeSpd); //TODO: Implement drive+turn+strafe function
-    }
+            strafeSpd = strafePID_consts.kP * sError + strafePID_consts.kI * sIntegral + strafePID_consts.kD * sDerivative;   
+            
+            ////////////////////////////
+            // drive(fwdSpd, turnSpd, strafeSpd); //TODO: Implement drive+turn+strafe function
+        }
+    }};
 }
 
 void PID::turnPID(int angle){
@@ -300,7 +305,7 @@ void PID::turnPID(int angle){
         tError = angle - heading;
 
         tIntegral += tError;
-        if(tError=0||heading>tError)
+        if(tError==0||heading>tError)
             tIntegral = 0;
         else if(tError<=0)
             tIntegral = 0;
@@ -330,7 +335,7 @@ void PID::strafePID(double strafeTarget){
 
         integral += error;
         //Ensures integral doesn't get too large
-        if(error=0||sensorValue>error)
+        if(error==0||sensorValue>error)
             integral = 0;
         else if(error<=0)
             integral = 0;
