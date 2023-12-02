@@ -8,3 +8,6 @@
 #include "comp_15/intake.h"
 #include "comp_15/cata.h"
 #include "comp_15/pneumatics.h"
+#include "comp_15/movement_helper.h"
+#include "comp_15/movement_tank.h"
+#include "comp_15/PositionTracker.h"
