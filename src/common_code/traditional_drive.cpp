@@ -2,34 +2,43 @@
 // Description: implementations for traditional drive system
 // Path: src/common_code/traditional_drive.cpp
 // Header: include/common_code/traditional_drive.h
-// Last Modified: 11/29/23 by Zach Martin
+// Last Modified: 12/1/23 by Zach Martin
 //
 
 #include "common_code/traditional_drive.h"
 #include <cmath> // for sin and cos functions and M_PI
-
-// default to arcade drive and then run constructor with mode
+//
+// ************ overloaded constructors ************
+//
+// default to arcade drive and then run constructor with mode and controller
 traditional_drive::traditional_drive(Imu&imu,Controller *mstr, Motor_Group *l, Motor_Group *r) 
     : traditional_drive(imu,mstr, l, r, 0) {};
-
-// overloaded constructor
-traditional_drive::traditional_drive(Imu&imu,Controller *mstr, Motor_Group *l, Motor_Group *r, int mode) 
+// default to arcade drive and then run constructor with mode without controller
+traditional_drive::traditional_drive(Imu &imu, Motor_Group *l, Motor_Group *r)
+    : traditional_drive(imu, l, r, 0){};
+// initialize controller if applicable
+traditional_drive::traditional_drive(Imu &imu, Controller *mstr, Motor_Group *l, Motor_Group *r, int mode):traditional_drive::traditional_drive(imu,l,r,mode)
+{
+    master = mstr;
+};
+// initialize variables
+traditional_drive::traditional_drive(Imu &imu, Motor_Group *l, Motor_Group *r, int mode)
     : DriveParent(imu, drive_mode[mode])
 {
     // set controller and motor groups
     this->imu=&imu;
-    master = mstr;
     left_side = l;
     right_side = r;
     toggle_drive_mode(mode);
 };
 
-// destructor
+// ************ destructor ************
 traditional_drive::~traditional_drive()
 {
     // turn off motors
     stop();
 };
+
 
 // toggle drive mode (arcade, tank, hybrid)
 void traditional_drive::toggle_drive_mode(int mode = 0)

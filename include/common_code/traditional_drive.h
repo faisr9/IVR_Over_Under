@@ -1,16 +1,16 @@
 //
 // Description: traditional drive system
-// Dependencies: main.h, drive_parent.h
+// Dependencies: main.h, drive_parent.h, cmath
 // Path: include/common_code/traditional_drive.h
 // Implementation: src/common_code/traditional_drive.cpp
-// Last Modified: 11/29/23 by Zach Martin
+// Last Modified: 12/1/23 by Zach Martin
 //
 
 #pragma once
 #include "main.h"
-#include "drive_parent.h"
-using namespace std;
-using namespace pros;
+#include "drive_parent.h" // base class
+using namespace std; // for string
+using namespace pros; // for Controller and Imu
 
 // drive systems
 class traditional_drive : public DriveParent
@@ -37,7 +37,10 @@ class traditional_drive : public DriveParent
         // traditional_drive(): SubsystemParent(drive_mode[0]){}; // default constructor
         // overloaded constructors
         traditional_drive(Imu&imu,Controller *mstr, Motor_Group *l, Motor_Group *r); // converts to other constructor
-        traditional_drive(Imu &imu,Controller *mstr, Motor_Group *l, Motor_Group *r, int mode); // initialize variables
+        traditional_drive(Imu &imu,Controller *mstr, Motor_Group *l, Motor_Group *r, int mode); // initialize controller
+        // no controller
+        traditional_drive(Imu &imu, Motor_Group *l, Motor_Group *r); // converts to other constructor
+        traditional_drive(Imu &imu, Motor_Group *l, Motor_Group *r, int mode); // initialize variables
         ~traditional_drive(); // destructor
 
         void toggle_drive_mode(int mode); // toggle drive mode (arcade, tank, hybrid)
