@@ -15,6 +15,31 @@ void competition_initialize() {}
 
 /* Autonomous method */
 void autonomous() {
+	/*
+	Start at (5,2)
+
+	Move to (3.5, 3)
+
+	Rotate to face goal
+
+	for(int i = 0; i < 22; i ++) {
+		Back up
+		Move Forward
+		Push Triball
+	} 
+
+	Rotate to face goal
+
+	for(int i = 0; i < 22; i ++) {
+		Back up
+		Move Forward
+		Push Triball
+	} 
+
+	Move to blue vertical bar
+
+	Climb
+	*/
 	skills();
 }
 
