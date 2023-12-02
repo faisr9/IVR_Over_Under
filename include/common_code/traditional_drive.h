@@ -16,8 +16,8 @@ using namespace pros; // for Controller and Imu
 class traditional_drive : public DriveParent
 {
     private:
-
-        double left=12000, right=12000; // voltage to send to motors (scalar factor of 12000)
+        double scalingFactor=12000; // scalar factor for voltage
+        double left=scalingFactor, right=scalingFactor; // voltage to send to motors (scalar factor of 12000)
         double fwd, turn; //helper variables
         Controller *master; // controller to get input from
         Imu *imu; // inertial sensor to get angle from
@@ -36,15 +36,16 @@ class traditional_drive : public DriveParent
         // constructors
         // traditional_drive(): SubsystemParent(drive_mode[0]){}; // default constructor
         // overloaded constructors
-        traditional_drive(Imu&imu,Controller *mstr, Motor_Group *l, Motor_Group *r); // converts to other constructor
-        traditional_drive(Imu &imu,Controller *mstr, Motor_Group *l, Motor_Group *r, int mode); // initialize controller
+        traditional_drive(Imu&imu,Controller &mstr, Motor_Group &l, Motor_Group &r); // converts to other constructor
+        traditional_drive(Imu &imu,Controller &mstr, Motor_Group &l, Motor_Group &r, int mode); // initialize controller
         // no controller
-        traditional_drive(Imu &imu, Motor_Group *l, Motor_Group *r); // converts to other constructor
-        traditional_drive(Imu &imu, Motor_Group *l, Motor_Group *r, int mode); // initialize variables
+        traditional_drive(Imu &imu, Motor_Group &l, Motor_Group &r); // converts to other constructor
+        traditional_drive(Imu &imu, Motor_Group &l, Motor_Group &r, int mode); // initialize variables
         ~traditional_drive(); // destructor
 
         void toggle_drive_mode(int mode); // toggle drive mode (arcade, tank, hybrid)
         void robot_centric_move(pair<double, double> mag_angle_vector); 
         void field_centric_move(pair<double, double> mag_angle_vector);
         void turn_with_power(double power);
+        Motor_Group &get_motor_group(bool side);
 };

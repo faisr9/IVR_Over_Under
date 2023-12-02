@@ -11,24 +11,24 @@
 // ************ overloaded constructors ************
 //
 // default to arcade drive and then run constructor with mode and controller
-traditional_drive::traditional_drive(Imu&imu,Controller *mstr, Motor_Group *l, Motor_Group *r) 
+traditional_drive::traditional_drive(Imu&imu,Controller &mstr, Motor_Group &l, Motor_Group &r) 
     : traditional_drive(imu,mstr, l, r, 0) {};
 // default to arcade drive and then run constructor with mode without controller
-traditional_drive::traditional_drive(Imu &imu, Motor_Group *l, Motor_Group *r)
+traditional_drive::traditional_drive(Imu &imu, Motor_Group &l, Motor_Group &r)
     : traditional_drive(imu, l, r, 0){};
 // initialize controller if applicable
-traditional_drive::traditional_drive(Imu &imu, Controller *mstr, Motor_Group *l, Motor_Group *r, int mode):traditional_drive::traditional_drive(imu,l,r,mode)
+traditional_drive::traditional_drive(Imu &imu, Controller &mstr, Motor_Group &l, Motor_Group &r, int mode):traditional_drive::traditional_drive(imu,l,r,mode)
 {
-    master = mstr;
+    master = &mstr;
 };
 // initialize variables
-traditional_drive::traditional_drive(Imu &imu, Motor_Group *l, Motor_Group *r, int mode)
+traditional_drive::traditional_drive(Imu &imu, Motor_Group &l, Motor_Group &r, int mode)
     : DriveParent(imu, drive_mode[mode])
 {
     // set controller and motor groups
     this->imu=&imu;
-    left_side = l;
-    right_side = r;
+    left_side = &l;
+    right_side = &r;
     toggle_drive_mode(mode);
 };
 
@@ -98,7 +98,7 @@ void traditional_drive::setV()
 {
     left_side->move_voltage(left);
     right_side->move_voltage(right);
-    left = right = 12000; // reset voltage to be multiplied by scalar
+    left = right = scalingFactor; // reset voltage to be multiplied by scalar
 };
 
 // operator control arcade drive
@@ -173,4 +173,11 @@ void traditional_drive::turn_with_power(double power)
 
     // send voltage to motors
     setV();
+}
+Motor_Group& traditional_drive::get_motor_group(bool side)
+{
+    if (side == 0)
+        return *left_side;
+    else
+        return *right_side;
 }
