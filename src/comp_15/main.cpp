@@ -18,10 +18,9 @@ void autonomous() {
 /* Opcontrol method runs by default (unless connected to comp controller )*/
 void opcontrol() {
 
-
 	std::vector<std::vector<double>> path = {{0.0, 0.0}, {1.0, 0.0}};
 
 	pros::lcd::set_text(1, "Starting path");
-	followPath(path, 0, false);
+	followPath(path, tank_drive, 0, false);
 	pros::lcd::set_text(2, "Starting path");
 }

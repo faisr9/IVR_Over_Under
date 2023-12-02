@@ -31,8 +31,12 @@ pros::Motor Intake  (14, GEARSET_06, true);
 // V5 Sensors //
 pros::ADIEncoder vertical_track(3, 4, false); // tracking wheel #1
 pros::ADIEncoder horizontal_track(1, 2, true); // tracking wheel #2
+pros::Imu imu(21);
 
 // Legacy Sensors //
 pros::ADIButton     Cata_limit  ('A');
 pros::ADIDigitalOut Floor_brake ('G');
 pros::ADIDigitalOut Wings       ('H');
+
+// Other classes //
+traditional_drive tank_drive(imu, LeftDrive, RightDrive);

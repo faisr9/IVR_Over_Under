@@ -33,3 +33,6 @@ extern pros::ADIEncoder horizontal_track;
 extern pros::ADIButton Cata_limit;
 extern pros::ADIDigitalOut Floor_brake;
 extern pros::ADIDigitalOut Wings;
+
+// Other Classes //
+extern traditional_drive tank_drive;
