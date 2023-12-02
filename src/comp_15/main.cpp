@@ -22,5 +22,5 @@ void opcontrol() {
 
 	pros::lcd::set_text(1, "Starting path");
 	followPath(path, tank_drive, 0, false);
-	pros::lcd::set_text(2, "Starting path");
+	pros::lcd::set_text(2, "Done with path");
 }

@@ -1,3 +1,4 @@
+#include "comp_15/movement_tank.h"
 #include "pros/llemu.hpp"
 #include "pros/misc.h"
 #include "pros/motors.h"
@@ -8,7 +9,6 @@
 #include <string>
 #include <vector>
 #include "comp_15/comp15_includeList.h"
-#include "comp_15/movement_tank.h"
 #include "comp_15/movement_helper.h"
 #include "common_code/traditional_drive.h"
 

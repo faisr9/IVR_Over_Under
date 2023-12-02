@@ -1,5 +1,6 @@
 #pragma once
 #include "main.h"
+#include "common_code/traditional_drive.h"
 
 // Forward declare all devices here so that all of the robot files and subsystem classes can access them //
 
