@@ -1,9 +1,7 @@
+#include "cata.h"
 #include "comp_15/comp15_includeList.h"
 
-// pros::MotorGroup Cata   ({cata_right, cata_left});
-// pros::ADIButton     Cata_limit  ('A');
 
-int cata_load_voltage = 14;
-int cata_launch_voltage = 14;
-// CompetitionCatapult::createInstance(Cata, Cata_limit, cata_load_voltage, cata_launch_voltage);
-CompetitionCatapult::getInstance();
+int cata_load_voltage = 50;     // can be adjusted - controls power when catapult is loading/priming, adjusting basically changes speed
+int cata_launch_voltage = 50;       // can be adjusted - doesn't seem to have much of an effect but this can be tested more
+CompetitionCatapult* competition_catapult_instance = CompetitionCatapult::createInstance(Cata, Cata_limit, cata_load_voltage, cata_launch_voltage);
