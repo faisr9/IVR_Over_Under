@@ -107,9 +107,8 @@ void updatePosition() {
         double y_tracking_offset = TRANSVERSE_TRACKING_WHEEL_OFFSET * cosine;
 
         // when pure rotating (x_tracking_offset - last_x_tracking_offset) should = deltaX
-
-        positionX += isnanf(deltaX) ? 0 : deltaX;
-        positionY += isnanf(deltaY) ? 0 : deltaY;
+        positionX += isnan(deltaX) ? 0 : deltaX;
+        positionY += isnan(deltaY) ? 0 : deltaY;
         // positionX += deltaX - (x_tracking_offset - last_x_tracking_offset);
         // positionY += deltaY + (y_tracking_offset - last_y_tracking_offset);
 
