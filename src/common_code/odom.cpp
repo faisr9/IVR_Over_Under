@@ -97,7 +97,7 @@ double Odom::headingCorrection (double currentRotation) {
 
 void Odom::updatePosition() {       // updatePosition does all the math with the heading and the sensor values to update the actual position coordinate
     //imu.set_rotation(0);
-    /* while (true) {
+    //while (true) {
 
         // PINK ROBOT:
         currentTransverseValue = toMeters(horizontal_track.get_value()*4.0, transverseWheelRad); //*4.0
@@ -127,8 +127,8 @@ void Odom::updatePosition() {       // updatePosition does all the math with the
         // pros::lcd::set_text(2, "Position X: " + std::to_string(positionX));
         // pros::lcd::set_text(3, "Position Y: " + std::to_string(positionY));
 
-        x_tracking_offset = TRANSVERSE_TRACKING_WHEEL_OFFSET * sine;
-        y_tracking_offset = TRANSVERSE_TRACKING_WHEEL_OFFSET * cosine;
+        x_tracking_offset = TRANSVERSE_WHEEL_Y_OFFSET * sine;
+        y_tracking_offset = TRANSVERSE_WHEEL_Y_OFFSET * cosine;
 
         // when pure rotating (x_tracking_offset - last_x_tracking_offset) should = deltaX
 
@@ -140,11 +140,11 @@ void Odom::updatePosition() {       // updatePosition does all the math with the
         last_x_tracking_offset = x_tracking_offset;
         last_y_tracking_offset = y_tracking_offset;
 
-        pros::lcd::set_text(5, "Position X: " + std::to_string(positionX));
-        pros::lcd::set_text(6, "Position Y: " + std::to_string(positionY));
+        // pros::lcd::set_text(5, "Position X: " + std::to_string(positionX));
+        // pros::lcd::set_text(6, "Position Y: " + std::to_string(positionY));
         // pros::lcd::set_text(2, "Position X: " + std::to_string(horizontal_track.get_value()/1.0));
         // pros::lcd::set_text(3, "Position Y: " + std::to_string(vertical_track.get_value()/4.0));
-        pros::lcd::set_text(7, "Heading: " + std::to_string(currentHeading));
+        // pros::lcd::set_text(7, "Heading: " + std::to_string(currentHeading));
 
         // pros::lcd::set_text(6, "Transverse Val: " + std::to_string(currentTransverseValue));
         // pros::lcd::set_text(4, "Radial Val: " + std::to_string(currentRadialValue));
@@ -155,10 +155,12 @@ void Odom::updatePosition() {       // updatePosition does all the math with the
         // std::cout << "ht_get_value: " << horizontal_track.get_value() << std::endl;
         // std::cout << "vt_get_value: " << vertical_track.get_value() << std::endl;
 
-        pros::delay(30);
-    } */
+    //    pros::delay(30);
+    //} 
 
-    lastHeading = currentHeading;                   // stores previous movement values before updating them
+    // BELOW IS THE CORRECTED-OFFSET TRACKING
+
+    /*lastHeading = currentHeading;                   // stores previous movement values before updating them
     lastTransverseValue = currentTransverseValue;
     lastRadialValue = currentRadialValue;
 
@@ -176,7 +178,7 @@ void Odom::updatePosition() {       // updatePosition does all the math with the
     double deltaX = (cos(avgHeading) * currentTransverseValue) + (sin(avgHeading) * currentRadialValue);
     double deltaY = (sin(avgHeading) * currentTransverseValue) + (cos(avgHeading) * currentRadialValue);
     positionX += isnan(deltaX) ? 0 : deltaX; // updates position values
-    positionY += isnan(deltaY) ? 0 : deltaY;
+    positionY += isnan(deltaY) ? 0 : deltaY;*/
 }
 
 double Odom::getX() { return positionX; }
