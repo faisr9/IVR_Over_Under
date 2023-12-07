@@ -8,14 +8,16 @@
 */
 extern Pneumatics* Pneumatics::instance_ = nullptr;
 
+bool currentPiston = false;
+
 /*
 - creates an object of the class in the heap
 - sets instance_ to the address of the object created
 - only activates if instance_ hasn't been initialized
 */
-Pneumatics* Pneumatics::createInstance(pros::ADIDigitalOut& piston) {
+Pneumatics* Pneumatics::createInstance(char piston_wings, char piston_kickstand, char piston_climber) {
     if (!instance_) {
-        instance_ = new Pneumatics(piston);
+        instance_ = new Pneumatics(piston_wings, piston_kickstand, piston_climber);
     }
 
     return instance_;
@@ -37,28 +39,35 @@ Pneumatics* Pneumatics::getInstance() {
 }
 
 //constructor initializes subsysteem_motor_ and also calls SubsystemParent constructor with subsystem name
-Pneumatics::Pneumatics(pros::ADIDigitalOut& piston): SubsystemParent("Pneumatics"), piston1(piston) {
-    pros::lcd::set_text(5, "In constructor");
+Pneumatics::Pneumatics(char piston_w, char piston_k, char piston_c) : SubsystemParent("Pneumatics"), wings(piston_w), kickstand(piston_k), climber(piston_c){
+    
 }
 
 //destructor deallocates instance_
 Pneumatics::~Pneumatics() {
-    pros::lcd::set_text(6, "DESTRUCTOR CALLED");
-
     if (instance_ != nullptr) {
         delete instance_;
         instance_ = nullptr;
     }
 }
 
-void Pneumatics::on() {
-    piston1.set_value(true);
+
+
+Piston Pneumatics::getWings(){
+    return wings;
 }
 
-void Pneumatics::off() {
-    piston1.set_value(false);
+Piston Pneumatics::getClimber(){
+    return climber;
 }
+
+Piston Pneumatics::getKickstand(){
+    return kickstand;
+}
+
 
 void Pneumatics::stop() {
-    piston1.set_value(false);
+    wings.off();
+    kickstand.off();
+    climber.off();
 }
