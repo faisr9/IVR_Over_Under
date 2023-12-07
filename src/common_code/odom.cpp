@@ -39,7 +39,7 @@ void initialize() {
     odometer.initTracker(0, 0, 0);
 }
 
-Odom::Odom(pros::IMU theImu): imu(theImu), vertical_track(3,4,false), horizontal_track(1,2,true) {
+Odom::Odom(pros::IMU theImu): imu(theImu), vertical_track('E','D',false), horizontal_track('C','B',true) {
 
     transverseWheelRad = 1.96 * 0.0254 / 2; // transverse wheel tracks left to right movements
     radialWheelRad = 1.96 * 0.0254 / 2;     // radial wheel tracks forward and backward movements (has nothing to do with radians)
@@ -100,8 +100,10 @@ void Odom::updatePosition() {       // updatePosition does all the math with the
     //while (true) {
 
         // PINK ROBOT:
-        currentTransverseValue = toMeters(horizontal_track.get_value()*4.0, transverseWheelRad); //*4.0
+        currentTransverseValue = toMeters(horizontal_track.get_value(), transverseWheelRad); //*4.0
         currentRadialValue = toMeters(vertical_track.get_value(), radialWheelRad); // *1.0
+        pros::lcd::print(4,"Radraw: %lf",vertical_track.get_value());
+        pros::lcd::print(5,"Transraw: %lf",horizontal_track.get_value());
 
         currentHeading = headingCorrection(imu.get_rotation());
 
@@ -184,6 +186,8 @@ void Odom::updatePosition() {       // updatePosition does all the math with the
 double Odom::getX() { return positionX; }
 double Odom::getY() { return positionY; }
 double Odom::getHeading() { return currentHeading; }
+double Odom::getTransverseValue() { return currentTransverseValue; }
+double Odom::getRadialValue() { return currentRadialValue; }
 
 void opcontrol() {
     
@@ -209,6 +213,7 @@ void opcontrol() {
         pros::lcd::print(1,"X: %lf",odometer.getX());
         pros::lcd::print(2,"Y: %lf",odometer.getY());
         pros::lcd::print(3,"Heading: %lf",odometer.getHeading());
+        pros::lcd::print(6,"1 meter: %lf",odometer.toMeters(2302.94, 0.0248));
         delay(30);
     }
 }

@@ -17,6 +17,8 @@ class Odom {
     double getX();
     double getY();
     double getHeading();
+    double getTransverseValue();
+    double getRadialValue();
 
     //static pros::Task initTask(Odom odometer);
 
@@ -33,7 +35,7 @@ class Odom {
     double last_y_tracking_offset;
     double positionX;
     double positionY;
-    const double TICKS_PER_ROTATION = 19600.0;
+    const double TICKS_PER_ROTATION = 360.0;
     const double FEET_TO_METERS = 0.304;
     const double ADJUSTMENT_MULTIPLIER = 1.015;
     const double RADIAL_WHEEL_X_OFFSET = 0.0746125;
