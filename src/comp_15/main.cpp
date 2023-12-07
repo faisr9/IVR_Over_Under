@@ -1,9 +1,10 @@
 #include "comp_15/comp15_includeList.h"
 
 /* First method to run when program starts */
-void initialize() {
-	pros::lcd::initialize(); // Temp until custom GUI
-}
+// void initialize() {
+// 	pros::lcd::initialize(); // Temp until custom GUI
+
+// }
 
 /* Runs when robot is disabled from competition controller after driver/auton */
 void disabled() {}
