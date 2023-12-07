@@ -1,4 +1,6 @@
 #include "main.h"
+#include "pneumatics.h"
+#include "api.h"
 
 /* First method to run when program starts */
 void initialize() {
@@ -20,4 +22,8 @@ void opcontrol() {
 
 	while(1)
 		Task::delay(1000);
+
+		/* example code for actuating piston*/
+		Pneumatics::getInstance()->getKickstand().off();
+
 }

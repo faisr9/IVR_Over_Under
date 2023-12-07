@@ -19,3 +19,7 @@ void Piston::toggle(){
     status = !status;
     piston.set_value(status);    
 }
+
+bool Piston::getStatus(){
+    return status;
+}
