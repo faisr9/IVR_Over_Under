@@ -32,6 +32,15 @@ traditional_drive::traditional_drive(Imu &imu, Motor_Group &l, Motor_Group &r, i
     toggle_drive_mode(mode);
 };
 
+traditional_drive::traditional_drive(Imu &imu, Motor_Group &l, Motor_Group &r, Odom* odometry) : traditional_drive::traditional_drive(imu, l, r, 0) {
+    odom_inst = odometry;
+} // with odom no controller
+traditional_drive::traditional_drive(Imu&imu,Controller &mstr, Motor_Group &l, Motor_Group &r, Odom* odometry) : traditional_drive::traditional_drive(imu, l, r, 0) {
+    master = &mstr;
+    odom_inst = odometry;
+} // everything
+
+
 // ************ destructor ************
 traditional_drive::~traditional_drive()
 {
@@ -188,4 +197,22 @@ Imu& traditional_drive::get_imu() {
 
 Controller& traditional_drive::get_controller() {
     return *master;
+}
+
+double traditional_drive::getX() {
+    if (odom_inst == nullptr) {
+        pros::lcd::set_text(3, "trad_drive getX but odom is nullptr!!!");
+        return -999;
+    }
+
+    return odom_inst->getX();
+}
+
+double traditional_drive::getY() {
+    if (odom_inst == nullptr) {
+        pros::lcd::set_text(3, "trad_drive getY but odom is nullptr!!!");
+        return -999;
+    }
+
+    return odom_inst->getY();
 }

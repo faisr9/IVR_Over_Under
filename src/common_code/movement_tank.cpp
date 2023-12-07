@@ -1,4 +1,4 @@
-#include "comp_15/movement_tank.h"
+#include "common_code/movement_tank.h"
 #include "pros/llemu.hpp"
 #include "pros/misc.h"
 #include "pros/motors.h"
@@ -8,8 +8,7 @@
 #include <cmath>
 #include <string>
 #include <vector>
-#include "comp_15/comp15_includeList.h"
-#include "comp_15/movement_helper.h"
+#include "common_code/movement_helper.h"
 #include "common_code/traditional_drive.h"
 
 void moveMotors(traditional_drive& drive, double leftRPM, double rightRPM) {
@@ -151,12 +150,14 @@ void followPath(std::vector<std::vector<double>>& path, traditional_drive& drive
     }
 
     std::vector<double> distances_to_end = calculate_remaining_dist(path); //path
-    double last_calculated_distance = calculate_distance_two_points({positionX, positionY}, path[1]);
+    double last_calculated_distance = calculate_distance_two_points({drive.getX(), drive.getY()}, path[1]);
     // last_current_index will reflect actual position of robot instead of position of lookAheadPoint
     double last_current_index = 0;
 
     while (currentIndex < path.size() - 1) {
         std::vector<double> driveTowards = {path[currentIndex][0], path[currentIndex][1]};
+        double positionX = drive.getX();
+        double positionY = drive.getY();
 
         for (int i = currentIndex; i < path.size() - 1; i++) {
             double x1 = path[i][0] - positionX;
@@ -280,7 +281,7 @@ void followPath(std::vector<std::vector<double>>& path, traditional_drive& drive
         if (desiredAngle < 0) desiredAngle += 360;
 
         // Positive angular difference -> turn clockwise
-        double rotationalRPM = getRotationalRPM(desiredAngle, reversed);
+        double rotationalRPM = getRotationalRPM(drive, desiredAngle, reversed);
 
         // Prioritize turning by maintaining rotationalRPM difference (rotationalRPM * 2)
         double leftRPM;
@@ -324,7 +325,7 @@ void followPath(std::vector<std::vector<double>>& path, traditional_drive& drive
     // Delay and reprint final dist from target location to see how inaccurate this is because this isn't using a trapezoidal profile
     // pros::delay(1500); imagine there being a random 1.5 second delay left lying around from testing
     if (printMessages) {
-        pros::lcd::set_text(5, "Dist from end: " + std::to_string(sqrt(pow(positionX - ORIGINAL_PATH_FINAL[0], 2) + pow(positionY - ORIGINAL_PATH_FINAL[1], 2))));
+        pros::lcd::set_text(5, "Dist from end: " + std::to_string(sqrt(pow(drive.getX() - ORIGINAL_PATH_FINAL[0], 2) + pow(drive.getY() - ORIGINAL_PATH_FINAL[1], 2))));
         pros::lcd::set_text(6, "DONE");
     }
 }
@@ -332,16 +333,16 @@ void followPath(std::vector<std::vector<double>>& path, traditional_drive& drive
 // default x, y coords are the goal/net
 void turnToPoint(traditional_drive& drive, double pointX, double pointY) {
     double FINAL_ANGLE_TOLERANCE = 3.0;
-    double desiredAngle = atan2(pointX - positionX, pointY - positionY) * 180 / M_PI;
+    double desiredAngle = atan2(pointX - drive.getX(), pointY - drive.getY()) * 180 / M_PI;
     if (desiredAngle < 0) desiredAngle += 360;
 
     while (std::abs(optimizeAngle(desiredAngle - drive.get_imu().get_heading())) > FINAL_ANGLE_TOLERANCE) {
-        desiredAngle = atan2(pointX - positionX, pointY - positionY) * 180 / M_PI;
+        desiredAngle = atan2(pointX - drive.getX(), pointY - drive.getY()) * 180 / M_PI;
         if (desiredAngle < 0) desiredAngle += 360;
-        double rotationalRPM = getRotationalRPM(desiredAngle, false);
+        double rotationalRPM = getRotationalRPM(drive, desiredAngle, false);
         moveMotors(drive, rotationalRPM, -rotationalRPM);
 
-        if (ctrl_master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN)) {
+        if (drive.get_controller().get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN)) {
             break;
         }
 

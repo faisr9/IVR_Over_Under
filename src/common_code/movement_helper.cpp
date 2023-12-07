@@ -2,8 +2,7 @@
 #include <string>
 #include "pros/llemu.hpp"
 #include "pros/misc.h"
-#include "comp_15/movement_helper.h"
-#include "comp_15/comp15_includeList.h"
+#include "common_code/movement_helper.h"
 
 int sgn(double number) {
     return (number >= 0) ? 1 : -1;
@@ -49,11 +48,11 @@ double lineAndAngleAngularDiff(double dx, double dy, double angleDegrees) {
     return optimizeAngle(angularDiff);
 }
 
-double getRotationalRPM(double desiredAngleDeg, bool reversed, double p) {
+double getRotationalRPM(traditional_drive& drive, double desiredAngleDeg, bool reversed, double p) {
     if (reversed) {
-        return optimizeAngle(desiredAngleDeg - (reverseAngle(imu.get_heading()))) * p;
+        return optimizeAngle(desiredAngleDeg - (reverseAngle(drive.get_imu().get_heading()))) * p;
     } else {
-        return optimizeAngle(desiredAngleDeg - imu.get_heading()) * p;
+        return optimizeAngle(desiredAngleDeg - drive.get_imu().get_heading()) * p;
     }
 }
 

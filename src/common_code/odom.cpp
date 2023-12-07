@@ -20,24 +20,24 @@ currentTransverseValue will be the equivalent of 2m even though from an outside 
 This class has accounted for that, so that other code can assume the position of the robot is reliable.
 */
 
-pros::Motor FrontTopRight(11, pros::E_MOTOR_GEARSET_06, true);
-pros::Motor FrontBottomRight(12, pros::E_MOTOR_GEARSET_06);
-pros::Motor BackRight(13, pros::E_MOTOR_GEARSET_06);
-pros::Motor FrontTopLeft(20, pros::E_MOTOR_GEARSET_06);
-pros::Motor FrontBottomLeft(19, pros::E_MOTOR_GEARSET_06, true);
-pros::Motor BackLeft(18, pros::E_MOTOR_GEARSET_06, true);
+// pros::Motor FrontTopRight(11, pros::E_MOTOR_GEARSET_06, true);
+// pros::Motor FrontBottomRight(12, pros::E_MOTOR_GEARSET_06);
+// pros::Motor BackRight(13, pros::E_MOTOR_GEARSET_06);
+// pros::Motor FrontTopLeft(20, pros::E_MOTOR_GEARSET_06);
+// pros::Motor FrontBottomLeft(19, pros::E_MOTOR_GEARSET_06, true);
+// pros::Motor BackLeft(18, pros::E_MOTOR_GEARSET_06, true);
 
-pros::MotorGroup RightDrive({FrontTopRight, FrontBottomRight, BackRight});
-pros::MotorGroup LeftDrive({FrontTopLeft, FrontBottomLeft, BackLeft});
-Controller master(E_CONTROLLER_MASTER);
-Imu imu(21);
-Odom odometer(imu);
+// pros::MotorGroup RightDrive({FrontTopRight, FrontBottomRight, BackRight});
+// pros::MotorGroup LeftDrive({FrontTopLeft, FrontBottomLeft, BackLeft});
+// Controller master(E_CONTROLLER_MASTER);
+// Imu imu(21);
+// Odom odometer(imu);
 
-void initialize() {
-	pros::lcd::initialize(); // Temp until custom GUI
-	imu.reset();
-    odometer.initTracker(0, 0, 0);
-}
+// void initialize() {
+// 	pros::lcd::initialize(); // Temp until custom GUI
+// 	imu.reset();
+//     odometer.initTracker(0, 0, 0);
+// }
 
 Odom::Odom(pros::IMU theImu): imu(theImu), vertical_track(3,4,false), horizontal_track(1,2,true) {
 
@@ -185,30 +185,30 @@ double Odom::getX() { return positionX; }
 double Odom::getY() { return positionY; }
 double Odom::getHeading() { return currentHeading; }
 
-void opcontrol() {
+// void opcontrol() {
     
-    /*Motor front_left(8);
-    front_left.set_reversed(true);
-    Motor front_right(9);
-    Motor back_left(7);
-    back_left.set_reversed(true);
-    Motor back_right(10);*/   
+//     /*Motor front_left(8);
+//     front_left.set_reversed(true);
+//     Motor front_right(9);
+//     Motor back_left(7);
+//     back_left.set_reversed(true);
+//     Motor back_right(10);*/   
 
-    imu.reset();
-    delay(5000);
+//     imu.reset();
+//     delay(5000);
 
-    while(true) {
+//     while(true) {
         
-        int forward = master.get_analog(E_CONTROLLER_ANALOG_LEFT_Y); // sets forward to left analog's up/down input
-        int steer = master.get_analog(E_CONTROLLER_ANALOG_RIGHT_X);  // sets steer to right analog's left/right input
+//         int forward = master.get_analog(E_CONTROLLER_ANALOG_LEFT_Y); // sets forward to left analog's up/down input
+//         int steer = master.get_analog(E_CONTROLLER_ANALOG_RIGHT_X);  // sets steer to right analog's left/right input
 
-        LeftDrive.move(forward+steer);
-        RightDrive.move(forward-steer);
+//         LeftDrive.move(forward+steer);
+//         RightDrive.move(forward-steer);
 
-        odometer.updatePosition();
-        pros::lcd::print(1,"X: %lf",odometer.getX());
-        pros::lcd::print(2,"Y: %lf",odometer.getY());
-        pros::lcd::print(3,"Heading: %lf",odometer.getHeading());
-        delay(30);
-    }
-}
+//         odometer.updatePosition();
+//         pros::lcd::print(1,"X: %lf",odometer.getX());
+//         pros::lcd::print(2,"Y: %lf",odometer.getY());
+//         pros::lcd::print(3,"Heading: %lf",odometer.getHeading());
+//         delay(30);
+//     }
+// }
