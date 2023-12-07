@@ -185,3 +185,7 @@ Motor_Group& traditional_drive::get_motor_group(bool side)
 Imu& traditional_drive::get_imu() {
     return *imu;
 }
+
+Controller& traditional_drive::get_controller() {
+    return *master;
+}
