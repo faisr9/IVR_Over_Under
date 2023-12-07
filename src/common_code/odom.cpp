@@ -39,7 +39,7 @@ This class has accounted for that, so that other code can assume the position of
 //     odometer.initTracker(0, 0, 0);
 // }
 
-Odom::Odom(pros::IMU theImu): imu(theImu), vertical_track(3,4,false), horizontal_track(1,2,true) {
+Odom::Odom(pros::IMU theImu): imu(theImu), vertical_track(2,3,false), horizontal_track(4,5,true) {
 
     transverseWheelRad = 1.96 * 0.0254 / 2; // transverse wheel tracks left to right movements
     radialWheelRad = 1.96 * 0.0254 / 2;     // radial wheel tracks forward and backward movements (has nothing to do with radians)
@@ -56,6 +56,8 @@ Odom::Odom(pros::IMU theImu): imu(theImu), vertical_track(3,4,false), horizontal
     imuRotation = 0;
 
 }
+
+Odom::~Odom() {}
 
 /*pros::Task initTask(Odom odometer) {
         pros::Task odom_task(Odom::updatePosition);

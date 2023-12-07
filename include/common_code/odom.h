@@ -9,6 +9,7 @@
 class Odom {
     public:
     Odom(pros::IMU theImu);
+    ~Odom();
 
     double toMeters(double value, double wheelRadius);
     void initTracker(double initial_x, double initial_y, double initial_heading);
