@@ -48,4 +48,5 @@ class traditional_drive : public DriveParent
         void field_centric_move(pair<double, double> mag_angle_vector);
         void turn_with_power(double power);
         Motor_Group &get_motor_group(bool side);
+        Imu& get_imu();
 };

@@ -181,3 +181,7 @@ Motor_Group& traditional_drive::get_motor_group(bool side)
     else
         return *right_side;
 }
+
+Imu& traditional_drive::get_imu() {
+    return *imu;
+}
