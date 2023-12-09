@@ -47,9 +47,7 @@ class Logger {
 
         void logMessage(std::string message);
         void logMessage(const char* message, ...);
-        void logVariable(std::string variable_name, int variable_value);
-        void logVariable(std::string variable_name, double variable_value);
-        void logVariable(std::string variable_name, bool variable_value);
         void logArray(std::string array_name, int* array, int array_length);
+        void logArray(std::string array_name, double* array, int array_length);
 };
 

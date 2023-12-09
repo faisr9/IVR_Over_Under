@@ -92,7 +92,10 @@ Logger::Logger(std::string file_name, bool overwrite, bool append) {
         }
     }
     else
+    {
         file_mode = "w";
+        appending = false;
+    }
 
     FILE* logFileName = fopen(list_file.c_str(), "a");
     if (logFileName) {
@@ -147,5 +150,46 @@ void Logger::logMessage(std::string message) {
     if (logFile) {   
         fwrite(message.c_str(), sizeof(char), message.length(), logFile);
         fwrite("\n", sizeof(char), 1, logFile);
+    }
+}
+
+void Logger::logMessage(const char* message, ...)
+{
+    if(!isFileOpen) // Failsafe
+        logFile = fopen(file_name.c_str(), file_mode.c_str());
+
+    if(appending && file_mode != "a")
+        changeFileMode("a");
+    else if(!appending && file_mode != "w")
+        changeFileMode("w");
+
+    if (logFile) {
+        va_list args;
+        va_start(args, message);
+        vfprintf(logFile, message, args);
+        va_end(args);
+        fwrite("\n", sizeof(char), 1, logFile);
+    }
+}
+
+void Logger::logArray(std::string array_name, int* array, int array_length) {
+    if(!isFileOpen) // Failsafe
+        logFile = fopen(file_name.c_str(), file_mode.c_str());
+
+    if(appending && file_mode != "a")
+        changeFileMode("a");
+    else if(!appending && file_mode != "w")
+        changeFileMode("w");
+
+    if (logFile) {
+        array_name = "ARRAY: int " + array_name + "[" + std::to_string(array_length) + "] =\n";
+        fwrite(array_name.c_str(), sizeof(char), array_name.length(), logFile);
+        fwrite("\t= {", sizeof(char), 4, logFile);
+        for (int i = 0; i < array_length; i++) {
+            fwrite(std::to_string(array[i]).c_str(), sizeof(char), std::to_string(array[i]).length(), logFile);
+            if (i != array_length - 1)
+                fwrite(", ", sizeof(char), 2, logFile);
+        }
+        fwrite("}\n", sizeof(char), 2, logFile);
     }
 }
