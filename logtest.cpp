@@ -30,9 +30,9 @@ Logger::Logger(std::string file_name, bool overwrite, bool append) {
             char buff[64];
             vector<std::string> fileNames;
             std::string file_name_number;
-            short int file_name_number_int = 0;
+            short int file_name_number_int;
             short int highestFileNumber = 0;
-            
+
             FILE* readFileName = fopen(list_file.c_str(), "r");
             while(fgets(buff, 64, readFileName))
             {
@@ -49,7 +49,7 @@ Logger::Logger(std::string file_name, bool overwrite, bool append) {
                     file_name_number_int = std::stoi(file_name_number);
                     cout << file_name_number << endl;
                 }
-                else
+                else  
                     file_name_number_int = 0;
                 
                 if(file_name_number_int > highestFileNumber)
