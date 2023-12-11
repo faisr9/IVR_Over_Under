@@ -3,6 +3,7 @@
 #include <string.h>
 #include <sstream>
 #include <iomanip>
+#include <vector>
 
 using namespace std;
 
@@ -12,9 +13,8 @@ class Logger {
         FILE* logFile;
         std::string file_name;
         std::string file_mode;
-        bool log_time;
-        bool isFileOpen = false;    
-        void changeFileMode(std::string new_mode);
+        // bool isFileOpen = false;    
+
         bool appending = false;
     
     public:
@@ -24,12 +24,31 @@ class Logger {
          * \param file_name The name of the file to log to
          * \param overwrite Whether or not to overwrite the file if it already exists. (ignores append parameter)
          * \param append Whether or not to append to the file if it already exists
-         * \param log_time Whether or not to log the time of each log message
         */
-        Logger(std::string file_name, bool overwrite=false, bool append=false, bool log_timer=true);
+        Logger(std::string file_name, bool overwrite=false, bool append=true);
         ~Logger();
 
         void logStringMessage(std::string message);
         void logCharMessage(const char* message, ...);
-        void logArray(std::string array_name, int* array, int array_length);
+
+        /**
+         * @brief Logs the value of a variable to the log file
+         * @tparam T a type that can be converted to a string (i.e. int, float, double, etc.)
+         *  NOTE: Overloads for a std::string varible is provided
+         * @param var_name the name of the varible
+         * @param var the variable to log
+         */
+        template<typename T>
+        void logVarible(std::string var_name, T var);
+
+        /**
+         * @brief Logs the contents of an array to the log file as a comma seperated list
+         * @tparam T a type that can be converted to a string (i.e. int, float, double, etc.)
+         *  NOTE: Overloads for a std::string array is provided
+         * @param array_name the name of the array
+         * @param array the array to log
+         * @param array_length the length of the array
+         */
+        template<typename T>
+        void logArray(std::string array_name, T* array, int array_length);        
 };

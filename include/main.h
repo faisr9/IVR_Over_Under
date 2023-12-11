@@ -54,6 +54,7 @@
 #include <iostream>
 #include <chrono>
 #include <string>
+#include <string.h>
 #include <math.h>
 #include <vector>
 #include <fstream>

@@ -1,0 +1,5 @@
+usd/logOut_1.txt
+usd/logOut.txt
+usd/logOut_2.txt
+usd/logOut_9.txt
+usd/logOut_4.txt

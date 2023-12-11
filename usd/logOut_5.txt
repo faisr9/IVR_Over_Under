@@ -1,0 +1,510 @@
+---------------------------
+Start of new log
+---------------------------
+[00:05.050]	Hello World
+[00:07.067]	This is cool
+[00:29.787]	Rishi is black
+[00:27.171]	x: 5, y: 10, z: 3.141593
+[00:21.795]	ARRAY: Array[5] = {11235, 2563123, 35645, -4564, -455}
+[00:02.509]	VAR: varible1 = 5
+[00:15.039]	VAR: varible2 = 2.178565
+[00:27.470]	VAR: varible3 = 1
+[00:16.097]	VAR: varible4 = World Hello!
+[00:17.941]	ARRAY: Array2[5] = {1.123500, 2.563123, 3.564500, -4.564000, -4.550000}
+[00:21.919]	ARRAY: Array3[5] = {1, 0, 1, 0, 1}
+[00:30.400]	ARRAY: Array4[5] = {Hello, World, This, Is, Cool}
+---------------------------
+Start of new log
+---------------------------
+[00:05.079]	Hello World
+[00:05.499]	This is cool
+[00:26.725]	Rishi is black
+[00:14.364]	x: 5, y: 10, z: 3.141593
+[00:16.322]	ARRAY: Array[5] = {11235, 2563123, 35645, -4564, -455}
+[00:05.081]	VAR: varible1 = 5
+[00:10.283]	VAR: varible2 = 2.178565
+[00:01.124]	VAR: varible3 = 1
+[00:00.861]	VAR: varible4 = World Hello!
+[00:28.145]	ARRAY: Array2[5] = {1.123500, 2.563123, 3.564500, -4.564000, -4.550000}
+[00:20.588]	ARRAY: Array3[5] = {1, 0, 1, 0, 1}
+[00:30.796]	ARRAY: Array4[5] = {Hello, World, This, Is, Cool}
+---------------------------
+Start of new log
+---------------------------
+[00:06.487]	Hello World
+[00:17.774]	This is cool
+[00:25.703]	Rishi is black
+[00:30.965]	x: 5, y: 10, z: 3.141593
+[00:05.456]	ARRAY: Array[5] = {11235, 2563123, 35645, -4564, -455}
+[00:26.334]	VAR: varible1 = 5
+[00:08.261]	VAR: varible2 = 2.178565
+[00:17.421]	VAR: varible3 = 1
+[00:06.701]	VAR: varible4 = World Hello!
+[00:32.535]	ARRAY: Array2[5] = {1.123500, 2.563123, 3.564500, -4.564000, -4.550000}
+[00:22.376]	ARRAY: Array3[5] = {1, 0, 1, 0, 1}
+[00:17.012]	ARRAY: Array4[5] = {Hello, World, This, Is, Cool}
+---------------------------
+Start of new log
+---------------------------
+[00:06.758]	Hello World
+[00:25.155]	This is cool
+[00:01.101]	Rishi is black
+[00:29.372]	x: 5, y: 10, z: 3.141593
+[00:09.598]	ARRAY: Array[5] = {11235, 2563123, 35645, -4564, -455}
+[00:24.572]	VAR: varible1 = 5
+[00:04.451]	VAR: varible2 = 2.178565
+[00:03.833]	VAR: varible3 = 1
+[00:00.907]	VAR: varible4 = World Hello!
+[00:13.766]	ARRAY: Array2[5] = {1.123500, 2.563123, 3.564500, -4.564000, -4.550000}
+[00:10.100]	ARRAY: Array3[5] = {1, 0, 1, 0, 1}
+[00:20.668]	ARRAY: Array4[5] = {Hello, World, This, Is, Cool}
+---------------------------
+Start of new log
+---------------------------
+[00:06.911]	Hello World
+[00:06.042]	This is cool
+[00:21.517]	Rishi is black
+[00:13.467]	x: 5, y: 10, z: 3.141593
+[00:02.863]	ARRAY: Array[5] = {11235, 2563123, 35645, -4564, -455}
+[00:12.521]	VAR: varible1 = 5
+[00:19.664]	VAR: varible2 = 2.178565
+[00:30.091]	VAR: varible3 = 1
+[00:23.288]	VAR: varible4 = World Hello!
+[00:19.719]	ARRAY: Array2[5] = {1.123500, 2.563123, 3.564500, -4.564000, -4.550000}
+[00:03.148]	ARRAY: Array3[5] = {1, 0, 1, 0, 1}
+[00:22.738]	ARRAY: Array4[5] = {Hello, World, This, Is, Cool}
+---------------------------
+Start of new log
+---------------------------
+[00:07.205]	Hello World
+[00:23.127]	This is cool
+[00:23.660]	Rishi is black
+[00:16.478]	x: 5, y: 10, z: 3.141593
+[00:13.670]	ARRAY: Array[5] = {11235, 2563123, 35645, -4564, -455}
+[00:05.478]	VAR: varible1 = 5
+[00:04.872]	VAR: varible2 = 2.178565
+[00:28.780]	VAR: varible3 = 1
+[00:02.003]	VAR: varible4 = World Hello!
+[00:23.448]	ARRAY: Array2[5] = {1.123500, 2.563123, 3.564500, -4.564000, -4.550000}
+[00:22.605]	ARRAY: Array3[5] = {1, 0, 1, 0, 1}
+[00:26.702]	ARRAY: Array4[5] = {Hello, World, This, Is, Cool}
+---------------------------
+Start of new log
+---------------------------
+[00:07.235]	Hello World
+[00:21.559]	This is cool
+[00:20.598]	Rishi is black
+[00:03.671]	x: 5, y: 10, z: 3.141593
+[00:08.197]	ARRAY: Array[5] = {11235, 2563123, 35645, -4564, -455}
+[00:08.051]	VAR: varible1 = 5
+[00:00.116]	VAR: varible2 = 2.178565
+[00:02.435]	VAR: varible3 = 1
+[00:19.535]	VAR: varible4 = World Hello!
+[00:00.884]	ARRAY: Array2[5] = {1.123500, 2.563123, 3.564500, -4.564000, -4.550000}
+[00:21.274]	ARRAY: Array3[5] = {1, 0, 1, 0, 1}
+[00:27.099]	ARRAY: Array4[5] = {Hello, World, This, Is, Cool}
+---------------------------
+Start of new log
+---------------------------
+[00:07.267]	Hello World
+[00:30.739]	This is cool
+[00:02.632]	Rishi is black
+[00:14.929]	x: 5, y: 10, z: 3.141593
+[00:13.039]	ARRAY: Array[5] = {11235, 2563123, 35645, -4564, -455}
+[00:14.550]	VAR: varible1 = 5
+[00:31.241]	VAR: varible2 = 2.178565
+[00:05.930]	VAR: varible3 = 1
+[00:20.811]	VAR: varible4 = World Hello!
+[00:04.939]	ARRAY: Array2[5] = {1.123500, 2.563123, 3.564500, -4.564000, -4.550000}
+[00:19.795]	ARRAY: Array3[5] = {1, 0, 1, 0, 1}
+[00:27.539]	ARRAY: Array4[5] = {Hello, World, This, Is, Cool}
+---------------------------
+Start of new log
+---------------------------
+[00:07.300]	Hello World
+[00:07.151]	This is cool
+[00:17.433]	Rishi is black
+[00:26.186]	x: 5, y: 10, z: 3.141593
+[00:17.881]	ARRAY: Array[5] = {11235, 2563123, 35645, -4564, -455}
+[00:21.050]	VAR: varible1 = 5
+[00:29.597]	VAR: varible2 = 2.178565
+[00:09.425]	VAR: varible3 = 1
+[00:22.087]	VAR: varible4 = World Hello!
+[00:08.994]	ARRAY: Array2[5] = {1.123500, 2.563123, 3.564500, -4.564000, -4.550000}
+[00:18.316]	ARRAY: Array3[5] = {1, 0, 1, 0, 1}
+[00:27.980]	ARRAY: Array4[5] = {Hello, World, This, Is, Cool}
+---------------------------
+Start of new log
+---------------------------
+[00:09.857]	Hello World
+[00:01.777]	This is cool
+[00:13.144]	Rishi is black
+[00:26.160]	x: 5, y: 10, z: 3.141593
+[00:00.497]	ARRAY: Array[5] = {11235, 2563123, 35645, -4564, -455}
+[00:15.487]	VAR: varible1 = 5
+[00:09.047]	VAR: varible2 = 2.178565
+[00:11.129]	VAR: varible3 = 1
+[00:07.302]	VAR: varible4 = World Hello!
+[00:11.953]	ARRAY: Array2[5] = {1.123500, 2.563123, 3.564500, -4.564000, -4.550000}
+[00:00.809]	ARRAY: Array3[5] = {1, 0, 1, 0, 1}
+[00:29.700]	ARRAY: Array4[5] = {Hello, World, This, Is, Cool}
+---------------------------
+Start of new log
+---------------------------
+[00:10.252]	Hello World
+[00:24.382]	This is cool
+[00:12.020]	Rishi is black
+[00:21.469]	x: 5, y: 10, z: 3.141593
+[00:03.376]	ARRAY: Array[5] = {11235, 2563123, 35645, -4564, -455}
+[00:31.869]	VAR: varible1 = 5
+[00:25.205]	VAR: varible2 = 2.178565
+[00:17.377]	VAR: varible3 = 1
+[00:06.356]	VAR: varible4 = World Hello!
+[00:21.701]	ARRAY: Array2[5] = {1.123500, 2.563123, 3.564500, -4.564000, -4.550000}
+[00:15.680]	ARRAY: Array3[5] = {1, 0, 1, 0, 1}
+[00:02.262]	ARRAY: Array4[5] = {Hello, World, This, Is, Cool}
+---------------------------
+Start of new log
+---------------------------
+[00:10.634]	Hello World
+[00:03.994]	This is cool
+[00:04.976]	Rishi is black
+[00:18.829]	x: 5, y: 10, z: 3.141593
+[00:30.533]	ARRAY: Array[5] = {11235, 2563123, 35645, -4564, -455}
+[00:32.545]	VAR: varible1 = 5
+[00:28.914]	VAR: varible2 = 2.178565
+[00:02.566]	VAR: varible3 = 1
+[00:04.900]	VAR: varible4 = World Hello!
+[00:23.273]	ARRAY: Array2[5] = {1.123500, 2.563123, 3.564500, -4.564000, -4.550000}
+[00:31.143]	ARRAY: Array3[5] = {1, 0, 1, 0, 1}
+[00:07.415]	ARRAY: Array4[5] = {Hello, World, This, Is, Cool}
+---------------------------
+Start of new log
+---------------------------
+[00:11.229]	Hello World
+[00:26.892]	This is cool
+[00:12.224]	Rishi is black
+[00:07.440]	x: 5, y: 10, z: 3.141593
+[00:07.242]	ARRAY: Array[5] = {11235, 2563123, 35645, -4564, -455}
+[00:26.314]	VAR: varible1 = 5
+[00:05.556]	VAR: varible2 = 2.178565
+[00:26.858]	VAR: varible3 = 1
+[00:28.122]	VAR: varible4 = World Hello!
+[00:18.437]	ARRAY: Array2[5] = {1.123500, 2.563123, 3.564500, -4.564000, -4.550000}
+[00:04.224]	ARRAY: Array3[5] = {1, 0, 1, 0, 1}
+[00:15.432]	ARRAY: Array4[5] = {Hello, World, This, Is, Cool}
+---------------------------
+Start of new log
+---------------------------
+[00:11.300]	Hello World
+[00:01.213]	This is cool
+[00:12.019]	Rishi is black
+[00:12.545]	x: 5, y: 10, z: 3.141593
+[00:04.787]	ARRAY: Array[5] = {11235, 2563123, 35645, -4564, -455}
+[00:14.398]	VAR: varible1 = 5
+[00:08.494]	VAR: varible2 = 2.178565
+[00:27.994]	VAR: varible3 = 1
+[00:30.929]	VAR: varible4 = World Hello!
+[00:14.252]	ARRAY: Array2[5] = {1.123500, 2.563123, 3.564500, -4.564000, -4.550000}
+[00:00.970]	ARRAY: Array3[5] = {1, 0, 1, 0, 1}
+[00:16.401]	ARRAY: Array4[5] = {Hello, World, This, Is, Cool}
+---------------------------
+Start of new log
+---------------------------
+[00:11.487]	Hello World
+[00:24.048]	This is cool
+[00:14.469]	Rishi is black
+[00:07.898]	x: 5, y: 10, z: 3.141593
+[00:02.893]	ARRAY: Array[5] = {11235, 2563123, 35645, -4564, -455}
+[00:08.845]	VAR: varible1 = 5
+[00:22.064]	VAR: varible2 = 2.178565
+[00:24.979]	VAR: varible3 = 1
+[00:21.818]	VAR: varible4 = World Hello!
+[00:24.260]	ARRAY: Array2[5] = {1.123500, 2.563123, 3.564500, -4.564000, -4.550000}
+[00:25.308]	ARRAY: Array3[5] = {1, 0, 1, 0, 1}
+[00:18.911]	ARRAY: Array4[5] = {Hello, World, This, Is, Cool}
+---------------------------
+Start of new log
+---------------------------
+[00:12.332]	Hello World
+[00:22.605]	This is cool
+[00:21.002]	Rishi is black
+[00:14.376]	x: 5, y: 10, z: 3.141593
+[00:20.160]	ARRAY: Array[5] = {11235, 2563123, 35645, -4564, -455}
+[00:10.060]	VAR: varible1 = 5
+[00:08.988]	VAR: varible2 = 2.178565
+[00:20.479]	VAR: varible3 = 1
+[00:05.711]	VAR: varible4 = World Hello!
+[00:04.774]	ARRAY: Array2[5] = {1.123500, 2.563123, 3.564500, -4.564000, -4.550000}
+[00:19.768]	ARRAY: Array3[5] = {1, 0, 1, 0, 1}
+[00:30.320]	ARRAY: Array4[5] = {Hello, World, This, Is, Cool}
+---------------------------
+Start of new log
+---------------------------
+[00:14.197]	Hello World
+[00:32.329]	This is cool
+[00:30.595]	Rishi is black
+[00:24.736]	x: 5, y: 10, z: 3.141593
+[00:11.542]	ARRAY: Array[5] = {11235, 2563123, 35645, -4564, -455}
+[00:23.999]	VAR: varible1 = 5
+[00:16.726]	VAR: varible2 = 2.178565
+[00:20.173]	VAR: varible3 = 1
+[00:29.413]	VAR: varible4 = World Hello!
+[00:00.403]	ARRAY: Array2[5] = {1.123500, 2.563123, 3.564500, -4.564000, -4.550000}
+[00:00.850]	ARRAY: Array3[5] = {1, 0, 1, 0, 1}
+[00:22.702]	ARRAY: Array4[5] = {Hello, World, This, Is, Cool}
+---------------------------
+Start of new log
+---------------------------
+[00:14.922]	Hello World
+[00:26.411]	This is cool
+[00:31.513]	Rishi is black
+[00:25.608]	x: 5, y: 10, z: 3.141593
+[00:07.618]	ARRAY: Array[5] = {11235, 2563123, 35645, -4564, -455}
+[00:10.997]	VAR: varible1 = 5
+[00:19.562]	VAR: varible2 = 2.178565
+[00:25.678]	VAR: varible3 = 1
+[00:24.970]	VAR: varible4 = World Hello!
+[00:11.788]	ARRAY: Array2[5] = {1.123500, 2.563123, 3.564500, -4.564000, -4.550000}
+[00:00.783]	ARRAY: Array3[5] = {1, 0, 1, 0, 1}
+[00:32.481]	ARRAY: Array4[5] = {Hello, World, This, Is, Cool}
+---------------------------
+Start of new log
+---------------------------
+[00:14.991]	Hello World
+[00:22.752]	This is cool
+[00:13.445]	Rishi is black
+[00:06.650]	x: 5, y: 10, z: 3.141593
+[00:27.616]	ARRAY: Array[5] = {11235, 2563123, 35645, -4564, -455}
+[00:27.922]	VAR: varible1 = 5
+[00:19.387]	VAR: varible2 = 2.178565
+[00:29.741]	VAR: varible3 = 1
+[00:11.266]	VAR: varible4 = World Hello!
+[00:13.751]	ARRAY: Array2[5] = {1.123500, 2.563123, 3.564500, -4.564000, -4.550000}
+[00:30.445]	ARRAY: Array3[5] = {1, 0, 1, 0, 1}
+[00:00.638]	ARRAY: Array4[5] = {Hello, World, This, Is, Cool}
+---------------------------
+Start of new log
+---------------------------
+[00:15.235]	Hello World
+[00:09.682]	This is cool
+[00:09.770]	Rishi is black
+[00:09.158]	x: 5, y: 10, z: 3.141593
+[00:14.777]	ARRAY: Array[5] = {11235, 2563123, 35645, -4564, -455}
+[00:27.515]	VAR: varible1 = 5
+[00:23.445]	VAR: varible2 = 2.178565
+[00:06.803]	VAR: varible3 = 1
+[00:04.451]	VAR: varible4 = World Hello!
+[00:11.398]	ARRAY: Array2[5] = {1.123500, 2.563123, 3.564500, -4.564000, -4.550000}
+[00:19.352]	ARRAY: Array3[5] = {1, 0, 1, 0, 1}
+[00:03.941]	ARRAY: Array4[5] = {Hello, World, This, Is, Cool}
+---------------------------
+Start of new log
+---------------------------
+[00:15.480]	Hello World
+[00:29.381]	This is cool
+[00:06.095]	Rishi is black
+[00:11.667]	x: 5, y: 10, z: 3.141593
+[00:01.938]	ARRAY: Array[5] = {11235, 2563123, 35645, -4564, -455}
+[00:27.108]	VAR: varible1 = 5
+[00:27.503]	VAR: varible2 = 2.178565
+[00:16.634]	VAR: varible3 = 1
+[00:30.404]	VAR: varible4 = World Hello!
+[00:09.045]	ARRAY: Array2[5] = {1.123500, 2.563123, 3.564500, -4.564000, -4.550000}
+[00:08.259]	ARRAY: Array3[5] = {1, 0, 1, 0, 1}
+[00:07.245]	ARRAY: Array4[5] = {Hello, World, This, Is, Cool}
+---------------------------
+Start of new log
+---------------------------
+[00:15.686]	Hello World
+[00:18.402]	This is cool
+[00:17.426]	Rishi is black
+[00:20.327]	x: 5, y: 10, z: 3.141593
+[00:29.164]	ARRAY: Array[5] = {11235, 2563123, 35645, -4564, -455}
+[00:12.348]	VAR: varible1 = 5
+[00:26.980]	VAR: varible2 = 2.178565
+[00:28.823]	VAR: varible3 = 1
+[00:22.059]	VAR: varible4 = World Hello!
+[00:14.933]	ARRAY: Array2[5] = {1.123500, 2.563123, 3.564500, -4.564000, -4.550000}
+[00:31.708]	ARRAY: Array3[5] = {1, 0, 1, 0, 1}
+[00:10.019]	ARRAY: Array4[5] = {Hello, World, This, Is, Cool}
+---------------------------
+Start of new log
+---------------------------
+[00:15.768]	Hello World
+[00:24.969]	This is cool
+[00:05.278]	Rishi is black
+[00:32.086]	x: 5, y: 10, z: 3.141593
+[00:24.884]	ARRAY: Array[5] = {11235, 2563123, 35645, -4564, -455}
+[00:12.212]	VAR: varible1 = 5
+[00:06.487]	VAR: varible2 = 2.178565
+[00:21.178]	VAR: varible3 = 1
+[00:08.864]	VAR: varible4 = World Hello!
+[00:25.071]	ARRAY: Array2[5] = {1.123500, 2.563123, 3.564500, -4.564000, -4.550000}
+[00:28.011]	ARRAY: Array3[5] = {1, 0, 1, 0, 1}
+[00:11.121]	ARRAY: Array4[5] = {Hello, World, This, Is, Cool}
+---------------------------
+Start of new log
+---------------------------
+[00:16.013]	Hello World
+[00:11.899]	This is cool
+[00:01.603]	Rishi is black
+[00:01.827]	x: 5, y: 10, z: 3.141593
+[00:12.046]	ARRAY: Array[5] = {11235, 2563123, 35645, -4564, -455}
+[00:11.805]	VAR: varible1 = 5
+[00:10.545]	VAR: varible2 = 2.178565
+[00:31.008]	VAR: varible3 = 1
+[00:02.050]	VAR: varible4 = World Hello!
+[00:22.718]	ARRAY: Array2[5] = {1.123500, 2.563123, 3.564500, -4.564000, -4.550000}
+[00:16.918]	ARRAY: Array3[5] = {1, 0, 1, 0, 1}
+[00:14.424]	ARRAY: Array4[5] = {Hello, World, This, Is, Cool}
+---------------------------
+Start of new log
+---------------------------
+[00:16.107]	Hello World
+[00:28.691]	This is cool
+[00:28.144]	Rishi is black
+[00:11.535]	x: 5, y: 10, z: 3.141593
+[00:16.256]	ARRAY: Array[5] = {11235, 2563123, 35645, -4564, -455}
+[00:27.376]	VAR: varible1 = 5
+[00:02.502]	VAR: varible2 = 2.178565
+[00:11.653]	VAR: varible3 = 1
+[00:22.134]	VAR: varible4 = World Hello!
+[00:08.264]	ARRAY: Array2[5] = {1.123500, 2.563123, 3.564500, -4.564000, -4.550000}
+[00:12.629]	ARRAY: Array3[5] = {1, 0, 1, 0, 1}
+[00:15.701]	ARRAY: Array4[5] = {Hello, World, This, Is, Cool}
+---------------------------
+Start of new log
+---------------------------
+[00:16.169]	Hello World
+[00:03.535]	This is cool
+[00:07.115]	Rishi is black
+[00:09.986]	x: 5, y: 10, z: 3.141593
+[00:15.625]	ARRAY: Array[5] = {11235, 2563123, 35645, -4564, -455}
+[00:03.680]	VAR: varible1 = 5
+[00:28.870]	VAR: varible2 = 2.178565
+[00:21.571]	VAR: varible3 = 1
+[00:08.174]	VAR: varible4 = World Hello!
+[00:22.523]	ARRAY: Array2[5] = {1.123500, 2.563123, 3.564500, -4.564000, -4.550000}
+[00:09.818]	ARRAY: Array3[5] = {1, 0, 1, 0, 1}
+[00:16.538]	ARRAY: Array4[5] = {Hello, World, This, Is, Cool}
+---------------------------
+Start of new log
+---------------------------
+[00:12.520]	Hello World
+[00:32.856]	This is cool
+[00:21.938]	Rishi is black
+[00:19.024]	x: 5, y: 10, z: 3.141593
+[00:03.940]	ARRAY: Array[5] = {11235, 2563123, 35645, -4564, -455}
+[00:05.264]	VAR: varible1 = 5
+[00:04.166]	VAR: varible2 = 2.178565
+[00:08.741]	VAR: varible3 = 1
+[00:10.610]	VAR: varible4 = World Hello!
+[00:14.591]	ARRAY: Array2[5] = {1.123500, 2.563123, 3.564500, -4.564000, -4.550000}
+[00:17.773]	ARRAY: Array3[5] = {1, 0, 1, 0, 1}
+[00:11.415]	ARRAY: Array4[5] = {Hello, World, This, Is, Cool}
+---------------------------
+Start of new log
+---------------------------
+[00:12.673]	Hello World
+[00:13.743]	This is cool
+[00:09.586]	Rishi is black
+[00:03.120]	x: 5, y: 10, z: 3.141593
+[00:29.973]	ARRAY: Array[5] = {11235, 2563123, 35645, -4564, -455}
+[00:25.980]	VAR: varible1 = 5
+[00:19.379]	VAR: varible2 = 2.178565
+[00:02.231]	VAR: varible3 = 1
+[00:00.223]	VAR: varible4 = World Hello!
+[00:20.543]	ARRAY: Array2[5] = {1.123500, 2.563123, 3.564500, -4.564000, -4.550000}
+[00:10.821]	ARRAY: Array3[5] = {1, 0, 1, 0, 1}
+[00:13.485]	ARRAY: Array4[5] = {Hello, World, This, Is, Cool}
+---------------------------
+Start of new log
+---------------------------
+[00:13.411]	Hello World
+[00:18.051]	This is cool
+[00:16.425]	Rishi is black
+[00:01.941]	x: 5, y: 10, z: 3.141593
+[00:01.771]	ARRAY: Array[5] = {11235, 2563123, 35645, -4564, -455}
+[00:28.685]	VAR: varible1 = 5
+[00:01.897]	VAR: varible2 = 2.178565
+[00:28.795]	VAR: varible3 = 1
+[00:29.058]	VAR: varible4 = World Hello!
+[00:07.336]	ARRAY: Array2[5] = {1.123500, 2.563123, 3.564500, -4.564000, -4.550000}
+[00:10.162]	ARRAY: Array3[5] = {1, 0, 1, 0, 1}
+[00:23.440]	ARRAY: Array4[5] = {Hello, World, This, Is, Cool}
+---------------------------
+Start of new log
+---------------------------
+[00:13.509]	Hello World
+[00:12.823]	This is cool
+[00:28.062]	Rishi is black
+[00:02.944]	x: 5, y: 10, z: 3.141593
+[00:16.296]	ARRAY: Array[5] = {11235, 2563123, 35645, -4564, -455}
+[00:15.415]	VAR: varible1 = 5
+[00:29.735]	VAR: varible2 = 2.178565
+[00:06.513]	VAR: varible3 = 1
+[00:00.118]	VAR: varible4 = World Hello!
+[00:19.502]	ARRAY: Array2[5] = {1.123500, 2.563123, 3.564500, -4.564000, -4.550000}
+[00:05.725]	ARRAY: Array3[5] = {1, 0, 1, 0, 1}
+[00:24.761]	ARRAY: Array4[5] = {Hello, World, This, Is, Cool}
+---------------------------
+Start of new log
+---------------------------
+[00:15.511]	Hello World
+[00:15.229]	This is cool
+[00:01.519]	Rishi is black
+[00:08.155]	x: 5, y: 10, z: 3.141593
+[00:14.906]	ARRAY: Array[5] = {11235, 2563123, 35645, -4564, -455}
+[00:30.436]	VAR: varible1 = 5
+[00:04.355]	VAR: varible2 = 2.178565
+[00:14.333]	VAR: varible3 = 1
+[00:29.179]	VAR: varible4 = World Hello!
+[00:19.057]	ARRAY: Array2[5] = {1.123500, 2.563123, 3.564500, -4.564000, -4.550000}
+[00:13.363]	ARRAY: Array3[5] = {1, 0, 1, 0, 1}
+[00:18.994]	ARRAY: Array4[5] = {Hello, World, This, Is, Cool}
+---------------------------
+Start of new log
+---------------------------
+[00:15.553]	Hello World
+[00:23.886]	This is cool
+[00:04.377]	Rishi is black
+[00:26.066]	x: 5, y: 10, z: 3.141593
+[00:17.924]	ARRAY: Array[5] = {11235, 2563123, 35645, -4564, -455}
+[00:15.948]	VAR: varible1 = 5
+[00:12.049]	VAR: varible2 = 2.178565
+[00:09.047]	VAR: varible3 = 1
+[00:14.453]	VAR: varible4 = World Hello!
+[00:04.668]	ARRAY: Array2[5] = {1.123500, 2.563123, 3.564500, -4.564000, -4.550000}
+[00:11.440]	ARRAY: Array3[5] = {1, 0, 1, 0, 1}
+[00:19.566]	ARRAY: Array4[5] = {Hello, World, This, Is, Cool}
+---------------------------
+Start of new log
+---------------------------
+[00:15.622]	Hello World
+[00:20.226]	This is cool
+[00:19.077]	Rishi is black
+[00:07.108]	x: 5, y: 10, z: 3.141593
+[00:05.154]	ARRAY: Array[5] = {11235, 2563123, 35645, -4564, -455}
+[00:00.105]	VAR: varible1 = 5
+[00:11.875]	VAR: varible2 = 2.178565
+[00:13.110]	VAR: varible3 = 1
+[00:00.749]	VAR: varible4 = World Hello!
+[00:06.630]	ARRAY: Array2[5] = {1.123500, 2.563123, 3.564500, -4.564000, -4.550000}
+[00:08.334]	ARRAY: Array3[5] = {1, 0, 1, 0, 1}
+[00:20.491]	ARRAY: Array4[5] = {Hello, World, This, Is, Cool}
+---------------------------
+Start of new log
+---------------------------
+[00:15.821]	Hello World
+[00:20.519]	This is cool
+[00:27.447]	Rishi is black
+[00:00.410]	x: 5, y: 10, z: 3.141593
+[00:11.751]	ARRAY: Array[5] = {11235, 2563123, 35645, -4564, -455}
+[00:10.260]	VAR: varible1 = 5
+[00:05.126]	VAR: varible2 = 2.178565
+[00:31.154]	VAR: varible3 = 1
+[00:24.916]	VAR: varible4 = World Hello!
+[00:24.814]	ARRAY: Array2[5] = {1.123500, 2.563123, 3.564500, -4.564000, -4.550000}
+[00:32.080]	ARRAY: Array3[5] = {1, 0, 1, 0, 1}
+[00:23.178]	ARRAY: Array4[5] = {Hello, World, This, Is, Cool}
