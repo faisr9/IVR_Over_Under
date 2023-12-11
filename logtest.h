@@ -21,9 +21,11 @@ class Logger {
         /**
          * \brief Creates a logger object which logs data to a specified file
          * 
-         * \param file_name The name of the file to log to
-         * \param overwrite Whether or not to overwrite the file if it already exists. (ignores append parameter)
-         * \param append Whether or not to append to the file if it already exists
+         * \param file_name The name of the file to log to 
+         *      NOTE: Keep file extension as .txt
+         *      NOTE: Keep file name under 64 characters
+         * \param overwrite=false Whether or not to overwrite the file if it already exists. (ignores append parameter)
+         * \param append=true Whether or not to append to the file if it already exists
         */
         Logger(std::string file_name, bool overwrite=false, bool append=true);
         ~Logger();
@@ -50,5 +52,5 @@ class Logger {
          * @param array_length the length of the array
          */
         template<typename T>
-        void logArray(std::string array_name, T* array, int array_length);        
+        void logArray(std::string array_name, T* array, int array_length);
 };

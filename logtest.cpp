@@ -19,6 +19,9 @@ std::string getTimeStamp_str(int inptime) {
 
 Logger::Logger(std::string file_name, bool overwrite, bool append) {
     file_mode = "a"; // default to append as to not lose logs
+    if(file_name.length() > 64)
+        throw std::runtime_error("Logger: File name is too long, keep under 64 characters");
+
     if (!overwrite) {
         if (append) {
             file_mode = "a";
@@ -29,6 +32,7 @@ Logger::Logger(std::string file_name, bool overwrite, bool append) {
             
             char buff[64];
             vector<std::string> fileNames;
+            std::string file_name_copy;
             std::string file_name_number;
             short int file_name_number_int;
             short int highestFileNumber = 0;
@@ -43,34 +47,38 @@ Logger::Logger(std::string file_name, bool overwrite, bool append) {
             {
                 if(fileNames[i].find_first_of("_") != std::string::npos)
                 {
+                    file_name_copy = file_name.substr(0, file_name.find_first_of("_"));
                     file_name_number = fileNames[i].substr(fileNames[i].find_first_of("_") + 1,
                         fileNames[i].find_first_of(".") - fileNames[i].find_first_of("_") - 1);
 
                     file_name_number_int = std::stoi(file_name_number);
-                    cout << file_name_number << endl;
                 }
-                else  
+                else
                     file_name_number_int = 0;
                 
                 if(file_name_number_int > highestFileNumber)
                     highestFileNumber = file_name_number_int;
             }
-            cout << highestFileNumber << endl;
+            highestFileNumber++;
+            if(file_name_copy.find_first_of("_") == std::string::npos)
+                file_name_copy = file_name.substr(0, file_name.find_first_of("."));
+
+            file_name = file_name_copy + "_" + std::to_string(highestFileNumber) + 
+                            file_name.substr(file_name.find_first_of("."));
+
+            fclose(readFileName);
         }
     }
     else {
         file_mode = "w";
         appending = false;
     }
-
-    cout << endl << "Stopped" << endl;
-    std::abort(); 
-
+    
     this->file_name = file_name;
     FILE* logFileName = fopen(list_file.c_str(), "a");
     if (logFileName) {
         fwrite(file_name.c_str(), sizeof(char), file_name.length(), logFileName);
-        fwrite("\n", sizeof(char), 1, logFileName);
+        fwrite("\n", sizeof(char), 1, logFileName); // Tructates the line for readback
         fclose(logFileName);
     }
 
@@ -184,7 +192,7 @@ void Logger::logArray<std::string>(std::string array_name, std::string* array, i
 int main()
 {
     srand(time(NULL));
-    Logger logBuild("usd/logOut_5.txt", false, false);
+    Logger logBuild("usd/logOut.txt", true, true);
     logBuild.logStringMessage("Hello World");
     logBuild.logStringMessage("This is cool");
     logBuild.logStringMessage("Rishi is black");
@@ -212,7 +220,5 @@ int main()
     std::string array4[5] = {"Hello", "World", "This", "Is", "Cool"};
     logBuild.logArray("Array4", array4, 5);
     
-    
-    // logBuild.~Logger();
     return 0;
 }

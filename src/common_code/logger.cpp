@@ -71,6 +71,8 @@ AutoLogger* AutoLogger::getInstance() {
 
 Logger::Logger(std::string file_name, bool overwrite, bool append) {
     file_mode = "a"; // default to append as to not lose logs
+    if(file_name.length() > 64)
+        throw std::runtime_error("Logger: File name is too long, keep under 64 characters");
 
     if (!overwrite) {
         if (append) {
@@ -78,115 +80,159 @@ Logger::Logger(std::string file_name, bool overwrite, bool append) {
             appending = true;
         }
         else {
-            if (file_name.find_first_of("_") != std::string::npos) {
-                std::string file_name_copy = file_name.substr(0, file_name.find_first_of("_"));
-                std::string file_name_number = file_name.substr(file_name.find_first_of("_") + 1,
-                    file_name.find_first_of(".") - file_name.find_first_of("_") - 1);
+            appending = false;
+            char buff[64];
+            std::vector<std::string> fileNames;
+            std::string file_name_copy;
+            std::string file_name_number;
+            short int file_name_number_int;
+            short int highestFileNumber = 0;
 
-                short int file_name_number_int = std::stoi(file_name_number);
-                file_name_number_int++;
-                file_name = file_name_copy + "_" + std::to_string(file_name_number_int) + file_name.substr(file_name.find_first_of("."));
+            FILE* readFileName = fopen(list_file.c_str(), "r");
+            while(fgets(buff, 64, readFileName))
+            {
+                fileNames.push_back(buff);
             }
-            else
-                file_name = file_name.substr(0, file_name.find_first_of(".")) + "_1" + file_name.substr(file_name.find_first_of("."));
+
+            for (int i=0;i<fileNames.size();i++)
+            {
+                if(fileNames[i].find_first_of("_") != std::string::npos)
+                {
+                    file_name_copy = file_name.substr(0, file_name.find_first_of("_"));
+                    file_name_number = fileNames[i].substr(fileNames[i].find_first_of("_") + 1,
+                        fileNames[i].find_first_of(".") - fileNames[i].find_first_of("_") - 1);
+
+                    file_name_number_int = std::stoi(file_name_number);
+                }
+                else
+                    file_name_number_int = 0;
+                
+                if(file_name_number_int > highestFileNumber)
+                    highestFileNumber = file_name_number_int;
+            }
+            highestFileNumber++;
+            if(file_name_copy.find_first_of("_") == std::string::npos)
+                file_name_copy = file_name.substr(0, file_name.find_first_of("."));
+
+            file_name = file_name_copy + "_" + std::to_string(highestFileNumber) + 
+                            file_name.substr(file_name.find_first_of("."));
+
+            fclose(readFileName);
         }
     }
-    else
-    {
+    else {
         file_mode = "w";
         appending = false;
     }
-
+    
+    this->file_name = file_name;
     FILE* logFileName = fopen(list_file.c_str(), "a");
     if (logFileName) {
         fwrite(file_name.c_str(), sizeof(char), file_name.length(), logFileName);
-        fwrite("\n", sizeof(char), 1, logFileName);
+        fwrite("\n", sizeof(char), 1, logFileName); // Tructates the line for readback
         fclose(logFileName);
     }
-    this->file_name = file_name;
 
     logFile = fopen(file_name.c_str(), file_mode.c_str());
-    if(logFile)
-        isFileOpen = true;
 
-    const char* break_message = "---------------------------\nStart of new log\n---------------------------\n";
+    std::string break_message = "---------------------------\nStart of new log\n---------------------------\n";
     if (logFile)
-        fwrite(break_message, sizeof(char), strlen(break_message), logFile);
+        fwrite(break_message.c_str(), sizeof(char), break_message.length(), logFile);
 }
 
 Logger::~Logger() {
-    if(isFileOpen)
-    {
-        fclose(logFile);
-        isFileOpen = false;
-    }
-}
-
-void Logger::changeFileMode(std::string new_mode) {
-    if (new_mode != "w" && new_mode != "a" && new_mode != "wb" && new_mode != "ab")
-        throw std::runtime_error("Logger: Invalid file mode");
-        // return; // Don't error if the mode is invalid, just don't change it
-
-    this->file_mode = new_mode;
-    if (isFileOpen && logFile)
-    {
-        fclose(logFile);
-        isFileOpen = false;
-    }
-    logFile = fopen(file_name.c_str(), file_mode.c_str());
     if(logFile)
-        isFileOpen = true;
+        fclose(logFile);
 }
 
-void Logger::logMessage(std::string message) {
-    if(!isFileOpen) // Failsafe
+void Logger::logStringMessage(std::string message) {
+    if(!logFile) // Failsafe
         logFile = fopen(file_name.c_str(), file_mode.c_str());
 
-    if(appending && file_mode != "a")
-        changeFileMode("a");
-    else if(!appending && file_mode != "w")
-        changeFileMode("w");
-
-    if (logFile) {   
+    if (logFile) {
+        message.insert(0, getTimeStamp_str());
+        
         fwrite(message.c_str(), sizeof(char), message.length(), logFile);
         fwrite("\n", sizeof(char), 1, logFile);
     }
 }
 
-void Logger::logMessage(const char* message, ...)
+void Logger::logCharMessage(const char* message, ...)
 {
-    if(!isFileOpen) // Failsafe
+    if(!logFile) // Failsafe
         logFile = fopen(file_name.c_str(), file_mode.c_str());
 
-    if(appending && file_mode != "a")
-        changeFileMode("a");
-    else if(!appending && file_mode != "w")
-        changeFileMode("w");
-
     if (logFile) {
+        std::string logMessage = "";
+        logMessage = getTimeStamp_str();
+
         va_list args;
         va_start(args, message);
-        vfprintf(logFile, message, args);
+        vfprintf(logFile, (logMessage + message).c_str(), args);
         va_end(args);
         fwrite("\n", sizeof(char), 1, logFile);
     }
 }
 
-void Logger::logArray(std::string array_name, int* array, int array_length) {
-    if(!isFileOpen) // Failsafe
+template<typename T>
+void Logger::logVarible(std::string var_name, T var) {
+    if(!logFile) // Failsafe
         logFile = fopen(file_name.c_str(), file_mode.c_str());
 
-    if(appending && file_mode != "a")
-        changeFileMode("a");
-    else if(!appending && file_mode != "w")
-        changeFileMode("w");
+    if (logFile) {
+        var_name = "VAR: " + var_name + " = ";
+        var_name.insert(0, getTimeStamp_str());
+        fwrite(var_name.c_str(), sizeof(char), var_name.length(), logFile);
+        fwrite(std::to_string(var).c_str(), sizeof(char), std::to_string(var).length(), logFile);
+        fwrite("\n", sizeof(char), 1, logFile);
+    }
+}
+
+template<>
+void Logger::logVarible<std::string>(std::string var_name, std::string var) {
+    if(!logFile) // Failsafe
+        logFile = fopen(file_name.c_str(), file_mode.c_str());
 
     if (logFile) {
-        array_name = "ARRAY: int " + array_name + "[" + std::to_string(array_length) + "] =\n";
+        var_name = "VAR: " + var_name + " = ";
+        var_name.insert(0, getTimeStamp_str());
+        fwrite(var_name.c_str(), sizeof(char), var_name.length(), logFile);
+        fwrite(var.c_str(), sizeof(char), var.length(), logFile);
+        fwrite("\n", sizeof(char), 1, logFile);
+    }
+}
+
+template<typename T>
+void Logger::logArray(std::string array_name, T* array, int array_length) {
+    if(!logFile) // Failsafe
+        logFile = fopen(file_name.c_str(), file_mode.c_str());
+
+    if (logFile) {
+        array_name = "ARRAY: " + array_name + "[" + std::to_string(array_length) + "] = ";
+        array_name.insert(0, getTimeStamp_str());
         fwrite(array_name.c_str(), sizeof(char), array_name.length(), logFile);
-        fwrite("\t= {", sizeof(char), 4, logFile);
+        fwrite("{", sizeof(char), 1, logFile);
         for (int i = 0; i < array_length; i++) {
             fwrite(std::to_string(array[i]).c_str(), sizeof(char), std::to_string(array[i]).length(), logFile);
+            if (i != array_length - 1)
+                fwrite(", ", sizeof(char), 2, logFile);
+        }
+        fwrite("}\n", sizeof(char), 2, logFile);
+    }
+}
+
+template<>
+void Logger::logArray<std::string>(std::string array_name, std::string* array, int array_length) {
+    if(!logFile) // Failsafe
+        logFile = fopen(file_name.c_str(), file_mode.c_str());
+
+    if (logFile) {
+        array_name = "ARRAY: " + array_name + "[" + std::to_string(array_length) + "] = ";
+        array_name.insert(0, getTimeStamp_str());
+        fwrite(array_name.c_str(), sizeof(char), array_name.length(), logFile);
+        fwrite("{", sizeof(char), 1, logFile);
+        for (int i = 0; i < array_length; i++) {
+            fwrite(array[i].c_str(), sizeof(char), array[i].length(), logFile);
             if (i != array_length - 1)
                 fwrite(", ", sizeof(char), 2, logFile);
         }
