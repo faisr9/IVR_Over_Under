@@ -1,22 +1,26 @@
-#include <fstream>
+// #pragma once
 #include <iostream>
+#include <chrono>
+#include <string>
 #include <string.h>
-#include <sstream>
-#include <iomanip>
 #include <vector>
-
-using namespace std;
+#include <fstream>
+#include<iomanip>
 
 class Logger {
     private:
         inline static const std::string list_file = "fileLists.txt";
         FILE* logFile;
-        std::string file_name;
-        std::string file_mode;
-        // bool isFileOpen = false;    
-
         bool appending = false;
-    
+
+    protected:
+        std::string file_name;
+        std::string file_mode;    
+
+        // std::string getTimeStamp_str();
+        FILE* closeLogFile();
+        FILE* getLogFile();
+
     public:
         /**
          * \brief Creates a logger object which logs data to a specified file
@@ -54,3 +58,31 @@ class Logger {
         template<typename T>
         void logArray(std::string array_name, T* array, int array_length);
 };
+
+class AutoLogger : protected Logger{
+    private:
+        Logger config_Log;
+        AutoLogger() : Logger(auto_log_file_name, false, true), config_Log(auto_log_config_info, false, true) {}
+        inline static AutoLogger* instance_ = nullptr;
+        inline static std::string auto_log_file_name = "usd/autoLog_data.txt";
+        inline static std::string auto_log_config_info = "usd/autoLog_config_info.txt";
+        inline static const int auto_log_delay = 50; // milliseconds
+
+        void autoLogRunner();
+
+    public:
+        AutoLogger(const AutoLogger& other) = delete;
+        ~AutoLogger();
+
+        static AutoLogger* createInstance();
+        static AutoLogger* getInstance();
+
+        void startAutoLog();
+        void pauseAutoLog();
+        void resumeAutoLog();
+        void stopAutoLog();
+        void logCustomStringMessage(std::string message);
+        void logCustomCharMessage(const char* message, ...);
+};
+extern AutoLogger* autoLogger; // Global Class Access
+

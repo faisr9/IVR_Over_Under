@@ -17,6 +17,70 @@ std::string getTimeStamp_str(int inptime) {
     return ss.str();
 }
 
+AutoLogger* autoLogger = AutoLogger::createInstance();
+
+AutoLogger::AutoLogger() : Logger(auto_log_file_name, false, true), config_Log(auto_log_config_info, false, true) {
+    
+    // pros::Task autoLogTask(AutoLogger::autoLogRunner());
+    AutoLogger::autoLogRunner();
+}
+
+AutoLogger::~AutoLogger() {
+    if (instance_ != nullptr) {
+        delete instance_;
+        instance_ = nullptr;
+    }
+}
+
+AutoLogger* AutoLogger::createInstance() {
+    if (!instance_ || instance_ == nullptr)
+        instance_ = new AutoLogger();
+
+    return instance_;
+}
+
+AutoLogger* AutoLogger::getInstance() {
+    if (instance_ == nullptr)
+        throw std::runtime_error("AutoLogger: Attempting to getInstance while instance_ is nullptr");
+
+    return instance_;
+}
+
+void AutoLogger::autoLogRunner()
+{
+    // have this method called as a thread from constructor to run in the background
+    // Create parameters to control operation.
+    // Log devices and important variables/arrays/messages
+
+    while(true)
+    {
+
+    }
+
+    /*
+        Log Message Format/Example:
+        [TIME] [Robot] [Robot State] [Auton Program] [Driver Mode] []
+    
+    */
+}
+
+void AutoLogger::logCustomStringMessage(std::string message)
+{
+    Logger::logStringMessage(message);
+}
+
+void AutoLogger::logCustomCharMessage(const char* message, ...)
+{
+    va_list args;
+    va_start(args, message);
+    Logger::logCharMessage(message, args);
+    va_end(args);
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+///////////////////////              Logger Class           ///////////////////////
+///////////////////////////////////////////////////////////////////////////////////
+
 Logger::Logger(std::string file_name, bool overwrite, bool append) {
     file_mode = "a"; // default to append as to not lose logs
     if(file_name.length() > 64)
@@ -31,7 +95,7 @@ Logger::Logger(std::string file_name, bool overwrite, bool append) {
             appending = false;
             
             char buff[64];
-            vector<std::string> fileNames;
+            std::vector<std::string> fileNames;
             std::string file_name_copy;
             std::string file_name_number;
             short int file_name_number_int;
@@ -92,6 +156,18 @@ Logger::Logger(std::string file_name, bool overwrite, bool append) {
 Logger::~Logger() {
     if(logFile)
         fclose(logFile);
+}
+
+FILE* Logger::getLogFile() {
+    return logFile;
+} 
+
+FILE* Logger::closeLogFile() {
+    if(logFile) {
+        fclose(logFile);
+        logFile = nullptr;
+    }
+    return logFile;
 }
 
 void Logger::logStringMessage(std::string message) {

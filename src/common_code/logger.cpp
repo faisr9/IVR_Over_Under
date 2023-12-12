@@ -3,22 +3,6 @@
 // Currently it requires us to pass in the file name, so given the name, check if its the same
 // give the file List. If it is, then get current number, add 1, and append that to the file name
 
-/**
- * @brief Returns the time since program start in the format of 
- *      minutes:seconds.milliseconds as a formatted string
- * NOTE: This will be moves to a future macros file, for now it is here
- */
-std::string getTimeStamp_str() {
-    u_int32_t milliseconds = pros::millis();
-    
-    std::stringstream ss;
-    ss << std::setfill('0') << 
-        std::setw(2) << (milliseconds / (60 * 1000)) << ":" << 
-        std::setw(2) << ((milliseconds / 1000) % 60) << "." << 
-        std::setw(3) << (milliseconds % 1000) << "\t";
-    return ss.str();
-}
-
  /**
   * @brief Creates the single instance of the class. This is done here to ensure
   * the object is created before main() is called allowing the autoLogger to function
@@ -36,11 +20,19 @@ AutoLogger* autoLogger = AutoLogger::createInstance();
  * It can be manually started and stopped using the startAutoLog() and stopAutoLog()
  * methods via the GUI
  */
-AutoLogger::AutoLogger() {
-    FILE* autoLogWrite = fopen(auto_log_file_name.c_str(), "a");
-    const char* break_message = "---------------------------\nStart of new log\n---------------------------\n";
-    if (autoLogWrite)
-        fwrite(break_message, sizeof(char), strlen(break_message), autoLogWrite);
+AutoLogger::AutoLogger() : Logger(auto_log_file_name, false, true) {
+    Logger::closeLogFile();
+
+    FILE* autoLogRead = fopen(auto_log_file_name.c_str(), "rb");
+    if(fread(&lastIteration, sizeof(int), 1, autoLogRead) != EOF)
+        lastIteration++;   
+    else
+        lastIteration = 0;
+
+    fclose(autoLogRead);
+    FILE* autoLogWrite = fopen(auto_log_file_name.c_str(), "wb");
+    fwrite(&lastIteration, sizeof(int), 1, autoLogWrite);
+    fwrite("\n", sizeof(char), 1, autoLogWrite);
     fclose(autoLogWrite);
 }
 AutoLogger::~AutoLogger() {
@@ -143,6 +135,33 @@ Logger::Logger(std::string file_name, bool overwrite, bool append) {
 Logger::~Logger() {
     if(logFile)
         fclose(logFile);
+}
+
+FILE* Logger::getLogFile() {
+    return logFile;
+} 
+
+FILE* Logger::closeLogFile() {
+    if(logFile) {
+        fclose(logFile);
+        logFile = nullptr;
+    }
+    return logFile;
+}
+
+/**
+ * @brief Returns the time since program start in the format of 
+ *      minutes:seconds.milliseconds as a formatted string
+ */
+std::string Logger::getTimeStamp_str() {
+    u_int32_t milliseconds = pros::millis();
+    
+    std::stringstream ss;
+    ss << std::setfill('0') << 
+        std::setw(2) << (milliseconds / (60 * 1000)) << ":" << 
+        std::setw(2) << ((milliseconds / 1000) % 60) << "." << 
+        std::setw(3) << (milliseconds % 1000) << "\t";
+    return ss.str();
 }
 
 void Logger::logStringMessage(std::string message) {

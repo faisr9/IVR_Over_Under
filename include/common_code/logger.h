@@ -1,39 +1,20 @@
 #pragma once
 #include "main.h"
 
-class AutoLogger {
-    private:
-        AutoLogger();
-        inline static AutoLogger* instance_ = nullptr;
-        inline static std::string auto_log_file_name = "auto_log.txt";
-        inline static const int auto_log_delay = 50; // milliseconds
-        void autoLogRunner();
-
-    public:
-        AutoLogger(const AutoLogger& other) = delete;
-        ~AutoLogger();
-
-        static AutoLogger* createInstance();
-        static AutoLogger* getInstance();
-
-        void startAutoLog();
-        void pauseAutoLog();
-        void resumeAutoLog();
-        void stopAutoLog();
-        void logCustom(std::string message);
-};
-extern AutoLogger* autoLogger; // Global Class Access
-
 class Logger {
     private:
         inline static const std::string list_file = "fileLists.txt";
         FILE* logFile;
-        std::string file_name;
-        std::string file_mode;
-        // bool isFileOpen = false;    
-
         bool appending = false;
-    
+
+    protected:
+        std::string file_name;
+        std::string file_mode;    
+
+        std::string getTimeStamp_str();
+        FILE* closeLogFile();
+        FILE* getLogFile();
+
     public:
         /**
          * \brief Creates a logger object which logs data to a specified file
@@ -71,3 +52,31 @@ class Logger {
         template<typename T>
         void logArray(std::string array_name, T* array, int array_length);
 };
+
+class AutoLogger : protected Logger{
+    private:
+        AutoLogger();
+        inline static AutoLogger* instance_ = nullptr;
+        inline static std::string auto_log_file_name = "auto_log_master.txt";
+        inline static const int auto_log_delay = 50; // milliseconds
+        int lastIteration;
+        FILE* autoLogFile;
+
+        void autoLogRunner();
+
+    public:
+        AutoLogger(const AutoLogger& other) = delete;
+        ~AutoLogger();
+
+        static AutoLogger* createInstance();
+        static AutoLogger* getInstance();
+
+        void startAutoLog();
+        void pauseAutoLog();
+        void resumeAutoLog();
+        void stopAutoLog();
+        void logCustom(std::string message);
+        void logCharMessage(const char* message, ...);
+};
+extern AutoLogger* autoLogger; // Global Class Access
+
