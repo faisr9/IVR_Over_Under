@@ -17,6 +17,7 @@
  * Add global defines/constants here;
  */
 #define M_PI 3.14159265358979323846
+#define M_E 2.71828182845904523536
 
 /**
  * Add PROS header files here;
@@ -45,6 +46,7 @@
  */
 #include "common_code/subsystem_parent.h"
 #include "common_code/example_subsystem.h"
+#include "common_code/link_helper.h"
 ///////////////////////////////////////
 
 /**
