@@ -58,9 +58,53 @@ void AutoLogger::autoLogRunner()
     }
 
     /*
-        Log Message Format/Example:
-        [TIME] [Robot] [Robot State] [Auton Program] [Driver Mode] []
-    
+        Config Log Message Format/Example:
+        ###########################################################
+        HEADER
+        ------
+        [TIME Logged] [comp_18] [COMP Disabled] [Log #17]
+        --------------
+        ROBOT SETTINGS
+        --------------
+        [TIME Changed] Auton Program: AWP Tandom
+        [TIME Changed] Driver Mode: Tank - "Specific Person"
+        ------------
+        ROBOT SETTINGS
+        ------------
+        [TIME Logged] Motor1 {11, 18, true} - [Connected C:4] - [Okay]
+        [TIME Logged] Motor2 {12, 18, false} - [Connected C:4] - [Okay]
+        [TIME Logged] Motor3 {13, 18, true} - [Connected C:4] - [HOT]
+        [TIME Logged] Motor4 {14, 18, false} - [DISCONNECTED C:4.5] - [Okay]
+        [TIME Logged] Motor5 {15, 18, true} - [Connected C:4] - [Okay]
+        [TIME Logged] Motor6 {16, 18, false} - [DISCONNECTED C:44.5] - [WARM]
+        [TIME Logged] Motor7 {17, 18, true} - [Connected C:4] - [Okay]
+        [TIME Logged] Motor8 {18, 18, false} - [Connected C:4] - [Okay]
+        [TIME Logged] Motor9 {19, 18, true} - [Connected C:4] - [Okay]
+        [TIME Logged] IMU {Installed} - [Connected C:4]
+        [TIME Logged] USD {Installed} - [Connected]
+        -------------------
+        IMPORTANT VARIABLES
+        -------------------
+        [TIME Logged] ODOMETRY: {x: 0, y: 0, theta: 0}
+        [TIME Logged] CATAPAULT: {state: 0, speed: 0}
+        ------------------------
+        IMPORTANT EVENT MESSAGES
+        ------------------------
+        [00:15.334] [COMP Controller] [Robot is disabled]
+        [00:15.754] [GUI] [Screensaver Active]
+        ---------------
+        CUSTOM MESSAGES
+        ---------------
+        Any custom messages that are logged will be logged here
+        ###########################################################
+
+        Log Update Triggers:
+            - Every second
+            - When a device state changes
+            - When a robot setting is changed
+        The "IMPORTANT VARIBLES", "IMPORTANT EVENT MESSAGES" and "CUSTOM MESSAGES" sections will be 
+            queued and logged every update
+        
     */
 }
 
