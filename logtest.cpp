@@ -1,6 +1,7 @@
 #include "logtest.h"
 #include <cstdarg>
 
+using namespace std;
 /**
  * @brief Returns the time since program start in the format of 
  *      minutes:seconds.milliseconds as a formatted string
@@ -19,10 +20,10 @@ std::string getTimeStamp_str(int inptime) {
 
 AutoLogger* autoLogger = AutoLogger::createInstance();
 
-AutoLogger::AutoLogger() : Logger(auto_log_file_name, false, true), config_Log(auto_log_config_info, false, true) {
+AutoLogger::AutoLogger() : Logger(auto_log_file_name, true, false, false) {
     
-    // pros::Task autoLogTask(AutoLogger::autoLogRunner());
-    AutoLogger::autoLogRunner();
+    logNum = Logger::file_num;
+    // AutoLogger::autoLogRunner();
 }
 
 AutoLogger::~AutoLogger() {
@@ -52,25 +53,54 @@ void AutoLogger::autoLogRunner()
     // Create parameters to control operation.
     // Log devices and important variables/arrays/messages
 
-    while(true)
-    {
-
-    }
+    // while(!terminate)
+    // {
+    //     while(!paused)
+    //     {
+            Logger::logStringMessage("###########################################################");
+            Logger::logStringMessage("HEADER");
+            Logger::logStringMessage("-----------------------------------------------------------");
+            // need getter fuctions for these
+            nextMessage = getTimeStamp_str((rand() % 100000)+100) + "[comp_18] [COMP Disabled] [Log #" + std::to_string(logNum) + "]";
+            Logger::logStringMessage(nextMessage);
+            Logger::logStringMessage("-----------------------------------------------------------");
+            Logger::logStringMessage("ROBOT SETTINGS");
+            Logger::logStringMessage("-----------------------------------------------------------");
+            Logger::logStringMessage("Will log setting changes here");
+            Logger::logStringMessage("-----------------------------------------------------------");
+            Logger::logStringMessage("ROBOT DEVICES");
+            Logger::logStringMessage("-----------------------------------------------------------");
+            Logger::logStringMessage("Will log device state changes here");
+            Logger::logStringMessage("-----------------------------------------------------------");
+            Logger::logStringMessage("IMPORTANT VARIABLES");
+            Logger::logStringMessage("-----------------------------------------------------------");
+            for(int i = 0; i < importantVaribles.size(); i++)
+                Logger::logStringMessage(importantVaribles[i]);
+            Logger::logStringMessage("-----------------------------------------------------------");
+            Logger::logStringMessage("IMPORTANT EVENT MESSAGES");
+            Logger::logStringMessage("-----------------------------------------------------------");
+            for(int i = 0; i < importantMessages.size(); i++)
+                Logger::logStringMessage(importantMessages[i]);            
+            Logger::logStringMessage("###########################################################");
+            std::abort();
+        // }
+        // task delay (1000)
+    // }
 
     /*
         Config Log Message Format/Example:
         ###########################################################
         HEADER
-        ------
+        -----------------------------------------------------------
         [TIME Logged] [comp_18] [COMP Disabled] [Log #17]
-        --------------
+        -----------------------------------------------------------
         ROBOT SETTINGS
-        --------------
+        -----------------------------------------------------------
         [TIME Changed] Auton Program: AWP Tandom
         [TIME Changed] Driver Mode: Tank - "Specific Person"
-        ------------
-        ROBOT SETTINGS
-        ------------
+        -----------------------------------------------------------
+        ROBOT DEVICES
+        -----------------------------------------------------------
         [TIME Logged] Motor1 {11, 18, true} - [Connected C:4] - [Okay]
         [TIME Logged] Motor2 {12, 18, false} - [Connected C:4] - [Okay]
         [TIME Logged] Motor3 {13, 18, true} - [Connected C:4] - [HOT]
@@ -81,21 +111,16 @@ void AutoLogger::autoLogRunner()
         [TIME Logged] Motor8 {18, 18, false} - [Connected C:4] - [Okay]
         [TIME Logged] Motor9 {19, 18, true} - [Connected C:4] - [Okay]
         [TIME Logged] IMU {Installed} - [Connected C:4]
-        [TIME Logged] USD {Installed} - [Connected]
-        -------------------
+        -----------------------------------------------------------
         IMPORTANT VARIABLES
-        -------------------
+        -----------------------------------------------------------
         [TIME Logged] ODOMETRY: {x: 0, y: 0, theta: 0}
         [TIME Logged] CATAPAULT: {state: 0, speed: 0}
-        ------------------------
+        -----------------------------------------------------------
         IMPORTANT EVENT MESSAGES
-        ------------------------
+        -----------------------------------------------------------
         [00:15.334] [COMP Controller] [Robot is disabled]
         [00:15.754] [GUI] [Screensaver Active]
-        ---------------
-        CUSTOM MESSAGES
-        ---------------
-        Any custom messages that are logged will be logged here
         ###########################################################
 
         Log Update Triggers:
@@ -108,69 +133,157 @@ void AutoLogger::autoLogRunner()
     */
 }
 
-void AutoLogger::logCustomStringMessage(std::string message)
+void AutoLogger::pauseAutoLog()
 {
-    Logger::logStringMessage(message);
+    paused = true;
+    nextMessage = getTimeStamp_str((rand() % 100000)+100) + "AUTOLOG PAUSED";
+    Logger::logStringMessage(nextMessage);
 }
 
-void AutoLogger::logCustomCharMessage(const char* message, ...)
+void AutoLogger::resumeAutoLog()
 {
+    paused = false;
+    nextMessage = getTimeStamp_str((rand() % 100000)+100) + "AUTOLOG RESUMED";
+    Logger::logStringMessage(nextMessage);
+}
+
+void AutoLogger::stopAutoLog()
+{
+    terminate = true;
+    nextMessage = getTimeStamp_str((rand() % 100000)+100) + "AUTOLOG STOPPED";
+    Logger::logStringMessage(nextMessage);
+}
+
+template<typename T>
+void AutoLogger::logVarible(std::string var_name, T var)
+{
+    importantVaribles.push_back(getTimeStamp_str((rand() % 100000)+100) + var_name + " = " + std::to_string(var));
+}
+
+template<>
+void AutoLogger::logVarible<std::string>(std::string var_name, std::string var)
+{
+    importantVaribles.push_back(getTimeStamp_str((rand() % 100000)+100) + var_name + " = " + var);
+}
+
+template<typename T>
+void AutoLogger::logArray(std::string array_name, T* array, int array_length)
+{
+    nextMessage = "{";
+    for (int i = 0; i < array_length; i++) {
+        nextMessage += std::to_string(array[i]);
+        if (i != array_length - 1)
+            nextMessage += ", ";
+    }
+    nextMessage += "}";
+    importantVaribles.push_back(getTimeStamp_str((rand() % 100000)+100) + array_name + "[" + std::to_string(array_length) + "] = " + nextMessage);
+}
+
+template<>
+void AutoLogger::logArray<std::string>(std::string array_name, std::string* array, int array_length)
+{
+    nextMessage = "{";
+    for (int i = 0; i < array_length; i++) {
+        nextMessage += array[i];
+        if (i != array_length - 1)
+            nextMessage += ", ";
+    }
+    nextMessage += "}";
+    importantVaribles.push_back(getTimeStamp_str((rand() % 100000)+100) + array_name + "[" + std::to_string(array_length) + "] = " + nextMessage);
+}
+
+void AutoLogger::logStringMessage(std::string message)
+{
+    importantMessages.push_back(getTimeStamp_str((rand() % 100000)+100) + message);
+}
+
+void AutoLogger::logCharMessage(const char* message, ...)
+{
+    nextMessage = getTimeStamp_str((rand() % 100000)+100);
+
     va_list args;
     va_start(args, message);
-    Logger::logCharMessage(message, args);
+    char buffer[256];
+    sprintf(buffer, (nextMessage + message).c_str(), args);
+    nextMessage = buffer;
     va_end(args);
+    importantMessages.push_back(nextMessage);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 ///////////////////////              Logger Class           ///////////////////////
 ///////////////////////////////////////////////////////////////////////////////////
 
-Logger::Logger(std::string file_name, bool overwrite, bool append) {
+Logger::Logger(std::string file_name, bool overwrite, bool append, bool timestamp) {
     file_mode = "a"; // default to append as to not lose logs
+    this->timestamp = timestamp;
+
     if(file_name.length() > 64)
         throw std::runtime_error("Logger: File name is too long, keep under 64 characters");
 
     if (!overwrite) {
+        char buff[64];
+        std::vector<std::string> fileNames;
+        std::string file_name_copy;
+        std::string file_name_number;
+        short int file_name_number_int;
+        short int highestFileNumber = 0;
+
+        FILE* readFileName = fopen(list_file.c_str(), "r");
+        while(fgets(buff, 64, readFileName))
+        {
+            fileNames.push_back(buff);
+        }
+
+        for (int i=0;i<fileNames.size();i++)
+        {
+            if(fileNames[i].find_first_of("_") != std::string::npos)
+                file_name_copy = file_name.substr(0, file_name.find_first_of("_"));
+            else
+                file_name_copy = file_name.substr(0, file_name.find_first_of("."));
+                
+            if (fileNames[i].find(file_name_copy) == std::string::npos)
+                fileNames.erase(fileNames.begin() + i);
+        }
+
+        for (int i=0;i<fileNames.size();i++)
+        {
+            if (fileNames[i].find_first_of("_") != std::string::npos)
+            {
+                file_name_copy = file_name.substr(0, file_name.find_first_of("_"));
+                file_name_number = fileNames[i].substr(fileNames[i].find_first_of("_") + 1,
+                    fileNames[i].find_first_of(".") - fileNames[i].find_first_of("_") - 1);
+
+                if (!file_name_number.empty())
+                {
+                    file_name_number_int = std::stoi(file_name_number);
+                    if (file_name_number_int > highestFileNumber)
+                        highestFileNumber = file_name_number_int;
+                }
+            }
+            else
+            {
+                file_name_number_int = 0;
+            }
+        }
+
         if (append) {
             file_mode = "a";
             appending = true;
+
+            if(file_name_copy.find_first_of("_") == std::string::npos)
+                file_name_copy = file_name.substr(0, file_name.find_first_of("."));
+            
+            file_name = file_name_copy + "_" + std::to_string(highestFileNumber) + 
+                            file_name.substr(file_name.find_first_of("."));
         }
         else {
             appending = false;
             
-            char buff[64];
-            std::vector<std::string> fileNames;
-            std::string file_name_copy;
-            std::string file_name_number;
-            short int file_name_number_int;
-            short int highestFileNumber = 0;
-
-            FILE* readFileName = fopen(list_file.c_str(), "r");
-            while(fgets(buff, 64, readFileName))
-            {
-                fileNames.push_back(buff);
-            }
-
-            for (int i=0;i<fileNames.size();i++)
-            {
-                if(fileNames[i].find_first_of("_") != std::string::npos)
-                {
-                    file_name_copy = file_name.substr(0, file_name.find_first_of("_"));
-                    file_name_number = fileNames[i].substr(fileNames[i].find_first_of("_") + 1,
-                        fileNames[i].find_first_of(".") - fileNames[i].find_first_of("_") - 1);
-
-                    file_name_number_int = std::stoi(file_name_number);
-                }
-                else
-                    file_name_number_int = 0;
-                
-                if(file_name_number_int > highestFileNumber)
-                    highestFileNumber = file_name_number_int;
-            }
-            highestFileNumber++;
+            this->file_num = ++highestFileNumber;
             if(file_name_copy.find_first_of("_") == std::string::npos)
                 file_name_copy = file_name.substr(0, file_name.find_first_of("."));
-
+            
             file_name = file_name_copy + "_" + std::to_string(highestFileNumber) + 
                             file_name.substr(file_name.find_first_of("."));
 
@@ -183,6 +296,7 @@ Logger::Logger(std::string file_name, bool overwrite, bool append) {
     }
     
     this->file_name = file_name;
+
     FILE* logFileName = fopen(list_file.c_str(), "a");
     if (logFileName) {
         fwrite(file_name.c_str(), sizeof(char), file_name.length(), logFileName);
@@ -219,7 +333,8 @@ void Logger::logStringMessage(std::string message) {
         logFile = fopen(file_name.c_str(), file_mode.c_str());
 
     if (logFile) {
-        message.insert(0, getTimeStamp_str((rand() % 100000)+100));
+        if (timestamp)
+            message.insert(0, getTimeStamp_str((rand() % 100000)+100));
         
         fwrite(message.c_str(), sizeof(char), message.length(), logFile);
         fwrite("\n", sizeof(char), 1, logFile);
@@ -233,7 +348,8 @@ void Logger::logCharMessage(const char* message, ...)
 
     if (logFile) {
         std::string logMessage = "";
-        logMessage = getTimeStamp_str((rand() % 100000)+100);
+        if (timestamp)
+            logMessage = getTimeStamp_str((rand() % 100000)+100);
 
         va_list args;
         va_start(args, message);
@@ -250,7 +366,8 @@ void Logger::logVarible(std::string var_name, T var) {
 
     if (logFile) {
         var_name = "VAR: " + var_name + " = ";
-        var_name.insert(0, getTimeStamp_str((rand() % 100000)+100));
+        if (timestamp)
+            var_name.insert(0, getTimeStamp_str((rand() % 100000)+100));
         fwrite(var_name.c_str(), sizeof(char), var_name.length(), logFile);
         fwrite(std::to_string(var).c_str(), sizeof(char), std::to_string(var).length(), logFile);
         fwrite("\n", sizeof(char), 1, logFile);
@@ -264,7 +381,8 @@ void Logger::logVarible<std::string>(std::string var_name, std::string var) {
 
     if (logFile) {
         var_name = "VAR: " + var_name + " = ";
-        var_name.insert(0, getTimeStamp_str((rand() % 100000)+100));
+        if (timestamp)
+            var_name.insert(0, getTimeStamp_str((rand() % 100000)+100));
         fwrite(var_name.c_str(), sizeof(char), var_name.length(), logFile);
         fwrite(var.c_str(), sizeof(char), var.length(), logFile);
         fwrite("\n", sizeof(char), 1, logFile);
@@ -278,7 +396,8 @@ void Logger::logArray(std::string array_name, T* array, int array_length) {
 
     if (logFile) {
         array_name = "ARRAY: " + array_name + "[" + std::to_string(array_length) + "] = ";
-        array_name.insert(0, getTimeStamp_str((rand() % 100000)+100));
+        if (timestamp)
+            array_name.insert(0, getTimeStamp_str((rand() % 100000)+100));
         fwrite(array_name.c_str(), sizeof(char), array_name.length(), logFile);
         fwrite("{", sizeof(char), 1, logFile);
         for (int i = 0; i < array_length; i++) {
@@ -297,7 +416,8 @@ void Logger::logArray<std::string>(std::string array_name, std::string* array, i
 
     if (logFile) {
         array_name = "ARRAY: " + array_name + "[" + std::to_string(array_length) + "] = ";
-        array_name.insert(0, getTimeStamp_str((rand() % 100000)+100));
+        if(timestamp)
+            array_name.insert(0, getTimeStamp_str((rand() % 100000)+100));
         fwrite(array_name.c_str(), sizeof(char), array_name.length(), logFile);
         fwrite("{", sizeof(char), 1, logFile);
         for (int i = 0; i < array_length; i++) {
@@ -312,33 +432,55 @@ void Logger::logArray<std::string>(std::string array_name, std::string* array, i
 int main()
 {
     srand(time(NULL));
-    Logger logBuild("usd/logOut.txt", true, true);
-    logBuild.logStringMessage("Hello World");
-    logBuild.logStringMessage("This is cool");
-    logBuild.logStringMessage("Rishi is black");
-    int x = 5;
-    int y = 10;
-    double z = 3.14159265358;
-    logBuild.logCharMessage("x: %d, y: %d, z: %f", x, y, z);
+    autoLogger->logStringMessage("Hello World");
+    autoLogger->logCharMessage("xw: %d, y: %d, z: %f", 5, 10, 3.14159265358);
+    int value = 5;
+    autoLogger->logVarible("value", value);
+    double value2 = 2.17856456156485;
+    autoLogger->logVarible("value2", value2);
+    bool value3 = true;
+    autoLogger->logVarible("value3", value3);
+    std::string value4 = "World Hello!";
+    autoLogger->logVarible("value4", value4);
 
     int array[5] = {11235, 2563123, 35645, -4564, -455};
-    logBuild.logArray("Array", array, 5);
-
-    int varible1 = 5;
-    logBuild.logVarible("varible1", varible1);
-    double varible2 = 2.17856456156485;
-    logBuild.logVarible("varible2", varible2);
-    bool varible3 = true;
-    logBuild.logVarible("varible3", varible3);
-    std::string varible4 = "World Hello!";
-    logBuild.logVarible("varible4", varible4);
-
+    autoLogger->logArray("Array", array, 5);
     double array2[5] = {1.1235, 2.563123, 3.5645, -4.564, -4.55};
-    logBuild.logArray("Array2", array2, 5);
+    autoLogger->logArray("Array2", array2, 5);
     bool array3[5] = {true, false, true, false, true};
-    logBuild.logArray("Array3", array3, 5);
+    autoLogger->logArray("Array3", array3, 5);
     std::string array4[5] = {"Hello", "World", "This", "Is", "Cool"};
-    logBuild.logArray("Array4", array4, 5);
+    autoLogger->logArray("Array4", array4, 5);
+
+    autoLogger->autoLogRunner();
+
+    // Logger logBuild("usd/logOut.txt", false, false);
+    // logBuild.logStringMessage("Hello World");
+    // logBuild.logStringMessage("This is cool");
+    // logBuild.logStringMessage("Rishi is black");
+    // int x = 5;
+    // int y = 10;
+    // double z = 3.14159265358;
+    // logBuild.logCharMessage("x: %d, y: %d, z: %f", x, y, z);
+
+    // int array[5] = {11235, 2563123, 35645, -4564, -455};
+    // logBuild.logArray("Array", array, 5);
+
+    // int varible1 = 5;
+    // logBuild.logVarible("varible1", varible1);
+    // double varible2 = 2.17856456156485;
+    // logBuild.logVarible("varible2", varible2);
+    // bool varible3 = true;
+    // logBuild.logVarible("varible3", varible3);
+    // std::string varible4 = "World Hello!";
+    // logBuild.logVarible("varible4", varible4);
+
+    // double array2[5] = {1.1235, 2.563123, 3.5645, -4.564, -4.55};
+    // logBuild.logArray("Array2", array2, 5);
+    // bool array3[5] = {true, false, true, false, true};
+    // logBuild.logArray("Array3", array3, 5);
+    // std::string array4[5] = {"Hello", "World", "This", "Is", "Cool"};
+    // logBuild.logArray("Array4", array4, 5);
     
     return 0;
 }

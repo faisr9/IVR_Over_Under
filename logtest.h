@@ -5,7 +5,7 @@
 #include <string.h>
 #include <vector>
 #include <fstream>
-#include<iomanip>
+#include <iomanip>
 
 class Logger {
     private:
@@ -15,7 +15,9 @@ class Logger {
 
     protected:
         std::string file_name;
-        std::string file_mode;    
+        std::string file_mode;   
+        int file_num; 
+        bool timestamp = false;
 
         // std::string getTimeStamp_str();
         FILE* closeLogFile();
@@ -31,7 +33,7 @@ class Logger {
          * \param overwrite=false Whether or not to overwrite the file if it already exists. (ignores append parameter)
          * \param append=true Whether or not to append to the file if it already exists
         */
-        Logger(std::string file_name, bool overwrite=false, bool append=true);
+        Logger(std::string file_name, bool overwrite=false, bool append=true, bool timestamp=true);
         ~Logger();
 
         void logStringMessage(std::string message);
@@ -61,28 +63,46 @@ class Logger {
 
 class AutoLogger : protected Logger{
     private:
-        Logger config_Log;
-        AutoLogger() : Logger(auto_log_file_name, false, true), config_Log(auto_log_config_info, false, true) {}
+        // AutoLogger() : Logger(auto_log_file_name, false, true) {AutoLogger::autoLogRunner();}
+        AutoLogger();
+
         inline static AutoLogger* instance_ = nullptr;
-        inline static std::string auto_log_file_name = "usd/autoLog_data.txt";
-        inline static std::string auto_log_config_info = "usd/autoLog_config_info.txt";
+        inline static std::string auto_log_file_name = "usd/autoLogData.txt";
         inline static const int auto_log_delay = 50; // milliseconds
 
-        void autoLogRunner();
+        bool terminate = false;
+        bool paused = false;
+        int logNum;
+
+        std::string nextMessage;
+        std::string motorData[9][7];
+        std::string deviceData[2][3];
+        std::vector<std::string> importantVaribles;
+        std::vector<std::string> importantMessages;
+
+        
+
 
     public:
+        void autoLogRunner();
         AutoLogger(const AutoLogger& other) = delete;
         ~AutoLogger();
 
         static AutoLogger* createInstance();
         static AutoLogger* getInstance();
 
-        void startAutoLog();
+        // void startAutoLog();
         void pauseAutoLog();
         void resumeAutoLog();
         void stopAutoLog();
-        void logCustomStringMessage(std::string message);
-        void logCustomCharMessage(const char* message, ...);
+
+        template<typename T>
+        void logVarible(std::string var_name, T var);
+        template<typename T>
+        void logArray(std::string array_name, T* array, int array_length);
+
+        void logStringMessage(std::string message);
+        void logCharMessage(const char* message, ...);
 };
 extern AutoLogger* autoLogger; // Global Class Access
 
