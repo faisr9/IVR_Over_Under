@@ -20,7 +20,7 @@ std::string getTimeStamp_str(int inptime) {
 
 AutoLogger* autoLogger = AutoLogger::createInstance();
 
-AutoLogger::AutoLogger() : Logger(auto_log_file_name, true, false, false) {
+AutoLogger::AutoLogger() : Logger(auto_log_file_name, false, true, false) {
     
     logNum = Logger::file_num;
     // AutoLogger::autoLogRunner();
@@ -66,11 +66,11 @@ void AutoLogger::autoLogRunner()
             Logger::logStringMessage("-----------------------------------------------------------");
             Logger::logStringMessage("ROBOT SETTINGS");
             Logger::logStringMessage("-----------------------------------------------------------");
-            Logger::logStringMessage("Will log setting changes here");
+            Logger::logStringMessage("Will log setting changes here"); // Will write with intergration of settings/gui
             Logger::logStringMessage("-----------------------------------------------------------");
             Logger::logStringMessage("ROBOT DEVICES");
             Logger::logStringMessage("-----------------------------------------------------------");
-            Logger::logStringMessage("Will log device state changes here");
+            Logger::logStringMessage("Will log device state changes here"); // Will write with intergration of devices
             Logger::logStringMessage("-----------------------------------------------------------");
             Logger::logStringMessage("IMPORTANT VARIABLES");
             Logger::logStringMessage("-----------------------------------------------------------");
@@ -82,6 +82,9 @@ void AutoLogger::autoLogRunner()
             for(int i = 0; i < importantMessages.size(); i++)
                 Logger::logStringMessage(importantMessages[i]);            
             Logger::logStringMessage("###########################################################");
+            importantVaribles.clear();
+            importantMessages.clear();
+
             std::abort();
         // }
         // task delay (1000)
@@ -154,6 +157,18 @@ void AutoLogger::stopAutoLog()
     Logger::logStringMessage(nextMessage);
 }
 
+void AutoLogger::motorUpdate()
+{
+    // This method will be made with the completion of the devices class
+    // It will utilize the devices class to get the state of all motors
+}
+
+void AutoLogger::deviceUpdate()
+{
+    // This method will be made with the completion of the devices class
+    // It will utilize the devices class to get the state of all devices
+}
+
 template<typename T>
 void AutoLogger::logVarible(std::string var_name, T var)
 {
@@ -194,11 +209,13 @@ void AutoLogger::logArray<std::string>(std::string array_name, std::string* arra
 
 void AutoLogger::logStringMessage(std::string message)
 {
+    // Add mutexes for multithreading
     importantMessages.push_back(getTimeStamp_str((rand() % 100000)+100) + message);
 }
 
 void AutoLogger::logCharMessage(const char* message, ...)
 {
+    // Add mutexes for multithreading
     nextMessage = getTimeStamp_str((rand() % 100000)+100);
 
     va_list args;
@@ -217,35 +234,38 @@ void AutoLogger::logCharMessage(const char* message, ...)
 Logger::Logger(std::string file_name, bool overwrite, bool append, bool timestamp) {
     file_mode = "a"; // default to append as to not lose logs
     this->timestamp = timestamp;
+    std::vector<std::string> fileNames;
 
     if(file_name.length() > 64)
         throw std::runtime_error("Logger: File name is too long, keep under 64 characters");
 
     if (!overwrite) {
         char buff[64];
-        std::vector<std::string> fileNames;
         std::string file_name_copy;
         std::string file_name_number;
         short int file_name_number_int;
         short int highestFileNumber = 0;
 
         FILE* readFileName = fopen(list_file.c_str(), "r");
-        while(fgets(buff, 64, readFileName))
-        {
+        while(fgets(buff, 64, readFileName)) // Read file names into vector
             fileNames.push_back(buff);
-        }
 
-        for (int i=0;i<fileNames.size();i++)
-        {
-            if(fileNames[i].find_first_of("_") != std::string::npos)
-                file_name_copy = file_name.substr(0, file_name.find_first_of("_"));
-            else
-                file_name_copy = file_name.substr(0, file_name.find_first_of("."));
-                
+        // Get true file name
+        if(file_name.find_first_of("_") == std::string::npos)
+            file_name_copy = file_name.substr(4, file_name.length()-4 - file_name.substr(file_name.find_first_of(".")).length());
+        else
+            file_name_copy = file_name.substr(4, file_name.length()-4 - file_name.substr(file_name.find_first_of("_")).length());
+            
+        for (int i=0;i<fileNames.size();i++) // Remove all file names that don't match the true file name
+        {                
             if (fileNames[i].find(file_name_copy) == std::string::npos)
+            {
                 fileNames.erase(fileNames.begin() + i);
+                i--;
+            }
         }
 
+        // Get highest file number
         for (int i=0;i<fileNames.size();i++)
         {
             if (fileNames[i].find_first_of("_") != std::string::npos)
@@ -267,6 +287,7 @@ Logger::Logger(std::string file_name, bool overwrite, bool append, bool timestam
             }
         }
 
+        // Set file number and file name based on append parameter
         if (append) {
             file_mode = "a";
             appending = true;
@@ -280,7 +301,10 @@ Logger::Logger(std::string file_name, bool overwrite, bool append, bool timestam
         else {
             appending = false;
             
-            this->file_num = ++highestFileNumber;
+            cout << "Highest File Number: " << highestFileNumber << endl;
+            highestFileNumber++;
+            this->file_num = highestFileNumber;
+            cout << "New File Number: " << this->file_num << endl;
             if(file_name_copy.find_first_of("_") == std::string::npos)
                 file_name_copy = file_name.substr(0, file_name.find_first_of("."));
             
@@ -297,13 +321,26 @@ Logger::Logger(std::string file_name, bool overwrite, bool append, bool timestam
     
     this->file_name = file_name;
 
-    FILE* logFileName = fopen(list_file.c_str(), "a");
-    if (logFileName) {
-        fwrite(file_name.c_str(), sizeof(char), file_name.length(), logFileName);
-        fwrite("\n", sizeof(char), 1, logFileName); // Tructates the line for readback
-        fclose(logFileName);
+    // Check if file name is already in list
+    bool fileExists = false;
+    for (const std::string& fileNameInList : fileNames) {
+        if (fileNameInList == (file_name + "\n")) {
+            fileExists = true;
+            break;
+        }
     }
 
+    // If file name is not in list, add it
+    if (!fileExists) {
+        FILE* logFileName = fopen(list_file.c_str(), "a");
+        if (logFileName) {
+            fwrite(file_name.c_str(), sizeof(char), file_name.length(), logFileName);
+            fwrite("\n", sizeof(char), 1, logFileName); // Truncates the line for readback
+            fclose(logFileName);
+        }
+    }
+
+    // Open log file
     logFile = fopen(file_name.c_str(), file_mode.c_str());
 
     std::string break_message = "---------------------------\nStart of new log\n---------------------------\n";
@@ -338,6 +375,7 @@ void Logger::logStringMessage(std::string message) {
         
         fwrite(message.c_str(), sizeof(char), message.length(), logFile);
         fwrite("\n", sizeof(char), 1, logFile);
+        fflush(logFile);
     }
 }
 
@@ -356,6 +394,7 @@ void Logger::logCharMessage(const char* message, ...)
         vfprintf(logFile, (logMessage + message).c_str(), args);
         va_end(args);
         fwrite("\n", sizeof(char), 1, logFile);
+        fflush(logFile);
     }
 }
 
@@ -371,6 +410,7 @@ void Logger::logVarible(std::string var_name, T var) {
         fwrite(var_name.c_str(), sizeof(char), var_name.length(), logFile);
         fwrite(std::to_string(var).c_str(), sizeof(char), std::to_string(var).length(), logFile);
         fwrite("\n", sizeof(char), 1, logFile);
+        fflush(logFile);
     }
 }
 
@@ -386,6 +426,7 @@ void Logger::logVarible<std::string>(std::string var_name, std::string var) {
         fwrite(var_name.c_str(), sizeof(char), var_name.length(), logFile);
         fwrite(var.c_str(), sizeof(char), var.length(), logFile);
         fwrite("\n", sizeof(char), 1, logFile);
+        fflush(logFile);
     }
 }
 
@@ -406,6 +447,7 @@ void Logger::logArray(std::string array_name, T* array, int array_length) {
                 fwrite(", ", sizeof(char), 2, logFile);
         }
         fwrite("}\n", sizeof(char), 2, logFile);
+        fflush(logFile);
     }
 }
 
@@ -426,6 +468,7 @@ void Logger::logArray<std::string>(std::string array_name, std::string* array, i
                 fwrite(", ", sizeof(char), 2, logFile);
         }
         fwrite("}\n", sizeof(char), 2, logFile);
+        fflush(logFile);
     }
 }
 
@@ -484,3 +527,11 @@ int main()
     
     return 0;
 }
+
+/*
+When reading back;
+pros terminal 1>PC side file
+ with echo (ps only)
+pros terminal | Tee-Object -Append PC side file
+
+*/

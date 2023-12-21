@@ -79,10 +79,11 @@ class AutoLogger : protected Logger{
         std::string deviceData[2][3];
         std::vector<std::string> importantVaribles;
         std::vector<std::string> importantMessages;
+        // Add mutexes for multithreading
 
+        void motorUpdate();
+        void deviceUpdate();
         
-
-
     public:
         void autoLogRunner();
         AutoLogger(const AutoLogger& other) = delete;
