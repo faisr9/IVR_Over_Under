@@ -91,7 +91,7 @@ void PID::drivePID(double target, pros::ADIEncoder* yEnc){
     double error = target;
     double sensorValue = 0;
 
-    double startValue = 2*M_PI*(1.96/2)*(yEnc->get_value()/360);
+    double startValue = 2*M_PI*(1.96/2)*(yEnc->get_value()/360.0);
 
     double lastError = 0;
     double derivative = 0;
@@ -101,7 +101,7 @@ void PID::drivePID(double target, pros::ADIEncoder* yEnc){
 
     pros::Task drivePID_lt{[&]{
         if(std::abs(error) > .3){
-            sensorValue = startValue - 2*M_PI*(1.96/2)*(yEnc->get_value()/360); //2*pi*r*(degrees/360)
+            sensorValue = startValue - 2*M_PI*(1.96/2)*(yEnc->get_value()/360.0); //2*pi*r*(degrees/360)
             
             error = target - sensorValue;
 
@@ -125,7 +125,7 @@ void PID::drivePID(double target, pros::ADIEncoder* yEnc){
 void PID::drivePID(double target, pros::ADIEncoder* yEnc, int angle){
     //FWD PID
     double error = target;
-    double startValue = 2*M_PI*(1.96/2)*(yEnc->get_value()/360);
+    double startValue = 2*M_PI*(1.96/2)*(yEnc->get_value()/360.0);
     double sensorValue=0;
 
     double lastError = 0;
@@ -150,7 +150,7 @@ void PID::drivePID(double target, pros::ADIEncoder* yEnc, int angle){
             ////////////////////////////
             //        FWD PID         //
             ////////////////////////////
-            sensorValue = startValue - 2*M_PI*(1.96/2)*(yEnc->get_value()/360); //2*pi*r*(degrees/360)
+            sensorValue = startValue - 2*M_PI*(1.96/2)*(yEnc->get_value()/360.0); //2*pi*r*(degrees/360)
             
             error = target - sensorValue;
 
@@ -194,7 +194,7 @@ void PID::drivePID(double target, pros::ADIEncoder* yEnc, int angle){
 void PID::drivePID(double target, pros::ADIEncoder* yEnc, int angle, double strafeTarget, pros::ADIEncoder* xEnc){
     //FWD PID
     double error = target;
-    double startValueY = 2*M_PI*(1.96/2)*(yEnc->get_value()/360);
+    double startValueY = 2*M_PI*(1.96/2)*(yEnc->get_value()/360.0);
     double sensorValue = 0;
 
     double lastError = 0;
@@ -215,7 +215,7 @@ void PID::drivePID(double target, pros::ADIEncoder* yEnc, int angle, double stra
 
     //Strafe PID
     double sError = strafeTarget;
-    double startValueX = 2*M_PI*(1.96/2)*(xEnc->get_value()/360);
+    double startValueX = 2*M_PI*(1.96/2)*(xEnc->get_value()/360.0);
     double sSensorValue = 0;
 
     double lastSError = 0;
@@ -229,7 +229,7 @@ void PID::drivePID(double target, pros::ADIEncoder* yEnc, int angle, double stra
             ////////////////////////////
             //      Forward PID       //
             ////////////////////////////
-            sensorValue = startValueY - 2*M_PI*(1.96/2)*(yEnc->get_value()/360); //2*pi*r*(degrees/360)
+            sensorValue = startValueY - 2*M_PI*(1.96/2)*(yEnc->get_value()/360.0); //2*pi*r*(degrees/360)
             
             error = target - sensorValue;
 
@@ -267,7 +267,7 @@ void PID::drivePID(double target, pros::ADIEncoder* yEnc, int angle, double stra
             ////////////////////////////
             //        Strafe PID      //
             ////////////////////////////
-            sSensorValue = startValueX - 2*M_PI*(1.96/2)*(xEnc->get_value()/360); //2*pi*r*(degrees/360)
+            sSensorValue = startValueX - 2*M_PI*(1.96/2)*(xEnc->get_value()/360.0); //2*pi*r*(degrees/360)
             
             sError = strafeTarget - sSensorValue;
 
@@ -318,33 +318,35 @@ void PID::turnPID(int angle){
     }
 }
 
-void PID::strafePID(double strafeTarget){
+void PID::strafePID(double strafeTarget, pros::ADIEncoder* xEnc){
     double error = strafeTarget;
-    xEnc.reset();
     double sensorValue = 0;
+    double startValueX = 2*M_PI*(1.96/2)*(xEnc->get_value()/360.0);
 
     double lastError = 0;
     double derivative = 0;
     double integral = 0;
 
     double strafeSpd;
-    while(std::abs(error) > 1){
-        sensorValue = 2*M_PI*(1.96/2)*(xEnc.get_angle()/360); //2*pi*r*(degrees/360)
-        
-        error = strafeTarget - sensorValue;
+    pros::Task drivePID_lt{[&]{
+        if(std::abs(error) > 1){
+            sensorValue = startValueX - 2*M_PI*(1.96/2)*(xEnc->get_value()/360.0); //2*pi*r*(degrees/360)
+            
+            error = strafeTarget - sensorValue;
 
-        integral += error;
-        //Ensures integral doesn't get too large
-        if(error==0||sensorValue>error)
-            integral = 0;
-        else if(error<=0)
-            integral = 0;
-        
-        //updates derivative and lastError
-        derivative = error - lastError;
-        lastError = error;
+            integral += error;
+            //Ensures integral doesn't get too large
+            if(error==0||sensorValue>error)
+                integral = 0;
+            else if(error<=0)
+                integral = 0;
+            
+            //updates derivative and lastError
+            derivative = error - lastError;
+            lastError = error;
 
-        strafeSpd = strafePID_consts.kP * error + strafePID_consts.kI * integral + strafePID_consts.kD * derivative;   
-        // strafe(strafeSpd); //TODO: Implement strafe function
-    }
+            strafeSpd = strafePID_consts.kP * error + strafePID_consts.kI * integral + strafePID_consts.kD * derivative;   
+            // strafe(strafeSpd); //TODO: Implement strafe function
+        }
+    }};
 }
