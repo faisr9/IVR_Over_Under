@@ -5,6 +5,8 @@ void initialize() {
 	pros::lcd::initialize(); // Temp until custom GUI
 }
 
+LinkHelper* link = LinkHelper::createInstance(10, link_type_e_t::E_LINK_TRANSMITTER);
+
 /* Runs when robot is disabled from competition controller after driver/auton */
 void disabled() {}
 

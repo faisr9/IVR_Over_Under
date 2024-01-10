@@ -58,6 +58,7 @@
 #include <math.h>
 #include <vector>
 #include <fstream>
+#include <sstream>
 ///////////////////////////////////////
 
 /**
@@ -96,6 +97,12 @@
 // Use PROS Default Simple Name List //
 #define PROS_USE_SIMPLE_NAMES
 #endif
+
+// Vex defined function, might as well have just in case
+#define waitUntil(condition)                                                   \
+  do {                                                                         \
+    pros::delay(5);                                                            \
+  } while (!(condition))
 
 /**
  * If defined, C++ literals will be available for use. All literals are in the
