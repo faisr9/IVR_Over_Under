@@ -40,12 +40,17 @@ class LinkHelper {
 
     /**
      * @brief Initialize the link object
+     * 
+     * NOTE: This is required because the link object will not initialize
+     *  if the constructor is called in this class' constructor
      */
     void init();
 
     /**
      * @brief Set the timeout for receiving messages
      * @param timeout the timeout in milliseconds
+     * 
+     * NOTE: By default, this is set to 3500 milliseconds
      */
     void setMsgRecvTimeout(int timeout);
 
@@ -65,7 +70,8 @@ class LinkHelper {
      * 
      * @return true if the data was sent successfully
      * 
-     * @note Will develop a better way to do this, but for now, this is the best way
+     * NOTE: Will develop a better way to do this, but for now, this is the best way
+     * NOTE: Will add variations of this method to send enums for repeated commands
      */
     bool sendData(int var);
     bool sendData(float var);
@@ -81,7 +87,7 @@ class LinkHelper {
      * @return the message received, or "~timeout~" if no message was received within
      *  the timeout period
      */
-    std::string recvMsg(bool waitForResponse=true);
+    std::string recvMsg(/*bool waitForResponse=true*/);
 
     /**
      * @brief Receive data from the other robot
@@ -98,10 +104,10 @@ class LinkHelper {
      * 
      * @note Will develop a better way to do this, but for now, this is the best way
      */
-    void recvData(int &data_out, bool waitForResponse=true);
-    void recvData(float &data_out, bool waitForResponse=true);
-    void recvData(double &data_out, bool waitForResponse=true);
-    void recvData(bool &data_out, bool waitForResponse=true);
+    void recvData(int &data_out /*, bool waitForResponse=true*/);
+    void recvData(float &data_out /*, bool waitForResponse=true*/);
+    void recvData(double &data_out /*, bool waitForResponse=true*/);
+    void recvData(bool &data_out /*, bool waitForResponse=true*/);
     
     /**
      * @brief Send a notification to the other robot
