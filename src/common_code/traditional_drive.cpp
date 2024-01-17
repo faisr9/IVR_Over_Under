@@ -37,7 +37,8 @@ traditional_drive::traditional_drive(Imu &imu, Motor_Group &l, Motor_Group &r, O
 } // with odom no controller
 traditional_drive::traditional_drive(Imu&imu,Controller &mstr, Motor_Group &l, Motor_Group &r, Odom* odometry) : traditional_drive::traditional_drive(imu, l, r, 0) {
     master = &mstr;
-    odom_inst = odometry;
+    odom_inst = odometry; 
+    // NOTE, THIS SETUP WITH CALLING TRADITIONAL DRIVE CONTSTRUCTOR INSIDE ITS OWN CONSTRUCTOR MIGHT NOT WORK AND IT COULD LITERALLY BREAK EVERYTHING
 } // everything
 
 
