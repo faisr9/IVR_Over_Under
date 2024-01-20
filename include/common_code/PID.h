@@ -9,9 +9,26 @@ class PID{
             double kD;
         };
 
+        struct PIDVariables{
+            double error;
+            double sensorValue;
+            double startValue;
+
+            double lastError;
+            double derivative;
+            double integral;
+        };
+
         PIDConstants fwdPID_consts;
         PIDConstants turnPID_consts;
-        PIDConstants strafePID_consts;
+
+        PIDVariables fwdPID_vars;
+        PIDVariables turnPID_vars;
+
+        pros::ADIEncoder* yEnc;
+        pros::Imu* imu;
+
+        // PIDConstants strafePID_consts;
 
         // //Fwd PID constants
         // double KP;
@@ -29,19 +46,18 @@ class PID{
         // double strafeKD;
     
     public:
-        PID(double Kp, double Ki, double Kd);
-        PID(double Kp, double Ki, double Kd, double turnKp, double turnKi, double turnKd);
-        PID(double Kp, double Ki, double Kd, double turnKp, double turnKi, double turnKd, double strafeKp, double strafeKi, double strafeKd);
+        PID(double Kp, double Ki, double Kd, pros::ADIEncoder* yEnc);
+        PID(double Kp, double Ki, double Kd, pros::ADIEncoder* yEnc, double turnKp, double turnKi, double turnKd, pros::Imu* imu);
+        // PID(double Kp, double Ki, double Kd, double turnKp, double turnKi, double turnKd, double strafeKp, double strafeKi, double strafeKd);
         void setFwdConstants(double kp, double ki, double kd);
         void setTurnConstants(double kp, double ki, double kd);
         void setStrafeConstants(double kp, double ki, double kd);
 
-        void drivePID(double target, pros::ADIEncoder* yEnc);
-        void drivePID(double target, pros::ADIEncoder* yEnc, int angle);
-        void drivePID(double target, pros::ADIEncoder* yEnc, int angle, double strafeTarget, pros::ADIEncoder* xEnc);
+        void drivePID(double target);
+        void drivePID(double target, int angle);
+        // void drivePID(double target, pros::ADIEncoder* yEnc, int angle, double strafeTarget, pros::ADIEncoder* xEnc);
 
         void turnPID(int angle);
-        void strafePID(double strafeTarget, pros::ADIEncoder *xEnc);
-
+        // void strafePID(double strafeTarget, pros::ADIEncoder *xEnc);
     
 };
