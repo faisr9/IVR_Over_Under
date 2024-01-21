@@ -21,29 +21,13 @@ class PID{
 
         PIDConstants fwdPID_consts;
         PIDConstants turnPID_consts;
+        // PIDConstants strafePID_consts;
 
         PIDVariables fwdPID_vars;
         PIDVariables turnPID_vars;
 
         pros::ADIEncoder* yEnc;
         pros::Imu* imu;
-
-        // PIDConstants strafePID_consts;
-
-        // //Fwd PID constants
-        // double KP;
-        // double KI;
-        // double KD;
-
-        // //Turn PID constants
-        // double turnKP;
-        // double turnKI;
-        // double turnKD;
-
-        // //Strafe PID constants
-        // double strafeKP;
-        // double strafeKI;
-        // double strafeKD;
     
     public:
         PID(double Kp, double Ki, double Kd, pros::ADIEncoder* yEnc);
