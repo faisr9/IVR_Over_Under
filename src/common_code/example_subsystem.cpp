@@ -1,6 +1,4 @@
-#include "common_code/example_subsystem.h"
-#include <iostream>
-#include "api.h"
+#include "main.h"
 
 /*
 - sets instance_ as nullptr for proper memory management
