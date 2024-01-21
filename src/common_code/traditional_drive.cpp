@@ -32,13 +32,13 @@ traditional_drive::traditional_drive(Imu &imu, Motor_Group &l, Motor_Group &r, i
     init(imu, l, r, mode);
 };
 
-traditional_drive::traditional_drive(Imu &imu, Motor_Group &l, Motor_Group &r, Odom* odometry) : DriveParent(imu, drive_mode[0]) {
-    odom_inst = odometry;
+traditional_drive::traditional_drive(Imu &imu, Motor_Group &l, Motor_Group &r, Odom& odometry) : DriveParent(imu, drive_mode[0]) {
+    odom_inst = &odometry;
     init(imu, l, r, 0);
 } // with odom no controller
-traditional_drive::traditional_drive(Imu&imu,Controller &mstr, Motor_Group &l, Motor_Group &r, Odom* odometry) : DriveParent(imu, drive_mode[0]) {
+traditional_drive::traditional_drive(Imu&imu,Controller &mstr, Motor_Group &l, Motor_Group &r, Odom& odometry) : DriveParent(imu, drive_mode[0]) {
     master = &mstr;
-    odom_inst = odometry; 
+    odom_inst = &odometry; 
     init(imu, l, r, 0);
 }
 
@@ -230,4 +230,18 @@ double traditional_drive::getY() {
     }
 
     return odom_inst->getY();
+}
+
+/**
+ * Temporary function for TESTING PURPOSES
+ * 
+ * Going forward we need to use threading to call update position in the odom object
+*/
+Odom& traditional_drive::getOdom() {
+    if (odom_inst == nullptr) {
+        pros::lcd::set_text(3, "trad_drive getOdom but odom is nullptr!!!");
+        // throw std::runtime_error("Called getOdom but odom_inst is null!");
+    }
+
+    return *odom_inst;
 }

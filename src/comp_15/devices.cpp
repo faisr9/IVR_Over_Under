@@ -39,4 +39,5 @@ pros::ADIDigitalOut Floor_brake ('G');
 pros::ADIDigitalOut Wings       ('H');
 
 // Other classes //
-traditional_drive tank_drive(imu, ctrl_master, LeftDrive, RightDrive, new Odom(imu)); // and I'm deleting this where...?
+Odom odometry(imu);
+traditional_drive tank_drive(imu, ctrl_master, LeftDrive, RightDrive, odometry); // and I'm deleting this where...?

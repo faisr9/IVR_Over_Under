@@ -24,7 +24,7 @@ class traditional_drive : public DriveParent
         Imu *imu; // inertial sensor to get angle from
         string drive_mode[3] = {"arcade", "tank", "hybrid"}; // drive mode names
         Motor_Group *left_side, *right_side; // motor groups to send voltage to
-        Odom *odom_inst = nullptr; // instance of the odom class on the heap
+        Odom* odom_inst = nullptr; // instance of the odom class on the heap
         void init(Imu &imu, Motor_Group &l, Motor_Group &r, int mode);
         // drive mode methods
         void arcade_drive();
@@ -45,8 +45,8 @@ class traditional_drive : public DriveParent
         traditional_drive(Imu &imu, Motor_Group &l, Motor_Group &r); // converts to other constructor
         traditional_drive(Imu &imu, Motor_Group &l, Motor_Group &r, int mode); // initialize variables
 
-        traditional_drive(Imu &imu, Motor_Group &l, Motor_Group &r, Odom* odometry); // with odom no controller
-        traditional_drive(Imu&imu,Controller &mstr, Motor_Group &l, Motor_Group &r, Odom* odometry); // everything
+        traditional_drive(Imu &imu, Motor_Group &l, Motor_Group &r, Odom& odometry); // with odom no controller
+        traditional_drive(Imu&imu,Controller &mstr, Motor_Group &l, Motor_Group &r, Odom& odometry); // everything
 
         ~traditional_drive(); // destructor
 
@@ -59,4 +59,5 @@ class traditional_drive : public DriveParent
         Controller& get_controller();
         double getX();
         double getY();
+        Odom& getOdom();
 };
