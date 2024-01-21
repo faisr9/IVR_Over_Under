@@ -25,6 +25,7 @@ class traditional_drive : public DriveParent
         string drive_mode[3] = {"arcade", "tank", "hybrid"}; // drive mode names
         Motor_Group *left_side, *right_side; // motor groups to send voltage to
         Odom *odom_inst = nullptr; // instance of the odom class on the heap
+        void init(Imu &imu, Motor_Group &l, Motor_Group &r, int mode);
         // drive mode methods
         void arcade_drive();
         void tank_drive();

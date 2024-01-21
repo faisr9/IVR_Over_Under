@@ -11,40 +11,54 @@
 // ************ overloaded constructors ************
 //
 // default to arcade drive and then run constructor with mode and controller
-traditional_drive::traditional_drive(Imu&imu,Controller &mstr, Motor_Group &l, Motor_Group &r) 
-    : traditional_drive(imu,mstr, l, r, 0) {};
+traditional_drive::traditional_drive(Imu&imu,Controller &mstr, Motor_Group &l, Motor_Group &r) : DriveParent(imu, drive_mode[0]) {
+    master = &mstr;
+    init(imu, l, r, 0);
+};
 // default to arcade drive and then run constructor with mode without controller
-traditional_drive::traditional_drive(Imu &imu, Motor_Group &l, Motor_Group &r)
-    : traditional_drive(imu, l, r, 0){};
+traditional_drive::traditional_drive(Imu &imu, Motor_Group &l, Motor_Group &r) : DriveParent(imu, drive_mode[0]) {
+    init(imu, l, r, 0);
+};
 // initialize controller if applicable
-traditional_drive::traditional_drive(Imu &imu, Controller &mstr, Motor_Group &l, Motor_Group &r, int mode):traditional_drive::traditional_drive(imu,l,r,mode)
+traditional_drive::traditional_drive(Imu &imu, Controller &mstr, Motor_Group &l, Motor_Group &r, int mode) : DriveParent(imu, drive_mode[mode])
 {
     master = &mstr;
+    init(imu, l, r, mode);
 };
 // initialize variables
 traditional_drive::traditional_drive(Imu &imu, Motor_Group &l, Motor_Group &r, int mode)
     : DriveParent(imu, drive_mode[mode])
 {
+    init(imu, l, r, mode);
+};
+
+traditional_drive::traditional_drive(Imu &imu, Motor_Group &l, Motor_Group &r, Odom* odometry) : DriveParent(imu, drive_mode[0]) {
+    odom_inst = odometry;
+    init(imu, l, r, 0);
+} // with odom no controller
+traditional_drive::traditional_drive(Imu&imu,Controller &mstr, Motor_Group &l, Motor_Group &r, Odom* odometry) : DriveParent(imu, drive_mode[0]) {
+    master = &mstr;
+    odom_inst = odometry; 
+    init(imu, l, r, 0);
+}
+
+void traditional_drive::init(Imu &imu, Motor_Group &l, Motor_Group &r, int mode) {
     // set controller and motor groups
     this->imu=&imu;
     left_side = &l;
     right_side = &r;
     toggle_drive_mode(mode);
-};
-
-traditional_drive::traditional_drive(Imu &imu, Motor_Group &l, Motor_Group &r, Odom* odometry) : traditional_drive::traditional_drive(imu, l, r, 0) {
-    odom_inst = odometry;
-} // with odom no controller
-traditional_drive::traditional_drive(Imu&imu,Controller &mstr, Motor_Group &l, Motor_Group &r, Odom* odometry) : traditional_drive::traditional_drive(imu, l, r, 0) {
-    master = &mstr;
-    odom_inst = odometry; 
-    // NOTE, THIS SETUP WITH CALLING TRADITIONAL DRIVE CONTSTRUCTOR INSIDE ITS OWN CONSTRUCTOR MIGHT NOT WORK AND IT COULD LITERALLY BREAK EVERYTHING
-} // everything
+}
 
 
 // ************ destructor ************
 traditional_drive::~traditional_drive()
 {
+
+    if (!odom_inst) {
+        delete odom_inst;
+        odom_inst = nullptr;
+    }
     // turn off motors
     stop();
 };
