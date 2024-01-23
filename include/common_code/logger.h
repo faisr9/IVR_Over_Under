@@ -3,7 +3,7 @@
 
 class Logger {
     private:
-        inline static const std::string list_file = "fileLists.txt";
+        static const std::string list_file;
         FILE* logFile;
         bool appending = false;
 
@@ -12,10 +12,6 @@ class Logger {
         std::string file_mode;   
         int file_num; 
         bool timestamp = false;
-
-        // std::string getTimeStamp_str();
-        // FILE* closeLogFile();
-        // std::string getLogFile_name();
 
     public:
         /**
@@ -30,7 +26,24 @@ class Logger {
         Logger(std::string file_name, bool overwrite=false, bool append=true, bool timestamp=true);
         ~Logger();
 
+        /**
+         * @brief Returns the time since program start in the format of 
+         *      minutes:seconds.milliseconds as a formatted string
+         * Example: [1:23.456]
+         */
+        std::string getTimeStamp_str();
+        
+        /**
+         * @brief Logs a message to the log file
+         * @param message the message to log
+         */
         void logStringMessage(std::string message);
+
+        /**
+         * @brief Logs a message to the log file
+         * @param message the message to log
+         * @param ... the varibles to be inserted into the message
+        */
         void logCharMessage(const char* message, ...);
 
         /**
@@ -57,7 +70,7 @@ class Logger {
         
         /**
          * @brief Reads out the contents of the auto log file to the brain terminal
-         *  accessable through the brain terminal
+         *  accessable through the VScode terminal
          * 
          * IMPORTANT: To run this method correctly, you must run the following command in
          *  the pros (integrated) terminal before starting the program:
@@ -74,12 +87,11 @@ class Logger {
 
 class AutoLogger : protected Logger{
     private:
-        // AutoLogger() : Logger(auto_log_file_name, false, true) {AutoLogger::autoLogRunner();}
         AutoLogger();
 
         inline static AutoLogger* instance_ = nullptr;
-        inline static std::string auto_log_file_name = "usd/autoLogData.txt";
-        inline static const int auto_log_delay = 1000; // milliseconds
+        static std::string auto_log_file_name;
+        static const int auto_log_delay; // milliseconds
 
         bool terminate = false;
         bool paused = false;
@@ -90,8 +102,10 @@ class AutoLogger : protected Logger{
         std::string deviceData[2][3];
         std::vector<std::string> importantVaribles;
         std::vector<std::string> importantMessages;
+
         // Add mutexes for multithreading
 
+        // To develop
         void motorUpdate();
         void deviceUpdate();
         
@@ -103,19 +117,44 @@ class AutoLogger : protected Logger{
         static AutoLogger* createInstance();
         static AutoLogger* getInstance();
 
-        // void startAutoLog();
+        /**
+         * @brief Pauses the auto log
+        */
         void pauseAutoLog();
+
+        /**
+         * @brief Resumes the auto log
+        */
         void resumeAutoLog();
         
         [[deprecated("No need to force stop the autolog, it will stop when the program ends. There for edge cases.")]]
+        /**
+         * @brief Stops the auto log
+         * NOTE: This method is deprecated, the auto log will stop when the program ends.
+         *  This method is only used for edge cases
+        */
         void stopAutoLog();
 
+        /**
+         * @see Logger::logVarible
+        */
         template<typename T>
         void logVarible(std::string var_name, T var);
+
+        /**
+         * @see Logger::logArray
+        */
         template<typename T>
         void logArray(std::string array_name, T* array, int array_length);
 
+        /**
+         * @see Logger::logStringMessage
+        */
         void logStringMessage(std::string message);
+
+        /**
+         * @see Logger::logCharMessage
+        */
         void logCharMessage(const char* message, ...);
 };
 extern AutoLogger* autoLogger; // Global Class Access

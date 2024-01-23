@@ -1,21 +1,11 @@
 #include "main.h"
 
-using namespace std;
-/**
- * @brief Returns the time since program start in the format of 
- *      minutes:seconds.milliseconds as a formatted string
- * NOTE: This will be moves to a future macros file, for now it is here
- */
-std::string getTimeStamp_str(int inptime) {
-    int milliseconds = inptime;
-    
-    std::stringstream ss;
-    ss << "[" << std::setfill('0') << 
-        std::setw(2) << (milliseconds / (60 * 1000)) << ":" << 
-        std::setw(2) << ((milliseconds / 1000) % 60) << "." << 
-        std::setw(3) << (milliseconds % 1000) << "]" << "\t";
-    return ss.str();
-}
+// Logger Static Variables //
+const std::string Logger::list_file = "fileLists.txt";
+
+// AutoLogger Static Variables //
+std::string AutoLogger::auto_log_file_name = "usd/autoLogData.txt";
+const int AutoLogger::auto_log_delay = 1000; // milliseconds
 
 AutoLogger* autoLogger = AutoLogger::createInstance();
 
@@ -46,7 +36,7 @@ AutoLogger* AutoLogger::getInstance() {
 
 void AutoLogger::autoLogRunner()
 {
-    // encase in lambda thread
+    pros::Task autoLogTask{[=] {
     while(!terminate)
     {
         while(!paused)
@@ -54,16 +44,18 @@ void AutoLogger::autoLogRunner()
             Logger::logStringMessage("###########################################################");
             Logger::logStringMessage("HEADER");
             Logger::logStringMessage("-----------------------------------------------------------");
-            // need getter fuctions for these
-            nextMessage = getTimeStamp_str((rand() % 100000)+100) + "[comp_18] [COMP Disabled] [Log #" + std::to_string(logNum) + "]";
+            // Need to add the getter functions for the robot states
+            nextMessage = getTimeStamp_str() + "[comp_18] [COMP Disabled] [Log #" + std::to_string(logNum) + "]";
             Logger::logStringMessage(nextMessage);
             Logger::logStringMessage("-----------------------------------------------------------");
             Logger::logStringMessage("ROBOT SETTINGS");
             Logger::logStringMessage("-----------------------------------------------------------");
+            // Waiting for releated methods to be made
             Logger::logStringMessage("Will log setting changes here");
             Logger::logStringMessage("-----------------------------------------------------------");
             Logger::logStringMessage("ROBOT DEVICES");
             Logger::logStringMessage("-----------------------------------------------------------");
+            // Waiting for releated methods to be made
             Logger::logStringMessage("Will log device state changes here");
             Logger::logStringMessage("-----------------------------------------------------------");
             Logger::logStringMessage("IMPORTANT VARIABLES");
@@ -84,63 +76,65 @@ void AutoLogger::autoLogRunner()
         }
         pros::Task::delay(auto_log_delay);
     }
+    }};
 }
-    /*
-        Config Log Message Format/Example:
-        ###########################################################
-        HEADER
-        -----------------------------------------------------------
-        [TIME Logged] [comp_18] [COMP Disabled] [Log #17]
-        -----------------------------------------------------------
-        ROBOT SETTINGS
-        -----------------------------------------------------------
-        [TIME Changed] Auton Program: AWP Tandom
-        [TIME Changed] Driver Mode: Tank - "Specific Person"
-        -----------------------------------------------------------
-        ROBOT DEVICES
-        -----------------------------------------------------------
-        [TIME Logged] Motor1 {11, 18, true} - [Connected C:4] - [Okay]
-        [TIME Logged] Motor2 {12, 18, false} - [Connected C:4] - [Okay]
-        [TIME Logged] Motor3 {13, 18, true} - [Connected C:4] - [HOT]
-        [TIME Logged] Motor4 {14, 18, false} - [DISCONNECTED C:4.5]
-        [TIME Logged] Motor5 {15, 18, true} - [Connected C:4] - [Okay]
-        [TIME Logged] Motor6 {16, 18, false} - [DISCONNECTED C:44.5]
-        [TIME Logged] Motor7 {17, 18, true} - [Connected C:4] - [Okay]
-        [TIME Logged] Motor8 {18, 18, false} - [Connected C:4] - [Okay]
-        [TIME Logged] Motor9 {19, 18, true} - [Connected C:4] - [Okay]
-        [TIME Logged] IMU {Installed} - [Connected C:4]
-        -----------------------------------------------------------
-        IMPORTANT VARIABLES
-        -----------------------------------------------------------
-        [TIME Logged] ODOMETRY: {x: 0, y: 0, theta: 0}
-        [TIME Logged] CATAPAULT: {state: 0, speed: 0}
-        -----------------------------------------------------------
-        IMPORTANT EVENT MESSAGES
-        -----------------------------------------------------------
-        [00:15.334] [COMP Controller] [Robot is disabled]
-        [00:15.754] [GUI] [Screensaver Active]
-        ###########################################################
 
-        Log Update Triggers:
-            - Every second
-            [ignored for now] - When a device state changes
-            [ignored for now] - When a robot setting is changed
-        The "IMPORTANT VARIBLES", "IMPORTANT EVENT MESSAGES" and "CUSTOM MESSAGES" sections will be 
-            queued and logged every update
-        
-    */
+/*
+    AutoLog Format Example:
+    ###########################################################
+    HEADER
+    -----------------------------------------------------------
+    [TIME Logged] [comp_18] [COMP Disabled] [Log #17]
+    -----------------------------------------------------------
+    ROBOT SETTINGS
+    -----------------------------------------------------------
+    [TIME Changed] Auton Program: AWP Tandom
+    [TIME Changed] Driver Mode: Tank - "Specific Person"
+    -----------------------------------------------------------
+    ROBOT DEVICES
+    -----------------------------------------------------------
+    [TIME Logged] Motor1 {11, 18, true} - [Connected C:4] - [Okay]
+    [TIME Logged] Motor2 {12, 18, false} - [Connected C:4] - [Okay]
+    [TIME Logged] Motor3 {13, 18, true} - [Connected C:4] - [HOT]
+    [TIME Logged] Motor4 {14, 18, false} - [DISCONNECTED C:4.5]
+    [TIME Logged] Motor5 {15, 18, true} - [Connected C:4] - [Okay]
+    [TIME Logged] Motor6 {16, 18, false} - [DISCONNECTED C:44.5]
+    [TIME Logged] Motor7 {17, 18, true} - [Connected C:4] - [Okay]
+    [TIME Logged] Motor8 {18, 18, false} - [Connected C:4] - [Okay]
+    [TIME Logged] Motor9 {19, 18, true} - [Connected C:4] - [Okay]
+    [TIME Logged] IMU {Installed} - [Connected C:4]
+    -----------------------------------------------------------
+    IMPORTANT VARIABLES
+    -----------------------------------------------------------
+    [TIME Logged] ODOMETRY: {x: 0, y: 0, theta: 0}
+    [TIME Logged] CATAPAULT: {state: 0, speed: 0}
+    -----------------------------------------------------------
+    IMPORTANT EVENT MESSAGES
+    -----------------------------------------------------------
+    [00:15.334] [COMP Controller] [Robot is disabled]
+    [00:15.754] [GUI] [Screensaver Active]
+    ###########################################################
+
+    Log Update Triggers:
+        - Every second
+        [ignored for now] - When a device state changes
+        [ignored for now] - When a robot setting is changed
+    The "IMPORTANT VARIBLES", "IMPORTANT EVENT MESSAGES" and "CUSTOM MESSAGES" sections will be 
+        queued and logged every update
+    
+*/
 
 void AutoLogger::pauseAutoLog()
 {
     paused = true;
-    nextMessage = getTimeStamp_str((rand() % 100000)+100) + "AUTOLOG PAUSED";
+    nextMessage = getTimeStamp_str() + "AUTOLOG PAUSED";
     Logger::logStringMessage(nextMessage);
 }
 
 void AutoLogger::resumeAutoLog()
 {
     paused = false;
-    nextMessage = getTimeStamp_str((rand() % 100000)+100) + "AUTOLOG RESUMED";
+    nextMessage = getTimeStamp_str() + "AUTOLOG RESUMED";
     Logger::logStringMessage(nextMessage);
 }
 
@@ -148,7 +142,7 @@ void AutoLogger::resumeAutoLog()
 void AutoLogger::stopAutoLog()
 {
     terminate = true;
-    nextMessage = getTimeStamp_str((rand() % 100000)+100) + "AUTOLOG STOPPED";
+    nextMessage = getTimeStamp_str() + "AUTOLOG STOPPED";
     Logger::logStringMessage(nextMessage);
 }
 
@@ -167,13 +161,13 @@ void AutoLogger::deviceUpdate()
 template<typename T>
 void AutoLogger::logVarible(std::string var_name, T var)
 {
-    importantVaribles.push_back(getTimeStamp_str((rand() % 100000)+100) + var_name + " = " + std::to_string(var));
+    importantVaribles.push_back(getTimeStamp_str() + var_name + " = " + std::to_string(var));
 }
 
 template<>
 void AutoLogger::logVarible<std::string>(std::string var_name, std::string var)
 {
-    importantVaribles.push_back(getTimeStamp_str((rand() % 100000)+100) + var_name + " = " + var);
+    importantVaribles.push_back(getTimeStamp_str() + var_name + " = " + var);
 }
 
 template<typename T>
@@ -186,7 +180,7 @@ void AutoLogger::logArray(std::string array_name, T* array, int array_length)
             nextMessage += ", ";
     }
     nextMessage += "}";
-    importantVaribles.push_back(getTimeStamp_str((rand() % 100000)+100) + array_name + "[" + std::to_string(array_length) + "] = " + nextMessage);
+    importantVaribles.push_back(getTimeStamp_str() + array_name + "[" + std::to_string(array_length) + "] = " + nextMessage);
 }
 
 template<>
@@ -199,19 +193,19 @@ void AutoLogger::logArray<std::string>(std::string array_name, std::string* arra
             nextMessage += ", ";
     }
     nextMessage += "}";
-    importantVaribles.push_back(getTimeStamp_str((rand() % 100000)+100) + array_name + "[" + std::to_string(array_length) + "] = " + nextMessage);
+    importantVaribles.push_back(getTimeStamp_str() + array_name + "[" + std::to_string(array_length) + "] = " + nextMessage);
 }
 
 void AutoLogger::logStringMessage(std::string message)
 {
     // Add mutexes for multithreading
-    importantMessages.push_back(getTimeStamp_str((rand() % 100000)+100) + message);
+    importantMessages.push_back(getTimeStamp_str() + message);
 }
 
 void AutoLogger::logCharMessage(const char* message, ...)
 {
     // Add mutexes for multithreading
-    nextMessage = getTimeStamp_str((rand() % 100000)+100);
+    nextMessage = getTimeStamp_str();
 
     va_list args;
     va_start(args, message);
@@ -221,7 +215,6 @@ void AutoLogger::logCharMessage(const char* message, ...)
     va_end(args);
     importantMessages.push_back(nextMessage);
 }
-
 
 ///////////////////////////////////////////////////////////////////////////////////
 ///////////////////////              Logger Class           ///////////////////////
@@ -349,17 +342,16 @@ Logger::~Logger() {
         fclose(logFile);
 }
 
-// std::string Logger::getLogFile_name() {
-//     return list_file;
-// } 
-
-// FILE* Logger::closeLogFile() {
-//     if(logFile) {
-//         fclose(logFile);
-//         logFile = nullptr;
-//     }
-//     return logFile;
-// }
+std::string Logger::getTimeStamp_str() {
+    int milliseconds = pros::millis();
+    
+    std::stringstream ss;
+    ss << "[" << std::setfill('0') << 
+        std::setw(2) << (milliseconds / (60 * 1000)) << ":" << 
+        std::setw(2) << ((milliseconds / 1000) % 60) << "." << 
+        std::setw(3) << (milliseconds % 1000) << "]" << "\t";
+    return ss.str();
+}
 
 void Logger::logStringMessage(std::string message) {
     if(!logFile) // Failsafe
@@ -367,7 +359,7 @@ void Logger::logStringMessage(std::string message) {
 
     if (logFile) {
         if (timestamp)
-            message.insert(0, getTimeStamp_str((rand() % 100000)+100));
+            message.insert(0, getTimeStamp_str());
         
         fwrite(message.c_str(), sizeof(char), message.length(), logFile);
         fwrite("\n", sizeof(char), 1, logFile);
@@ -383,7 +375,7 @@ void Logger::logCharMessage(const char* message, ...)
     if (logFile) {
         std::string logMessage = "";
         if (timestamp)
-            logMessage = getTimeStamp_str((rand() % 100000)+100);
+            logMessage = getTimeStamp_str();
 
         va_list args;
         va_start(args, message);
@@ -402,7 +394,7 @@ void Logger::logVarible(std::string var_name, T var) {
     if (logFile) {
         var_name = "VAR: " + var_name + " = ";
         if (timestamp)
-            var_name.insert(0, getTimeStamp_str((rand() % 100000)+100));
+            var_name.insert(0, getTimeStamp_str());
         fwrite(var_name.c_str(), sizeof(char), var_name.length(), logFile);
         fwrite(std::to_string(var).c_str(), sizeof(char), std::to_string(var).length(), logFile);
         fwrite("\n", sizeof(char), 1, logFile);
@@ -418,7 +410,7 @@ void Logger::logVarible<std::string>(std::string var_name, std::string var) {
     if (logFile) {
         var_name = "VAR: " + var_name + " = ";
         if (timestamp)
-            var_name.insert(0, getTimeStamp_str((rand() % 100000)+100));
+            var_name.insert(0, getTimeStamp_str());
         fwrite(var_name.c_str(), sizeof(char), var_name.length(), logFile);
         fwrite(var.c_str(), sizeof(char), var.length(), logFile);
         fwrite("\n", sizeof(char), 1, logFile);
@@ -434,7 +426,7 @@ void Logger::logArray(std::string array_name, T* array, int array_length) {
     if (logFile) {
         array_name = "ARRAY: " + array_name + "[" + std::to_string(array_length) + "] = ";
         if (timestamp)
-            array_name.insert(0, getTimeStamp_str((rand() % 100000)+100));
+            array_name.insert(0, getTimeStamp_str());
         fwrite(array_name.c_str(), sizeof(char), array_name.length(), logFile);
         fwrite("{", sizeof(char), 1, logFile);
         for (int i = 0; i < array_length; i++) {
@@ -455,7 +447,7 @@ void Logger::logArray<std::string>(std::string array_name, std::string* array, i
     if (logFile) {
         array_name = "ARRAY: " + array_name + "[" + std::to_string(array_length) + "] = ";
         if(timestamp)
-            array_name.insert(0, getTimeStamp_str((rand() % 100000)+100));
+            array_name.insert(0, getTimeStamp_str());
         fwrite(array_name.c_str(), sizeof(char), array_name.length(), logFile);
         fwrite("{", sizeof(char), 1, logFile);
         for (int i = 0; i < array_length; i++) {
@@ -470,9 +462,8 @@ void Logger::logArray<std::string>(std::string array_name, std::string* array, i
 
 void Logger::readback()
 {
-    // End GUI task
-    // enable lcd
-    
+    // Need to determine if terminal is read only. If so, the selection process
+    // will need to be reworked    
 
     printf("#############################################\n");
     printf("AutoLog Readback\n");
@@ -534,91 +525,3 @@ void Logger::readback()
         std::abort();
     }
 }
-
-// int main()
-// {
-//     srand(time(NULL));
-//     autoLogger->logStringMessage("Hello World");
-//     autoLogger->logCharMessage("xw: %d, y: %d, z: %f", 5, 10, 3.14159265358);
-//     int value = 5;
-//     autoLogger->logVarible("value", value);
-//     double value2 = 2.17856456156485;
-//     autoLogger->logVarible("value2", value2);
-//     bool value3 = true;
-//     autoLogger->logVarible("value3", value3);
-//     std::string value4 = "World Hello!";
-//     autoLogger->logVarible("value4", value4);
-
-//     int array[5] = {11235, 2563123, 35645, -4564, -455};
-//     autoLogger->logArray("Array", array, 5);
-//     double array2[5] = {1.1235, 2.563123, 3.5645, -4.564, -4.55};
-//     autoLogger->logArray("Array2", array2, 5);
-//     bool array3[5] = {true, false, true, false, true};
-//     autoLogger->logArray("Array3", array3, 5);
-//     std::string array4[5] = {"Hello", "World", "This", "Is", "Cool"};
-//     autoLogger->logArray("Array4", array4, 5);
-
-//     thread autoLogThread(&AutoLogger::autoLogRunner, autoLogger);
-
-//     while (1)
-//     {
-//         cout << "\"p\" to pause, \"r\" to resume, \"t\" to terminate, \"s\" to send msg" << endl;
-//         string input;
-//         cin >> input;
-//         if (input == "p")
-//             autoLogger->pauseAutoLog();
-//         else if (input == "r")
-//             autoLogger->resumeAutoLog();
-//         else if (input == "s")
-//         {
-//             string msg;
-//             cout << "Enter message to send: ";
-//             cin >> msg;
-//             autoLogger->logStringMessage(msg);
-//         }
-//         else if (input == "t")
-//         {
-//             autoLogger->stopAutoLog();
-//             cout << "Terminating" << endl;
-//             break;
-//         }
-//     }
-
-//     // Logger logBuild("usd/logOut.txt", false, false);
-//     // logBuild.logStringMessage("Hello World");
-//     // logBuild.logStringMessage("This is cool");
-//     // logBuild.logStringMessage("Rishi is black");
-//     // int x = 5;
-//     // int y = 10;
-//     // double z = 3.14159265358;
-//     // logBuild.logCharMessage("x: %d, y: %d, z: %f", x, y, z);
-
-//     // int array[5] = {11235, 2563123, 35645, -4564, -455};
-//     // logBuild.logArray("Array", array, 5);
-
-//     // int varible1 = 5;
-//     // logBuild.logVarible("varible1", varible1);
-//     // double varible2 = 2.17856456156485;
-//     // logBuild.logVarible("varible2", varible2);
-//     // bool varible3 = true;
-//     // logBuild.logVarible("varible3", varible3);
-//     // std::string varible4 = "World Hello!";
-//     // logBuild.logVarible("varible4", varible4);
-
-//     // double array2[5] = {1.1235, 2.563123, 3.5645, -4.564, -4.55};
-//     // logBuild.logArray("Array2", array2, 5);
-//     // bool array3[5] = {true, false, true, false, true};
-//     // logBuild.logArray("Array3", array3, 5);
-//     // std::string array4[5] = {"Hello", "World", "This", "Is", "Cool"};
-//     // logBuild.logArray("Array4", array4, 5);
-    
-//     return 0;
-// }
-
-/*
-When reading back;
-pros terminal 1>PC side file
- with echo (ps only)
-pros terminal | Tee-Object -Append PC side file
-
-*/
