@@ -1,5 +1,10 @@
 #include "logtest.h"
 #include <cstdarg>
+#include <chrono>
+#include <thread>
+#include <unistd.h>
+// #include "../../Users/Anissh/AppData/Roaming/Code/User/globalStorage/sigbots.pros/install/pros-toolchain-windows/usr/arm-none-eabi/include/sys/unistd.h"
+#include <time.h>
 
 using namespace std;
 /**
@@ -18,11 +23,12 @@ std::string getTimeStamp_str(int inptime) {
     return ss.str();
 }
 
-AutoLogger* autoLogger = AutoLogger::createInstance();
+// AutoLogger* autoLogger = AutoLogger::createInstance();
 
 AutoLogger::AutoLogger() : Logger(auto_log_file_name, false, true, false) {
     
-    logNum = Logger::file_num;
+    // Gonna have each message increment the log number
+    logNum = 0;
     // AutoLogger::autoLogRunner();
 }
 
@@ -53,10 +59,10 @@ void AutoLogger::autoLogRunner()
     // Create parameters to control operation.
     // Log devices and important variables/arrays/messages
 
-    // while(!terminate)
-    // {
-    //     while(!paused)
-    //     {
+    while(!terminate)
+    {
+        while(!paused)
+        {
             Logger::logStringMessage("###########################################################");
             Logger::logStringMessage("HEADER");
             Logger::logStringMessage("-----------------------------------------------------------");
@@ -84,12 +90,28 @@ void AutoLogger::autoLogRunner()
             Logger::logStringMessage("###########################################################");
             importantVaribles.clear();
             importantMessages.clear();
+            logNum++;
 
-            std::abort();
-        // }
-        // task delay (1000)
-    // }
-
+            // std::abort();
+            auto start = std::chrono::high_resolution_clock::now();
+            while (1)
+            {
+                auto end = std::chrono::high_resolution_clock::now();
+                auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+                if (duration.count() >= auto_log_delay)
+                    break;
+            }
+        }
+        auto start = std::chrono::high_resolution_clock::now();
+            while (1)
+            {
+                auto end = std::chrono::high_resolution_clock::now();
+                auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+                if (duration.count() >= auto_log_delay)
+                    break;
+            }
+    }
+}
     /*
         Config Log Message Format/Example:
         ###########################################################
@@ -107,9 +129,9 @@ void AutoLogger::autoLogRunner()
         [TIME Logged] Motor1 {11, 18, true} - [Connected C:4] - [Okay]
         [TIME Logged] Motor2 {12, 18, false} - [Connected C:4] - [Okay]
         [TIME Logged] Motor3 {13, 18, true} - [Connected C:4] - [HOT]
-        [TIME Logged] Motor4 {14, 18, false} - [DISCONNECTED C:4.5] - [Okay]
+        [TIME Logged] Motor4 {14, 18, false} - [DISCONNECTED C:4.5]
         [TIME Logged] Motor5 {15, 18, true} - [Connected C:4] - [Okay]
-        [TIME Logged] Motor6 {16, 18, false} - [DISCONNECTED C:44.5] - [WARM]
+        [TIME Logged] Motor6 {16, 18, false} - [DISCONNECTED C:44.5]
         [TIME Logged] Motor7 {17, 18, true} - [Connected C:4] - [Okay]
         [TIME Logged] Motor8 {18, 18, false} - [Connected C:4] - [Okay]
         [TIME Logged] Motor9 {19, 18, true} - [Connected C:4] - [Okay]
@@ -134,7 +156,6 @@ void AutoLogger::autoLogRunner()
             queued and logged every update
         
     */
-}
 
 void AutoLogger::pauseAutoLog()
 {
@@ -472,32 +493,101 @@ void Logger::logArray<std::string>(std::string array_name, std::string* array, i
     }
 }
 
+void Logger::readback()
+{
+    // End GUI task
+    // enable lcd
+    
+
+    printf("#############################################\n");
+    printf("AutoLog Readback\n");
+    printf("---------------------All Log Files---------------------\n");
+    
+    std::vector<std::string> fileNames;
+    std::vector<std::string> data;
+    char buff[256];
+
+    FILE* readFileName = fopen(list_file.c_str(), "r");
+    while(fgets(buff, 256, readFileName)) // Read file names into vector
+        fileNames.push_back(buff);
+
+    for (const auto& fileName : fileNames) {
+        printf("%s", fileName.c_str());
+    }
+
+    printf("-------------------Log File Readback-------------------\n");
+    printf("NOTE: Last file is empty\n\n");
+
+    printf("Enter file name to readback or \"all\" to read back all files:");
+    std::string input;
+    std::cin >> input;
+
+    if (input == "all")
+    {
+        for (std::string fileName : fileNames) {
+
+            fileName = fileName.substr(0, fileName.find_first_of("\n"));
+            FILE* logOutCopy = fopen(fileName.c_str(), "r");
+
+            printf("\n\n\n#####     BEGIN LOG FILE READBACK: %s     #####\n\n\n", fileName.c_str());
+            while (fgets(buff, 256, logOutCopy))
+                data.push_back(buff);
+
+            for (const auto& data_value : data) {
+                printf("%s", data_value.c_str());
+            }
+            printf("\n\n\n#####     END LOG FILE READBACK: %s     #####\n\n\n", fileName.c_str());
+
+            fclose(logOutCopy);
+            data.clear();
+        }
+        std::abort();
+    }
+    else
+    {
+        FILE* logOutCopy = fopen(input.c_str(), "r");
+
+        printf("\n\n\n#####     BEGINE LOG FILE READBACK: %s     #####\n\n\n", input.c_str());
+        while (fgets(buff, 256, logOutCopy))
+            data.push_back(buff);
+
+        for (const auto& data_value : data) {
+            printf("%s", data_value.c_str());
+        }
+        printf("\n\n\n#####     END LOG FILE READBACK: %s     #####\n\n\n", input.c_str());
+
+        std::abort();
+    }
+}
+
 int main()
 {
     srand(time(NULL));
-    autoLogger->logStringMessage("Hello World");
-    autoLogger->logCharMessage("xw: %d, y: %d, z: %f", 5, 10, 3.14159265358);
-    int value = 5;
-    autoLogger->logVarible("value", value);
-    double value2 = 2.17856456156485;
-    autoLogger->logVarible("value2", value2);
-    bool value3 = true;
-    autoLogger->logVarible("value3", value3);
-    std::string value4 = "World Hello!";
-    autoLogger->logVarible("value4", value4);
+    // autoLogger->logStringMessage("Hello World");
+    // autoLogger->logCharMessage("xw: %d, y: %d, z: %f", 5, 10, 3.14159265358);
+    // int value = 5;
+    // autoLogger->logVarible("value", value);
+    // double value2 = 2.17856456156485;
+    // autoLogger->logVarible("value2", value2);
+    // bool value3 = true;
+    // autoLogger->logVarible("value3", value3);
+    // std::string value4 = "World Hello!";
+    // autoLogger->logVarible("value4", value4);
 
-    int array[5] = {11235, 2563123, 35645, -4564, -455};
-    autoLogger->logArray("Array", array, 5);
-    double array2[5] = {1.1235, 2.563123, 3.5645, -4.564, -4.55};
-    autoLogger->logArray("Array2", array2, 5);
-    bool array3[5] = {true, false, true, false, true};
-    autoLogger->logArray("Array3", array3, 5);
-    std::string array4[5] = {"Hello", "World", "This", "Is", "Cool"};
-    autoLogger->logArray("Array4", array4, 5);
+    // int array[5] = {11235, 2563123, 35645, -4564, -455};
+    // autoLogger->logArray("Array", array, 5);
+    // double array2[5] = {1.1235, 2.563123, 3.5645, -4.564, -4.55};
+    // autoLogger->logArray("Array2", array2, 5);
+    // bool array3[5] = {true, false, true, false, true};
+    // autoLogger->logArray("Array3", array3, 5);
+    // std::string array4[5] = {"Hello", "World", "This", "Is", "Cool"};
+    // autoLogger->logArray("Array4", array4, 5);
 
-    autoLogger->autoLogRunner();
+    // thread autoLogThread(&AutoLogger::autoLogRunner, autoLogger);
 
-    // Logger logBuild("usd/logOut.txt", false, false);
+
+    Logger logBuild("usd/logOut.txt", false, false);
+    logBuild.readback();
     // logBuild.logStringMessage("Hello World");
     // logBuild.logStringMessage("This is cool");
     // logBuild.logStringMessage("Rishi is black");

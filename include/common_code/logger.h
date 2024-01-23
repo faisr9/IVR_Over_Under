@@ -9,11 +9,13 @@ class Logger {
 
     protected:
         std::string file_name;
-        std::string file_mode;    
+        std::string file_mode;   
+        int file_num; 
+        bool timestamp = false;
 
-        std::string getTimeStamp_str();
-        FILE* closeLogFile();
-        FILE* getLogFile();
+        // std::string getTimeStamp_str();
+        // FILE* closeLogFile();
+        // std::string getLogFile_name();
 
     public:
         /**
@@ -25,7 +27,7 @@ class Logger {
          * \param overwrite=false Whether or not to overwrite the file if it already exists. (ignores append parameter)
          * \param append=true Whether or not to append to the file if it already exists
         */
-        Logger(std::string file_name, bool overwrite=false, bool append=true);
+        Logger(std::string file_name, bool overwrite=false, bool append=true, bool timestamp=true);
         ~Logger();
 
         void logStringMessage(std::string message);
@@ -51,32 +53,69 @@ class Logger {
          */
         template<typename T>
         void logArray(std::string array_name, T* array, int array_length);
+
+        
+        /**
+         * @brief Reads out the contents of the auto log file to the brain terminal
+         *  accessable through the brain terminal
+         * 
+         * IMPORTANT: To run this method correctly, you must run the following command in
+         *  the pros (integrated) terminal before starting the program:
+         * For CMD: pros terminal 1 > <file to copy to>
+         *  Example: pros terminal 1 > logOutput.txt
+         * For Powershell: pros terminal | Tee-Object <file to copy to>
+         *  Example: pros terminal | Tee-Object logOutput.txt
+         *  NOTE: The powershell command will echo the output to the terminal as well
+         * 
+         * IMPORTANT: This method will self terminate after it is done reading the file
+         */
+        void readback();
 };
 
 class AutoLogger : protected Logger{
     private:
+        // AutoLogger() : Logger(auto_log_file_name, false, true) {AutoLogger::autoLogRunner();}
         AutoLogger();
+
         inline static AutoLogger* instance_ = nullptr;
-        inline static std::string auto_log_file_name = "auto_log_master.txt";
-        inline static const int auto_log_delay = 50; // milliseconds
-        int lastIteration;
-        FILE* autoLogFile;
+        inline static std::string auto_log_file_name = "usd/autoLogData.txt";
+        inline static const int auto_log_delay = 1000; // milliseconds
 
-        void autoLogRunner();
+        bool terminate = false;
+        bool paused = false;
+        int logNum;
 
+        std::string nextMessage;
+        std::string motorData[9][7];
+        std::string deviceData[2][3];
+        std::vector<std::string> importantVaribles;
+        std::vector<std::string> importantMessages;
+        // Add mutexes for multithreading
+
+        void motorUpdate();
+        void deviceUpdate();
+        
     public:
+        void autoLogRunner();
         AutoLogger(const AutoLogger& other) = delete;
         ~AutoLogger();
 
         static AutoLogger* createInstance();
         static AutoLogger* getInstance();
 
-        void startAutoLog();
+        // void startAutoLog();
         void pauseAutoLog();
         void resumeAutoLog();
+        
+        [[deprecated("No need to force stop the autolog, it will stop when the program ends. There for edge cases.")]]
         void stopAutoLog();
-        void logCustom(std::string message);
+
+        template<typename T>
+        void logVarible(std::string var_name, T var);
+        template<typename T>
+        void logArray(std::string array_name, T* array, int array_length);
+
+        void logStringMessage(std::string message);
         void logCharMessage(const char* message, ...);
 };
 extern AutoLogger* autoLogger; // Global Class Access
-

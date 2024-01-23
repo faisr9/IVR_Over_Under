@@ -1,4 +1,4 @@
-// #pragma once
+#pragma once
 #include <iostream>
 #include <chrono>
 #include <string>
@@ -6,6 +6,7 @@
 #include <vector>
 #include <fstream>
 #include <iomanip>
+#include <thread>
 
 class Logger {
     private:
@@ -59,6 +60,8 @@ class Logger {
          */
         template<typename T>
         void logArray(std::string array_name, T* array, int array_length);
+
+        void readback();
 };
 
 class AutoLogger : protected Logger{
@@ -68,7 +71,7 @@ class AutoLogger : protected Logger{
 
         inline static AutoLogger* instance_ = nullptr;
         inline static std::string auto_log_file_name = "usd/autoLogData.txt";
-        inline static const int auto_log_delay = 50; // milliseconds
+        inline static const int auto_log_delay = 1000; // milliseconds
 
         bool terminate = false;
         bool paused = false;
