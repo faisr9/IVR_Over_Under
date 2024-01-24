@@ -501,9 +501,9 @@ void Logger::readback()
     // Need to determine if terminal is read only. If so, the selection process
     // will need to be reworked    
 
-    printf("#############################################\n");
-    printf("AutoLog Readback\n");
-    printf("---------------------All Log Files---------------------\n");
+    cout << "#############################################\n";
+    cout << "AutoLog Readback\n";
+    cout << "---------------------All Log Files---------------------\n";
     
     std::vector<std::string> fileNames;
     std::vector<std::string> data;
@@ -513,16 +513,32 @@ void Logger::readback()
     while(fgets(buff, 256, readFileName)) // Read file names into vector
         fileNames.push_back(buff);
 
-    for (const auto& fileName : fileNames) {
-        printf("%s", fileName.c_str());
+    for (int i=0;i<fileNames.size();i++) {
+        fileNames[i] = fileNames[i].substr(0, fileNames[i].find_first_of("\n"));
+        cout << fileNames[i] << "\n";
     }
 
-    printf("-------------------Log File Readback-------------------\n");
-    printf("NOTE: Last file is empty\n\n");
+    cout << "-------------------Log File Readback-------------------\n";
+    cout << "NOTE: Last file is empty\n";
 
-    printf("Enter file name to readback or \"all\" to read back all files:");
+    retry:
+    cout << "Enter file name to readback or \"all\" to readback all files:";
+    delay(500);
+
     std::string input;
     std::cin >> input;
+    input = input.substr(0, input.find_first_of("\n"));
+
+    for (int i=0;i<fileNames.size();i++)
+    {                
+        if (fileNames[i].find(input) == std::string::npos)
+        {
+            cout << "File \"" << input << "\" not found\n";
+            goto retry;
+        }
+    }
+
+// /usd/autoLogData_1.txt
 
     if (input == "all")
     {
@@ -545,10 +561,13 @@ void Logger::readback()
         }
 
         // Forces program stop to end file readback on terminal
+        cout << "Readback Complete 1\n";
         std::abort();
     }
     else
     {
+        cout << "Specific file\n";
+        cout << input << "\n";  
         FILE* logOutCopy = fopen(input.c_str(), "r");
 
         printf("\n\n\n#####     BEGINE LOG FILE READBACK: %s     #####\n\n\n", input.c_str());
@@ -561,6 +580,7 @@ void Logger::readback()
         printf("\n\n\n#####     END LOG FILE READBACK: %s     #####\n\n\n", input.c_str());
 
         // Forces program stop to end file readback on terminal
+        cout << "Readback Complete 2\n";
         std::abort();
     }
 }
