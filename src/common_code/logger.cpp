@@ -1,16 +1,46 @@
 #include "main.h"
 
 // Logger Static Variables //
-const std::string Logger::list_file = "fileLists.txt";
+const std::string Logger::list_file = "/usd/fileLists.txt";
 
 // AutoLogger Static Variables //
-std::string AutoLogger::auto_log_file_name = "usd/autoLogData.txt";
+std::string AutoLogger::auto_log_file_name = "/usd/autoLogData.txt";
 const int AutoLogger::auto_log_delay = 1000; // milliseconds
 
 AutoLogger* autoLogger = AutoLogger::createInstance();
 
-AutoLogger::AutoLogger() : Logger(auto_log_file_name, false, false, false) {
-    logNum = 0;
+///////////////////////////////////////////////////////////////////////////////////
+/*
+    During compile time, the compiler will generate the following functions for the
+    following types, however, the reference in the header file wont be generated
+    and remains out of scope. This is why the following functions are defined to
+    be inline in the header file.
+*/
+
+template void Logger::logVarible<int>(std::string var_name, int var);
+template void Logger::logVarible<float>(std::string var_name, float var);
+template void Logger::logVarible<double>(std::string var_name, double var);
+template void Logger::logVarible<bool>(std::string var_name, bool var);
+
+template void Logger::logArray<int>(std::string array_name, int* array, int array_length);
+template void Logger::logArray<float>(std::string array_name, float* array, int array_length);
+template void Logger::logArray<double>(std::string array_name, double* array, int array_length);
+template void Logger::logArray<bool>(std::string array_name, bool* array, int array_length);
+
+template void AutoLogger::logVarible<int>(std::string var_name, int var);
+template void AutoLogger::logVarible<float>(std::string var_name, float var);
+template void AutoLogger::logVarible<double>(std::string var_name, double var);
+template void AutoLogger::logVarible<bool>(std::string var_name, bool var);
+
+template void AutoLogger::logArray<int>(std::string array_name, int* array, int array_length);
+template void AutoLogger::logArray<float>(std::string array_name, float* array, int array_length);
+template void AutoLogger::logArray<double>(std::string array_name, double* array, int array_length);
+template void AutoLogger::logArray<bool>(std::string array_name, bool* array, int array_length);
+
+///////////////////////////////////////////////////////////////////////////////////
+
+AutoLogger::AutoLogger() : Logger(this->auto_log_file_name, false, false, false) {
+    // logNum = 0;
 }
 
 AutoLogger::~AutoLogger() {
@@ -232,6 +262,8 @@ Logger::Logger(std::string file_name, bool overwrite, bool append, bool timestam
         char buff[64];
         std::string file_name_copy;
         std::string file_name_number;
+        std::string temp = file_name;
+
         short int file_name_number_int;
         short int highestFileNumber = 0;
 
@@ -239,11 +271,12 @@ Logger::Logger(std::string file_name, bool overwrite, bool append, bool timestam
         while(fgets(buff, 64, readFileName)) // Read file names into vector
             fileNames.push_back(buff);
 
+
         // Get true file name
         if(file_name.find_first_of("_") == std::string::npos)
-            file_name_copy = file_name.substr(4, file_name.length()-4 - file_name.substr(file_name.find_first_of(".")).length());
+            file_name_copy = temp.substr(0, file_name.substr(5).find_first_of("."));
         else
-            file_name_copy = file_name.substr(4, file_name.length()-4 - file_name.substr(file_name.find_first_of("_")).length());
+            file_name_copy = temp.substr(0, file_name.substr(5).find_first_of("_"));
             
         for (int i=0;i<fileNames.size();i++) // Remove all file names that don't match the true file name
         {                
@@ -275,30 +308,33 @@ Logger::Logger(std::string file_name, bool overwrite, bool append, bool timestam
                 file_name_number_int = 0;
             }
         }
-
+        
         // Set file number and file name based on append parameter
-        if (append) {
+        if (!append) {
             file_mode = "a";
             appending = true;
 
             if(file_name_copy.find_first_of("_") == std::string::npos)
                 file_name_copy = file_name.substr(0, file_name.find_first_of("."));
+            else
+                file_name_copy = file_name.substr(0, file_name.find_first_of("_"));
             
-            file_name = file_name_copy + "_" + std::to_string(highestFileNumber) + 
-                            file_name.substr(file_name.find_first_of("."));
+            file_name = file_name_copy + "_" + std::to_string(highestFileNumber) +
+                file_name.substr((file_name.find_first_of("."), 4));
         }
         else {
             appending = false;
-            
-            cout << "Highest File Number: " << highestFileNumber << endl;
+
             highestFileNumber++;
             this->file_num = highestFileNumber;
-            cout << "New File Number: " << this->file_num << endl;
+
             if(file_name_copy.find_first_of("_") == std::string::npos)
                 file_name_copy = file_name.substr(0, file_name.find_first_of("."));
+            else
+                file_name_copy = file_name.substr(0, file_name.find_first_of("_"));
             
             file_name = file_name_copy + "_" + std::to_string(highestFileNumber) + 
-                            file_name.substr(file_name.find_first_of("."));
+                            file_name.substr(file_name.find_first_of("."), 4);
 
             fclose(readFileName);
         }
@@ -507,6 +543,8 @@ void Logger::readback()
             fclose(logOutCopy);
             data.clear();
         }
+
+        // Forces program stop to end file readback on terminal
         std::abort();
     }
     else
@@ -522,6 +560,7 @@ void Logger::readback()
         }
         printf("\n\n\n#####     END LOG FILE READBACK: %s     #####\n\n\n", input.c_str());
 
+        // Forces program stop to end file readback on terminal
         std::abort();
     }
 }

@@ -56,6 +56,7 @@ class Logger {
         template<typename T>
         void logVarible(std::string var_name, T var);
 
+
         /**
          * @brief Logs the contents of an array to the log file as a comma seperated list
          * @tparam T a type that can be converted to a string (i.e. int, float, double, etc.)
