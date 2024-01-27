@@ -3,7 +3,7 @@
 
 class CompetitionCatapult : public SubsystemParent {
     public:
-        static CompetitionCatapult* createInstance(pros::MotorGroup& motorgroup, pros::ADIButton& killswitch);
+        static CompetitionCatapult* createInstance(pros::MotorGroup& motorgroup, pros::ADIButton& limit_switch);
         static CompetitionCatapult* getInstance(); // static because need to be able to access without ExampleSubsystem objecct
         ~CompetitionCatapult();
         CompetitionCatapult(const CompetitionCatapult& other) = delete;
@@ -13,10 +13,9 @@ class CompetitionCatapult : public SubsystemParent {
         void cycle();
         void release();
 
-
     private:
         // reference to passed in motor so it doesn't create a new motor object 
-        CompetitionCatapult(pros::MotorGroup& motorgroup, pros::ADIButton& killswitch);
+        CompetitionCatapult(pros::MotorGroup& motorgroup, pros::ADIButton& limit_switch);
 
         //instance_ is set to nullptr in cpp file
         inline static CompetitionCatapult* instance_ = nullptr;

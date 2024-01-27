@@ -1,19 +1,20 @@
 #include "comp_15/comp15_includeList.h"
-
-
 // note: velocity in rpm
 
-CompetitionCatapult* CompetitionCatapult::createInstance(pros::MotorGroup& motorgroup, pros::ADIButton& killswitch) {
+CompetitionCatapult* CompetitionCatapult::createInstance(pros::MotorGroup& motorgroup, pros::ADIButton& limit_switch) {
     if (!instance_) {
-        instance_ = new CompetitionCatapult(motorgroup, killswitch);
+        instance_ = new CompetitionCatapult(motorgroup, limit_switch);
     }
     return instance_;
 }
-CompetitionCatapult::CompetitionCatapult(pros::MotorGroup& motorgroup, pros::ADIButton& killswitch) 
-    : SubsystemParent("Competition Catapult"), motors(motorgroup), kill_switch(killswitch){
+
+CompetitionCatapult::CompetitionCatapult(pros::MotorGroup& motorgroup, pros::ADIButton& limit_switch) 
+    : SubsystemParent("Competition Catapult"), motors(motorgroup), kill_switch(limit_switch){
     
+    /** NOTE: Comment this out once cata code works */
     pros::lcd::set_text(5, "In constructor");
 
+    motors.set_brake_modes(BRAKETYPE_HOLD);
 }
 
 CompetitionCatapult* CompetitionCatapult::getInstance() {
@@ -45,9 +46,11 @@ void CompetitionCatapult::prime() {
 void CompetitionCatapult::cycle() {
     if (!kill_switch.get_value()) {
         prime();
+        release();
+    } else {
+        release();
+        prime();
     }
-    release();
-    prime();
 }
 
 void CompetitionCatapult::release() {
