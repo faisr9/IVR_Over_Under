@@ -3,15 +3,14 @@
 
 // note: velocity in rpm
 
-CompetitionCatapult* CompetitionCatapult::createInstance(pros::MotorGroup& motorgroup, pros::ADIButton& killswitch, int load, int launch) {
+CompetitionCatapult* CompetitionCatapult::createInstance(pros::MotorGroup& motorgroup, pros::ADIButton& killswitch) {
     if (!instance_) {
-        instance_ = new CompetitionCatapult(motorgroup, killswitch, load, launch);
+        instance_ = new CompetitionCatapult(motorgroup, killswitch);
     }
     return instance_;
 }
-CompetitionCatapult::CompetitionCatapult(pros::MotorGroup& motorgroup, pros::ADIButton& killswitch, int load, int launch) 
-    : SubsystemParent("Competition Catapult"), motors(motorgroup), kill_switch(killswitch),
-        load_voltage(load), launch_voltage(launch) {
+CompetitionCatapult::CompetitionCatapult(pros::MotorGroup& motorgroup, pros::ADIButton& killswitch) 
+    : SubsystemParent("Competition Catapult"), motors(motorgroup), kill_switch(killswitch){
     
     pros::lcd::set_text(5, "In constructor");
 
@@ -37,7 +36,7 @@ void CompetitionCatapult::stop() {
 
 void CompetitionCatapult::prime() {
     while (!kill_switch.get_value()) {
-        motors.move(load_voltage);
+        motors.move(cata_voltage);
     }
 
     stop();
@@ -53,7 +52,7 @@ void CompetitionCatapult::cycle() {
 
 void CompetitionCatapult::release() {
     while (kill_switch.get_value()) {
-        motors.move(launch_voltage);
+        motors.move(cata_voltage);
     }
     stop();
 }
