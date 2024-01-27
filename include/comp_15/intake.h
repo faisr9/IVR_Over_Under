@@ -1,6 +1,6 @@
 #pragma once
 #include "main.h"
-
+//positive power goes in and negative goes out;
 class IntakeClass : public SubsystemParent
 {
     public:
