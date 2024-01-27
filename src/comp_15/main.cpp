@@ -1,5 +1,4 @@
 #include "comp_15/comp15_includeList.h"
-#include "pros/rtos.hpp"
 
 /* First method to run when program starts */
 void initialize() {
