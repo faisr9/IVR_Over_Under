@@ -1,9 +1,7 @@
-#include "cata.h"
 #include "comp_15/comp15_includeList.h"
 #include <filesystem>
 
 // note: velocity in rpm
-extern CompetitionCatapult* CompetitionCatapult::instance_ = nullptr;
 
 CompetitionCatapult* CompetitionCatapult::createInstance(pros::MotorGroup& motorgroup, pros::ADIButton& killswitch, int load, int launch) {
     if (!instance_) {
@@ -34,11 +32,11 @@ CompetitionCatapult::~CompetitionCatapult() {
 }
 
 void CompetitionCatapult::stop() {
-    motors.move(0);
+    motors.brake();
 }
 
 void CompetitionCatapult::prime() {
-    while (!kill_switch.get_new_press()) {
+    while (!kill_switch.get_value()) {
         motors.move(load_voltage);
     }
 
