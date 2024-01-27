@@ -40,4 +40,5 @@ char wings = 'H';
 traditional_drive drive(imu, ctrl_master, left_drive, right_drive, 0);
 
 // Instances
-IntakeClass* intakeInstance = IntakeClass::createInstance(intake);
+Intake* intake_instance = Intake::createInstance(intake);
+Catapult* catapult_instance = Catapult::createInstance(cata, cata_limit);
