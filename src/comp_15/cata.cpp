@@ -38,6 +38,7 @@ void CompetitionCatapult::stop() {
 void CompetitionCatapult::prime() {
     while (!kill_switch.get_value()) {
         motors.move(cata_voltage);
+        delay(15);
     }
 
     stop();
@@ -56,6 +57,7 @@ void CompetitionCatapult::cycle() {
 void CompetitionCatapult::release() {
     while (kill_switch.get_value()) {
         motors.move(cata_voltage);
+        delay(15);
     }
     stop();
 }
