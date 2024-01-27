@@ -29,8 +29,12 @@ pros::MotorGroup Cata   ({cata_right, cata_left});
 pros::Motor Intake  (14, GEARSET_06, true);
 
 // V5 Sensors //
+pros::Imu imu(21);
 
 // Legacy Sensors //
 pros::ADIButton     Cata_limit  ('A');
 pros::ADIDigitalOut Floor_brake ('G');
 pros::ADIDigitalOut Wings       ('H');
+
+// Traditional Drive
+traditional_drive drive(imu, ctrl_master, LeftDrive, RightDrive, 0);
