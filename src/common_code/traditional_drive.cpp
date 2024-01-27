@@ -10,46 +10,25 @@
 //
 // ************ overloaded constructors ************
 //
-// default to arcade drive and then run constructor with mode and controller
-traditional_drive::traditional_drive(Imu&imu,Controller &mstr, Motor_Group &l, Motor_Group &r) 
-    : DriveParent(imu, drive_mode[0])
-{
-    master = &mstr;
-    this->imu=&imu;
-    left_side = &l; 
-    right_side = &r;
-    toggle_drive_mode(0);
-
-};
-// default to arcade drive and then run constructor with mode without controller
-traditional_drive::traditional_drive(Imu &imu, Motor_Group &l, Motor_Group &r)
-    : DriveParent(imu, drive_mode[0])
-{
-    this->imu=&imu;
-    left_side = &l;
-    right_side = &r;
-    toggle_drive_mode(0);
-
-};
 // initialize controller if applicable
-traditional_drive::traditional_drive(Imu &imu, Controller &mstr, Motor_Group &l, Motor_Group &r, int mode)
-    : DriveParent(imu, drive_mode[mode])
+traditional_drive::traditional_drive(Imu &imu, Controller &mstr, Motor_Group &l, Motor_Group &r, int m)
+    : DriveParent(imu, drive_mode[m])
 {
     master = &mstr;
     this->imu=&imu;
     left_side = &l; 
     right_side = &r;
-    toggle_drive_mode(mode);
+    mode = m;
 };
 // initialize variables
-traditional_drive::traditional_drive(Imu &imu, Motor_Group &l, Motor_Group &r, int mode)
-    : DriveParent(imu, drive_mode[mode])
+traditional_drive::traditional_drive(Imu &imu, Motor_Group &l, Motor_Group &r, int m)
+    : DriveParent(imu, drive_mode[m])
 {
     // set controller and motor groups
     this->imu=&imu;
     left_side = &l;
     right_side = &r;
-    toggle_drive_mode(mode);
+    mode = m;
 };
 
 // ************ destructor ************
@@ -61,7 +40,7 @@ traditional_drive::~traditional_drive()
 
 
 // toggle drive mode (arcade, tank, hybrid)
-void traditional_drive::toggle_drive_mode(int mode = 0)
+void traditional_drive::toggle_drive_mode()
 {
     // 0 = arcade, 1 = tank, 2 = hybrid
     switch (mode)

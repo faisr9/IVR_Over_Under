@@ -22,6 +22,7 @@ class traditional_drive : public DriveParent
         Controller *master; // controller to get input from
         Imu *imu; // inertial sensor to get angle from
         string drive_mode[3] = {"arcade", "tank", "hybrid"}; // drive mode names
+        int mode;
         Motor_Group *left_side, *right_side; // motor groups to send voltage to
         // drive mode methods
         void arcade_drive();
@@ -36,14 +37,12 @@ class traditional_drive : public DriveParent
         // constructors
         // traditional_drive(): SubsystemParent(drive_mode[0]){}; // default constructor
         // overloaded constructors
-        traditional_drive(Imu&imu,Controller &mstr, Motor_Group &l, Motor_Group &r); // converts to other constructor
         traditional_drive(Imu &imu,Controller &mstr, Motor_Group &l, Motor_Group &r, int mode); // initialize controller
         // no controller
-        traditional_drive(Imu &imu, Motor_Group &l, Motor_Group &r); // converts to other constructor
         traditional_drive(Imu &imu, Motor_Group &l, Motor_Group &r, int mode); // initialize variables
         ~traditional_drive(); // destructor
 
-        void toggle_drive_mode(int mode); // toggle drive mode (arcade, tank, hybrid)
+        void toggle_drive_mode(); //does one cycle of movement
         void robot_centric_move(pair<double, double> mag_angle_vector); 
         void field_centric_move(pair<double, double> mag_angle_vector);
         void turn_with_power(double power);

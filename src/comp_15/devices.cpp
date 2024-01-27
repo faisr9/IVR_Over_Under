@@ -11,30 +11,33 @@
 pros::Controller ctrl_master (CONTROLLER_MASTER);
 
 // Motors //
-pros::Motor FrontTopRight       (11, GEARSET_06, true);
-pros::Motor FrontBottomRight    (12, GEARSET_06);
-pros::Motor BackRight           (13, GEARSET_06);
-pros::Motor FrontTopLeft        (20, GEARSET_06);
-pros::Motor FrontBottomLeft     (19, GEARSET_06, true);
-pros::Motor BackLeft            (18, GEARSET_06, true);
+pros::Motor front_top_right       (11, GEARSET_06, true);
+pros::Motor front_bottom_right    (12, GEARSET_06);
+pros::Motor back_right           (13, GEARSET_06);
+pros::Motor front_top_left        (20, GEARSET_06);
+pros::Motor front_bottom_left     (19, GEARSET_06, true);
+pros::Motor back_left            (18, GEARSET_06, true);
 
-pros::MotorGroup RightDrive ({FrontTopRight, FrontBottomRight, BackRight});
-pros::MotorGroup LeftDrive  ({FrontTopLeft, FrontBottomLeft, BackLeft});
+pros::MotorGroup right_drive ({front_top_right, front_bottom_right, back_right});
+pros::MotorGroup left_drive  ({front_top_left, front_bottom_left, back_left});
 
 pros::Motor cata_right  (15, GEARSET_36, true);
 pros::Motor cata_left   (17, GEARSET_36);
 
-pros::MotorGroup Cata   ({cata_right, cata_left});
+pros::MotorGroup cata   ({cata_right, cata_left});
 
-pros::Motor Intake  (14, GEARSET_06, true);
+pros::Motor intake  (14, GEARSET_06, true);
 
 // V5 Sensors //
 pros::Imu imu(21);
 
 // Legacy Sensors //
-pros::ADIButton     Cata_limit  ('A');
-pros::ADIDigitalOut Floor_brake ('G');
-pros::ADIDigitalOut Wings       ('H');
+pros::ADIButton cata_limit ('A');
+char floor_brake = 'G';
+char wings = 'H';
 
 // Traditional Drive
-traditional_drive drive(imu, ctrl_master, LeftDrive, RightDrive, 0);
+traditional_drive drive(imu, ctrl_master, left_drive, right_drive, 0);
+
+// Instances
+IntakeClass* intakeInstance = IntakeClass::createInstance(intake);

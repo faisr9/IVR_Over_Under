@@ -7,26 +7,30 @@
 extern pros::Controller ctrl_master;
 
 // Motors //
-extern pros::Motor FrontTopRight;
-extern pros::Motor FrontBottomRight;
-extern pros::Motor BackRight;
-extern pros::Motor FrontTopLeft;
-extern pros::Motor FrontBottomLeft;
-extern pros::Motor BackLeft;
+extern pros::Motor front_top_right;
+extern pros::Motor front_bottom_right;
+extern pros::Motor back_right;
+extern pros::Motor front_top_left;
+extern pros::Motor front_bottom_left;
+extern pros::Motor back_left;
 
-extern pros::MotorGroup RightDrive;
-extern pros::MotorGroup LeftDrive;
+extern pros::MotorGroup right_drive;
+extern pros::MotorGroup left_drive;
 
 extern pros::Motor cata_right;
 extern pros::Motor cata_left;
 
-extern pros::MotorGroup Cata;
+extern pros::MotorGroup cata;
 
-extern pros::Motor Intake;
+extern pros::Motor intake_motor;
 
 // V5 Sensors //
+pros::Imu imu(21);
 
 // Legacy Sensors //
-extern pros::ADIButton Cata_limit;
-extern pros::ADIDigitalOut Floor_brake;
-extern pros::ADIDigitalOut Wings;
+extern pros::ADIButton cata_limit;
+extern char floor_brake;
+extern char wings;
+
+// Traditional Drive
+extern traditional_drive drive;

@@ -2,17 +2,12 @@
 
 void controls() {
     while(1) {
-        pros::Motor intakeMotor = pros::Motor(14);
-        IntakeClass* intakeInstance = IntakeClass::createInstance(intakeMotor);
-        while (1){
-        // intakeInstance->set_power(master.get_analog(E_CONTROLLER_ANALOG_LEFT_Y));
-        if (master.get_digital(E_CONTROLLER_DIGITAL_A)){
-            intakeInstance->set_power(12000);
+        drive.toggle_drive_mode();
+        if (ctrl_master.get_digital(E_CONTROLLER_DIGITAL_A)){
+            IntakeClass::getInstance()->set_power(12000);
         }
-        else if (master.get_digital(E_CONTROLLER_DIGITAL_B)){
-            intakeInstance->set_power(-12000);
+        else if (ctrl_master.get_digital(E_CONTROLLER_DIGITAL_B)){
+            IntakeClass::getInstance()->set_power(-12000);
         }
-        pros::delay(50);
-    }
     }
 }
