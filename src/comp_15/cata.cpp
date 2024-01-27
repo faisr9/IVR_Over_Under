@@ -3,7 +3,6 @@
 #include <filesystem>
 
 // note: velocity in rpm
-extern CompetitionCatapult* CompetitionCatapult::instance_ = nullptr;
 
 CompetitionCatapult* CompetitionCatapult::createInstance(pros::MotorGroup& motorgroup, pros::ADIButton& killswitch, int load, int launch) {
     if (!instance_) {
