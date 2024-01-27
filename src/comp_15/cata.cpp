@@ -34,7 +34,7 @@ CompetitionCatapult::~CompetitionCatapult() {
 }
 
 void CompetitionCatapult::stop() {
-    motors.move(0);
+    motors.brake();
 }
 
 void CompetitionCatapult::prime() {
