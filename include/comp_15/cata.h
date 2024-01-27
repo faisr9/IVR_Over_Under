@@ -19,7 +19,7 @@ class CompetitionCatapult : public SubsystemParent {
         CompetitionCatapult(pros::MotorGroup& motorgroup, pros::ADIButton& killswitch, int load, int launch);
 
         //instance_ is set to nullptr in cpp file
-        static CompetitionCatapult* instance_;
+        inline static CompetitionCatapult* instance_ = nullptr;
 
         pros::MotorGroup& motors;
         pros::ADIButton& kill_switch;
