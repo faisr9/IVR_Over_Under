@@ -17,4 +17,5 @@ void autonomous() {
 
 /* Opcontrol method runs by default (unless connected to comp controller )*/
 void opcontrol() {
+	controls();
 }
