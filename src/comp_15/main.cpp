@@ -1,6 +1,4 @@
-#include "main.h"
-#include "common_code/example_subsystem.h"
-#include "pneumatics.h"
+#include "comp_15/comp15_includeList.h"
 
 /* First method to run when program starts */
 void initialize() {
