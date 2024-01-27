@@ -34,3 +34,6 @@ pros::Motor Intake  (14, GEARSET_06, true);
 pros::ADIButton     Cata_limit  ('A');
 pros::ADIDigitalOut Floor_brake ('G');
 pros::ADIDigitalOut Wings       ('H');
+
+const char FLOOR_BRAKE = 'G';
+const char WINGS = 'H';

@@ -22,8 +22,4 @@ void opcontrol() {
 
 	while(1)
 		Task::delay(1000);
-
-		/* example code for actuating piston*/
-		Pneumatics::getInstance()->getKickstand().off();
-
 }

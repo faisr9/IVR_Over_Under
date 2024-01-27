@@ -1,3 +1,4 @@
+#pragma once
 #include "api.h"
 
 class Piston {

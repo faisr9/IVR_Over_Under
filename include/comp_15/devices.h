@@ -28,5 +28,7 @@ extern pros::Motor Intake;
 
 // Legacy Sensors //
 extern pros::ADIButton Cata_limit;
-extern pros::ADIDigitalOut Floor_brake;
-extern pros::ADIDigitalOut Wings;
+// extern pros::ADIDigitalOut Floor_brake;
+// extern pros::ADIDigitalOut Wings;
+extern const char WINGS;
+extern const char FLOOR_BRAKE;
