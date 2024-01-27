@@ -23,11 +23,7 @@ void controls() {
         if (ctrl_master.get_digital(E_CONTROLLER_DIGITAL_B)){
             catapult_instance->release();
         }
-        // else if (master.get_digital(E_CONTROLLER_DIGITAL_B)){
-        //     intakeInstance->set_power(-12000);
-        // }
-        pros::delay(50);
 
-        pros::delay(20);
+        pros::delay(15);
     }
 }
