@@ -13,6 +13,6 @@ class IntakeClass : public SubsystemParent
 
     private:
         IntakeClass(pros::Motor& subsystem_motor) : SubsystemParent("Intake"), intake_motor_(subsystem_motor){};
-        pros::Motor intake_motor_ = pros::Motor(14);
+        pros::Motor intake_motor_;
         static IntakeClass* instance_;
 };

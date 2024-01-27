@@ -29,6 +29,8 @@ IntakeClass* IntakeClass::getInstance(){
 void IntakeClass::stop(){
     intake_motor_.move_voltage(0);
 }
+
+//input is from -127 to 127
 void IntakeClass::set_power(int power){
     intake_motor_.move(power);
 }
