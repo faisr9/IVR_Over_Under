@@ -44,7 +44,7 @@ void CompetitionCatapult::prime() {
 
     stop();
 }
-
+//test this
 void CompetitionCatapult::cycle() {
     if (!kill_switch.get_value()) {
         prime();
