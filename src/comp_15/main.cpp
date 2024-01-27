@@ -22,10 +22,10 @@ void opcontrol() {
 	pros::Motor intakeMotor = pros::Motor(14);
 	Pneumatics* pneumaticsInstance = Pneumatics::getInstance();
 	while (1){
-		if (master.get_digital(E_CONTROLLER_DIGITAL_A)){
+		if (master.get_digital_new_press(E_CONTROLLER_DIGITAL_A)){
 			pneumaticsInstance->getFloorBrake()->toggle();
 		}
-		if (master.get_digital(E_CONTROLLER_DIGITAL_B)){
+		if (master.get_digital_new_press(E_CONTROLLER_DIGITAL_B)){
 			pneumaticsInstance->getWings()->toggle();
 		}
 		pros::delay(50);
