@@ -23,6 +23,6 @@ class CompetitionCatapult : public SubsystemParent {
 
         pros::MotorGroup& motors;
         pros::ADIButton& kill_switch;
-        int load_voltage;
-        int launch_voltage;
+        const int load_voltage = 50;
+        const int launch_voltage = 50;
 };
