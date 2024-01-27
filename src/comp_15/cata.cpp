@@ -37,7 +37,7 @@ void CompetitionCatapult::stop() {
 }
 
 void CompetitionCatapult::prime() {
-    while (!kill_switch.get_new_press()) {
+    while (!kill_switch.get_value()) {
         motors.move(load_voltage);
     }
 
