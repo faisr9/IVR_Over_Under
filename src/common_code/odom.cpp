@@ -102,7 +102,7 @@ void Odom::updatePosition() {       // updatePosition does all the math with the
     //while (true) {
 
         // PINK ROBOT:
-        currentTransverseValue = toMeters(horizontal_track.get_value()*4.0, transverseWheelRad); //*4.0
+        // currentTransverseValue = toMeters(horizontal_track.get_value()*4.0, transverseWheelRad); //*4.0
         currentRadialValue = toMeters(vertical_track.get_value(), radialWheelRad); // *1.0
 
         currentHeading = headingCorrection(imu.get_rotation());
@@ -113,18 +113,18 @@ void Odom::updatePosition() {       // updatePosition does all the math with the
         double sine = sin(currentHeading* M_PI / 180.0);
 
         double radialDeltaY = (currentRadialValue - lastRadialValue) * cosine;
-        double transverseDeltaY = -(currentTransverseValue - lastTransverseValue) * sine; // note the - sign
-        double deltaY = radialDeltaY + transverseDeltaY;
+        // double transverseDeltaY = -(currentTransverseValue - lastTransverseValue) * sine; // note the - sign
+        double deltaY = radialDeltaY;// + transverseDeltaY;
 
         double radialDeltaX = (currentRadialValue - lastRadialValue) * sine;
-        double transverseDeltaX = (currentTransverseValue - lastTransverseValue) * cosine;
-        double deltaX = radialDeltaX + transverseDeltaX;
+        // double transverseDeltaX = (currentTransverseValue - lastTransverseValue) * cosine;
+        double deltaX = radialDeltaX;// + transverseDeltaX;
 
         // pros::lcd::set_text(2, "Delta X: " + std::to_string(deltaX));
         // pros::lcd::set_text(3, "Delta Y: " + std::to_string(deltaY));
 
         lastRadialValue = currentRadialValue;
-        lastTransverseValue = currentTransverseValue;
+        //lastTransverseValue = currentTransverseValue;
 
         // pros::lcd::set_text(2, "Position X: " + std::to_string(positionX));
         // pros::lcd::set_text(3, "Position Y: " + std::to_string(positionY));
