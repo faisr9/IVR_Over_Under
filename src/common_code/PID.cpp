@@ -34,19 +34,21 @@ Things to do;
 - Avoid creating varibles in methods unless temp
 */
 
-pros::ADIEncoder* yEnc;
-pros::Imu* imu;
+// traditional_drive drive;
+// pros::ADIEncoder yEnc('a','b');
 
-PID::PID(double Kp, double Ki, double Kd, pros::ADIEncoder* yEnc){
+// PID cnaj(1.1,1.1,1.1,&yEnc,drive);
+
+PID::PID(double Kp, double Ki, double Kd, pros::ADIEncoder* yEnc, traditional_drive& tDrive):drive(tDrive){
     //FWD PID constants
     fwdPID_consts.kP = Kp;
     fwdPID_consts.kI = Ki;
     fwdPID_consts.kD = Kd;
-    //Sensor Initialization
+    drive.toggle_drive_mode(1); //Sensor Initialization
     this->yEnc = yEnc;
 }
 
-PID::PID(double Kp, double Ki, double Kd, pros::ADIEncoder* yEnc, double turnKp, double turnKi, double turnKd, pros::Imu* imu){
+PID::PID(double Kp, double Ki, double Kd, pros::ADIEncoder* yEnc, double turnKp, double turnKi, double turnKd, pros::Imu* imu, traditional_drive& tDrive):drive(tDrive){
     //FWD PID constants
     fwdPID_consts.kP = Kp;
     fwdPID_consts.kI = Ki;
@@ -58,6 +60,8 @@ PID::PID(double Kp, double Ki, double Kd, pros::ADIEncoder* yEnc, double turnKp,
     //Sensor Initialization
     this->yEnc = yEnc;
     this->imu = imu;
+
+    drive.toggle_drive_mode(1);
 }
 
 void PID::setFwdConstants(double kp, double ki, double kd){
@@ -85,7 +89,7 @@ void PID::drivePID(double target){
     double fwdSpd;
 
     pros::Task drivePID_lt{[&]{
-        if(std::abs(fwdPID_vars.error) > .3){
+        while(std::abs(fwdPID_vars.error) > .3){
             fwdPID_vars.sensorValue = fwdPID_vars.startValue - 2*M_PI*(1.96/2)*(yEnc->get_value()/360.0); //2*pi*r*(degrees/360)
             
             fwdPID_vars.error = target - fwdPID_vars.sensorValue;
@@ -102,7 +106,7 @@ void PID::drivePID(double target){
             fwdPID_vars.lastError = fwdPID_vars.error;
 
             fwdSpd = fwdPID_consts.kP * fwdPID_vars.error + fwdPID_consts.kI * fwdPID_vars.integral + fwdPID_consts.kD * fwdPID_vars.derivative;   
-            // drive(fwdSpd); //TODO: Implement drive function
+            drive.move_with_power(fwdSpd,fwdSpd,0);
         }
     }};
 }
@@ -130,7 +134,7 @@ void PID::drivePID(double target, int angle){
     double turnSpd;
 
     pros::Task drivePID_lt{[&]{
-        if(std::abs(fwdPID_vars.error) > .3 && std::abs(turnPID_vars.error) > 1){
+        while(std::abs(fwdPID_vars.error) > .3 && std::abs(turnPID_vars.error) > 1){
 
             ////////////////////////////
             //        FWD PID         //
@@ -171,7 +175,7 @@ void PID::drivePID(double target, int angle){
             turnSpd = turnPID_consts.kP * turnPID_vars.error + turnPID_consts.kI * turnPID_vars.integral + turnPID_consts.kD * turnPID_vars.derivative;   
 
             ///////////////////////////
-            // drive(fwdSpd, turnSpd); //TODO: Implement drive+turn function
+            drive.move_with_power(fwdSpd, fwdSpd, turnSpd);
         }
     }};
 }
@@ -186,7 +190,7 @@ void PID::turnPID(int angle){
 
     double turnSpd;
     pros::Task drivePID_lt{[&]{
-        if(std::abs(turnPID_vars.error) > 1){
+        while(std::abs(turnPID_vars.error) > 1){
             heading = imu->get_heading(); //IMU Sensor returns current heading in degrees from 0-360
             
             turnPID_vars.error = angle - heading;
@@ -202,6 +206,7 @@ void PID::turnPID(int angle){
 
             turnSpd = turnPID_consts.kP * turnPID_vars.error + turnPID_consts.kI * turnPID_vars.integral + turnPID_consts.kD * turnPID_vars.derivative;   
             // turn(turnSpd); //TODO: Implement turn function
+            drive.turn_with_power(turnSpd);
         }
     }};
 }

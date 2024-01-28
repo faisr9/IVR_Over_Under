@@ -47,5 +47,6 @@ class traditional_drive : public DriveParent
         void robot_centric_move(pair<double, double> mag_angle_vector); 
         void field_centric_move(pair<double, double> mag_angle_vector);
         void turn_with_power(double power);
+        void move_with_power(double leftPower, double rightPower, double turnPower);
         Motor_Group &get_motor_group(bool side);
 };
