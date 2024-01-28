@@ -19,8 +19,8 @@ pros::Motor left_front_bottom(18, true); // one of 18, 19, or 20
 pros::Motor left_middle(19, true); // one of 18, 19, or 20
 pros::Motor left_back(20, true); // one of 18, 19, or 20
 
-pros::Motor_Group left_motors = {left_front_top, left_front_bottom, left_middle, left_back};
-pros::Motor_Group right_motors = {right_front_top, right_front_bottom, right_middle, right_back};
+pros::Motor_Group left_drive_motors = {left_front_top, left_front_bottom, left_middle, left_back};
+pros::Motor_Group right_drive_motors = {right_front_top, right_front_bottom, right_middle, right_back};
 
 pros::Motor intake(15); // in = negative, out = positive
 
