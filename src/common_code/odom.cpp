@@ -35,11 +35,12 @@ Odom odometer(imu);
 
 void initialize() {
 	pros::lcd::initialize(); // Temp until custom GUI
+    pros::lcd::print(7,"initialized");
 	imu.reset();
     odometer.initTracker(0, 0, 0);
 }
 
-Odom::Odom(pros::IMU theImu): imu(theImu), vertical_track('E','D',false), horizontal_track('C','B',true) {
+Odom::Odom(pros::IMU theImu): imu(theImu), vertical_track(2,3,false), horizontal_track(4,5,true) {
 
     transverseWheelRad = 1.96 * 0.0254 / 2; // transverse wheel tracks left to right movements
     radialWheelRad = 1.96 * 0.0254 / 2;     // radial wheel tracks forward and backward movements (has nothing to do with radians)
@@ -54,6 +55,8 @@ Odom::Odom(pros::IMU theImu): imu(theImu), vertical_track('E','D',false), horizo
     scale_factor_heading = 1.0;
     lastHeading = initHeading;
     imuRotation = 0;
+    vertical_track.reset();
+    horizontal_track.reset();
 
 }
 
@@ -68,6 +71,7 @@ double Odom::toMeters(double value, double wheelRadius) {   // Accepts a value (
 }
 
 void Odom::initTracker(double initial_x, double initial_y, double initial_heading) {    // initializes the tracking variables so they can begin to be updated
+    Generic_Rotation* generic_vex_rot = new Generic_Rotation_VEX_Rot(transverse_rot_sensor, 1.96 * 0.0254 / 2);
     currentTransverseValue = toMeters(horizontal_track.get_value()*4.0, transverseWheelRad);
     currentRadialValue = toMeters(vertical_track.get_value(), radialWheelRad);
     
