@@ -17,10 +17,10 @@ double Generic_Rotation_VEX_Rot::get_delta_rotation() {
 
     double rotation_difference = current_position - last_value;
     
-    if (rotation_difference > (5.0/6.0) * kTICKS_PER_REVOLUTION) {
+    if (rotation_difference > kROLLOVER_DETECTION) {
         rotation_difference = current_position - (last_value + kTICKS_PER_REVOLUTION);
         // went from near 0 to near 36000 = rotating backwards
-    } else if (rotation_difference < (-5.0/6.0) * kTICKS_PER_REVOLUTION) {
+    } else if (rotation_difference < -1 * kROLLOVER_DETECTION) {
         rotation_difference = (current_position + kTICKS_PER_REVOLUTION) - last_value;
     }
 
