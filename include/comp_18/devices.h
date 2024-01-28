@@ -3,6 +3,8 @@
 
 // Forward declare all devices here so that all of the robot files and subsystem classes can access them //
 
+extern pros::Controller ctrl_master;
+
 // Motors //
 extern pros::Motor right_front_top;
 extern pros::Motor right_front_bottom;
