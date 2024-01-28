@@ -7,6 +7,8 @@
  * be active incase a port is damaged.
 */
 
+pros::Controller ctrl_master (CONTROLLER_MASTER);
+
 // Motors //
 // front is where intake is
 pros::Motor right_front_top(14, true); // 14

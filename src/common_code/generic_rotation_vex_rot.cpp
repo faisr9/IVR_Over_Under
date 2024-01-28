@@ -14,15 +14,13 @@ double Generic_Rotation_VEX_Rot::get_meters_travelled() {
 
 double Generic_Rotation_VEX_Rot::get_delta_rotation() {
     double current_position = rotation_sensor.get_position();
+    pros::lcd::set_text(4, "Current angle is " + std::to_string(current_position));
 
     double rotation_difference = current_position - last_value;
     
-    if (rotation_difference > kROLLOVER_DETECTION) {
-        rotation_difference = current_position - (last_value + kTICKS_PER_REVOLUTION);
-        // went from near 0 to near 36000 = rotating backwards
-    } else if (rotation_difference < -1 * kROLLOVER_DETECTION) {
-        rotation_difference = (current_position + kTICKS_PER_REVOLUTION) - last_value;
-    }
+    // despite what the docs say, the value returned by get_position does not rollover from
+    // 36000 to 0 (it just keeps going up), so rollover detection/accomodation code
+    // is not needed
 
     last_value = current_position;
     return rotation_difference;
