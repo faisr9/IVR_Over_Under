@@ -16,18 +16,29 @@ void competition_initialize() {}
 void autonomous() {
 }
 
+pros::Controller master(CONTROLLER_MASTER);
+Pneumatics* pneumatics = Pneumatics::createInstance('A', 'G');
+
 /* Opcontrol method runs by default (unless connected to comp controller )*/
 void opcontrol() {
-	Controller master(E_CONTROLLER_MASTER);
-	pros::Motor intakeMotor = pros::Motor(14);
-	Pneumatics* pneumaticsInstance = Pneumatics::getInstance();
-	while (1){
-		if (master.get_digital(E_CONTROLLER_DIGITAL_A)){
-			pneumaticsInstance->getFloorBrake()->toggle();
+
+	while(1){
+
+		pros::lcd::set_text(2, std::to_string(pneumatics->getWings()->getStatus()));
+		if(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A)){
+			pneumatics->getWings()->toggle();
 		}
-		if (master.get_digital(E_CONTROLLER_DIGITAL_B)){
-			pneumaticsInstance->getWings()->toggle();
+		if(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B)){
+			pneumatics->getWings()->off();
 		}
-		pros::delay(50);
+		if(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_X)){
+			pneumatics->getWings()->on();
+		}
+		if(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_Y)){
+			pneumatics->stop();
+		}
+
+		delay(50);
 	}
+
 }
