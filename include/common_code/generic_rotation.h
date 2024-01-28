@@ -14,11 +14,11 @@ class Generic_Rotation {
     public:
         Generic_Rotation(double wheel_rad_meters);
         // must call initialize_sensor before getting the data
-        virtual void initialize_sensor();
+        virtual void initialize_sensor() = 0;
         virtual double get_meters_travelled() = 0;
 
     protected:
         // helper function that gets the change in rotation in the respective encoder ticks
         virtual double get_delta_rotation() = 0; 
-        double wheel_radius;
+        const double wheel_radius;
 };
