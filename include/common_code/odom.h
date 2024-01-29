@@ -5,6 +5,7 @@
 #include "pros/adi.hpp"
 #include "main.h"
 #include "pros/imu.h"
+#include "common_code/generic_rotation_vex_rot.h"
 
 class Odom {
     public:
