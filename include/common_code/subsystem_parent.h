@@ -1,4 +1,5 @@
-#include <string>
+#pragma once
+#include "main.h"
 
 // want (this to be) abstract base class
 

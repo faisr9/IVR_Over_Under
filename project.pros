@@ -309,7 +309,11 @@
       }
     },
     "upload_options": {
+<<<<<<< HEAD
       "slot": 3
+=======
+      "slot": 1
+>>>>>>> origin/illiniGenericRotSensor
     }
   }
 }
