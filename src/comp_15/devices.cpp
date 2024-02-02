@@ -29,8 +29,8 @@ pros::MotorGroup Cata   ({cata_right, cata_left});
 pros::Motor Intake  (14, GEARSET_06, true);
 
 // V5 Sensors //
-pros::ADIEncoder vertical_track(3, 4, false); // tracking wheel #1 bc. Reversed values might be wrong
-pros::ADIEncoder horizontal_track(5, 6, true); // tracking wheel #2 de
+pros::ADIEncoder vertical_track(3, 4, true); // tracking wheel #1 cd
+pros::ADIEncoder horizontal_track(5, 6, true); // tracking wheel #2 ef
 pros::Imu imu(21);
 
 // Legacy Sensors //
@@ -39,5 +39,5 @@ pros::ADIDigitalOut Floor_brake ('G');
 pros::ADIDigitalOut Wings       ('H');
 
 // Other classes //
-Odom odometry(imu);
+Odom odometry(imu, vertical_track, horizontal_track);
 traditional_drive tank_drive(imu, ctrl_master, LeftDrive, RightDrive, odometry); // and I'm deleting this where...?

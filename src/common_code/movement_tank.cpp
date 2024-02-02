@@ -75,7 +75,10 @@ void turnToAngle(traditional_drive& drive, double desiredAngleDeg, double tolera
         double rotRPM = degFromFinalAngle * p;
         moveMotors(drive, rotRPM, -rotRPM);
         if (debug) pros::lcd::set_text(4, "Robot angle: " + std::to_string(drive.get_imu().get_heading()));
-        if (pros::millis() - start_time > 5000) break;
+        if (pros::millis() - start_time > 5000) {
+            if (debug) pros::lcd::set_text(6, "Turn to angle timeout reached!!!");
+            break;
+        } 
         pros::delay(50);
     }
     // need to stop motors in case of break statement
@@ -86,7 +89,6 @@ void followPath(std::vector<std::vector<double>>& path, traditional_drive& drive
     double firstX = path[0][0];
     double firstY = path[0][1];
     double currentIndex = 0;
-    double rot_p = 2.0;
     double SMALL_NUM = 0.000001;
     // A bonus would be able to calculate ALIGNMENT_HELPER_MULTIPLIER based on robot velocity
     double ALIGNMENT_HELPER_MULTIPLIER = 1.5;

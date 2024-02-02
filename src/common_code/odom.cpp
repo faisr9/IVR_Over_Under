@@ -39,7 +39,7 @@ This class has accounted for that, so that other code can assume the position of
 //     odometer.initTracker(0, 0, 0);
 // }
 
-Odom::Odom(pros::IMU theImu): imu(theImu), vertical_track(2,3,false), horizontal_track(4,5,true) {
+Odom::Odom(pros::IMU& theImu, pros::ADIEncoder& vertical, pros::ADIEncoder& horizontal): imu(theImu), vertical_track(vertical), horizontal_track(horizontal) {
 
     transverseWheelRad = 1.96 * 0.0254 / 2; // transverse wheel tracks left to right movements
     radialWheelRad = 1.96 * 0.0254 / 2;     // radial wheel tracks forward and backward movements (has nothing to do with radians)
@@ -78,7 +78,6 @@ void Odom::initTracker(double initial_x, double initial_y, double initial_headin
     initHeading = initial_heading;
     currentHeading = initHeading;
     imu.set_heading(initHeading);
-    imu.set_rotation(0);
     last_x_tracking_offset = RADIAL_WHEEL_X_OFFSET * cos(initHeading * M_PI / 180.0);
     last_y_tracking_offset = RADIAL_WHEEL_X_OFFSET * sin(initHeading * M_PI / 180.0);
 }
@@ -114,11 +113,11 @@ void Odom::updatePosition() {       // updatePosition does all the math with the
 
     double radialDeltaY = (currentRadialValue - lastRadialValue) * cosine;
     double transverseDeltaY = -(currentTransverseValue - lastTransverseValue) * sine; // note the - sign
-    double deltaY = radialDeltaY;// + transverseDeltaY;
+    double deltaY = radialDeltaY + transverseDeltaY;
 
     double radialDeltaX = (currentRadialValue - lastRadialValue) * sine;
     double transverseDeltaX = (currentTransverseValue - lastTransverseValue) * cosine;
-    double deltaX = radialDeltaX;// + transverseDeltaX;
+    double deltaX = radialDeltaX + transverseDeltaX;
 
     // pros::lcd::set_text(2, "Delta X: " + std::to_string(deltaX));
     // pros::lcd::set_text(3, "Delta Y: " + std::to_string(deltaY));
@@ -144,10 +143,11 @@ void Odom::updatePosition() {       // updatePosition does all the math with the
 
     pros::lcd::set_text(5, "Position X: " + std::to_string(positionX));
     pros::lcd::set_text(6, "Position Y: " + std::to_string(positionY));
-    pros::lcd::set_text(2, "Horizontal Track: " + std::to_string(horizontal_track.get_value()));
-    pros::lcd::set_text(3, "Vertical Track: " + std::to_string(vertical_track.get_value()));
+    // pros::lcd::set_text(2, "Horizontal Track: " + std::to_string(horizontal_track.get_value()));
+    // pros::lcd::set_text(3, "Vertical Track: " + std::to_string(vertical_track.get_value()));
     //pros::lcd::set_text(7, std::to_string(horizontal_track.get_config()));
-    // pros::lcd::set_text(7, "Heading: " + std::to_string(currentHeading));
+    std::cout << "Heading: " + std::to_string(currentHeading) << std::endl;
+    // pros::lcd::set_text(4, "Heading: " + std::to_string(currentHeading));
 
     // pros::lcd::set_text(6, "Transverse Val: " + std::to_string(currentTransverseValue));
     // pros::lcd::set_text(4, "Radial Val: " + std::to_string(currentRadialValue));

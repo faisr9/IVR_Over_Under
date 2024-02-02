@@ -5,6 +5,8 @@
 /* First method to run when program starts */
 void initialize() {
 	pros::lcd::initialize(); // Temp until custom GUI
+	imu.reset(); // Very important!!!
+	pros::delay(3000);
 }
 
 /* Runs when robot is disabled from competition controller after driver/auton */

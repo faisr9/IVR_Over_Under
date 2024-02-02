@@ -8,7 +8,7 @@
 
 class Odom {
     public:
-    Odom(pros::IMU theImu);
+    Odom(pros::IMU& theImu, pros::ADIEncoder& vertical, pros::ADIEncoder& horizontal);
     ~Odom();
 
     double toMeters(double value, double wheelRadius);
@@ -53,7 +53,7 @@ class Odom {
     double imuRotation;
     double scale_factor_heading;
 
-    pros::ADIEncoder vertical_track;
-    pros::ADIEncoder horizontal_track;
-    pros::IMU imu;
+    pros::ADIEncoder& vertical_track;
+    pros::ADIEncoder& horizontal_track;
+    pros::IMU& imu;
 };
