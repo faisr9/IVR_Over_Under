@@ -23,4 +23,5 @@ class Generic_Rotation {
     //private:
         // helper function that gets the change in rotation in the respective encoder ticks
         virtual double get_delta_rotation() = 0; 
+        const double wheel_radius;
 };

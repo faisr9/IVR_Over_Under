@@ -1,5 +1,7 @@
 #include "comp_15/comp15_includeList.h"
 
+#include "common_code/generic_rotation_digikey.h"
+
 /* First method to run when program starts */
 void initialize() {
 	pros::lcd::initialize(); // Temp until custom GUI
