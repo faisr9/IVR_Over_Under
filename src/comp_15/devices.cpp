@@ -29,8 +29,8 @@ pros::MotorGroup Cata   ({cata_right, cata_left});
 pros::Motor Intake  (14, GEARSET_06, true);
 
 // V5 Sensors //
-pros::ADIEncoder vertical_track(5, 6, false); // tracking wheel #1 bc. Reversed values might be wrong
-pros::ADIEncoder horizontal_track(3, 4, true); // tracking wheel #2 de
+pros::ADIEncoder vertical_track(3, 4, false); // tracking wheel #1 bc. Reversed values might be wrong
+pros::ADIEncoder horizontal_track(5, 6, true); // tracking wheel #2 de
 pros::Imu imu(21);
 
 // Legacy Sensors //
