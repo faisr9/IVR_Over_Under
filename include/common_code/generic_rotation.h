@@ -17,11 +17,10 @@ class Generic_Rotation {
         virtual void initialize_sensor() = 0;
         virtual double get_meters_travelled() = 0;
 
-    //protected:
+    protected: 
         const double wheel_radius;
 
-    //private:
+    private:
         // helper function that gets the change in rotation in the respective encoder ticks
         virtual double get_delta_rotation() = 0; 
-        const double wheel_radius;
 };

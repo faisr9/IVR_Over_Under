@@ -13,5 +13,4 @@ class Generic_Rotation_VEX_Rot : public Generic_Rotation {
         double get_delta_rotation(); 
         double last_value;
         const double kTICKS_PER_REVOLUTION = 36000.0;
-
 };

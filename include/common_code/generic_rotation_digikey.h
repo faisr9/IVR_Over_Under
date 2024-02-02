@@ -12,6 +12,6 @@ class Generic_Rotation_Digikey : public Generic_Rotation {
         pros::ADIEncoder& rotation_sensor;
         double get_delta_rotation(); 
         double last_value;
-        const double kTICKS_PER_REVOLUTION = 12000.0; // not tested, will vary based on hardware option
+        const double kTICKS_PER_REVOLUTION = 2000.0; // not tested, will vary based on hardware option
 
 };

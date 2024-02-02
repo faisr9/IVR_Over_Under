@@ -34,7 +34,7 @@ class Odom {
     double last_y_tracking_offset;
     double positionX;
     double positionY;
-    const double TICKS_PER_ROTATION = 19600.0;
+    const double TICKS_PER_ROTATION = 2000.0; // 19600.
     const double FEET_TO_METERS = 0.304;
     const double ADJUSTMENT_MULTIPLIER = 1.015;
     const double RADIAL_WHEEL_X_OFFSET = 0.0746125;
