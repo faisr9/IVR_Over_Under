@@ -25,6 +25,9 @@ extern pros::MotorGroup Cata;
 extern pros::Motor Intake;
 
 // V5 Sensors //
+extern pros::ADIEncoder vertical_track;
+extern pros::ADIEncoder horizontal_track;
+extern pros::Imu imu;
 
 // Legacy Sensors //
 extern pros::ADIButton Cata_limit;
