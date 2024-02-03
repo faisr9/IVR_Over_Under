@@ -1,7 +1,10 @@
 #pragma once
 #include "main.h"
+#include "common_code/traditional_drive.h"
 
 // Forward declare all devices here so that all of the robot files and subsystem classes can access them //
+
+extern pros::Controller ctrl_master;
 
 // Motors //
 extern pros::Motor right_front_top;
@@ -25,4 +28,8 @@ extern pros::Distance distance_sensor; // inside the intake/catching funnel; det
 extern pros::Rotation radial_rot_sensor; // parallel to the normal wheels
 extern pros::Rotation transverse_rot_sensor; // perpendicular to the normal wheels
 
+
+extern traditional_drive tank_drive_18;
 // Legacy Sensors //
+
+bool triBall();
