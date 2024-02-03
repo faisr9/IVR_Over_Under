@@ -9,10 +9,12 @@ class CompetitionCatapult : public SubsystemParent {
         CompetitionCatapult(const CompetitionCatapult& other) = delete;
 
         void stop();
-        void prime();
+        bool prime();
         void cycle();
-        void release();
-
+        bool release();
+        std::string get_cata_mode();
+        
+        
     private:
         // reference to passed in motor so it doesn't create a new motor object 
         CompetitionCatapult(pros::MotorGroup& motorgroup, pros::ADIButton& limit_switch);
@@ -24,5 +26,10 @@ class CompetitionCatapult : public SubsystemParent {
         pros::ADIButton& kill_switch;
         const int cata_voltage = 100;
         // const int launch_voltage = 50;
+
+        pros::Task cata_task;
+        std::string cata_mode = "X";
 };
 
+
+void cata_task_funct();

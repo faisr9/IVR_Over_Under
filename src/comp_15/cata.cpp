@@ -9,10 +9,10 @@ CompetitionCatapult* CompetitionCatapult::createInstance(pros::MotorGroup& motor
 }
 
 CompetitionCatapult::CompetitionCatapult(pros::MotorGroup& motorgroup, pros::ADIButton& limit_switch) 
-    : SubsystemParent("Competition Catapult"), motors(motorgroup), kill_switch(limit_switch){
+    : SubsystemParent("Competition Catapult"), motors(motorgroup), kill_switch(limit_switch), cata_task(test_function){
     
     /** NOTE: Comment this out once cata code works */
-    pros::lcd::set_text(5, "In constructor");
+    // pros::lcd::set_text(5, "In constructor");
 
     motors.set_brake_modes(BRAKETYPE_HOLD);
 }
@@ -25,9 +25,46 @@ CompetitionCatapult* CompetitionCatapult::getInstance() {
     return instance_;
 }
 CompetitionCatapult::~CompetitionCatapult() {
+    cata_task.suspend();
     if (instance_ != nullptr) {
         delete instance_;
         instance_ = nullptr;
+    }
+}
+
+void CompetitionCatapult::cata_task_funct() {
+    while (1) {
+        if (cata_mode == "X") {
+            stop();
+        } else if (cata_mode == "PR") {
+            if (!kill_switch.get_value()) {
+                motors.move(cata_voltage);
+            } else {
+                cata_mode = "R";
+            }
+        } else if (cata_mode == "RP") {
+            if (kill_switch.get_value()) {
+                motors.move(cata_voltage);
+            } else {
+                cata_mode = "P";
+            }
+        } else if (cata_mode == "R") {
+            if (kill_switch.get_value()) {
+                motors.move(cata_voltage);
+            } else {
+                cata_mode = "X";
+            }
+        } else if (cata_mode == "P") {
+            if (!kill_switch.get_value()) {
+                motors.move(cata_voltage);
+            } else {
+                cata_mode = "X";
+            }
+        } else {
+            pros::lcd::set_text(6, "Invalid cata_mode string!");
+            stop();
+        }
+        pros::delay(30);
     }
 }
 
@@ -36,28 +73,142 @@ void CompetitionCatapult::stop() {
 }
 
 void CompetitionCatapult::prime() {
-    while (!kill_switch.get_value()) {
-        motors.move(cata_voltage);
-        delay(15);
-    }
 
-    stop();
+    cata_task.suspend();
+    cata_mode = "P";
+    cata_task.resume();
+
+    // pros::Task prime_task{[=] {
+	// 	while (!kill_switch.get_value()) {
+    //         motors.move(cata_voltage);
+	// 		delay(30);
+
+	// 	}
+
+    //     stop();
+	// }}; // lambda function with a task
+
 }
 //test this
 void CompetitionCatapult::cycle() {
+    cata_task.suspend();
     if (!kill_switch.get_value()) {
-        prime();
-        release();
+        cata_mode = "PR";
+        // prime();
+        // release();
     } else {
-        release();
-        prime();
+        cata_mode = "RP";
+        // release();
+        // prime();
     }
+
+    cata_task.resume();
 }
 
 void CompetitionCatapult::release() {
-    while (kill_switch.get_value()) {
-        motors.move(cata_voltage);
-        delay(15);
-    }
-    stop();
+    cata_task.suspend();
+    cata_mode = "R";
+    cata_task.resume();
+    // while (kill_switch.get_value()) {
+    //     motors.move(cata_voltage);
+    //     delay(15);
+    // }
+    // stop();
 }
+
+std::string CompetitionCatapult::get_cata_mode() {
+    return cata_mode;
+}
+
+
+void cata_task_funct() {
+    // stuff goes here
+    CompetitionCatapult* cata_inst = CompetitionCatapult::getInstance();
+
+    if (cata_inst == nullptr) {
+        return;
+    }
+
+    while (1) {
+        if (cata_inst->get_cata_mode() == "X") {
+            cata_inst->stop();
+        } else if (cata_inst->get_cata_mode() == "PR") {
+            if (!cata_inst->prime()) {
+                
+            }
+            if (!kill_switch.get_value()) {
+                motors.move(cata_voltage);
+            } else {
+                cata_mode = "R";
+            }
+        } else if (cata_inst->get_cata_mode() == "RP") {
+            if (kill_switch.get_value()) {
+                motors.move(cata_voltage);
+            } else {
+                cata_mode = "P";
+            }
+        } else if (cata_inst->get_cata_mode() == "R") {
+            if (kill_switch.get_value()) {
+                motors.move(cata_voltage);
+            } else {
+                cata_mode = "X";
+            }
+        } else if (cata_inst->get_cata_mode() == "P") {
+            if (!kill_switch.get_value()) {
+                motors.move(cata_voltage);
+            } else {
+                cata_mode = "X";
+            }
+        } else {
+            pros::lcd::set_text(6, "Invalid cata_mode string!");
+            cata_inst->stop();
+        }
+        pros::delay(30);
+    }
+}
+
+// void cata_task_funct() {
+//     // stuff goes here
+//     CompetitionCatapult* cata_inst = CompetitionCatapult::getInstance();
+
+//     if (cata_inst == nullptr) {
+//         return;
+//     }
+
+//     while (1) {
+//         if (cata_mode == "X") {
+//             cata_inst->stop();
+//         } else if (cata_mode == "PR") {
+//             if (!cata_inst->prime()) {
+                
+//             }
+//             if (!kill_switch.get_value()) {
+//                 motors.move(cata_voltage);
+//             } else {
+//                 cata_mode = "R";
+//             }
+//         } else if (cata_mode == "RP") {
+//             if (kill_switch.get_value()) {
+//                 motors.move(cata_voltage);
+//             } else {
+//                 cata_mode = "P";
+//             }
+//         } else if (cata_mode == "R") {
+//             if (kill_switch.get_value()) {
+//                 motors.move(cata_voltage);
+//             } else {
+//                 cata_mode = "X";
+//             }
+//         } else if (cata_mode == "P") {
+//             if (!kill_switch.get_value()) {
+//                 motors.move(cata_voltage);
+//             } else {
+//                 cata_mode = "X";
+//             }
+//         } else {
+//             pros::lcd::set_text(6, "Invalid cata_mode string!");
+//             cata_inst->stop();
+//         }
+//         pros::delay(30);
+//     }
+// }
