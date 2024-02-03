@@ -1,5 +1,7 @@
 #include "comp_15/controls.h"
 
+int cnt = 0;
+
 void controls() {
     pros::lcd::set_text(1, "Running Controls");
     while(1) {
@@ -28,14 +30,16 @@ void controls() {
         // }
 
         //PNEUMATICS CONTROLS
-        if(ctrl_master.get_digital(E_CONTROLLER_DIGITAL_X)) {
-            Pneumatics::getInstance()->getWings().toggle();
-            std::string status = to_string(Pneumatics::getInstance()->getWings().getStatus());
-            pros::lcd::set_text(2, status);
+        if(ctrl_master.get_digital_new_press(E_CONTROLLER_DIGITAL_X)) {
+            Pneumatics::getInstance()->getWings()->toggle();
+            // std::string status = to_string(Pneumatics::getInstance()->getWings()->getStatus() ? 1 : 0);
+            // pros::lcd::set_text(3, status);
         }
-        if(ctrl_master.get_digital(E_CONTROLLER_DIGITAL_Y)) {
-            Pneumatics::getInstance()->getKickstand().toggle();
+
+        if(ctrl_master.get_digital_new_press(E_CONTROLLER_DIGITAL_Y)) {
+            Pneumatics::getInstance()->getKickstand()->toggle();
         }
+
 
         pros::delay(15);
     }

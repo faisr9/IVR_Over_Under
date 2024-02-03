@@ -11,9 +11,9 @@ class Pneumatics : public SubsystemParent {
 
         void stop();
 
-        Piston getWings();
-        Piston getKickstand();
-        Piston getClimber();
+        Piston* getWings();
+        Piston* getKickstand();
+        Piston* getClimber();
 
 
     private:

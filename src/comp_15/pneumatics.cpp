@@ -50,8 +50,8 @@ Pneumatics::~Pneumatics() {
  * 
  * 
 */
-Piston Pneumatics::getWings(){
-    return wings;
+Piston* Pneumatics::getWings(){
+    return &wings;
 }
 
 /**
@@ -65,8 +65,8 @@ Piston Pneumatics::getWings(){
  * 
  * 
 */
-Piston Pneumatics::getClimber(){
-    return climber;
+Piston* Pneumatics::getClimber(){
+    return &climber;
 }
 
 
@@ -81,8 +81,8 @@ Piston Pneumatics::getClimber(){
  * 
  * 
 */
-Piston Pneumatics::getKickstand(){
-    return kickstand;
+Piston* Pneumatics::getKickstand(){
+    return &kickstand;
 }
 
 void Pneumatics::stop() {

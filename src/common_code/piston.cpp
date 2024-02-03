@@ -2,7 +2,7 @@
 
 
 Piston::Piston(char port_value) : piston(port_value){
-    status = false;
+    status = true;
 }
 
 void Piston::on() {
@@ -15,13 +15,19 @@ void Piston::off() {
     piston.set_value(false);
 }
 
-void Piston::toggle(){
-    status = !status;
-    if(status) {
-        piston.set_value(1);  
-    } else {
-        piston.set_value(0);  
+void Piston::toggle() {
+    toggle_count++;
+    pros::lcd::set_text(3, std::to_string(toggle_count));
+    pros::lcd::set_text(2, std::to_string(status));
+    if(status){
+        off();
+    }else{
+        on();
     }
+}
+
+int Piston::getToggleCount(){
+    return toggle_count;
 }
 
 bool Piston::getStatus(){
