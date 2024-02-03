@@ -31,3 +31,5 @@ extern pros::Rotation transverse_rot_sensor; // perpendicular to the normal whee
 
 extern traditional_drive tank_drive_18;
 // Legacy Sensors //
+
+bool triBall();
