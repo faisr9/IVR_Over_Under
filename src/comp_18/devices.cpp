@@ -1,4 +1,5 @@
 #include "comp_18/comp18_includeList.h"
+using namespace pros;
 
 /**
  * Future Update:
@@ -31,3 +32,15 @@ pros::Rotation radial_rot_sensor(10);
 pros::Rotation transverse_rot_sensor(9, true); // reversed so that going right is positive
 
 // Legacy Sensors //
+
+
+// Distance Sensors //
+Distance distance_sensor(3); // Port 3
+bool triBall()
+{
+    // if the distance sensor detects something within 100mm
+    if (distance_sensor.get() < 100)
+        return 1;
+    else
+        return 0;
+}
