@@ -32,12 +32,10 @@ void controls() {
         //PNEUMATICS CONTROLS
         if(ctrl_master.get_digital_new_press(E_CONTROLLER_DIGITAL_X)) {
             Pneumatics::getInstance()->getWings()->toggle();
-            // std::string status = to_string(Pneumatics::getInstance()->getWings()->getStatus() ? 1 : 0);
-            // pros::lcd::set_text(3, status);
         }
 
         if(ctrl_master.get_digital_new_press(E_CONTROLLER_DIGITAL_Y)) {
-            Pneumatics::getInstance()->getKickstand()->toggle();
+            Pneumatics::getInstance()->getFloorBrake()->toggle();
         }
 
 

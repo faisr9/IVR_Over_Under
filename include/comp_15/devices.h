@@ -36,3 +36,6 @@ extern pros::ADIButton Cata_limit;
 // extern pros::ADIDigitalOut Wings;
 extern const char WINGS;
 extern const char FLOOR_BRAKE;
+
+// Traditional Drive
+extern traditional_drive drive;

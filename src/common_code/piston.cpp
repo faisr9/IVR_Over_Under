@@ -17,8 +17,6 @@ void Piston::off() {
 
 void Piston::toggle() {
     toggle_count++;
-    pros::lcd::set_text(3, std::to_string(toggle_count));
-    pros::lcd::set_text(2, std::to_string(status));
     if(status){
         off();
     }else{
@@ -26,6 +24,8 @@ void Piston::toggle() {
     }
 }
 
+
+//this is used for testing, but could be a function good to have in case debugging needs this
 int Piston::getToggleCount(){
     return toggle_count;
 }
