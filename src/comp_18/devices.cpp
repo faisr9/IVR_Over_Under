@@ -1,4 +1,5 @@
 #include "comp_18/comp18_includeList.h"
+using namespace pros;
 
 /**
  * Future Update:
@@ -37,3 +38,15 @@ const char CLIMBER_SOLENOID_PORT = 'B';
 traditional_drive tank_drive_18(imu, ctrl_master, left_drive_motors, right_drive_motors, 0);
 
 // Legacy Sensors //
+
+
+// Distance Sensors //
+Distance distance_sensor(3); // Port 3
+bool triBall()
+{
+    // if the distance sensor detects something within 100mm
+    if (distance_sensor.get() < 100)
+        return 1;
+    else
+        return 0;
+}
