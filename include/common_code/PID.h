@@ -17,6 +17,8 @@ class PID{
             double lastError;
             double derivative;
             double integral;
+
+            double spd;
         };
 
         PIDConstants fwdPID_consts;
@@ -31,8 +33,8 @@ class PID{
         traditional_drive& drive;
 
     public:
-        PID::PID(double Kp, double Ki, double Kd, pros::ADIEncoder* yEnc, traditional_drive& drive);
-        PID::PID(double Kp, double Ki, double Kd, pros::ADIEncoder* yEnc, double turnKp, double turnKi, double turnKd, pros::Imu* imu, traditional_drive& drive);
+        PID::PID(double Kp, double Ki, double Kd, pros::ADIEncoder* yEnc, traditional_drive& tDrive);
+        PID::PID(double Kp, double Ki, double Kd, pros::ADIEncoder* yEnc, double turnKp, double turnKi, double turnKd, pros::Imu* imu, traditional_drive& tDrive);
         // PID(double Kp, double Ki, double Kd, double turnKp, double turnKi, double turnKd, double strafeKp, double strafeKi, double strafeKd);
         void setFwdConstants(double kp, double ki, double kd);
         void setTurnConstants(double kp, double ki, double kd);

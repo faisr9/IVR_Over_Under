@@ -1,67 +1,53 @@
 #include "PID.h"
 #include "main.h"
 
-// Sensors: Temporary
-// pros::Rotation yEnc(10);
-// pros::Rotation xEnc(14);
-// pros::IMU imu(20);
-
-//Methods
-//pass in parameters OR pass in sensor objects
-//
-
 /*
-Ways to Update:
-==================
-1) Keep original methods. Have them run on sperate lambda threads (requireds mutex)
-2) Make PID loops once run per call
-    Require a while loop in the auton file to run program
-3) Directly integrate PID class in an auton class that moves robot with one method call
-    passing in the sensors, motor . basically option 2
-4) Have this main PID class do option 1. In the Auton Creator Class, we inherit this class
-    and overload the PID methods to run custom movement integration
-Best way to do this is to create PID objects per subsystem that uses PID
+//////////////////
+/// NEXT STEPS ///
+//////////////////
+Drive PID and turn PID aren't that different, consider making just 1 generic PID function that takes in a target - need seperate functions if certain robot dont have certain components (ex. no IMU for turnPID, no , etc.)
 
-Things to do;
-- Restructure the class so that the each PID object has its own set of PID constants.
-    - We can do one where we can store multiple constants for each PID object, like the drive class
-        which can have drive turn and strafe PID constants, where the tank drive will have only
-        drive and turn constants
-    - Create methods that pass in the target and current inputs rather than hardcoded sensor input
-    - Create methods that pass in sensors?
-- All PID loops should have lambda threads
-- Create the varibles for the values returned by the PID fuctions. Need to loop this into mutex
-- Avoid creating varibles in methods unless temp
+Consider making PID class not have both normal PID and turn PID in constructor, instead just 1 set of PID constants and if whatever system 
+is calling the PID class needs drive and turn it can just make 2 PID objects
+
+Functions in the PID class can be more generic to take in some type of supplier for the current physical position of the motor/encoder/imu. 
+Based on a bit of research I did these things should exist in C++ (they do in Java as a DoubleSupplier) and we can figure out how to implement it once we need to
 */
 
-// traditional_drive drive;
 // pros::ADIEncoder yEnc('a','b');
+// pros::IMU imu(2);
+// pros::Motor_Group l({1,2});
+// pros::Motor_Group r({3,4});
+// traditional_drive drive(imu, l, r);
 
-// PID cnaj(1.1,1.1,1.1,&yEnc,drive);
+// PID cnaj(1.1, 1.1, 1.1, &yEnc, 1.1, 1.1, 1.1, &imu, drive);
 
-PID::PID(double Kp, double Ki, double Kd, pros::ADIEncoder* yEnc, traditional_drive& tDrive):drive(tDrive){
+PID::PID(double kP, double kI, double kD, pros::ADIEncoder* yEnc, traditional_drive& tDrive):drive(tDrive){
     //FWD PID constants
-    fwdPID_consts.kP = Kp;
-    fwdPID_consts.kI = Ki;
-    fwdPID_consts.kD = Kd;
-    drive.toggle_drive_mode(1); //Sensor Initialization
+    fwdPID_consts.kP = kP;
+    fwdPID_consts.kI = kI;
+    fwdPID_consts.kD = kD;
+    //Turn PID constants (unused)
+    turnPID_consts.kP = NULL;
+    turnPID_consts.kI = NULL;
+    turnPID_consts.kD = NULL;
+    //Sensor Initialization
     this->yEnc = yEnc;
+    imu = NULL; //IMU not used
 }
 
-PID::PID(double Kp, double Ki, double Kd, pros::ADIEncoder* yEnc, double turnKp, double turnKi, double turnKd, pros::Imu* imu, traditional_drive& tDrive):drive(tDrive){
+PID::PID(double kP, double kI, double kD, pros::ADIEncoder* yEnc, double turnkP, double turnkI, double turnkD, pros::Imu* imu, traditional_drive& tDrive):drive(tDrive){
     //FWD PID constants
-    fwdPID_consts.kP = Kp;
-    fwdPID_consts.kI = Ki;
-    fwdPID_consts.kD = Kd;
+    fwdPID_consts.kP = kP;
+    fwdPID_consts.kI = kI;
+    fwdPID_consts.kD = kD;
     //Turn PID constants
-    turnPID_consts.kP = Kp;
-    turnPID_consts.kI = Ki;
-    turnPID_consts.kD = Kd;
+    turnPID_consts.kP = turnkP;
+    turnPID_consts.kI = turnkI;
+    turnPID_consts.kD = turnkD;
     //Sensor Initialization
     this->yEnc = yEnc;
     this->imu = imu;
-
-    drive.toggle_drive_mode(1);
 }
 
 void PID::setFwdConstants(double kp, double ki, double kd){
@@ -76,43 +62,8 @@ void PID::setTurnConstants(double kp, double ki, double kd){
     turnPID_consts.kD = kd;
 }
 
-void PID::drivePID(double target){
-    fwdPID_vars.error = target;
-    fwdPID_vars.sensorValue = 0;
-
-    fwdPID_vars.startValue = 2*M_PI*(1.96/2)*(yEnc->get_value()/360.0);
-
-    fwdPID_vars.lastError = 0;
-    fwdPID_vars.derivative = 0;
-    fwdPID_vars.integral = 0;
-
-    double fwdSpd;
-
-    pros::Task drivePID_lt{[&]{
-        while(std::abs(fwdPID_vars.error) > .3){
-            fwdPID_vars.sensorValue = fwdPID_vars.startValue - 2*M_PI*(1.96/2)*(yEnc->get_value()/360.0); //2*pi*r*(degrees/360)
-            
-            fwdPID_vars.error = target - fwdPID_vars.sensorValue;
-
-            fwdPID_vars.integral += fwdPID_vars.error;
-            //Ensures integral doesn't get too large
-            if(fwdPID_vars.error==0||fwdPID_vars.sensorValue>fwdPID_vars.error)
-                fwdPID_vars.integral = 0;
-            else if(fwdPID_vars.error<=0)
-                fwdPID_vars.integral = 0;
-            
-            //updates derivative and lastError
-            fwdPID_vars.derivative = fwdPID_vars.error - fwdPID_vars.lastError;
-            fwdPID_vars.lastError = fwdPID_vars.error;
-
-            fwdSpd = fwdPID_consts.kP * fwdPID_vars.error + fwdPID_consts.kI * fwdPID_vars.integral + fwdPID_consts.kD * fwdPID_vars.derivative;   
-            drive.move_with_power(fwdSpd,fwdSpd,0);
-        }
-    }};
-}
-
 void PID::drivePID(double target, int angle){
-    //FWD PID
+    //FWD PID//
     fwdPID_vars.error = target;
     fwdPID_vars.startValue = 2*M_PI*(1.96/2)*(yEnc->get_value()/360.0);
     fwdPID_vars.sensorValue=0;
@@ -121,9 +72,9 @@ void PID::drivePID(double target, int angle){
     fwdPID_vars.derivative = 0;
     fwdPID_vars.integral = 0;
 
-    double fwdSpd;
+    fwdPID_vars.spd = 0;
 
-    //Turn PID
+    //Turn PID//
     double heading = imu->get_heading();
     turnPID_vars.error = angle-heading;
 
@@ -131,15 +82,14 @@ void PID::drivePID(double target, int angle){
     turnPID_vars.derivative = 0;
     turnPID_vars.integral = 0;
 
-    double turnSpd;
+    turnPID_vars.spd = 0;
 
     pros::Task drivePID_lt{[&]{
         while(std::abs(fwdPID_vars.error) > .3 && std::abs(turnPID_vars.error) > 1){
-
             ////////////////////////////
             //        FWD PID         //
             ////////////////////////////
-            fwdPID_vars.sensorValue = fwdPID_vars.startValue - 2*M_PI*(1.96/2)*(yEnc->get_value()/360.0); //2*pi*r*(degrees/360)
+            fwdPID_vars.sensorValue = 2*M_PI*(1.96/2)*(yEnc->get_value()/360.0) - fwdPID_vars.startValue; //2*pi*r*(degrees/360)
             
             fwdPID_vars.error = target - fwdPID_vars.sensorValue;
 
@@ -154,7 +104,7 @@ void PID::drivePID(double target, int angle){
             fwdPID_vars.derivative = fwdPID_vars.error - fwdPID_vars.lastError;
             fwdPID_vars.lastError = fwdPID_vars.error;
 
-            fwdSpd = fwdPID_consts.kP * fwdPID_vars.error + fwdPID_consts.kI * fwdPID_vars.integral + fwdPID_consts.kD * fwdPID_vars.derivative;  
+            fwdPID_vars.spd = fwdPID_consts.kP * fwdPID_vars.error + fwdPID_consts.kI * fwdPID_vars.integral + fwdPID_consts.kD * fwdPID_vars.derivative;  
 
             ////////////////////////////
             //        Turn PID        //
@@ -172,10 +122,45 @@ void PID::drivePID(double target, int angle){
             turnPID_vars.derivative = turnPID_vars.error - turnPID_vars.lastError;
             turnPID_vars.lastError = turnPID_vars.error;
 
-            turnSpd = turnPID_consts.kP * turnPID_vars.error + turnPID_consts.kI * turnPID_vars.integral + turnPID_consts.kD * turnPID_vars.derivative;   
-
+            turnPID_vars.spd = turnPID_consts.kP * turnPID_vars.error + turnPID_consts.kI * turnPID_vars.integral + turnPID_consts.kD * turnPID_vars.derivative;   
             ///////////////////////////
-            drive.move_with_power(fwdSpd, fwdSpd, turnSpd);
+            drive.move_with_power(fwdPID_vars.spd, fwdPID_vars.spd, turnPID_vars.spd);
+        }
+    }};
+}
+
+
+void PID::drivePID(double target){
+    fwdPID_vars.error = target;
+    fwdPID_vars.sensorValue = 0;
+
+    fwdPID_vars.startValue = 2*M_PI*(1.96/2)*(yEnc->get_value()/360.0);
+
+    fwdPID_vars.lastError = 0;
+    fwdPID_vars.derivative = 0;
+    fwdPID_vars.integral = 0;
+
+    fwdPID_vars.spd = 0;
+
+    pros::Task drivePID_lt{[&]{
+        while(std::abs(fwdPID_vars.error) > .3){
+            fwdPID_vars.sensorValue = 2*M_PI*(1.96/2)*(yEnc->get_value()/360.0) - fwdPID_vars.startValue; //2*pi*r*(degrees/360)
+            
+            fwdPID_vars.error = target - fwdPID_vars.sensorValue;
+
+            fwdPID_vars.integral += fwdPID_vars.error;
+            //Ensures integral doesn't get too large
+            if(fwdPID_vars.error==0||fwdPID_vars.sensorValue>fwdPID_vars.error)
+                fwdPID_vars.integral = 0;
+            else if(fwdPID_vars.error<=0)
+                fwdPID_vars.integral = 0;
+            
+            //updates derivative and lastError
+            fwdPID_vars.derivative = fwdPID_vars.error - fwdPID_vars.lastError;
+            fwdPID_vars.lastError = fwdPID_vars.error;
+
+            fwdPID_vars.spd = fwdPID_consts.kP * fwdPID_vars.error + fwdPID_consts.kI * fwdPID_vars.integral + fwdPID_consts.kD * fwdPID_vars.derivative;   
+            drive.move_with_power(fwdPID_vars.spd, fwdPID_vars.spd, 0);
         }
     }};
 }
@@ -188,7 +173,8 @@ void PID::turnPID(int angle){
     turnPID_vars.derivative = 0;
     fwdPID_vars.integral = 0;
 
-    double turnSpd;
+    turnPID_vars.spd = 0;
+
     pros::Task drivePID_lt{[&]{
         while(std::abs(turnPID_vars.error) > 1){
             heading = imu->get_heading(); //IMU Sensor returns current heading in degrees from 0-360
@@ -204,9 +190,8 @@ void PID::turnPID(int angle){
             turnPID_vars.derivative = turnPID_vars.error - turnPID_vars.lastError;
             turnPID_vars.lastError = turnPID_vars.error;
 
-            turnSpd = turnPID_consts.kP * turnPID_vars.error + turnPID_consts.kI * turnPID_vars.integral + turnPID_consts.kD * turnPID_vars.derivative;   
-            // turn(turnSpd); //TODO: Implement turn function
-            drive.turn_with_power(turnSpd);
+            turnPID_vars.spd = turnPID_consts.kP * turnPID_vars.error + turnPID_consts.kI * turnPID_vars.integral + turnPID_consts.kD * turnPID_vars.derivative;   
+            drive.turn_with_power(turnPID_vars.spd);
         }
     }};
 }
