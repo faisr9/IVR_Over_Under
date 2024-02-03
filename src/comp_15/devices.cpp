@@ -31,15 +31,14 @@ pros::Motor intake  (14, GEARSET_06, true);
 // V5 Sensors //
 pros::Imu imu(21);
 
-// Legacy Sensors //
-pros::ADIButton cata_limit ('A');
-char kick_stand = 'G';
-char wings = 'H';
-
 // Traditional Drive
 traditional_drive drive(imu, ctrl_master, left_drive, right_drive, 0);
 
 // Instances
 Intake* intake_instance = Intake::createInstance(intake);
 //Catapult* catapult_instance = Catapult::createInstance(cata, cata_limit);
-Pneumatics* pneumatics_instance = Pneumatics::createInstance(wings, kick_stand, 'Z');
+pros::ADIButton     Cata_limit  ('A');
+const char FLOOR_BRAKE = 'G';
+const char WINGS = 'H';
+Pneumatics* pneumatics_instance = Pneumatics::createInstance(WINGS, FLOOR_BRAKE);
+

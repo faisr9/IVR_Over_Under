@@ -1,4 +1,5 @@
-#include "main.h"
+#pragma once
+#include "api.h"
 
 class Piston {
     public:

@@ -7,7 +7,7 @@ Piston::Piston(char port_value) : piston(port_value){
 
 void Piston::on() {
     status = true;
-    piston.set_value(true);
+    piston.set_value(status);
 }
 
 void Piston::off() {
