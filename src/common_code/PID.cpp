@@ -14,6 +14,7 @@ Functions in the PID class can be more generic to take in some type of supplier 
 Based on a bit of research I did these things should exist in C++ (they do in Java as a DoubleSupplier) and we can figure out how to implement it once we need to
 */
 
+//
 // pros::ADIEncoder yEnc('a','b');
 // pros::IMU imu(2);
 // pros::Motor_Group l({1,2});
@@ -72,7 +73,7 @@ void PID::drivePID(double target, int angle){
     fwdPID_vars.derivative = 0;
     fwdPID_vars.integral = 0;
 
-    fwdPID_vars.spd = 0;
+    fwdPID_vars.velocity = 0;
 
     //Turn PID//
     double heading = imu->get_heading();
@@ -82,7 +83,7 @@ void PID::drivePID(double target, int angle){
     turnPID_vars.derivative = 0;
     turnPID_vars.integral = 0;
 
-    turnPID_vars.spd = 0;
+    turnPID_vars.velocity = 0;
 
     pros::Task drivePID_lt{[&]{
         while(std::abs(fwdPID_vars.error) > .3 && std::abs(turnPID_vars.error) > 1){
@@ -104,7 +105,7 @@ void PID::drivePID(double target, int angle){
             fwdPID_vars.derivative = fwdPID_vars.error - fwdPID_vars.lastError;
             fwdPID_vars.lastError = fwdPID_vars.error;
 
-            fwdPID_vars.spd = fwdPID_consts.kP * fwdPID_vars.error + fwdPID_consts.kI * fwdPID_vars.integral + fwdPID_consts.kD * fwdPID_vars.derivative;  
+            fwdPID_vars.velocity = fwdPID_consts.kP * fwdPID_vars.error + fwdPID_consts.kI * fwdPID_vars.integral + fwdPID_consts.kD * fwdPID_vars.derivative;  
 
             ////////////////////////////
             //        Turn PID        //
@@ -122,13 +123,12 @@ void PID::drivePID(double target, int angle){
             turnPID_vars.derivative = turnPID_vars.error - turnPID_vars.lastError;
             turnPID_vars.lastError = turnPID_vars.error;
 
-            turnPID_vars.spd = turnPID_consts.kP * turnPID_vars.error + turnPID_consts.kI * turnPID_vars.integral + turnPID_consts.kD * turnPID_vars.derivative;   
+            turnPID_vars.velocity = turnPID_consts.kP * turnPID_vars.error + turnPID_consts.kI * turnPID_vars.integral + turnPID_consts.kD * turnPID_vars.derivative;   
             ///////////////////////////
-            drive.move_with_power(fwdPID_vars.spd, fwdPID_vars.spd, turnPID_vars.spd);
+            drive.move_with_power(fwdPID_vars.velocity, fwdPID_vars.velocity, turnPID_vars.velocity);
         }
     }};
 }
-
 
 void PID::drivePID(double target){
     fwdPID_vars.error = target;
@@ -140,7 +140,7 @@ void PID::drivePID(double target){
     fwdPID_vars.derivative = 0;
     fwdPID_vars.integral = 0;
 
-    fwdPID_vars.spd = 0;
+    fwdPID_vars.velocity = 0;
 
     pros::Task drivePID_lt{[&]{
         while(std::abs(fwdPID_vars.error) > .3){
@@ -159,8 +159,8 @@ void PID::drivePID(double target){
             fwdPID_vars.derivative = fwdPID_vars.error - fwdPID_vars.lastError;
             fwdPID_vars.lastError = fwdPID_vars.error;
 
-            fwdPID_vars.spd = fwdPID_consts.kP * fwdPID_vars.error + fwdPID_consts.kI * fwdPID_vars.integral + fwdPID_consts.kD * fwdPID_vars.derivative;   
-            drive.move_with_power(fwdPID_vars.spd, fwdPID_vars.spd, 0);
+            fwdPID_vars.velocity = fwdPID_consts.kP * fwdPID_vars.error + fwdPID_consts.kI * fwdPID_vars.integral + fwdPID_consts.kD * fwdPID_vars.derivative;   
+            drive.move_with_power(fwdPID_vars.velocity, fwdPID_vars.velocity, 0);
         }
     }};
 }
@@ -173,7 +173,7 @@ void PID::turnPID(int angle){
     turnPID_vars.derivative = 0;
     fwdPID_vars.integral = 0;
 
-    turnPID_vars.spd = 0;
+    turnPID_vars.velocity = 0;
 
     pros::Task drivePID_lt{[&]{
         while(std::abs(turnPID_vars.error) > 1){
@@ -190,8 +190,8 @@ void PID::turnPID(int angle){
             turnPID_vars.derivative = turnPID_vars.error - turnPID_vars.lastError;
             turnPID_vars.lastError = turnPID_vars.error;
 
-            turnPID_vars.spd = turnPID_consts.kP * turnPID_vars.error + turnPID_consts.kI * turnPID_vars.integral + turnPID_consts.kD * turnPID_vars.derivative;   
-            drive.turn_with_power(turnPID_vars.spd);
+            turnPID_vars.velocity = turnPID_consts.kP * turnPID_vars.error + turnPID_consts.kI * turnPID_vars.integral + turnPID_consts.kD * turnPID_vars.derivative;   
+            drive.turn_with_power(turnPID_vars.velocity);
         }
     }};
 }

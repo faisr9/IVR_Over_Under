@@ -18,7 +18,7 @@ class PID{
             double derivative;
             double integral;
 
-            double spd;
+            double velocity;
         };
 
         PIDConstants fwdPID_consts;
