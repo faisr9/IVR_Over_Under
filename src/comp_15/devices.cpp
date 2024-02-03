@@ -33,7 +33,7 @@ pros::Imu imu(21);
 
 // Legacy Sensors //
 pros::ADIButton cata_limit ('A');
-char floor_brake = 'G';
+char kick_stand = 'G';
 char wings = 'H';
 
 // Traditional Drive
@@ -41,4 +41,5 @@ traditional_drive drive(imu, ctrl_master, left_drive, right_drive, 0);
 
 // Instances
 Intake* intake_instance = Intake::createInstance(intake);
-Catapult* catapult_instance = Catapult::createInstance(cata, cata_limit);
+//Catapult* catapult_instance = Catapult::createInstance(cata, cata_limit);
+Pneumatics* pneumatics_instance = Pneumatics::createInstance(wings, kick_stand, 'Z');

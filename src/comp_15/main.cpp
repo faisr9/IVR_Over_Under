@@ -1,4 +1,4 @@
-#include "comp_15/comp15_includeList.h"
+#include "comp_15/controls.h"
 
 /* First method to run when program starts */
 void initialize() {

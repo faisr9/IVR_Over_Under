@@ -1,10 +1,12 @@
 #include "comp_15/controls.h"
 
 void controls() {
-    pros::lcd::set_text(1, "driving");
+    pros::lcd::set_text(1, "Running Controls");
     while(1) {
+        //ACTIVATE DRIVE
         drive.toggle_drive_mode();
 
+        //INTAKE CONTROLS
         if (ctrl_master.get_digital(E_CONTROLLER_DIGITAL_A)){
             Intake::getInstance()->set_power(12000);
         }
@@ -14,14 +16,25 @@ void controls() {
             Intake::getInstance()->set_power(0);
         }
 
-        if (ctrl_master.get_digital(E_CONTROLLER_DIGITAL_A)){
-            catapult_instance->cycle();
+        //CATAPULT CONTROLS
+        // if (ctrl_master.get_digital(E_CONTROLLER_DIGITAL_A)){
+        //     catapult_instance->cycle();
+        // }
+        // if (ctrl_master.get_digital(E_CONTROLLER_DIGITAL_X)){
+        //     catapult_instance->prime();
+        // }
+        // if (ctrl_master.get_digital(E_CONTROLLER_DIGITAL_B)){
+        //     catapult_instance->release();
+        // }
+
+        //PNEUMATICS CONTROLS
+        if(ctrl_master.get_digital(E_CONTROLLER_DIGITAL_X)) {
+            Pneumatics::getInstance()->getWings().toggle();
+            std::string status = to_string(Pneumatics::getInstance()->getWings().getStatus());
+            pros::lcd::set_text(2, status);
         }
-        if (ctrl_master.get_digital(E_CONTROLLER_DIGITAL_X)){
-            catapult_instance->prime();
-        }
-        if (ctrl_master.get_digital(E_CONTROLLER_DIGITAL_B)){
-            catapult_instance->release();
+        if(ctrl_master.get_digital(E_CONTROLLER_DIGITAL_Y)) {
+            Pneumatics::getInstance()->getKickstand().toggle();
         }
 
         pros::delay(15);

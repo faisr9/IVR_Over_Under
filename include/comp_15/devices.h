@@ -1,7 +1,8 @@
 #pragma once
-#include "main.h"
 #include "common_code/traditional_drive.h"
-#include "intake.h"
+#include "comp_15/intake.h"
+#include "comp_15/cata.h"
+#include "comp_15/pneumatics.h"
 
 // Forward declare all devices here so that all of the robot files and subsystem classes can access them //
 
@@ -31,7 +32,7 @@ extern pros::Imu imu;
 
 // Legacy Sensors //
 extern pros::ADIButton cata_limit;
-extern char floor_brake;
+extern char kick_stand;
 extern char wings;
 
 // Traditional Drive

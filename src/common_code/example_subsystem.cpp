@@ -1,4 +1,4 @@
-#include "main.h"
+#include "common_code/example_subsystem.h"
 
 /*
 - sets instance_ as nullptr for proper memory management

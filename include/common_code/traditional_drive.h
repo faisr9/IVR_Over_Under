@@ -7,7 +7,6 @@
 //
 
 #pragma once
-#include "main.h"
 #include "drive_parent.h" // base class
 using namespace std; // for string
 using namespace pros; // for Controller and Imu
