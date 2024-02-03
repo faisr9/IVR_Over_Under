@@ -9,10 +9,11 @@ class CompetitionCatapult : public SubsystemParent {
         CompetitionCatapult(const CompetitionCatapult& other) = delete;
 
         void stop();
-        bool prime();
+        void prime();
         void cycle();
-        bool release();
+        void release();
         std::string get_cata_mode();
+        void set_cata_mode(std::string cata_mode);
         
         
     private:
