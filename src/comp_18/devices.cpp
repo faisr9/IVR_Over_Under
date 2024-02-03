@@ -7,6 +7,7 @@
  * be active incase a port is damaged.
 */
 
+pros::Controller ctrl_master(E_CONTROLLER_MASTER);
 // Motors //
 // front is where intake is
 pros::Motor right_front_top(14, true); // 14
@@ -29,5 +30,10 @@ pros::IMU imu(2);
 pros::Distance distance_sensor(3);
 pros::Rotation radial_rot_sensor(10);
 pros::Rotation transverse_rot_sensor(9, true); // reversed so that going right is positive
+const char WINGS_PORT = 'A';
+const char CLIMBER_SOLENOID_PORT = 'B';
+
+// Other //
+traditional_drive tank_drive_18(imu, ctrl_master, left_drive_motors, right_drive_motors, 0);
 
 // Legacy Sensors //
