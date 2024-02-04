@@ -58,7 +58,7 @@ void CompetitionCatapult::prime() {
 		delay(30);
 	}
 
-    stop();
+    // stop();
 }
 
 //test this
@@ -78,9 +78,9 @@ void CompetitionCatapult::release() {
     // cata_task.resume();
     while (kill_switch.get_value()) {
         motors.move(cata_voltage);
-        delay(15);
+        delay(30);
     }
-    stop();
+    // stop();
 }
 
 std::string CompetitionCatapult::get_cata_mode() {

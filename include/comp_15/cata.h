@@ -26,7 +26,7 @@ class CompetitionCatapult : public SubsystemParent {
 
         pros::MotorGroup& motors;
         pros::ADIButton& kill_switch;
-        const int cata_voltage = 100;
+        const int cata_voltage = 12000;
         // const int launch_voltage = 50;
 
         pros::Task cata_task;

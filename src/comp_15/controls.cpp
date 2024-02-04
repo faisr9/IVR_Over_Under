@@ -18,14 +18,20 @@ void controls() {
             Intake::getInstance()->set_power(0);
         }
 
-        if (ctrl_master.get_digital(E_CONTROLLER_DIGITAL_A)){
+        if (ctrl_master.get_digital_new_press(E_CONTROLLER_DIGITAL_R2)){
             CompetitionCatapult::getInstance()->cycle();
         }
-        if (ctrl_master.get_digital(E_CONTROLLER_DIGITAL_X)){
+        if (ctrl_master.get_digital_new_press(E_CONTROLLER_DIGITAL_L1)){
             CompetitionCatapult::getInstance()->prime();
         }
-        if (ctrl_master.get_digital(E_CONTROLLER_DIGITAL_B)){
+        if (ctrl_master.get_digital_new_press(E_CONTROLLER_DIGITAL_R1)){
             CompetitionCatapult::getInstance()->release();
+        }
+
+        if (ctrl_master.get_digital(E_CONTROLLER_DIGITAL_DOWN)) {
+            cata.move_voltage(12000);
+        } else {
+            cata.move_voltage(0);
         }
 
         //PNEUMATICS CONTROLS
@@ -37,6 +43,8 @@ void controls() {
             Pneumatics::getInstance()->getFloorBrake()->toggle();
         }
 
+        pros::lcd::set_text(3, "Left: " + std::to_string(cata_left.get_voltage()));
+        pros::lcd::set_text(3, "Right: " + std::to_string(cata_left.get_voltage()));
 
         pros::delay(15);
     }
