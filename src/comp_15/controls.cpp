@@ -18,16 +18,15 @@ void controls() {
             Intake::getInstance()->set_power(0);
         }
 
-        //CATAPULT CONTROLS
-        // if (ctrl_master.get_digital(E_CONTROLLER_DIGITAL_A)){
-        //     catapult_instance->cycle();
-        // }
-        // if (ctrl_master.get_digital(E_CONTROLLER_DIGITAL_X)){
-        //     catapult_instance->prime();
-        // }
-        // if (ctrl_master.get_digital(E_CONTROLLER_DIGITAL_B)){
-        //     catapult_instance->release();
-        // }
+        if (ctrl_master.get_digital(E_CONTROLLER_DIGITAL_A)){
+            CompetitionCatapult::getInstance()->cycle();
+        }
+        if (ctrl_master.get_digital(E_CONTROLLER_DIGITAL_X)){
+            CompetitionCatapult::getInstance()->prime();
+        }
+        if (ctrl_master.get_digital(E_CONTROLLER_DIGITAL_B)){
+            CompetitionCatapult::getInstance()->release();
+        }
 
         //PNEUMATICS CONTROLS
         if(ctrl_master.get_digital_new_press(E_CONTROLLER_DIGITAL_X)) {
