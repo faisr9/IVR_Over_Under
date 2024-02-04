@@ -1,5 +1,4 @@
-#include "common_code/piston.h"
-
+#include "main.h"
 
 Piston::Piston(char port_value) : piston(port_value){
     status = true;
@@ -24,7 +23,7 @@ void Piston::toggle() {
     }
 }
 
-
+// NOTE: This can be logged via the logger class in the future
 //this is used for testing, but could be a function good to have in case debugging needs this
 int Piston::getToggleCount(){
     return toggle_count;

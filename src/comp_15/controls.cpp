@@ -2,6 +2,7 @@
 
 int cnt = 0;
 
+// Will add driver profiles later
 void controls() {
     pros::lcd::set_text(1, "Running Controls");
     while(1) {

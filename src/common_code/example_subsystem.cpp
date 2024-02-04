@@ -1,10 +1,10 @@
-#include "common_code/example_subsystem.h"
+#include "main.h"
 
 /*
 - sets instance_ as nullptr for proper memory management
 - 'extern' keyword is used to link instance_ back to the class variable
 */
-extern ExampleSubsystem* ExampleSubsystem::instance_ = nullptr;
+ExampleSubsystem* ExampleSubsystem::instance_ = nullptr;
 
 /*
 - creates an object of the class in the heap

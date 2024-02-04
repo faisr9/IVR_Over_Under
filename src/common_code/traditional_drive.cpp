@@ -5,8 +5,9 @@
 // Last Modified: 12/1/23 by Zach Martin
 //
 
-#include "common_code/traditional_drive.h"
-#include <cmath> // for sin and cos functions and M_PI
+#include "main.h"
+// #include "common_code/traditional_drive.h"
+// #include <cmath> // for sin and cos functions and M_PI
 //
 // ************ overloaded constructors ************
 //

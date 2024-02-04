@@ -1,6 +1,4 @@
 #include "main.h"
-#include "pneumatics.h"
-#include "api.h"
 
 /* First method to run when program starts */
 void initialize() {

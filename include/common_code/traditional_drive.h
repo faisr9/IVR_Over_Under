@@ -7,9 +7,10 @@
 //
 
 #pragma once
-#include "drive_parent.h" // base class
-using namespace std; // for string
-using namespace pros; // for Controller and Imu
+#include "main.h"
+// #include "drive_parent.h" // base class
+// using namespace std; // for string
+// using namespace pros; // for Controller and Imu
 
 // drive systems
 class traditional_drive : public DriveParent

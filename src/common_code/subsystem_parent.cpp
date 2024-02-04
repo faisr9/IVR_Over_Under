@@ -1,4 +1,4 @@
-#include "common_code/subsystem_parent.h"
+#include "main.h"
 
 SubsystemParent::SubsystemParent(std::string subsystem_name): kSubsystemName(subsystem_name) {}
 
