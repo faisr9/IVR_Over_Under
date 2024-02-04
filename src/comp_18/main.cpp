@@ -3,6 +3,8 @@
 /* First method to run when program starts */
 void initialize() {
 	pros::lcd::initialize(); // Temp until custom GUI
+	imu.reset();
+	pros::delay(2000);
 }
 
 /* Runs when robot is disabled from competition controller after driver/auton */
@@ -17,4 +19,5 @@ void autonomous() {
 
 /* Opcontrol method runs by default (unless connected to comp controller )*/
 void opcontrol() {
+	controls();
 }
