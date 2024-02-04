@@ -1,6 +1,4 @@
 #include "comp_18/comp18_includeList.h"
-#include "comp_18/pneumatics.h"
-using namespace pros;
 
 /**
  * Future Update:

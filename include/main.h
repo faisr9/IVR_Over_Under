@@ -45,6 +45,7 @@
  */
 #include "common_code/subsystem_parent.h"
 #include "common_code/example_subsystem.h"
+#include "common_code/piston.h"
 ///////////////////////////////////////
 
 /**

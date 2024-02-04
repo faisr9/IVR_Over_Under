@@ -1,14 +1,11 @@
 #include "comp_18/comp18_includeList.h"
-#include "comp_18/pneumatics.h"
-#include <iostream>
-#include "api.h"
 
 
 //This subsystem have three objects of the Piston class for wings and climber.
 //This class is necessary because it implements toggle() method and the getStatus() method.
 //get_value() from pros::ADIDigitalOutput doesn't work because VS Code says it's "inaccessible".
 
-extern Pneumatics* Pneumatics::instance_ = nullptr;
+Pneumatics* Pneumatics::instance_ = nullptr;
 
 bool currentPiston = false;
 
