@@ -13,8 +13,10 @@ class CompetitionCatapult : public SubsystemParent {
         void prime();
         void cycle();
         void release();
+        void move_forward_manual();
         std::string get_cata_mode();
-        void set_cata_mode(std::string cata_mode);
+        void set_cata_mode(std::string new_cata_mode);
+        void set_cata_mode_internal(std::string new_cata_mode);
         
         
     private:
@@ -26,8 +28,7 @@ class CompetitionCatapult : public SubsystemParent {
 
         pros::MotorGroup& motors;
         pros::ADIButton& kill_switch;
-        const int cata_voltage = 12000;
-        // const int launch_voltage = 50;
+        int cata_move_power = 127;
 
         pros::Task cata_task;
         std::string cata_mode = "X";

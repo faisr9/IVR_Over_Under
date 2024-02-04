@@ -31,7 +31,7 @@ extern pros::Motor intake_motor;
 extern pros::Imu imu;
 
 // Legacy Sensors //
-extern pros::ADIButton Cata_limit;
+extern pros::ADIButton cata_limit;
 // extern pros::ADIDigitalOut Floor_brake;
 // extern pros::ADIDigitalOut Wings;
 extern const char WINGS;
