@@ -27,7 +27,7 @@ Intake* Intake::getInstance(){
     return instance_;
 }
 void Intake::stop(){
-    intake_motor_.move_voltage(0);
+    intake_motor_.brake();
 }
 
 //input is from -127 to 127
