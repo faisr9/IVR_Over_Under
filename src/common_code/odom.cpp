@@ -30,20 +30,24 @@ pros::Motor BackLeft(18, pros::E_MOTOR_GEARSET_06, true);
 pros::MotorGroup RightDrive({FrontTopRight, FrontBottomRight, BackRight});
 pros::MotorGroup LeftDrive({FrontTopLeft, FrontBottomLeft, BackLeft});
 Controller master(E_CONTROLLER_MASTER);
-Imu imu(21);
-Odom odometer(imu);
+//Imu imu(21);
+//pros::Rotation sensor1(9);
+//pros::Rotation sensor2(10);
+//Generic_Rotation_VEX_Rot trans_test_wheel(sensor1, 1.96 * 0.0254 / 2);
+//Generic_Rotation_VEX_Rot rad_test_wheel(sensor2, 1.96 * 0.0254 / 2);
+//Odom odometer(imu, &trans_test_wheel, &rad_test_wheel);
 
-void initialize() {
-	pros::lcd::initialize(); // Temp until custom GUI
-    pros::lcd::print(7,"initialized");
-	imu.reset();
-    odometer.initTracker(0, 0, 0);
-}
+// void initialize() {
+// 	pros::lcd::initialize(); // Temp until custom GUI
+//     pros::lcd::print(7,"initialized");
+// 	imu.reset();
+//     odometer.initTracker(0, 0, 0);
+// }
 
-Odom::Odom(pros::IMU theImu): imu(theImu), vertical_track(2,3,false), horizontal_track(4,5,true) {
+Odom::Odom(pros::IMU &theImu, Generic_Rotation* transverseWheel, Generic_Rotation* radialWheel): imu(theImu) {
 
-    transverseWheelRad = 1.96 * 0.0254 / 2; // transverse wheel tracks left to right movements
-    radialWheelRad = 1.96 * 0.0254 / 2;     // radial wheel tracks forward and backward movements (has nothing to do with radians)
+    //transverseWheelRad = 1.96 * 0.0254 / 2; // transverse wheel tracks left to right movements
+    //radialWheelRad = 1.96 * 0.0254 / 2;     // radial wheel tracks forward and backward movements (has nothing to do with radians)
     lastTransverseValue = 0;                // these variables track what the last value was in order to determine how far the robot has moved
     lastRadialValue = 0;
     last_x_tracking_offset = 0;
@@ -55,8 +59,8 @@ Odom::Odom(pros::IMU theImu): imu(theImu), vertical_track(2,3,false), horizontal
     scale_factor_heading = 1.0;
     lastHeading = initHeading;
     imuRotation = 0;
-    vertical_track.reset();
-    horizontal_track.reset();
+    //vertical_track.reset();
+    //horizontal_track.reset();
 
 }
 
@@ -71,10 +75,10 @@ double Odom::toMeters(double value, double wheelRadius) {   // Accepts a value (
 }
 
 void Odom::initTracker(double initial_x, double initial_y, double initial_heading) {    // initializes the tracking variables so they can begin to be updated
-    Generic_Rotation* generic_vex_rot = new Generic_Rotation_VEX_Rot(transverse_rot_sensor, 1.96 * 0.0254 / 2);
-    currentTransverseValue = toMeters(horizontal_track.get_value()*4.0, transverseWheelRad);
-    currentRadialValue = toMeters(vertical_track.get_value(), radialWheelRad);
-    
+    //currentTransverseValue = toMeters(horizontal_track.get_value()*4.0, transverseWheelRad);
+    //currentRadialValue = toMeters(vertical_track.get_value(), radialWheelRad);
+    currentTransverseValue = (*transverseWheel).get_meters_travelled();
+    currentRadialValue = (*radialWheel).get_meters_travelled();
     positionX = initial_x;
     positionY = initial_y;
     initHeading = initial_heading;
@@ -100,51 +104,53 @@ double Odom::headingCorrection (double currentRotation) {
 }
 
 void Odom::updatePosition() {       // updatePosition does all the math with the heading and the sensor values to update the actual position coordinate
-    //imu.set_rotation(0);
-    //while (true) {
+    // //imu.set_rotation(0);
+    // //while (true) {
 
-        // PINK ROBOT:
-        currentTransverseValue = toMeters(horizontal_track.get_value(), transverseWheelRad); //*4.0
-        currentRadialValue = toMeters(vertical_track.get_value(), radialWheelRad); // *1.0
-        pros::lcd::print(4,"Radraw: %lf",vertical_track.get_value());
-        pros::lcd::print(5,"Transraw: %lf",horizontal_track.get_value());
+    //     // PINK ROBOT:
+    //     //currentTransverseValue = toMeters(horizontal_track.get_value(), transverseWheelRad); //*4.0
+    //     //currentRadialValue = toMeters(vertical_track.get_value(), radialWheelRad); // *1.0
+    //     currentTransverseValue = (*transverseWheel).get_meters_travelled();
+    //     currentRadialValue = (*radialWheel).get_meters_travelled();
+    //     pros::lcd::print(4,"Radraw: %lf",vertical_track.get_value());
+    //     pros::lcd::print(5,"Transraw: %lf",horizontal_track.get_value());
 
-        currentHeading = headingCorrection(imu.get_rotation());
+    //     currentHeading = headingCorrection(imu.get_rotation());
 
-        // std::cout << "Current Heading: " << currentHeading << std::endl;
+    //     // std::cout << "Current Heading: " << currentHeading << std::endl;
 
-        double cosine = cos(currentHeading * M_PI / 180.0);
-        double sine = sin(currentHeading* M_PI / 180.0);
+    //     double cosine = cos(currentHeading * M_PI / 180.0);
+    //     double sine = sin(currentHeading* M_PI / 180.0);
 
-        double radialDeltaY = (currentRadialValue - lastRadialValue) * cosine;
-        double transverseDeltaY = -(currentTransverseValue - lastTransverseValue) * sine; // note the - sign
-        double deltaY = radialDeltaY + transverseDeltaY;
+    //     double radialDeltaY = (currentRadialValue - lastRadialValue) * cosine;
+    //     double transverseDeltaY = -(currentTransverseValue - lastTransverseValue) * sine; // note the - sign
+    //     double deltaY = radialDeltaY + transverseDeltaY;
 
-        double radialDeltaX = (currentRadialValue - lastRadialValue) * sine;
-        double transverseDeltaX = (currentTransverseValue - lastTransverseValue) * cosine;
-        double deltaX = radialDeltaX + transverseDeltaX;
+    //     double radialDeltaX = (currentRadialValue - lastRadialValue) * sine;
+    //     double transverseDeltaX = (currentTransverseValue - lastTransverseValue) * cosine;
+    //     double deltaX = radialDeltaX + transverseDeltaX;
 
-        // pros::lcd::set_text(2, "Delta X: " + std::to_string(deltaX));
-        // pros::lcd::set_text(3, "Delta Y: " + std::to_string(deltaY));
+    //     // pros::lcd::set_text(2, "Delta X: " + std::to_string(deltaX));
+    //     // pros::lcd::set_text(3, "Delta Y: " + std::to_string(deltaY));
 
-        lastRadialValue = currentRadialValue;
-        lastTransverseValue = currentTransverseValue;
+    //     lastRadialValue = currentRadialValue;
+    //     lastTransverseValue = currentTransverseValue;
 
-        // pros::lcd::set_text(2, "Position X: " + std::to_string(positionX));
-        // pros::lcd::set_text(3, "Position Y: " + std::to_string(positionY));
+    //     // pros::lcd::set_text(2, "Position X: " + std::to_string(positionX));
+    //     // pros::lcd::set_text(3, "Position Y: " + std::to_string(positionY));
 
-        x_tracking_offset = TRANSVERSE_WHEEL_Y_OFFSET * sine;
-        y_tracking_offset = TRANSVERSE_WHEEL_Y_OFFSET * cosine;
+    //     x_tracking_offset = TRANSVERSE_WHEEL_Y_OFFSET * sine;
+    //     y_tracking_offset = TRANSVERSE_WHEEL_Y_OFFSET * cosine;
 
-        // when pure rotating (x_tracking_offset - last_x_tracking_offset) should = deltaX
+    //     // when pure rotating (x_tracking_offset - last_x_tracking_offset) should = deltaX
 
-        positionX += isnan(deltaX) ? 0 : deltaX;
-        positionY += isnan(deltaY) ? 0 : deltaY;
-        positionX -= isnan(x_tracking_offset - last_x_tracking_offset) ? 0 : (x_tracking_offset - last_x_tracking_offset);
-        positionY += isnan(y_tracking_offset - last_y_tracking_offset) ? 0 : (y_tracking_offset - last_y_tracking_offset);
+    //     positionX += isnan(deltaX) ? 0 : deltaX;
+    //     positionY += isnan(deltaY) ? 0 : deltaY;
+    //     positionX -= isnan(x_tracking_offset - last_x_tracking_offset) ? 0 : (x_tracking_offset - last_x_tracking_offset);
+    //     positionY += isnan(y_tracking_offset - last_y_tracking_offset) ? 0 : (y_tracking_offset - last_y_tracking_offset);
 
-        last_x_tracking_offset = x_tracking_offset;
-        last_y_tracking_offset = y_tracking_offset;
+    //     last_x_tracking_offset = x_tracking_offset;
+    //     last_y_tracking_offset = y_tracking_offset;
 
         // pros::lcd::set_text(5, "Position X: " + std::to_string(positionX));
         // pros::lcd::set_text(6, "Position Y: " + std::to_string(positionY));
@@ -166,14 +172,14 @@ void Odom::updatePosition() {       // updatePosition does all the math with the
 
     // BELOW IS THE CORRECTED-OFFSET TRACKING
 
-    /*lastHeading = currentHeading;                   // stores previous movement values before updating them
+    lastHeading = currentHeading;                   // stores previous movement values before updating them
     lastTransverseValue = currentTransverseValue;
     lastRadialValue = currentRadialValue;
 
     imuRotation = imu.get_rotation();
     currentHeading = imu.get_heading();             // updates current values for how far each wheel turned and overall robot rotation
-    currentTransverseValue = toMeters(horizontal_track.get_value(), transverseWheelRad);
-    currentRadialValue = toMeters(vertical_track.get_value(), radialWheelRad);
+    currentTransverseValue = (*transverseWheel).get_meters_travelled();
+    currentRadialValue = (*radialWheel).get_meters_travelled();
     avgHeading = (currentHeading + lastHeading)/2;
 
     currentTransverseValue -= (sin(TRANSVERSE_THETA) * imuRotation);    // corrects current values to account for the fact that
@@ -184,7 +190,7 @@ void Odom::updatePosition() {       // updatePosition does all the math with the
     double deltaX = (cos(avgHeading) * currentTransverseValue) + (sin(avgHeading) * currentRadialValue);
     double deltaY = (sin(avgHeading) * currentTransverseValue) + (cos(avgHeading) * currentRadialValue);
     positionX += isnan(deltaX) ? 0 : deltaX; // updates position values
-    positionY += isnan(deltaY) ? 0 : deltaY;*/
+    positionY += isnan(deltaY) ? 0 : deltaY;
 }
 
 double Odom::getX() { return positionX; }
@@ -193,31 +199,31 @@ double Odom::getHeading() { return currentHeading; }
 double Odom::getTransverseValue() { return currentTransverseValue; }
 double Odom::getRadialValue() { return currentRadialValue; }
 
-void opcontrol() {
+// void opcontrol() {
     
-    /*Motor front_left(8);
-    front_left.set_reversed(true);
-    Motor front_right(9);
-    Motor back_left(7);
-    back_left.set_reversed(true);
-    Motor back_right(10);*/   
+//     /*Motor front_left(8);
+//     front_left.set_reversed(true);
+//     Motor front_right(9);
+//     Motor back_left(7);
+//     back_left.set_reversed(true);
+//     Motor back_right(10);*/   
+    
+//     imu.reset();
+//     delay(5000);
 
-    imu.reset();
-    delay(5000);
-
-    while(true) {
+//     while(true) {
         
-        int forward = master.get_analog(E_CONTROLLER_ANALOG_LEFT_Y); // sets forward to left analog's up/down input
-        int steer = master.get_analog(E_CONTROLLER_ANALOG_RIGHT_X);  // sets steer to right analog's left/right input
+//         int forward = master.get_analog(E_CONTROLLER_ANALOG_LEFT_Y); // sets forward to left analog's up/down input
+//         int steer = master.get_analog(E_CONTROLLER_ANALOG_RIGHT_X);  // sets steer to right analog's left/right input
 
-        LeftDrive.move(forward+steer);
-        RightDrive.move(forward-steer);
+//         LeftDrive.move(forward+steer);
+//         RightDrive.move(forward-steer);
 
-        odometer.updatePosition();
-        pros::lcd::print(1,"X: %lf",odometer.getX());
-        pros::lcd::print(2,"Y: %lf",odometer.getY());
-        pros::lcd::print(3,"Heading: %lf",odometer.getHeading());
-        pros::lcd::print(6,"1 meter: %lf",odometer.toMeters(2302.94, 0.0248));
-        delay(30);
-    }
-}
+//         odometer.updatePosition();
+//         pros::lcd::print(1,"X: %lf",odometer.getX());
+//         pros::lcd::print(2,"Y: %lf",odometer.getY());
+//         pros::lcd::print(3,"Heading: %lf",odometer.getHeading());
+//         pros::lcd::print(6,"1 meter: %lf",odometer.toMeters(2302.94, 0.0248));
+//         delay(30);
+//     }
+// }

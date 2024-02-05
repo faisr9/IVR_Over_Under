@@ -9,7 +9,7 @@
 
 class Odom {
     public:
-    Odom(pros::IMU theImu);
+    Odom(pros::IMU &theImu, Generic_Rotation* transverseWheel, Generic_Rotation* radialWheel);
 
     double toMeters(double value, double wheelRadius);
     void initTracker(double initial_x, double initial_y, double initial_heading);
@@ -24,8 +24,8 @@ class Odom {
     //static pros::Task initTask(Odom odometer);
 
     private:
-    double transverseWheelRad;
-    double radialWheelRad;
+    //double transverseWheelRad;
+    //double radialWheelRad;
     double currentTransverseValue;
     double currentRadialValue;
     double lastTransverseValue;
@@ -55,7 +55,9 @@ class Odom {
     double imuRotation;
     double scale_factor_heading;
 
-    pros::ADIEncoder vertical_track;
-    pros::ADIEncoder horizontal_track;
-    pros::IMU imu;
+    Generic_Rotation* transverseWheel;
+    Generic_Rotation* radialWheel;
+    //pros::ADIEncoder vertical_track;
+    //pros::ADIEncoder horizontal_track;
+    pros::IMU& imu;
 };

@@ -8,3 +8,6 @@
 #include "comp_15/intake.h"
 #include "comp_15/cata.h"
 #include "comp_15/pneumatics.h"
+#include "common_code/odom.h"
+#include "common_code/generic_rotation.h"
+#include "common_code/generic_rotation_vex_rot.h"
