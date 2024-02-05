@@ -5,51 +5,31 @@
 // Last Modified: 12/1/23 by Zach Martin
 //
 
-#include "common_code/traditional_drive.h"
-#include <cmath> // for sin and cos functions and M_PI
+#include "main.h"
+// #include "common_code/traditional_drive.h"
+// #include <cmath> // for sin and cos functions and M_PI
 //
 // ************ overloaded constructors ************
 //
-// default to arcade drive and then run constructor with mode and controller
-traditional_drive::traditional_drive(Imu&imu,Controller &mstr, Motor_Group &l, Motor_Group &r) 
-    : DriveParent(imu, drive_mode[0])
-{
-    master = &mstr;
-    this->imu=&imu;
-    left_side = &l; 
-    right_side = &r;
-    toggle_drive_mode(0);
-
-};
-// default to arcade drive and then run constructor with mode without controller
-traditional_drive::traditional_drive(Imu &imu, Motor_Group &l, Motor_Group &r)
-    : DriveParent(imu, drive_mode[0])
-{
-    this->imu=&imu;
-    left_side = &l;
-    right_side = &r;
-    toggle_drive_mode(0);
-
-};
 // initialize controller if applicable
-traditional_drive::traditional_drive(Imu &imu, Controller &mstr, Motor_Group &l, Motor_Group &r, int mode)
-    : DriveParent(imu, drive_mode[mode])
+traditional_drive::traditional_drive(Imu &imu, Controller &mstr, Motor_Group &l, Motor_Group &r, int m)
+    : DriveParent(imu, drive_mode[m])
 {
     master = &mstr;
     this->imu=&imu;
     left_side = &l; 
     right_side = &r;
-    toggle_drive_mode(mode);
+    mode = m;
 };
 // initialize variables
-traditional_drive::traditional_drive(Imu &imu, Motor_Group &l, Motor_Group &r, int mode)
-    : DriveParent(imu, drive_mode[mode])
+traditional_drive::traditional_drive(Imu &imu, Motor_Group &l, Motor_Group &r, int m)
+    : DriveParent(imu, drive_mode[m])
 {
     // set controller and motor groups
     this->imu=&imu;
     left_side = &l;
     right_side = &r;
-    toggle_drive_mode(mode);
+    mode = m;
 };
 
 // ************ destructor ************
@@ -61,7 +41,7 @@ traditional_drive::~traditional_drive()
 
 
 // toggle drive mode (arcade, tank, hybrid)
-void traditional_drive::toggle_drive_mode(int mode = 0)
+void traditional_drive::toggle_drive_mode()
 {
     // 0 = arcade, 1 = tank, 2 = hybrid
     switch (mode)
@@ -126,7 +106,7 @@ void traditional_drive::arcade_drive()
 {
     // get joystick values and apply square scaling
     fwd = square_scale(normalize_joystick(master->get_analog(E_CONTROLLER_ANALOG_LEFT_Y)));   // vertical input from left joystick
-    turn = square_scale(normalize_joystick(master->get_analog(E_CONTROLLER_ANALOG_RIGHT_X))); // horizontal input from right joystick
+    turn = square_scale(normalize_joystick(master->get_analog(E_CONTROLLER_ANALOG_RIGHT_X))) / 2.0; // horizontal input from right joystick
     // use fwd and turn to calculate voltage to send to motors
     left *= fwd + turn;
     right *= fwd - turn;
