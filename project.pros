@@ -309,7 +309,7 @@
       }
     },
     "upload_options": {
-      "slot": 8,
+      "slot": 5,
       "description": "pneumatics test"
     }
   }

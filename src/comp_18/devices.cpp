@@ -44,8 +44,5 @@ traditional_drive tank_drive_18(imu, ctrl_master, left_drive_motors, right_drive
 bool triBall()
 {
     // if the distance sensor detects something within 100mm
-    if (distance_sensor.get() < 100)
-        return 1;
-    else
-        return 0;
+    return (distance_sensor.get() < 100);
 }

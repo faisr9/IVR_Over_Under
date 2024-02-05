@@ -14,9 +14,11 @@ class Piston {
 
         bool getStatus();
 
+        int getToggleCount();
 
     private:
         pros::ADIDigitalOut piston;
         bool status;
+        int toggle_count = 1;
 
 };
