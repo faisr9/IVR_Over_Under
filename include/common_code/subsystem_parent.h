@@ -1,9 +1,13 @@
 #pragma once
-#include "main.h"
-
 // want (this to be) abstract base class
 
-
+#include <string>
+#include <iostream>
+#include <chrono>
+#include <math.h>
+#include <cmath>
+#include <vector>
+#include <fstream>
 
 class SubsystemParent {
     public:

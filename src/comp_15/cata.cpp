@@ -12,7 +12,7 @@ CompetitionCatapult::CompetitionCatapult(pros::MotorGroup& motorgroup, pros::ADI
 
     cata_mode = "X";
     cata_move_power = 127;
-    motors.set_brake_modes(BRAKETYPE_BRAKE);
+    motors.set_brake_modes(pros::E_MOTOR_BRAKE_BRAKE);
 }
 
 CompetitionCatapult* CompetitionCatapult::getInstance() {
@@ -41,7 +41,7 @@ void CompetitionCatapult::move_forward_manual() {
 void CompetitionCatapult::prime() {
     while (!kill_switch.get_value()) {
         motors.move(cata_move_power);
-		delay(30);
+		pros::delay(30);
 	}
 
     stop();
@@ -60,7 +60,7 @@ void CompetitionCatapult::cycle() {
 void CompetitionCatapult::release() {
     while (kill_switch.get_value()) {
         motors.move(cata_move_power);
-        delay(30);
+        pros::delay(30);
     }
     stop();
 }
