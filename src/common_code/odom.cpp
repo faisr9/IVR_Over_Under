@@ -1,10 +1,4 @@
 #include "common_code/odom.h"
-#include <cmath>
-#include <vector>
-#include <string>
-#include "pros/adi.hpp"
-#include "main.h"
-#include "pros/imu.h"
 
 /*
 Authors: Ethan Lenning, Reid Faistl
@@ -20,30 +14,6 @@ currentTransverseValue will be the equivalent of 2m even though from an outside 
 This class has accounted for that, so that other code can assume the position of the robot is reliable.
 */
 
-pros::Motor FrontTopRight(11, pros::E_MOTOR_GEARSET_06, true);
-pros::Motor FrontBottomRight(12, pros::E_MOTOR_GEARSET_06);
-pros::Motor BackRight(13, pros::E_MOTOR_GEARSET_06);
-pros::Motor FrontTopLeft(20, pros::E_MOTOR_GEARSET_06);
-pros::Motor FrontBottomLeft(19, pros::E_MOTOR_GEARSET_06, true);
-pros::Motor BackLeft(18, pros::E_MOTOR_GEARSET_06, true);
-
-pros::MotorGroup RightDrive({FrontTopRight, FrontBottomRight, BackRight});
-pros::MotorGroup LeftDrive({FrontTopLeft, FrontBottomLeft, BackLeft});
-Controller master(E_CONTROLLER_MASTER);
-//Imu imu(21);
-//pros::Rotation sensor1(9);
-//pros::Rotation sensor2(10);
-//Generic_Rotation_VEX_Rot trans_test_wheel(sensor1, 1.96 * 0.0254 / 2);
-//Generic_Rotation_VEX_Rot rad_test_wheel(sensor2, 1.96 * 0.0254 / 2);
-//Odom odometer(imu, &trans_test_wheel, &rad_test_wheel);
-
-// void initialize() {
-// 	pros::lcd::initialize(); // Temp until custom GUI
-//     pros::lcd::print(7,"initialized");
-// 	imu.reset();
-//     odometer.initTracker(0, 0, 0);
-// }
-
 Odom::Odom(pros::IMU &theImu, Generic_Rotation* transverseWheel, Generic_Rotation* radialWheel): imu(theImu) {
 
     //transverseWheelRad = 1.96 * 0.0254 / 2; // transverse wheel tracks left to right movements
@@ -54,10 +24,7 @@ Odom::Odom(pros::IMU &theImu, Generic_Rotation* transverseWheel, Generic_Rotatio
     last_y_tracking_offset = 0;
     positionX = 0;                          
     positionY = 0;
-    initHeading = 90;               // gets overwritten when initTracker is called so potentially redundant
-    currentHeading = initHeading;   // ^ see above comment
     scale_factor_heading = 1.0;
-    lastHeading = initHeading;
     imuRotation = 0;
     //vertical_track.reset();
     //horizontal_track.reset();
@@ -69,14 +36,8 @@ Odom::Odom(pros::IMU &theImu, Generic_Rotation* transverseWheel, Generic_Rotatio
         return odom_task;
 }*/
 
-double Odom::toMeters(double value, double wheelRadius) {   // Accepts a value (in ticks) and returns the corresponding amount of meters moved
-    return ((value / TICKS_PER_ROTATION) * 2 * M_PI * wheelRadius);
-    // (value / TICKS_PER_ROTATION) is the number of total revolutions
-}
-
-void Odom::initTracker(double initial_x, double initial_y, double initial_heading) {    // initializes the tracking variables so they can begin to be updated
-    //currentTransverseValue = toMeters(horizontal_track.get_value()*4.0, transverseWheelRad);
-    //currentRadialValue = toMeters(vertical_track.get_value(), radialWheelRad);
+// initializes the tracking variables so they can begin to be updated
+void Odom::initTracker(double initial_x, double initial_y, double initial_heading) {  
     currentTransverseValue = (*transverseWheel).get_meters_travelled();
     currentRadialValue = (*radialWheel).get_meters_travelled();
     positionX = initial_x;
@@ -198,32 +159,3 @@ double Odom::getY() { return positionY; }
 double Odom::getHeading() { return currentHeading; }
 double Odom::getTransverseValue() { return currentTransverseValue; }
 double Odom::getRadialValue() { return currentRadialValue; }
-
-// void opcontrol() {
-    
-//     /*Motor front_left(8);
-//     front_left.set_reversed(true);
-//     Motor front_right(9);
-//     Motor back_left(7);
-//     back_left.set_reversed(true);
-//     Motor back_right(10);*/   
-    
-//     imu.reset();
-//     delay(5000);
-
-//     while(true) {
-        
-//         int forward = master.get_analog(E_CONTROLLER_ANALOG_LEFT_Y); // sets forward to left analog's up/down input
-//         int steer = master.get_analog(E_CONTROLLER_ANALOG_RIGHT_X);  // sets steer to right analog's left/right input
-
-//         LeftDrive.move(forward+steer);
-//         RightDrive.move(forward-steer);
-
-//         odometer.updatePosition();
-//         pros::lcd::print(1,"X: %lf",odometer.getX());
-//         pros::lcd::print(2,"Y: %lf",odometer.getY());
-//         pros::lcd::print(3,"Heading: %lf",odometer.getHeading());
-//         pros::lcd::print(6,"1 meter: %lf",odometer.toMeters(2302.94, 0.0248));
-//         delay(30);
-//     }
-// }
