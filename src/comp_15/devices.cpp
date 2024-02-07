@@ -40,10 +40,10 @@ pros::Imu imu(21);
 pros::ADIButton cata_limit('A');
 
 // Other classes //
-Odom odometry(imu, vertical_track, horizontal_track);
+Odom odometry(imu, horizontal_track, vertical_track);
 
 // Traditional Drive
-traditional_drive drive(imu, ctrl_master, left_drive, right_drive, 0);
+traditional_drive drive(imu, ctrl_master, left_drive, right_drive, odometry);
 
 // Instances
 Intake* intake_instance = Intake::createInstance(intake_motor);

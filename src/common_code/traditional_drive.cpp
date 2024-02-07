@@ -247,8 +247,9 @@ double traditional_drive::getY() {
 */
 Odom& traditional_drive::getOdom() {
     if (odom_inst == nullptr) {
-        pros::lcd::set_text(3, "trad_drive getOdom but odom is nullptr!!!");
-        // throw std::runtime_error("Called getOdom but odom_inst is null!");
+        pros::lcd::set_text(6, "ERROR: getOdom but it's nullptr!!!");
+        pros::delay(100);
+        throw std::runtime_error("Called getOdom but odom_inst is null!");
     }
 
     return *odom_inst;

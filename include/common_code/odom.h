@@ -16,21 +16,14 @@ class Odom {
     double getTransverseValue();
     double getRadialValue();
 
-    //static pros::Task initTask(Odom odometer);
-
     private:
-    //double transverseWheelRad;
-    //double radialWheelRad;
-    double currentTransverseValue;
-    double currentRadialValue;
-    double lastTransverseValue;
-    double lastRadialValue;
+    // wheel radii are stored in the GenericRotation sensor
     double x_tracking_offset;
     double y_tracking_offset;
     double last_x_tracking_offset;
     double last_y_tracking_offset;
-    double positionX;
-    double positionY;
+    double positionX = 0.0;
+    double positionY = 0.0;
     const double TICKS_PER_ROTATION = 2000.0; // 19600.
     const double FEET_TO_METERS = 0.304;
     const double ADJUSTMENT_MULTIPLIER = 1.015;
@@ -48,7 +41,6 @@ class Odom {
     double lastHeading;
     double avgHeading;
     double imuRotation;
-    double scale_factor_heading;
 
     Generic_Rotation* transverseWheel = nullptr;
     Generic_Rotation* radialWheel = nullptr;
