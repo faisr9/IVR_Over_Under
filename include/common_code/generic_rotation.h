@@ -7,15 +7,13 @@
 
 // The generic implementation will consist of returning the change in position in meters
 
-// One notable issue is that the digikey rotation sensor is absolute (I think) while the
-// vex rotation sensor only returns its current angle between 0-36k centidegrees
-
 class Generic_Rotation {
     public:
         Generic_Rotation(double wheel_rad_meters);
         // must call initialize_sensor before getting the data
         virtual void initialize_sensor() = 0;
         virtual double get_meters_travelled() = 0;
+        virtual double get_raw_data() = 0; // directly returns the value of the encoder
 
     protected: 
         const double wheel_radius;

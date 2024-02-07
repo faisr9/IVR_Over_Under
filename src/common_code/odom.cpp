@@ -49,7 +49,10 @@ Odom::~Odom() {
 }*/
 
 // initializes the tracking variables so they can begin to be updated
-void Odom::initTracker(double initial_x, double initial_y, double initial_heading) {  
+void Odom::initTracker(double initial_x, double initial_y, double initial_heading) {
+    transverseWheel->initialize_sensor();
+    radialWheel->initialize_sensor();
+
     currentTransverseValue = (*transverseWheel).get_meters_travelled();
     currentRadialValue = (*radialWheel).get_meters_travelled();
     positionX = initial_x;
@@ -161,6 +164,11 @@ void Odom::updatePosition() {       // updatePosition does all the math with the
     double deltaY = (sin(avgHeading) * currentTransverseValue) + (cos(avgHeading) * currentRadialValue);
     positionX += isnan(deltaX) ? 0 : deltaX; // updates position values
     positionY += isnan(deltaY) ? 0 : deltaY;
+
+    pros::lcd::set_text(5, "Position X: " + std::to_string(positionX));
+    pros::lcd::set_text(6, "Position Y: " + std::to_string(positionY));
+    pros::lcd::set_text(2, "Horizontal Track: " + std::to_string(transverseWheel->get_raw_data()));
+    pros::lcd::set_text(3, "Vertical Track: " + std::to_string(radialWheel->get_raw_data()));
 }
 
 double Odom::getX() { return positionX; }

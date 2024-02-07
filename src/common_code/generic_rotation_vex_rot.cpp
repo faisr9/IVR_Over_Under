@@ -26,3 +26,6 @@ double Generic_Rotation_VEX_Rot::get_delta_rotation() {
     return rotation_difference;
 }
 
+double Generic_Rotation_VEX_Rot::get_raw_data() {
+    return rotation_sensor.get_position();
+}

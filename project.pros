@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "Odom",
+    "project_name": "IVR_Pure_Pursuit",
     "target": "v5",
     "templates": {
       "kernel": {
@@ -309,7 +309,7 @@
       }
     },
     "upload_options": {
-      "slot": 6,
+      "slot": 4,
       "description": "Pure Pursuit"
     }
   }

@@ -9,6 +9,8 @@ void initialize() {
 	horizontal_track_adi.reset();
 	vertical_track_adi.reset();
 	pros::delay(3000);
+	drive.getOdom().initTracker(0, 0, 0);
+	pros::delay(50);
 }
 
 /* Runs when robot is disabled from competition controller after driver/auton */
@@ -27,12 +29,7 @@ void opcontrol() {
 	std::vector<std::vector<double>> path = {{0.0, 0.0}, {0.0, 0.8}, {1.0, 0.8}};
 	std::vector<std::vector<double>> path_reversed = {path.back(), {0.0, 0.8}, {0.0, 0.05}};
 
-
-	pros::lcd::set_text(4, "Hi");
-
-	drive.getOdom().initTracker(0, 0, 0);
-	pros::delay(50);
-
+	// you can't pass in a function that's accessed through a pointer but you can do this apparently :)
 	pros::Task odom_task{[=] {
 		while (1) {
 			drive.getOdom().updatePosition();
@@ -42,19 +39,16 @@ void opcontrol() {
 	}}; // lambda function with a task
 
 	
-
-	// you can't pass in a function that's accessed through a pointer but you can do this apparently :)
-
 	pros::lcd::set_text(1, "Starting path");
 	// turnToAngle(tank_drive, 179, 2, true, 2.5);
 
-	followPath(path, drive, 90, false);
+	// followPath(path, drive, 90, false);
 
 	pros::lcd::set_text(1, "Done with path");
 
 	pros::delay(100);
 
-	followPath(path_reversed, drive, 0, true);
+	// followPath(path_reversed, drive, 0, true);
 
 
 	// int move_vel = 180;
@@ -74,16 +68,7 @@ void opcontrol() {
 	// LeftDrive.move_velocity(0);
 	// RightDrive.move_velocity(0);
 
-	odom_task.suspend();
-
-	while (1) {
-		drive.toggle_drive_mode();
-		// pros::lcd::set_text(5, "imu heading: " + std::to_string(imu.get_heading()));
-
-		// pros::lcd::set_text(3, "hori " + std::to_string(horizontal_track.get_value()));
-		// pros::lcd::set_text(4, "vert " + std::to_string(vertical_track.get_value()));
-		pros::delay(50);
-	}
+	// odom_task.suspend();
 
 	controls();
 }
