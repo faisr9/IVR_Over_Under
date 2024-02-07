@@ -1,7 +1,6 @@
 #pragma once
-#include "main.h"
-
-
+#include "include_list.h"
+#include "pros/adi.hpp"
 
 class DriveParent {
     // pure virtual probably because doesn't make sense to have undefined drive

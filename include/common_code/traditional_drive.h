@@ -1,18 +1,13 @@
 //
 // Description: traditional drive system
-// Dependencies: main.h, drive_parent.h, cmath
+// Dependencies: drive_parent.h
 // Path: include/common_code/traditional_drive.h
 // Implementation: src/common_code/traditional_drive.cpp
 // Last Modified: 12/1/23 by Zach Martin
 //
 
 #pragma once
-#include "api.h"
 #include "common_code/drive_parent.h"
-// #include "main.h"
-// #include "drive_parent.h" // base class
-// using namespace std; // for string
-// using namespace pros; // for Controller and Imu
 
 // drive systems
 class traditional_drive : public DriveParent
