@@ -21,11 +21,11 @@ pros::Motor back_left            (18, GEARSET_06, true);
 pros::MotorGroup right_drive ({front_top_right, front_bottom_right, back_right});
 pros::MotorGroup left_drive  ({front_top_left, front_bottom_left, back_left});
 
-pros::Motor cata_right  (15, GEARSET_36, true);
+pros::Motor cata_right  (1, GEARSET_36, true);
 pros::Motor cata_left   (17, GEARSET_36);
 pros::MotorGroup cata   ({cata_right, cata_left});
 
-pros::Motor intake  (14, GEARSET_06, true);
+pros::Motor intake_motor  (15, GEARSET_06, true);
 
 // V5 Sensors //
 pros::ADIEncoder vertical_track(3, 4, true); // tracking wheel #1 cd
@@ -44,7 +44,7 @@ Odom odometry(imu, vertical_track, horizontal_track);
 traditional_drive drive(imu, ctrl_master, left_drive, right_drive, 0);
 
 // Instances
-Intake* intake_instance = Intake::createInstance(intake);
+Intake* intake_instance = Intake::createInstance(intake_motor);
 CompetitionCatapult* cata_instance = CompetitionCatapult::createInstance(cata, cata_limit);
 
 const char FLOOR_BRAKE = 'G';

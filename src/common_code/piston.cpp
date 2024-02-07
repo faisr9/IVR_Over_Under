@@ -1,4 +1,4 @@
-#include "main.h"
+#include "common_code/piston.h"
 
 Piston::Piston(char port_value) : piston(port_value){
     status = true;
