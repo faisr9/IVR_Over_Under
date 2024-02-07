@@ -310,7 +310,7 @@
     },
     "upload_options": {
       "slot": 5,
-      "description": "pneumatics test"
+      "description": "My PROS Project"
     }
   }
 }
