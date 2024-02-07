@@ -6,8 +6,8 @@
 void initialize() {
 	pros::lcd::initialize(); // Temp until custom GUI
 	imu.reset(); // Very important!!!
-	horizontal_track.reset();
-	vertical_track.reset();
+	horizontal_track_adi.reset();
+	vertical_track_adi.reset();
 	pros::delay(3000);
 }
 

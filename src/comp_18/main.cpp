@@ -1,6 +1,14 @@
 #include "comp_18/comp18_includeList.h"
 
 #include "common_code/generic_rotation_vex_rot.h"
+#include "common_code/odom.h"
+Imu imu(21);
+pros::Rotation sensor1(9);
+pros::Rotation sensor2(10);
+Generic_Rotation_VEX_Rot trans_test_wheel(sensor1, 1.96 * 0.0254 / 2);
+Generic_Rotation_VEX_Rot rad_test_wheel(sensor2, 1.96 * 0.0254 / 2);
+Odom odometer(imu, &trans_test_wheel, &rad_test_wheel);
+Controller master(E_CONTROLLER_MASTER);
 
 /* First method to run when program starts */
 void initialize() {
@@ -22,28 +30,22 @@ void autonomous() {
 /* Opcontrol method runs by default (unless connected to comp controller )*/
 void opcontrol() {
 
-	Generic_Rotation* generic_vex_rot = new Generic_Rotation_VEX_Rot(transverse_rot_sensor, 1.96 * 0.0254 / 2);
-	generic_vex_rot->initialize_sensor();
-	double current_dist = 0;
+	imu.reset();
+    delay(5000);
 
-	while (1) {
+    while(true) {
+        
+        int forward = master.get_analog(E_CONTROLLER_ANALOG_LEFT_Y); // sets forward to left analog's up/down input
+        int steer = master.get_analog(E_CONTROLLER_ANALOG_RIGHT_X);  // sets steer to right analog's left/right input
 
-		if (ctrl_master.get_digital(E_CONTROLLER_DIGITAL_B)) {
-			break;
-		}
+        left_drive_motors.move(forward+steer);
+        right_drive_motors.move(forward-steer);
 
-		double delta_distance = generic_vex_rot->get_meters_travelled();
-		if (isnan(delta_distance)) {
-			pros::lcd::set_text(3, "Delta distance is nan!!!!!!!");
-		} else {
-			pros::lcd::set_text(3, "");
-			current_dist += delta_distance;
-		}
-
-		pros::lcd::set_text(2, "Current dist is " + std::to_string(current_dist));
-
-		pros::delay(20);
-	}
-
-	delete generic_vex_rot;
+        odometer.updatePosition();
+        pros::lcd::print(1,"X: %lf",odometer.getX());
+        pros::lcd::print(2,"Y: %lf",odometer.getY());
+        pros::lcd::print(3,"Heading: %lf",odometer.getHeading());
+        // pros::lcd::print(6,"1 meter: %lf",odometer.toMeters(2302.94, 0.0248));
+        delay(30);
+    }
 }

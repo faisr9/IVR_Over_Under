@@ -9,6 +9,10 @@ using namespace pros;
 */
 
 pros::Controller ctrl_master(E_CONTROLLER_MASTER);
+<<<<<<< HEAD
+=======
+
+>>>>>>> odom_class
 // Motors //
 // front is where intake is
 pros::Motor right_front_top(14, true); // 14

@@ -28,8 +28,12 @@ pros::MotorGroup cata   ({cata_right, cata_left});
 pros::Motor intake_motor  (15, GEARSET_06, true);
 
 // V5 Sensors //
-pros::ADIEncoder vertical_track(3, 4, true); // tracking wheel #1 cd
-pros::ADIEncoder horizontal_track(5, 6, true); // tracking wheel #2 ef
+pros::ADIEncoder vertical_track_adi(3, 4, true); // tracking wheel #1 cd
+pros::ADIEncoder horizontal_track_adi(5, 6, true); // tracking wheel #2 ef
+
+Generic_Rotation* vertical_track = new Generic_Rotation_Digikey(vertical_track_adi, 1.96 * 0.0254 / 2);
+Generic_Rotation* horizontal_track = new Generic_Rotation_Digikey(horizontal_track_adi, 1.96 * 0.0254 / 2);
+
 pros::Imu imu(21);
 
 // Legacy Sensors //
@@ -37,8 +41,6 @@ pros::ADIButton cata_limit('A');
 
 // Other classes //
 Odom odometry(imu, vertical_track, horizontal_track);
-//
-
 
 // Traditional Drive
 traditional_drive drive(imu, ctrl_master, left_drive, right_drive, 0);

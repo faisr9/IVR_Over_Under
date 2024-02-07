@@ -1,29 +1,26 @@
 #pragma once
-#include <cmath>
-#include <vector>
-#include <string>
-#include "pros/adi.hpp"
 #include "main.h"
-#include "pros/imu.h"
+#include "common_code/generic_rotation_vex_rot.h"
 
 class Odom {
     public:
-    Odom(pros::IMU& theImu, pros::ADIEncoder& vertical, pros::ADIEncoder& horizontal);
+    Odom(pros::IMU &theImu, Generic_Rotation* transverseWheel, Generic_Rotation* radialWheel);
     ~Odom();
 
-    double toMeters(double value, double wheelRadius);
     void initTracker(double initial_x, double initial_y, double initial_heading);
     double headingCorrection(double currentRotation);
     void updatePosition();
     double getX();
     double getY();
     double getHeading();
+    double getTransverseValue();
+    double getRadialValue();
 
     //static pros::Task initTask(Odom odometer);
 
     private:
-    double transverseWheelRad;
-    double radialWheelRad;
+    //double transverseWheelRad;
+    //double radialWheelRad;
     double currentTransverseValue;
     double currentRadialValue;
     double lastTransverseValue;
@@ -53,7 +50,7 @@ class Odom {
     double imuRotation;
     double scale_factor_heading;
 
-    pros::ADIEncoder& vertical_track;
-    pros::ADIEncoder& horizontal_track;
+    Generic_Rotation* transverseWheel = nullptr;
+    Generic_Rotation* radialWheel = nullptr;
     pros::IMU& imu;
 };
