@@ -8,8 +8,8 @@
 
 #pragma once
 #include "main.h"
-#include "drive_parent.h" // base class
 #include "common_code/odom.h"
+// #include "drive_parent.h" // base class
 using namespace std; // for string
 using namespace pros; // for Controller and Imu
 
@@ -23,6 +23,7 @@ class traditional_drive : public DriveParent
         Controller *master; // controller to get input from
         Imu *imu; // inertial sensor to get angle from
         string drive_mode[3] = {"arcade", "tank", "hybrid"}; // drive mode names
+        int mode;
         Motor_Group *left_side, *right_side; // motor groups to send voltage to
         Odom* odom_inst = nullptr; // instance of the odom class on the heap
         void init(Imu &imu, Motor_Group &l, Motor_Group &r, int mode);
@@ -39,10 +40,8 @@ class traditional_drive : public DriveParent
         // constructors
         // traditional_drive(): SubsystemParent(drive_mode[0]){}; // default constructor
         // overloaded constructors
-        traditional_drive(Imu&imu,Controller &mstr, Motor_Group &l, Motor_Group &r); // converts to other constructor
         traditional_drive(Imu &imu,Controller &mstr, Motor_Group &l, Motor_Group &r, int mode); // initialize controller
         // no controller
-        traditional_drive(Imu &imu, Motor_Group &l, Motor_Group &r); // converts to other constructor
         traditional_drive(Imu &imu, Motor_Group &l, Motor_Group &r, int mode); // initialize variables
 
         traditional_drive(Imu &imu, Motor_Group &l, Motor_Group &r, Odom& odometry); // with odom no controller
@@ -50,7 +49,7 @@ class traditional_drive : public DriveParent
 
         ~traditional_drive(); // destructor
 
-        void toggle_drive_mode(int mode); // toggle drive mode (arcade, tank, hybrid)
+        void toggle_drive_mode(); //does one cycle of movement
         void robot_centric_move(pair<double, double> mag_angle_vector); 
         void field_centric_move(pair<double, double> mag_angle_vector);
         void turn_with_power(double power);

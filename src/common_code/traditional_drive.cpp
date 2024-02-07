@@ -6,29 +6,37 @@
 //
 
 #include "common_code/traditional_drive.h"
-#include <cmath> // for sin and cos functions and M_PI
+// #include <cmath> // for sin and cos functions and M_PI
 //
 // ************ overloaded constructors ************
 //
 // default to arcade drive and then run constructor with mode and controller
-traditional_drive::traditional_drive(Imu&imu,Controller &mstr, Motor_Group &l, Motor_Group &r) : DriveParent(imu, drive_mode[0]) {
-    master = &mstr;
-    init(imu, l, r, 0);
-};
+// traditional_drive::traditional_drive(Imu&imu,Controller &mstr, Motor_Group &l, Motor_Group &r) : DriveParent(imu, drive_mode[0]) {
+//     master = &mstr;
+//     init(imu, l, r, 0);
+// };
 // default to arcade drive and then run constructor with mode without controller
-traditional_drive::traditional_drive(Imu &imu, Motor_Group &l, Motor_Group &r) : DriveParent(imu, drive_mode[0]) {
-    init(imu, l, r, 0);
-};
+// traditional_drive::traditional_drive(Imu &imu, Motor_Group &l, Motor_Group &r) : DriveParent(imu, drive_mode[0]) {
+//     init(imu, l, r, 0);
+// };
 // initialize controller if applicable
 traditional_drive::traditional_drive(Imu &imu, Controller &mstr, Motor_Group &l, Motor_Group &r, int mode) : DriveParent(imu, drive_mode[mode])
 {
     master = &mstr;
     init(imu, l, r, mode);
-};
+}
+// initialize controller if applicable
+// traditional_drive::traditional_drive(Imu &imu, Controller &mstr, Motor_Group &l, Motor_Group &r, int m)
+//     : DriveParent(imu, drive_mode[m])
+// {
+//     master = &mstr;
+//     this->imu=&imu;
+//     left_side = &l; 
+//     right_side = &r;
+//     mode = m;
+// };
 // initialize variables
-traditional_drive::traditional_drive(Imu &imu, Motor_Group &l, Motor_Group &r, int mode)
-    : DriveParent(imu, drive_mode[mode])
-{
+traditional_drive::traditional_drive(Imu &imu, Motor_Group &l, Motor_Group &r, int m): DriveParent(imu, drive_mode[m]) {
     init(imu, l, r, mode);
 };
 
@@ -36,7 +44,7 @@ traditional_drive::traditional_drive(Imu &imu, Motor_Group &l, Motor_Group &r, O
     odom_inst = &odometry;
     init(imu, l, r, 0);
 } // with odom no controller
-traditional_drive::traditional_drive(Imu&imu,Controller &mstr, Motor_Group &l, Motor_Group &r, Odom& odometry) : DriveParent(imu, drive_mode[0]) {
+traditional_drive::traditional_drive(Imu&imu, Controller &mstr, Motor_Group &l, Motor_Group &r, Odom& odometry) : DriveParent(imu, drive_mode[0]) {
     master = &mstr;
     odom_inst = &odometry; 
     init(imu, l, r, 0);
@@ -47,9 +55,8 @@ void traditional_drive::init(Imu &imu, Motor_Group &l, Motor_Group &r, int mode)
     this->imu=&imu;
     left_side = &l;
     right_side = &r;
-    toggle_drive_mode(mode);
-}
-
+    this->mode = mode;
+};
 
 // ************ destructor ************
 traditional_drive::~traditional_drive()
@@ -65,7 +72,7 @@ traditional_drive::~traditional_drive()
 
 
 // toggle drive mode (arcade, tank, hybrid)
-void traditional_drive::toggle_drive_mode(int mode = 0)
+void traditional_drive::toggle_drive_mode()
 {
     // 0 = arcade, 1 = tank, 2 = hybrid
     switch (mode)
@@ -130,7 +137,7 @@ void traditional_drive::arcade_drive()
 {
     // get joystick values and apply square scaling
     fwd = square_scale(normalize_joystick(master->get_analog(E_CONTROLLER_ANALOG_LEFT_Y)));   // vertical input from left joystick
-    turn = square_scale(normalize_joystick(master->get_analog(E_CONTROLLER_ANALOG_RIGHT_X))); // horizontal input from right joystick
+    turn = square_scale(normalize_joystick(master->get_analog(E_CONTROLLER_ANALOG_RIGHT_X))) / 2.0; // horizontal input from right joystick
     // use fwd and turn to calculate voltage to send to motors
     left *= fwd + turn;
     right *= fwd - turn;

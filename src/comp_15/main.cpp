@@ -1,6 +1,5 @@
-#include "comp_15/comp15_includeList.h"
-
-#include "common_code/generic_rotation_digikey.h"
+#include "comp_15/controls.h"
+#include "common_code/movement_tank.h"
 
 /* First method to run when program starts */
 void initialize() {
@@ -30,12 +29,12 @@ void opcontrol() {
 
 	pros::lcd::set_text(4, "Hi");
 
-	tank_drive.getOdom().initTracker(0, 0, 0);
+	drive.getOdom().initTracker(0, 0, 0);
 	pros::delay(50);
 
 	pros::Task odom_task{[=] {
 		while (1) {
-			tank_drive.getOdom().updatePosition();
+			drive.getOdom().updatePosition();
 			pros::lcd::set_text(7, "In task");
 			pros::delay(50);
 		}
@@ -47,12 +46,14 @@ void opcontrol() {
 
 	pros::lcd::set_text(1, "Starting path");
 	// turnToAngle(tank_drive, 179, 2, true, 2.5);
-	followPath(path, tank_drive, 90, false);
+
+	followPath(path, drive, 90, false);
+
 	pros::lcd::set_text(1, "Done with path");
 
 	pros::delay(100);
 
-	followPath(path_reversed, tank_drive, 0, true);
+	followPath(path_reversed, drive, 0, true);
 
 
 	// int move_vel = 180;
@@ -75,7 +76,7 @@ void opcontrol() {
 	odom_task.suspend();
 
 	while (1) {
-		tank_drive.toggle_drive_mode(0);
+		drive.toggle_drive_mode();
 		// pros::lcd::set_text(5, "imu heading: " + std::to_string(imu.get_heading()));
 
 		// pros::lcd::set_text(3, "hori " + std::to_string(horizontal_track.get_value()));
@@ -83,4 +84,5 @@ void opcontrol() {
 		pros::delay(50);
 	}
 
+	controls();
 }
