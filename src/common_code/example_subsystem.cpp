@@ -1,4 +1,5 @@
-#include "main.h"
+#pragma once
+#include "example_subsystem.h"
 
 /*
 - sets instance_ as nullptr for proper memory management

@@ -7,7 +7,9 @@
 //
 
 #pragma once
-#include "main.h"
+#include "api.h"
+#include "common_code/drive_parent.h"
+// #include "main.h"
 // #include "drive_parent.h" // base class
 // using namespace std; // for string
 // using namespace pros; // for Controller and Imu
@@ -19,11 +21,11 @@ class traditional_drive : public DriveParent
         double scalingFactor=12000; // scalar factor for voltage
         double left=scalingFactor, right=scalingFactor; // voltage to send to motors (scalar factor of 12000)
         double fwd, turn; //helper variables
-        Controller *master; // controller to get input from
-        Imu *imu; // inertial sensor to get angle from
-        string drive_mode[3] = {"arcade", "tank", "hybrid"}; // drive mode names
+        pros::Controller *master; // controller to get input from
+        pros::Imu *imu; // inertial sensor to get angle from
+        std::string drive_mode[3] = {"arcade", "tank", "hybrid"}; // drive mode names
         int mode;
-        Motor_Group *left_side, *right_side; // motor groups to send voltage to
+        pros::Motor_Group *left_side, *right_side; // motor groups to send voltage to
         // drive mode methods
         void arcade_drive();
         void tank_drive();
@@ -37,14 +39,14 @@ class traditional_drive : public DriveParent
         // constructors
         // traditional_drive(): SubsystemParent(drive_mode[0]){}; // default constructor
         // overloaded constructors
-        traditional_drive(Imu &imu,Controller &mstr, Motor_Group &l, Motor_Group &r, int mode); // initialize controller
+        traditional_drive(pros::Imu &imu,pros::Controller &mstr, pros::Motor_Group &l, pros::Motor_Group &r, int mode); // initialize controller
         // no controller
-        traditional_drive(Imu &imu, Motor_Group &l, Motor_Group &r, int mode); // initialize variables
+        traditional_drive(pros::Imu &imu, pros::Motor_Group &l, pros::Motor_Group &r, int mode); // initialize variables
         ~traditional_drive(); // destructor
 
         void toggle_drive_mode(); //does one cycle of movement
-        void robot_centric_move(pair<double, double> mag_angle_vector); 
-        void field_centric_move(pair<double, double> mag_angle_vector);
+        void robot_centric_move(std::pair<double, double> mag_angle_vector); 
+        void field_centric_move(std::pair<double, double> mag_angle_vector);
         void turn_with_power(double power);
-        Motor_Group &get_motor_group(bool side);
+        pros::Motor_Group &get_motor_group(bool side);
 };
