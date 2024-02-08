@@ -8,10 +8,10 @@ void controls() {
         drive.toggle_drive_mode();
 
         //INTAKE CONTROLS
-        if (ctrl_master.get_digital(E_CONTROLLER_DIGITAL_A)){
+        if (ctrl_master.get_digital(E_CONTROLLER_DIGITAL_A) || ctrl_master.get_digital(BUTTON_R1)){
             Intake::getInstance()->set_power(12000);
         }
-        else if (ctrl_master.get_digital(E_CONTROLLER_DIGITAL_B)){
+        else if (ctrl_master.get_digital(E_CONTROLLER_DIGITAL_B) || ctrl_master.get_digital(BUTTON_R2)){
             Intake::getInstance()->set_power(-12000);
         } else {
             Intake::getInstance()->set_power(0);
