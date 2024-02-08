@@ -17,8 +17,8 @@ class traditional_drive : public DriveParent
         double scalingFactor=12000; // scalar factor for voltage
         double left=scalingFactor, right=scalingFactor; // voltage to send to motors (scalar factor of 12000)
         double fwd, turn; //helper variables
-        pros::Controller *master; // controller to get input from
-        pros::Imu *imu; // inertial sensor to get angle from
+        Controller *master; // controller to get input from
+        Imu *imu; // inertial sensor to get angle from
         std::string drive_mode[3] = {"arcade", "tank", "hybrid"}; // drive mode names
         int mode;
         Motor_Group *left_side, *right_side; // motor groups to send voltage to
@@ -34,13 +34,9 @@ class traditional_drive : public DriveParent
         void setV(); // set voltage to motors
 
     public:
-        // constructors
-        // traditional_drive(): SubsystemParent(drive_mode[0]){}; // default constructor
         // overloaded constructors
-        traditional_drive(pros::Imu &imu,pros::Controller &mstr, pros::Motor_Group &l, pros::Motor_Group &r, int mode); // initialize controller
-        // no controller
+        traditional_drive(Imu &imu, Controller &mstr, Motor_Group &l, Motor_Group &r, int mode); // initialize controller
         traditional_drive(Imu &imu, Motor_Group &l, Motor_Group &r, int mode); // initialize variables
-
         traditional_drive(Imu &imu, Motor_Group &l, Motor_Group &r, Odom& odometry); // with odom no controller
         traditional_drive(Imu&imu,Controller &mstr, Motor_Group &l, Motor_Group &r, Odom& odometry); // everything
 

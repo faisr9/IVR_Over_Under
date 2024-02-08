@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "IVR_Pure_Pursuit",
+    "project_name": "IVR_Over_Under",
     "target": "v5",
     "templates": {
       "kernel": {
@@ -310,7 +310,7 @@
     },
     "upload_options": {
       "slot": 7,
-      "description": "Pure Pursuit"
+      "description": "Master Code"
     }
   }
 }

@@ -18,6 +18,7 @@ class Odom {
 
     private:
     // wheel radii are stored in the GenericRotation sensor
+    double initHeading;
     double x_tracking_offset;
     double y_tracking_offset;
     double last_x_tracking_offset;
@@ -26,21 +27,6 @@ class Odom {
     double positionY = 0.0;
     const double TICKS_PER_ROTATION = 2000.0; // 19600.
     const double FEET_TO_METERS = 0.304;
-    const double ADJUSTMENT_MULTIPLIER = 1.015;
-    const double RADIAL_WHEEL_X_OFFSET = 0.0746125;
-    const double RADIAL_WHEEL_Y_OFFSET = 0.11;
-    const double TRANSVERSE_WHEEL_Y_OFFSET = 0.104775;
-    const double TRANSVERSE_WHEEL_X_OFFSET = 0.04;
-    const double RADIAL_THETA = atan(RADIAL_WHEEL_X_OFFSET / RADIAL_WHEEL_Y_OFFSET);
-    const double TRANSVERSE_THETA = atan(TRANSVERSE_WHEEL_Y_OFFSET / TRANSVERSE_WHEEL_X_OFFSET);
-    const double RADIAL_WHEEL_OFFSET_HYP = hypot(RADIAL_WHEEL_X_OFFSET, RADIAL_WHEEL_Y_OFFSET);
-    const double TRANSVERSE_WHEEL_OFFSET_HYP = hypot(TRANSVERSE_WHEEL_X_OFFSET, TRANSVERSE_WHEEL_Y_OFFSET);
-
-    double initHeading;
-    double currentHeading;
-    double lastHeading;
-    double avgHeading;
-    double imuRotation;
 
     Generic_Rotation* transverseWheel = nullptr;
     Generic_Rotation* radialWheel = nullptr;

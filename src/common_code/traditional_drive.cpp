@@ -6,45 +6,29 @@
 //
 
 #include "common_code/traditional_drive.h"
-// #include "common_code/traditional_drive.h"
-// #include <cmath> // for sin and cos functions and M_PI
 //
 // ************ overloaded constructors ************
 //
-// default to arcade drive and then run constructor with mode and controller
-// traditional_drive::traditional_drive(Imu&imu,Controller &mstr, Motor_Group &l, Motor_Group &r) : DriveParent(imu, drive_mode[0]) {
-//     master = &mstr;
-//     init(imu, l, r, 0);
-// };
-// default to arcade drive and then run constructor with mode without controller
-// traditional_drive::traditional_drive(Imu &imu, Motor_Group &l, Motor_Group &r) : DriveParent(imu, drive_mode[0]) {
-//     init(imu, l, r, 0);
-// };
+
+// most basic version that initializes all required variables
+traditional_drive::traditional_drive(Imu &imu, Motor_Group &l, Motor_Group &r, int m): DriveParent(imu, drive_mode[m]) {
+    init(imu, l, r, mode);
+};
+
 // initialize controller if applicable
 traditional_drive::traditional_drive(Imu &imu, Controller &mstr, Motor_Group &l, Motor_Group &r, int mode) : DriveParent(imu, drive_mode[mode])
 {
     master = &mstr;
     init(imu, l, r, mode);
 }
-// initialize controller if applicable
-// traditional_drive::traditional_drive(Imu &imu, Controller &mstr, Motor_Group &l, Motor_Group &r, int m)
-//     : DriveParent(imu, drive_mode[m])
-// {
-//     master = &mstr;
-//     this->imu=&imu;
-//     left_side = &l; 
-//     right_side = &r;
-//     mode = m;
-// };
-// initialize variables
-traditional_drive::traditional_drive(Imu &imu, Motor_Group &l, Motor_Group &r, int m): DriveParent(imu, drive_mode[m]) {
-    init(imu, l, r, mode);
-};
 
+
+// with odometry
 traditional_drive::traditional_drive(Imu &imu, Motor_Group &l, Motor_Group &r, Odom& odometry) : DriveParent(imu, drive_mode[0]) {
     odom_inst = &odometry;
     init(imu, l, r, 0);
-} // with odom no controller
+} 
+// with odom and controller
 traditional_drive::traditional_drive(Imu&imu, Controller &mstr, Motor_Group &l, Motor_Group &r, Odom& odometry) : DriveParent(imu, drive_mode[0]) {
     master = &mstr;
     odom_inst = &odometry; 
@@ -62,7 +46,6 @@ void traditional_drive::init(Imu &imu, Motor_Group &l, Motor_Group &r, int mode)
 // ************ destructor ************
 traditional_drive::~traditional_drive()
 {
-
     if (!odom_inst) {
         delete odom_inst;
         odom_inst = nullptr;
@@ -240,11 +223,6 @@ double traditional_drive::getY() {
     return odom_inst->getY();
 }
 
-/**
- * Temporary function for TESTING PURPOSES
- * 
- * Going forward we need to use threading to call update position in the odom object
-*/
 Odom& traditional_drive::getOdom() {
     if (odom_inst == nullptr) {
         pros::lcd::set_text(6, "ERROR: getOdom but it's nullptr!!!");
