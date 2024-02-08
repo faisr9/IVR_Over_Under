@@ -5,7 +5,7 @@
 //This class is necessary because it implements toggle() method and the getStatus() method.
 //get_value() from pros::ADIDigitalOutput doesn't work because VS Code says it's "inaccessible".
 
-extern Pneumatics* Pneumatics::instance_ = nullptr;
+Pneumatics* Pneumatics::instance_ = nullptr;
 
 bool currentPiston = false;
 

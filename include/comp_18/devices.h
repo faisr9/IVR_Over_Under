@@ -1,7 +1,7 @@
 #pragma once
 #include "main.h"
 #include "common_code/traditional_drive.h"
-#include "comp_15/intake.h"
+#include "comp_18/intake.h"
 #include "comp_18/pneumatics.h"
 
 // Forward declare all devices here so that all of the robot files and subsystem classes can access them //
