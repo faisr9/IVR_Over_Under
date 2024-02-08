@@ -1,13 +1,4 @@
 #include "common_code/movement_tank.h"
-#include "pros/llemu.hpp"
-#include "pros/misc.h"
-#include "pros/motors.h"
-#include "pros/rtos.hpp"
-#include <algorithm>
-#include <array>
-#include <cmath>
-#include <string>
-#include <vector>
 #include "common_code/movement_helper.h"
 #include "common_code/traditional_drive.h"
 
@@ -19,50 +10,6 @@ void moveMotors(traditional_drive& drive, double leftRPM, double rightRPM) {
 void stopMotors(traditional_drive& drive) {
     drive.get_motor_group(0).move_velocity(0.0);
     drive.get_motor_group(1).move_velocity(0.0);
-}
-
-// This is mainly a random method I've used to test various movement-related code
-void SmartStop(traditional_drive& drive) {
-    drive.get_motor_group(0).set_brake_modes(pros::E_MOTOR_BRAKE_COAST);
-    drive.get_motor_group(1).set_brake_modes(pros::E_MOTOR_BRAKE_COAST);
-
-    stopMotors(drive);
-    // double desiredVel = 175.0;
-    // moveMotors(desiredVel, desiredVel);
-    
-    // pros::delay(1000);
-
-    // double stopX = positionX;
-    // double stopY = positionY;
-
-    // stopMotors();
-    while (true) {
-        /*
-        if (ctrl_master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A)) {
-            desiredVel++;
-        } else if (ctrl_master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B)) {
-            desiredVel = std::max(desiredVel - 1, 0.0);
-        }
-
-        moveMotors(desiredVel, desiredVel);        
-
-        pros::lcd::set_text(2, "Left front: " + std::to_string(left_front_mtr.get_actual_velocity()));
-        pros::lcd::set_text(3, "Right back: " + std::to_string(right_back_mtr.get_actual_velocity()));
-        pros::lcd::set_text(4, "Desired vel: " + std::to_string(desiredVel));
-        */
-
-
-        // pros::lcd::set_text(2, "Stop X: " + std::to_string(stopX));
-        // pros::lcd::set_text(3, "Stop Y: " + std::to_string(stopY));
-        // pros::lcd::set_text(4, "Current X: " + std::to_string(positionX));
-        // pros::lcd::set_text(5, "Current Y: " + std::to_string(positionY));
-        // pros::lcd::set_text(6, "Left front brake mode: " + std::to_string(left_front_mtr.get_brake_mode()));
-        // pros::lcd::set_text(7, "Back left brake mode: " + std::to_string(left_back_mtr.get_brake_mode()));
-
-        // moveMotors(20, 20);
-
-        pros::delay(50);
-    }
 }
 
 // to be used exclusively when only turning (no translation)

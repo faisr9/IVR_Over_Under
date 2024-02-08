@@ -20,3 +20,7 @@ double Generic_Rotation_Digikey::get_delta_rotation() {
     return rotation_difference;
 }
 
+double Generic_Rotation_Digikey::get_raw_data() {
+    return rotation_sensor.get_value();
+}
+

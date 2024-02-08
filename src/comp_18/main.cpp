@@ -1,14 +1,15 @@
 #include "comp_18/comp18_includeList.h"
-
-#include "common_code/generic_rotation_vex_rot.h"
+#include "common_code/movement_tank.h"
 
 /* First method to run when program starts */
 void initialize() {
 	pros::lcd::initialize(); // Temp until custom GUI
 	imu.reset(); // Very important!!!
-	transverse_rot_sensor.reset();
+    transverse_rot_sensor.reset();
 	radial_rot_sensor.reset();
-	pros::delay(3000);
+    pros::delay(3000);
+    tank_drive_18.getOdom().initTracker(0, 0, 0);
+    pros::delay(50);
 }
 
 /* Runs when robot is disabled from competition controller after driver/auton */
@@ -32,13 +33,11 @@ void autonomous() {
 	std::vector<std::vector<double>> move3 = {move2.back(), {tile*0.5, tile*3}}; // Movement 3
 	std::vector<std::vector<double>> move4 = {move3.back(), {tile*0.5, tile*2}, {tile*1.5, tile*2}}; // Movement 4
 
-
-	tank_drive.getOdom().initTracker(0, 0, 0);
 	pros::delay(50);
 
 	pros::Task odom_task{[=] {
 		while (1) {
-			tank_drive.getOdom().updatePosition();
+			drive.getOdom().updatePosition();
 			pros::lcd::set_text(7, "In task");
 			pros::delay(50);
 		}
@@ -48,25 +47,25 @@ void autonomous() {
 	// you can't pass in a function that's accessed through a pointer but you can do this apparently :)
 
 	pros::lcd::set_text(1, "move 1 start");
-	followPath(move1, tank_drive, 0, false);
+	followPath(move1, drive, 0, false);
 	pros::lcd::set_text(1, "move 1 end");
 
 	pros::delay(100);
 
 	pros::lcd::set_text(1, "move 2 start");
-	followPath(move2, tank_drive, 270, false);
+	followPath(move2, drive, 270, false);
 	pros::lcd::set_text(1, "move 2 end");
 
 	pros::delay(100);
 
 	pros::lcd::set_text(1, "move 3 start");
-	followPath(move3, tank_drive, 270, true);
+	followPath(move3, drive, 270, true);
 	pros::lcd::set_text(1, "move 3 end");
 
 	pros::delay(100);
 
 	pros::lcd::set_text(1, "move 4 start");
-	followPath(move4, tank_drive, 180, true);
+	followPath(move4, drive, 180, true);
 	pros::lcd::set_text(1, "move 4 end");
 
 	// pros::delay(100);
@@ -80,5 +79,9 @@ void autonomous() {
 
 /* Opcontrol method runs by default (unless connected to comp controller )*/
 void opcontrol() {
-
+	
+    while(true) {
+        tank_drive_18.toggle_drive_mode();
+        delay(30);
+    }
 }

@@ -1,5 +1,4 @@
 #pragma once
-#include <vector>
 #include "common_code/traditional_drive.h"
 
 // void followPath(std::vector<std::vector<double>>& path, double lookForwardRadius, double translationalRPM, double maxRPM, double finalAngleDeg, bool reversed, bool printMessages);
@@ -8,5 +7,4 @@ void turnToAngle(traditional_drive& drive, double desiredAngleDeg, double tolera
 // Calculate the angle needed to face the goal when at a given (future) position.
 void turnToPoint(traditional_drive& drive, double goalXCoordinate = 0.0, double goalYCoordinate = 0.0);
 void moveMotors(traditional_drive& drive, double leftRPM, double rightRPM);
-void SmartStop(traditional_drive& drive);
 void stopMotors(traditional_drive& drive);
