@@ -16,19 +16,20 @@ void auton18() {
     // 3. turn on intake
 
     pros::lcd::set_text(1, "move 1 start");
-    followPath(move1, tank_drive_18, 90, false);
+    move(move1, 90, false, false);
     pros::lcd::set_text(1, "move 1 end");
 
     pros::delay(100);
 
     pros::lcd::set_text(1, "move 2 start");
     followPath(move2, tank_drive_18, 300, false);
+    move(move2, 300, false, false);
     pros::lcd::set_text(1, "move 2 end");
 
     pros::delay(100);
 
     pros::lcd::set_text(1, "move 3 start");
-    followPath(move3, tank_drive_18, 0, true);
+    move(move3, 0, false, false);
     pros::lcd::set_text(1, "move 3 end");
 
     // pros::delay(100);
@@ -39,4 +40,9 @@ void auton18() {
 
 std::vector<double> vect(double x, double y, double numTiles){
     return {(.61*2.5)+(x*.61), (.61*.5)+(y*.61)};
+}
+
+void move(std::vector<std::vector<double>> moveVec, int angle, bool isReversed, bool isSpinAtEnd){
+    followPath(moveVec, tank_drive_18, angle, isReversed, isSpinAtEnd,  false, 0.5, 3.0, 200.0/2, 450.0/2, 40.0/2, false);
+
 }
