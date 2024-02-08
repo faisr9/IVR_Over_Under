@@ -20,15 +20,18 @@ void competition_initialize() {}
 /* Autonomous method */
 void autonomous() {
 	//1 tile is .61 meters (2 ft)
-	std::vector<std::vector<double>> move1 = {{0.0, 0.0}, {0.0, 0.61*1.5}}; //Movement 1
+	double tile = 0.61;
+	std::vector<std::vector<double>> move1 = {{0.0, 0.0}, {0.0, tile*1.5}}; //Movement 1
 
 	///////////////////////////////////////////////////////////////////////////
 	//TODO1: Add includes for pure pursuit into comp18 bot (use comp15 as reference)
 	//TODO2: Add path to push out the ball and score
 	///////////////////////////////////////////////////////////////////////////////////
 
-	std::vector<std::vector<double>> move2 = {move1.back(), {0.0, 0.61*2}, {1, 0.61*2}}; // Movement 2
-	// std::vector<std::vector<double>> move3 = {move2.back(), {1, 0.61*2}, {1, 0.61*2}}; // Movement 3
+	std::vector<std::vector<double>> move2 = {move1.back(), {0.0, tile*2}, {tile*0.5, tile*3},{1, tile*3}}; // Movement 2
+	std::vector<std::vector<double>> move3 = {move2.back(), {tile*0.5, tile*3}}; // Movement 3
+	std::vector<std::vector<double>> move4 = {move3.back(), {tile*0.5, tile*2}, {tile*1.5, tile*2}}; // Movement 4
+
 
 	tank_drive.getOdom().initTracker(0, 0, 0);
 	pros::delay(50);
@@ -42,7 +45,6 @@ void autonomous() {
 	}}; // lambda function with a task
 
 	
-
 	// you can't pass in a function that's accessed through a pointer but you can do this apparently :)
 
 	pros::lcd::set_text(1, "move 1 start");
@@ -51,7 +53,27 @@ void autonomous() {
 
 	pros::delay(100);
 
+	pros::lcd::set_text(1, "move 2 start");
 	followPath(move2, tank_drive, 270, false);
+	pros::lcd::set_text(1, "move 2 end");
+
+	pros::delay(100);
+
+	pros::lcd::set_text(1, "move 3 start");
+	followPath(move3, tank_drive, 270, true);
+	pros::lcd::set_text(1, "move 3 end");
+
+	pros::delay(100);
+
+	pros::lcd::set_text(1, "move 4 start");
+	followPath(move4, tank_drive, 180, true);
+	pros::lcd::set_text(1, "move 4 end");
+
+	// pros::delay(100);
+
+	// pros::lcd::set_text(1, "move 5 start");
+	// followPath(move5, tank_drive, 270, true);
+	// pros::lcd::set_text(1, "move 5 end");
 
 	odom_task.suspend();
 }
