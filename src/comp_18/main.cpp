@@ -8,7 +8,7 @@ void initialize() {
     transverse_rot_sensor.reset();
 	radial_rot_sensor.reset();
     pros::delay(3000);
-    tank_drive_18.getOdom().initTracker(0, 0, 0);
+    tank_drive_18.getOdom().initTracker(0, 0, 90);
     pros::delay(50);
 }
 
@@ -47,19 +47,19 @@ void autonomous() {
 	// you can't pass in a function that's accessed through a pointer but you can do this apparently :)
 
 	pros::lcd::set_text(1, "move 1 start");
-	followPath(move1, drive, 0, false);
+	followPath(move1, drive, 90, false);
 	pros::lcd::set_text(1, "move 1 end");
 
 	pros::delay(100);
 
 	pros::lcd::set_text(1, "move 2 start");
-	followPath(move2, drive, 270, false);
+	followPath(move2, drive, 0, false);
 	pros::lcd::set_text(1, "move 2 end");
 
 	pros::delay(100);
 
 	pros::lcd::set_text(1, "move 3 start");
-	followPath(move3, drive, 270, true);
+	followPath(move3, drive, 0, true);
 	pros::lcd::set_text(1, "move 3 end");
 
 	pros::delay(100);
