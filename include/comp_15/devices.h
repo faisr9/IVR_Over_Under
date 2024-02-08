@@ -3,6 +3,7 @@
 #include "comp_15/intake.h"
 #include "comp_15/cata.h"
 #include "comp_15/pneumatics.h"
+#include "comp_15/doinker.h"
 
 // Forward declare all devices here so that all of the robot files and subsystem classes can access them //
 
