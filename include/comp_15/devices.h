@@ -34,6 +34,7 @@ extern pros::Motor doinker_motor;
 extern pros::Imu imu;
 extern pros::ADIEncoder vertical_track_adi;
 extern pros::ADIEncoder horizontal_track_adi;
+extern pros::ADIPotentiometer doinker_pot;
 
 // Legacy Sensors //
 

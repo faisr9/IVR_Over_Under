@@ -16,11 +16,13 @@ class DoinkerClass : public SubsystemParent
         const int doinker_pot_max = 4095;
         const int doinker_pot_tolerance = 500;
 
-        int doinker_speed;
+        const int kDOINKER_DOWN_SPEED = -60; // should be faster
+        const int kDOINKER_UP_SPEED = 30; // should be slower so triball doesn't go flying
         int doinker_pos;
         bool doinkerState;
         bool doinkerRunning;
 
+        pros::Task doinker_task;
 
     public:
         typedef enum doinker_move
@@ -65,7 +67,7 @@ class DoinkerClass : public SubsystemParent
          * @param speed The speed to set the doinker to
          * Range: -100 - 100 rpm
          */
-        void set_speed(int speed);
+        // void set_speed(int speed);
 
         /**
          * Get the position of the doinker
@@ -75,3 +77,6 @@ class DoinkerClass : public SubsystemParent
          */
         int get_pos();
 };
+
+// pass in an address for the heap-allocated doinker state
+void doinker_thread(DoinkerClass::doinker_move* doinker_state);

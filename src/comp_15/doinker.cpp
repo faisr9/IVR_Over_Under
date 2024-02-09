@@ -25,8 +25,6 @@ DoinkerClass::~DoinkerClass()
 DoinkerClass::DoinkerClass (pros::Motor& subsystem_motor, pros::ADIPotentiometer& doinker_pot) : 
     SubsystemParent("DoinkerClass"), doinker_motor_(subsystem_motor), doinker_pot_(doinker_pot)
 {  
-    doinker_speed = 100;
-    doinker_pos = 0;
     doinkerState = false;
     doinkerRunning = false;
 }
@@ -42,7 +40,7 @@ void DoinkerClass::move(doinker_move_t move)
             // Doinker too far up
             while(doinker_pot_.get_value() > doinker_pot_up || doinker_pot_.get_value() < doinker_pot_low)
             {
-                doinker_motor_.move(doinker_speed);
+                doinker_motor_.move(kDOINKER_DOWN_SPEED);
                 pros::delay(5);
             }
         }
@@ -51,7 +49,7 @@ void DoinkerClass::move(doinker_move_t move)
             // Doinker is down
             while(doinker_pot_.get_value() < doinker_pot_up && doinker_pot_.get_value() > doinker_pot_low)
             {
-                doinker_motor_.move(-doinker_speed);
+                doinker_motor_.move(kDOINKER_UP_SPEED);
                 pros::delay(5);
             }
         }
@@ -63,7 +61,7 @@ void DoinkerClass::move(doinker_move_t move)
     {
         while(doinker_pot_.get_value() > doinker_pot_down || doinker_pot_.get_value() < doinker_pot_low)
         {
-            doinker_motor_.move(doinker_speed);
+            doinker_motor_.move(kDOINKER_DOWN_SPEED);
             pros::delay(5);
         }
 
@@ -85,12 +83,32 @@ void DoinkerClass::doink()
     move(doinker_move_t::DOWN);
 }
 
-void DoinkerClass::set_speed(int speed)
-{
-    doinker_speed = speed;
-}
+// void DoinkerClass::set_speed(int speed)
+// {
+//     doinker_speed = speed;
+// }
 
 int DoinkerClass::get_pos()
 {
     return doinker_pot_.get_value();
+}
+
+
+// pass in an address for the doinker state
+void doinker_thread(DoinkerClass::doinker_move* doinker_state) {
+
+    DoinkerClass* doinker_inst = DoinkerClass::getInstance();
+
+    if (!doinker_inst) {
+        // wait and hope the instance gets initialized
+        pros::delay(2000);
+        doinker_inst = DoinkerClass::getInstance();
+    }
+
+    while (1) {
+        // should constantly call move because it will work to maintain the correct position
+        doinker_inst->move(*doinker_state);
+
+        pros::delay(50);
+    }
 }
