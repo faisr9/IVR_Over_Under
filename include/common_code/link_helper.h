@@ -26,7 +26,7 @@ class LinkHelper {
 
     int linkPort_;
     pros::link_type_e_t boss_;
-    pros::Link* link_;
+    pros::Link* link_ = nullptr;
     bool hasInit;
 
   public:

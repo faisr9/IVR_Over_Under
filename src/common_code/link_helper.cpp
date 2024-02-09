@@ -33,6 +33,10 @@ LinkHelper::~LinkHelper() {
         delete instance_;
         instance_ = nullptr;
     }
+    if (link_ != nullptr) {
+        delete link_;
+        link_ = nullptr;
+    }
 }
 
 void LinkHelper::init()
