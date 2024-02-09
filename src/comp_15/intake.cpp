@@ -3,7 +3,7 @@
 /*
 Entire thing exactly the same as example subsystem
 */
-extern Intake* Intake::instance_ = nullptr;
+Intake* Intake::instance_ = nullptr;
 
 Intake::~Intake(){
     if (instance_ != nullptr) {
