@@ -309,9 +309,14 @@
       }
     },
     "upload_options": {
+<<<<<<< HEAD
       "slot": 3,
       "description": "Master Code",
       "icon": "ufo"
+=======
+      "slot": 8,
+      "description": "Master Code"
+>>>>>>> master
     }
   }
 }
