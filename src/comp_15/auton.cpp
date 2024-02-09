@@ -9,6 +9,22 @@ void auton_15() {
     const double kSTARTING_Y = 0.3;
     const double kSTARTING_ANGLE = 60.0;
 
+
+    pros::Task shooting_task{[=] {
+
+        while (1) {
+            pros::delay(1000);
+        }
+
+        // followPath(to_pole, drive, 135, false, false, false, 0.5, 3.0, 200.0, 450.0, 200.0);
+	}}; // lambda function with a task
+
+    const int kMAX_SHOOTING_TIME = 15000;
+    double start_shoot_time = pros::millis();
+    while (pros::millis() < start_shoot_time + kMAX_SHOOTING_TIME && path_task.get_state() != pros::E_TASK_STATE_DELETED) {
+        pros::delay(100);
+    }
+
     drive.getOdom().initTracker(kSTARTING_X, kSTARTING_Y, kSTARTING_ANGLE);
     pros::delay(50);
 
