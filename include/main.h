@@ -44,21 +44,12 @@
  * Add other header files here;
  * Add the common code headers here
  */
-#include "common_code/subsystem_parent.h"
-#include "common_code/example_subsystem.h"
-#include "common_code/link_helper.h"
 ///////////////////////////////////////
 
 /**
  * Add C++ headers here
  */
-#include <iostream>
-#include <chrono>
-#include <string>
-#include <math.h>
-#include <vector>
-#include <fstream>
-#include <sstream>
+
 ///////////////////////////////////////
 
 /**
@@ -66,7 +57,7 @@
  * a shorter, more convenient naming pattern. If this isn't desired, simply
  * comment the following line out.
  */
-#define ILLINI_SIMPLE_NAMES
+// #define ILLINI_SIMPLE_NAMES
 
 #ifdef ILLINI_SIMPLE_NAMES
 #define CONTROLLER_MASTER   pros::E_CONTROLLER_MASTER
@@ -98,12 +89,6 @@
 #define PROS_USE_SIMPLE_NAMES
 #endif
 
-// Vex defined function, might as well have just in case
-#define waitUntil(condition)                                                   \
-  do {                                                                         \
-    pros::delay(5);                                                            \
-  } while (!(condition))
-
 /**
  * If defined, C++ literals will be available for use. All literals are in the
  * pros::literals namespace.
@@ -121,6 +106,7 @@
  * namespace.
  */
 using namespace pros;
+using namespace std;
 // using namespace pros::literals;
 // using namespace okapi;
 

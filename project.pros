@@ -309,7 +309,8 @@
       }
     },
     "upload_options": {
-      "slot": 1
+      "slot": 7,
+      "description": "Master Code"
     }
   }
 }
