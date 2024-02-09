@@ -50,7 +50,7 @@ void controls() {
         } 
         DoinkerClass::getInstance()->move(doinker_state);
 
-        // 3600 to 1400
+        // 3600 to 1240
 
         // Keeps doinkerUp during driver control
         pros::delay(15);

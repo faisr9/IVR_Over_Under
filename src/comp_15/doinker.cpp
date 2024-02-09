@@ -25,6 +25,7 @@ DoinkerClass::~DoinkerClass()
 DoinkerClass::DoinkerClass (pros::Motor& subsystem_motor, pros::ADIPotentiometer& doinker_pot) : 
     SubsystemParent("DoinkerClass"), doinker_motor_(subsystem_motor), doinker_pot_(doinker_pot)
 {  
+    
     doinkerState = false;
     doinkerRunning = false;
 }
@@ -91,24 +92,4 @@ void DoinkerClass::doink()
 int DoinkerClass::get_pos()
 {
     return doinker_pot_.get_value();
-}
-
-
-// pass in an address for the doinker state
-void doinker_thread(DoinkerClass::doinker_move* doinker_state) {
-
-    DoinkerClass* doinker_inst = DoinkerClass::getInstance();
-
-    if (!doinker_inst) {
-        // wait and hope the instance gets initialized
-        pros::delay(2000);
-        doinker_inst = DoinkerClass::getInstance();
-    }
-
-    while (1) {
-        // should constantly call move because it will work to maintain the correct position
-        doinker_inst->move(*doinker_state);
-
-        pros::delay(50);
-    }
 }

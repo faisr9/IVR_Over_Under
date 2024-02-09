@@ -22,8 +22,6 @@ class DoinkerClass : public SubsystemParent
         bool doinkerState;
         bool doinkerRunning;
 
-        pros::Task doinker_task;
-
     public:
         typedef enum doinker_move
         {
