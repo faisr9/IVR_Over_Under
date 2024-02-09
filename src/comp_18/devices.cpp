@@ -49,6 +49,7 @@ const char WING_LEFT = 'A';
 const char WING_RIGHT = 'B';
 const char CLIMBER = 'C';
 Pneumatics* pneumatics_instance = Pneumatics::createInstance(WING_LEFT, WING_RIGHT, CLIMBER);
+Intake* intake_instance = Intake::createInstance(intake);
 
 // Distance Sensors //
 const int kTRIBALL_DETECTION_DIST = 100;

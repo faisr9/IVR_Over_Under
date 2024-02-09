@@ -8,7 +8,7 @@ void initialize() {
     transverse_rot_sensor.reset();
 	radial_rot_sensor.reset();
     pros::delay(3000);
-    tank_drive_18.getOdom().initTracker(.61*2.5, .61*.5, 90);
+    tank_drive_18.getOdom().initTracker(.61*2.15, .61*.5, 90);
     pros::delay(50);
 }
 
@@ -26,7 +26,7 @@ void autonomous() {
 	pros::Task odom_task{[=] {
 		while (1) {
 			tank_drive_18.getOdom().updatePosition();
-			pros::lcd::set_text(7, "In task");
+			pros::lcd::set_text(7, "A: " + std::to_string(tank_drive_18.getOdom().getHeading()));
 			pros::delay(50);
 		}
 	}}; // lambda function with a task
