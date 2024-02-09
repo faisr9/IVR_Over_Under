@@ -1,4 +1,4 @@
-#include "main.h"
+#include "common_code/link_helper.h"
 
 LinkHelper* LinkHelper::instance_ = nullptr;
 

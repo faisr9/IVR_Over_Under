@@ -23,6 +23,7 @@
 #include <cmath>
 #include <vector>
 #include <fstream>
+#include <sstream>
 
 #include "common_code/subsystem_parent.h"
 
@@ -50,6 +51,12 @@
 #define BUTTON_R2           pros::E_CONTROLLER_DIGITAL_R2
 #define BUTTON_L1           pros::E_CONTROLLER_DIGITAL_L1
 #define BUTTON_L2           pros::E_CONTROLLER_DIGITAL_L2
+
+// Vex defined function, might as well have just in case
+#define waitUntil(condition)                                                   \
+  do {                                                                         \
+    pros::delay(5);                                                            \
+  } while (!(condition))
 
 using namespace pros;
 using namespace std;
