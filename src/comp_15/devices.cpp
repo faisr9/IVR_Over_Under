@@ -23,7 +23,6 @@ pros::MotorGroup left_drive  ({front_top_left, front_bottom_left, back_left});
 
 pros::Motor cata_right  (1, GEARSET_36, true);
 pros::Motor cata_left   (17, GEARSET_36);
-
 pros::MotorGroup cata   ({cata_right, cata_left});
 
 pros::Motor intake_motor  (15, GEARSET_06, true);
@@ -31,11 +30,20 @@ pros::Motor intake_motor  (15, GEARSET_06, true);
 pros::Motor doinker_motor (3, GEARSET_18);
 
 // V5 Sensors //
+pros::ADIEncoder vertical_track_adi(3, 4, true); // tracking wheel #1 cd
+pros::ADIEncoder horizontal_track_adi(5, 6, true); // tracking wheel #2 ef
+
+Generic_Rotation* vertical_track = new Generic_Rotation_Digikey(vertical_track_adi, 1.96 * 0.0254 / 2);
+Generic_Rotation* horizontal_track = new Generic_Rotation_Digikey(horizontal_track_adi, 1.96 * 0.0254 / 2);
+
 pros::Imu imu(21);
+
+// Legacy Sensors //
 pros::ADIButton cata_limit('A');
 
-// Traditional Drive
-traditional_drive drive(imu, ctrl_master, left_drive, right_drive, 0);
+// Other classes //
+Odom odometry(imu, horizontal_track, vertical_track);
+traditional_drive drive(imu, ctrl_master, left_drive, right_drive, odometry);
 
 // Legacy Sensors //
 const char FLOOR_BRAKE = 'G';

@@ -309,9 +309,8 @@
       }
     },
     "upload_options": {
-      "slot": 3,
-      "description": "My PROS Project",
-      "icon": "planet"
+      "slot": 7,
+      "description": "Master Code"
     }
   }
 }

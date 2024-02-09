@@ -3,6 +3,7 @@
 #include "comp_15/intake.h"
 #include "comp_15/cata.h"
 #include "comp_15/pneumatics.h"
+#include "common_code/generic_rotation_digikey.h"
 #include "comp_15/doinker.h"
 
 // Forward declare all devices here so that all of the robot files and subsystem classes can access them //
@@ -23,7 +24,6 @@ extern pros::MotorGroup left_drive;
 
 extern pros::Motor cata_right;
 extern pros::Motor cata_left;
-
 extern pros::MotorGroup cata;
 
 extern pros::Motor intake_motor;
@@ -32,6 +32,10 @@ extern pros::Motor doinker_motor;
 
 // V5 Sensors //
 extern pros::Imu imu;
+extern pros::ADIEncoder vertical_track_adi;
+extern pros::ADIEncoder horizontal_track_adi;
+
+// Legacy Sensors //
 
 // Legacy Sensors //
 extern pros::ADIButton cata_limit;
