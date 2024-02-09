@@ -1,6 +1,7 @@
 #pragma once
-#include "main.h"
 #include "common_code/traditional_drive.h"
+#include "comp_18/intake.h"
+#include "comp_18/pneumatics.h"
 
 // Forward declare all devices here so that all of the robot files and subsystem classes can access them //
 
@@ -31,5 +32,10 @@ extern pros::Rotation transverse_rot_sensor; // perpendicular to the normal whee
 
 extern traditional_drive tank_drive_18;
 // Legacy Sensors //
+
+extern pros::ADIButton cata_limit;
+extern const char LEFTWING;
+extern const char RIGHTWING;
+extern const char FLOOR_BRAKE;
 
 bool triBall();

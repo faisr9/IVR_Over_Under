@@ -9,14 +9,13 @@ Pneumatics* Pneumatics::instance_ = nullptr;
 
 bool currentPiston = false;
 
-Pneumatics* Pneumatics::createInstance(char piston_wings, char piston_climber) {
+Pneumatics* Pneumatics::createInstance(char left_piston, char right_piston, char piston_climber) {
     if (!instance_) {
-        instance_ = new Pneumatics(piston_wings, piston_climber);
+        instance_ = new Pneumatics(left_piston, right_piston, piston_climber);
     }
 
     return instance_;
 }
-
 
 Pneumatics* Pneumatics::getInstance() {
     if (instance_ == nullptr) {
@@ -26,7 +25,7 @@ Pneumatics* Pneumatics::getInstance() {
     return instance_;
 }
 
-Pneumatics::Pneumatics(char piston_w, char piston_c) : SubsystemParent("Pneumatics"), wings(piston_w), climber(piston_c){
+Pneumatics::Pneumatics(char piston_l, char piston_r, char piston_c) : SubsystemParent("Pneumatics"), leftWing(piston_l), rightWing(piston_r), climber(piston_c){
 
 }
 
@@ -39,10 +38,11 @@ Pneumatics::~Pneumatics() {
 }
 
 
-/**
+/** if OnOff = 0, wing will close, if OnOff = 1, wing will open. Closing a wing that is already closed will not close the
+ *  other wing if it is open. (ie if rightWing is open, setLeft(0) will not close it but setLeft(1) would)
  * usage examples: 
  * 
- *     getWings()->off();
+ *     setLeft(0);
  * 
  * or
  * 
@@ -50,10 +50,35 @@ Pneumatics::~Pneumatics() {
  * 
  * 
 */
-Piston* Pneumatics::getWings(){
-    return &wings;
+void Pneumatics::setLeft(bool OnOff) {
+    if(OnOff) {
+        rightWing.off();
+        delay(1000);
+        leftWing.on();
+    }
+    else leftWing.off();
 }
-
+void Pneumatics::setRight(bool OnOff) {
+    if(OnOff) {
+        leftWing.off();
+        delay(1000);
+        rightWing.on();
+    }
+    else rightWing.off();
+}
+// will turn the opposite one off just in case
+bool Pneumatics::toggleLeft() {
+    rightWing.off();
+    delay(1000);
+    leftWing.toggle();
+    return leftWing.getStatus();    
+}
+bool Pneumatics::toggleRight() {
+    leftWing.off();
+    delay(1000);
+    rightWing.toggle();
+    return rightWing.getStatus();    
+}
 
 /**
  * usage examples: 
@@ -71,6 +96,7 @@ Piston* Pneumatics::getClimber(){
 }
 
 void Pneumatics::stop() {
-    wings.off();
+    leftWing.off();
+    rightWing.off();
     climber.off();
 }

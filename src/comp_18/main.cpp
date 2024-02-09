@@ -39,9 +39,5 @@ void autonomous() {
 
 /* Opcontrol method runs by default (unless connected to comp controller )*/
 void opcontrol() {
-	
-    while(true) {
-        tank_drive_18.toggle_drive_mode();
-        delay(30);
-    }
+    controls();
 }
