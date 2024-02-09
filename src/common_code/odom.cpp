@@ -34,7 +34,7 @@ Odom::~Odom() {
 
 // initializes the tracking variables so they can begin to be updated
 void Odom::initTracker(double initial_x, double initial_y, double initial_heading) {
-    transverseWheel->initialize_sensor();
+    if (transverseWheel) transverseWheel->initialize_sensor();
     radialWheel->initialize_sensor();
 
     positionX = initial_x;
@@ -59,7 +59,7 @@ double Odom::headingCorrection (double currentRotation) {
 
 // updatePosition does all the math with the heading and the sensor values to update the actual position coordinate
 void Odom::updatePosition() {       
-    double deltaTransverse = (*transverseWheel).get_meters_travelled();
+    double deltaTransverse = (transverseWheel) ? (*transverseWheel).get_meters_travelled() : 0;
     double deltaRadial = (*radialWheel).get_meters_travelled();
 
     double currentHeading = headingCorrection(imu.get_rotation());
@@ -80,12 +80,16 @@ void Odom::updatePosition() {
 
     pros::lcd::set_text(3, "Position X: " + std::to_string(positionX));
     pros::lcd::set_text(4, "Position Y: " + std::to_string(positionY));
-    // pros::lcd::set_text(2, "Horizontal Track: " + std::to_string(transverseWheel->get_raw_data()));
+    // if (transverseWheel) {
+    //     pros::lcd::set_text(2, "Horizontal Track: " + std::to_string(transverseWheel->get_raw_data()));
+    // }
     // pros::lcd::set_text(3, "Vertical Track: " + std::to_string(radialWheel->get_raw_data()));
 }
 
 double Odom::getX() { return positionX; }
 double Odom::getY() { return positionY; }
 double Odom::getHeading() { return imu.get_rotation(); }
-double Odom::getTransverseValue() { return transverseWheel->get_raw_data(); }
+double Odom::getTransverseValue() { 
+    return (transverseWheel) ? transverseWheel->get_raw_data() : 0;
+}
 double Odom::getRadialValue() { return radialWheel->get_raw_data(); }
