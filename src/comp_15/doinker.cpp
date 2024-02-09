@@ -24,58 +24,73 @@ DoinkerClass::~DoinkerClass()
 
 DoinkerClass::DoinkerClass (pros::Motor& subsystem_motor, pros::ADIPotentiometer& doinker_pot) : 
     SubsystemParent("DoinkerClass"), doinker_motor_(subsystem_motor), doinker_pot_(doinker_pot)
-{
-    doinker_motor_.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);   
+{  
+    doinker_speed = 100;
+    doinker_pos = 0;
+    doinkerState = false;
+    doinkerRunning = false;
 }
 
-void DoinkerClass::move_up()
+void DoinkerClass::move(doinker_move_t move)
 {
-    if (doinker_pot_.get_value() < doinker_pot_up && doinker_pot_.get_value() > doinker_pot_low) {
-        doinker_motor_.move(-doinker_speed);
-    } else if (doinker_pot_.get_value() > doinker_pot_up || doinker_pot_.get_value() < doinker_pot_low) {
-        doinker_motor_.move(doinker_speed);
-    } else {
+    if (move == UP)
+    {
+        if (doinker_pot_.get_value() > doinker_pot_up && doinker_pot_.get_value() < doinker_pot_max) // Acts as a mutex
+            return;
+        else if (doinker_pot_.get_value() > 0 && doinker_pot_.get_value() < doinker_pot_low)
+        {
+            // Doinker too far up
+            while(doinker_pot_.get_value() > doinker_pot_up || doinker_pot_.get_value() < doinker_pot_low)
+            {
+                doinker_motor_.move(doinker_speed);
+                pros::delay(5);
+            }
+        }
+        else
+        {
+            // Doinker is down
+            while(doinker_pot_.get_value() < doinker_pot_up && doinker_pot_.get_value() > doinker_pot_low)
+            {
+                doinker_motor_.move(-doinker_speed);
+                pros::delay(5);
+            }
+        }
+        doinker_motor_.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
         doinker_motor_.brake();
+        doinker_motor_.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
     }
-}
+    else if (move == DOWN)
+    {
+        while(doinker_pot_.get_value() > doinker_pot_down || doinker_pot_.get_value() < doinker_pot_low)
+        {
+            doinker_motor_.move(doinker_speed);
+            pros::delay(5);
+        }
 
-void DoinkerClass::move_down()
-{
-    if (doinker_pot_.get_value() > doinker_pot_down || doinker_pot_.get_value() < doinker_pot_low) {
-        doinker_motor_.move(doinker_speed);
-    } else if (doinker_pot_.get_value() > doinker_pot_up || doinker_pot_.get_value() > 0) {
-        doinker_motor_.move(-doinker_speed);
-    } else {
+        doinker_motor_.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
         doinker_motor_.brake();
+        doinker_motor_.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
     }
 }
 
 void DoinkerClass::stop()
 {
-
+    doinker_motor_.brake();
 }
 
 void DoinkerClass::doink()
 {
-
-}
-
-void DoinkerClass::move_to_pos(int pos)
-{
-
-}
-
-void DoinkerClass::stayUp()
-{
-
+    move(doinker_move_t::UP);
+    delay(250);
+    move(doinker_move_t::DOWN);
 }
 
 void DoinkerClass::set_speed(int speed)
 {
-
+    doinker_speed = speed;
 }
 
 int DoinkerClass::get_pos()
 {
-
+    return doinker_pot_.get_value();
 }

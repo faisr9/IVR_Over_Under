@@ -309,8 +309,9 @@
       }
     },
     "upload_options": {
-      "slot": 5,
-      "description": "My PROS Project"
+      "slot": 3,
+      "description": "My PROS Project",
+      "icon": "planet"
     }
   }
 }
