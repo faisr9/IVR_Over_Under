@@ -29,9 +29,6 @@ class LinkHelper {
     pros::Link* link_;
     bool hasInit;
 
-    template <typename T>
-    bool template_sendData(T var);
-
   public:
     LinkHelper(int linkPort, pros::link_type_e_t boss);
     static LinkHelper* createInstance(int linkPort, pros::link_type_e_t boss);
@@ -62,21 +59,6 @@ class LinkHelper {
      * @return true if the message was sent successfully
      */
     bool sendMsg(std::string msg);
-
-    /**
-     * @brief Send data to the other robot
-     * @param var the variable data to send
-     *  NOTE: var must be a primitive type (int, float, double, bool)
-     * 
-     * @return true if the data was sent successfully
-     * 
-     * NOTE: Will develop a better way to do this, but for now, this is the best way
-     * NOTE: Will add variations of this method to send enums for repeated commands
-     */
-    bool sendData(int var);
-    bool sendData(float var);
-    bool sendData(double var);
-    bool sendData(bool var);
     
     /**
      * @brief Receive a custom message from the other robot
@@ -88,26 +70,6 @@ class LinkHelper {
      *  the timeout period
      */
     std::string recvMsg(/*bool waitForResponse=true*/);
-
-    /**
-     * @brief Receive data from the other robot
-     * @param data_out the variable to store the data in
-     *  NOTE: data_out must be a primitive type (int, float, double, bool)
-     *  NOTE: data_out will be set to 0 if no data was received within the timeout period
-     * @param waitForResponse whether or not to pause and wait for a response
-     *  NOTE: By default, this is true as there will be expected delay til the
-     *  data is recieved. Do not set this to false unless you know what you are doing.
-     * 
-     * Example:
-     * float data_variable;
-     * linkObj->recvData(data_variable);
-     * 
-     * @note Will develop a better way to do this, but for now, this is the best way
-     */
-    void recvData(int &data_out /*, bool waitForResponse=true*/);
-    void recvData(float &data_out /*, bool waitForResponse=true*/);
-    void recvData(double &data_out /*, bool waitForResponse=true*/);
-    void recvData(bool &data_out /*, bool waitForResponse=true*/);
     
     /**
      * @brief Send a notification to the other robot
