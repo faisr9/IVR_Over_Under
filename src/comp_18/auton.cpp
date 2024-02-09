@@ -7,29 +7,44 @@ void auton18() {
 	std::vector<std::vector<double>> move1 = {vect(0, 0), vect(3, 0)}; //Movement 1 (Move to intake depot)
 	std::vector<std::vector<double>> move2 = {move1.back(), vect(3.5, .5)}; // Movement 2 (Turn to flick triball)
     std::vector<std::vector<double>> move3 = {move2.back(), vect(4, 1.5)}; // Movement 3 (Drive forward to score)
+    std::vector<std::vector<double>> move4 = {move3.back(), vect(3.5, .5)}; // Movement 4 (Drive bacl to go to pick up ball)
+
 
 
     // 1. drop intake (activate climbing piston)
-
+    Pneumatics::getInstance()->getClimber()->on();
     // 2. retract climbing piston
-
+    pros::delay(350);
+    Pneumatics::getInstance()->getClimber()->off();
     // 3. turn on intake
+    Intake::getInstance()->set_power(127);
 
-    pros::lcd::set_text(1, "move 1 start");
-    move(move1, 90, false, false);
-    pros::lcd::set_text(1, "move 1 end");
+    // pros::lcd::set_text(1, "move 1 start");
+    // move(move1, 90, false, false);
+    // pros::lcd::set_text(1, "move 1 end");
 
-    pros::delay(100);
+    // pros::delay(100);
 
-    pros::lcd::set_text(1, "move 2 start");
-    move(move2, 300, false, false);
-    pros::lcd::set_text(1, "move 2 end");
+    // pros::lcd::set_text(1, "move 2 start");
+    // move(move2, 300, false, false);
+    // pros::lcd::set_text(1, "move 2 end");
 
-    pros::delay(100);
+    // pros::delay(100);
+    
+    // Intake::getInstance()->set_power(-127);
 
-    pros::lcd::set_text(1, "move 3 start");
-    move(move3, 0, false, false);
-    pros::lcd::set_text(1, "move 3 end");
+    // pros::delay(100);
+
+    // pros::lcd::set_text(1, "move 3 start");
+    // move(move3, 0, false, false);
+    // pros::lcd::set_text(1, "move 3 end");
+
+    // pros::lcd::set_text(1, "move 4 start");
+    // move(move4, 0, true, false);
+    // pros::lcd::set_text(1, "move 4 end");
+
+
+
 
     // pros::delay(100);
 
