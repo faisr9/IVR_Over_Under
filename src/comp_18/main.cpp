@@ -1,5 +1,7 @@
-#include "comp_18/comp18_includeList.h"
+#include "comp_18/controls.h"
+#include "main.h"
 #include "common_code/movement_tank.h"
+#include "comp_18/auton.h"
 
 /* First method to run when program starts */
 void initialize() {

@@ -1,6 +1,4 @@
-#include "comp_18/comp18_includeList.h"
-#include "common_code/generic_rotation_vex_rot.h"
-#include "common_code/odom.h"
+#include "comp_18/devices.h"
 
 using namespace pros;
 

@@ -1,4 +1,5 @@
-#include "comp_18/comp18_includeList.h"
+#include "comp_18/auton.h"
+#include "comp_18/devices.h"
 #include "common_code/movement_tank.h"
 
 
@@ -82,3 +83,4 @@ std::vector<double> vectOff(double x, double y){
 void move(std::vector<std::vector<double>> moveVec, int angle, bool isReversed, bool isSpinAtEnd){
     followPath(moveVec, tank_drive_18, angle, isReversed, false,  false, 0.5, 3.0, 200.0/10, 450.0/10, 40.0/10, false);
 }
+
