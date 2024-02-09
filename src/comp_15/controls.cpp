@@ -38,6 +38,8 @@ void controls() {
             Pneumatics::getInstance()->getFloorBrake()->toggle();
         }
 
+        // Keeps doinkerUp during driver control
+        DoinkerClass::getInstance()->move(DoinkerClass::UP);
         pros::delay(15);
     }
 }
