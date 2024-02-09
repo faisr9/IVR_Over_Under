@@ -28,11 +28,15 @@ extern pros::MotorGroup cata;
 
 extern pros::Motor intake_motor;
 
+extern pros::Motor doinker_motor;
+
 // V5 Sensors //
 extern pros::Imu imu;
 
 // Legacy Sensors //
 extern pros::ADIButton cata_limit;
+extern pros::ADIPotentiometer doinker_pot;
+
 // extern pros::ADIDigitalOut Floor_brake;
 // extern pros::ADIDigitalOut Wings;
 extern const char WINGS;

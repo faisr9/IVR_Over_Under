@@ -34,10 +34,8 @@ pros::Motor doinker_motor (3, GEARSET_18);
 pros::Imu imu(21);
 pros::ADIButton cata_limit('A');
 
-
 // Traditional Drive
 traditional_drive drive(imu, ctrl_master, left_drive, right_drive, 0);
-
 
 // Legacy Sensors //
 const char FLOOR_BRAKE = 'G';
