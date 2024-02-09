@@ -43,24 +43,12 @@
  * Add other header files here;
  * Add the common code headers here
  */
-#include "common_code/subsystem_parent.h"
-#include "common_code/example_subsystem.h"
-#include "common_code/drive_parent.h"
-#include "common_code/traditional_drive.h"
-#include "common_code/piston.h"
-#include "common_code/test_motor.h"
 ///////////////////////////////////////
 
 /**
  * Add C++ headers here
  */
-#include <iostream>
-#include <chrono>
-#include <string>
-#include <math.h>
-#include <cmath>
-#include <vector>
-#include <fstream>
+
 ///////////////////////////////////////
 
 /**
@@ -68,7 +56,7 @@
  * a shorter, more convenient naming pattern. If this isn't desired, simply
  * comment the following line out.
  */
-#define ILLINI_SIMPLE_NAMES
+// #define ILLINI_SIMPLE_NAMES
 
 #ifdef ILLINI_SIMPLE_NAMES
 #define CONTROLLER_MASTER   pros::E_CONTROLLER_MASTER

@@ -309,8 +309,8 @@
       }
     },
     "upload_options": {
-      "slot": 5,
-      "description": "pneumatics test"
+      "slot": 7,
+      "description": "Master Code"
     }
   }
 }
