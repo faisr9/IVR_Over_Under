@@ -23,29 +23,19 @@ void competition_initialize() {}
 
 /* Autonomous method */
 void autonomous() {
-	/*
-	Example odometry task, leaving this here because this bit of code is quite important
+	// COMP
+	// auton_15(45000, false); // COMP
 
-	pros::Task odom_task{[=] {
-		while (1) {
-			drive.getOdom().updatePosition();
-			pros::lcd::set_text(7, "In task");
-			pros::delay(50);
-		}
-	}}; // lambda function with a task
+	// SKILLS
+	auton_15(60000, true);
 
-	// do something noteworthy
-
-	odom_task.suspend();
-	*/
-
-	auton_15(45000, false); // COMP
-	// auton_15(60000, true); // SKILLS
 	// auton_15(20000, true); // TESTING
 	pros::delay(5000); // just putting this here to make sure nothing weird happens that we don't want upon auton code ending
 }
 
 /* Opcontrol method runs by default (unless connected to comp controller )*/
 void opcontrol() {
-	controls();
+	// controls(); // COMP
+
+	auton_15(60000, true); // SKILLS
 }
