@@ -32,7 +32,7 @@ void turnToAngle(traditional_drive& drive, double desiredAngleDeg, double tolera
     stopMotors(drive);
 }
 
-void followPath(std::vector<std::vector<double>>& path, traditional_drive& drive, double finalAngleDeg, bool reversed, bool spinAtEnd, bool goal_at_end, double lookForwardRadius, double final_angle_tolerance_deg, double MAX_TRANSLATIONAL_RPM, double maxRPM, double minTransRPM, bool printMessages) {    
+void followPath(std::vector<std::vector<double>>& path, traditional_drive& drive, double finalAngleDeg, bool reversed, bool spinAtEnd, bool goal_at_end, double lookForwardRadius, double final_angle_tolerance_deg, double MAX_TRANSLATIONAL_RPM, double maxRPM, double minTransRPM, bool printMessages, double turnP) {    
     double firstX = path[0][0];
     double firstY = path[0][1];
     double currentIndex = 0;
@@ -230,7 +230,7 @@ void followPath(std::vector<std::vector<double>>& path, traditional_drive& drive
         if (desiredAngle < 0) desiredAngle += 360;
 
         // Positive angular difference -> turn clockwise
-        double rotationalRPM = getRotationalRPM(drive, desiredAngle, reversed);
+        double rotationalRPM = getRotationalRPM(drive, desiredAngle, reversed, turnP);
 
         // Prioritize turning by maintaining rotationalRPM difference (rotationalRPM * 2)
         double leftRPM;
@@ -264,9 +264,9 @@ void followPath(std::vector<std::vector<double>>& path, traditional_drive& drive
     // Turn to face final angle. This runs regardless of spinOnSpot to guarantee we're facing
     // the desired final angle
     if (goal_at_end) {
-        turnToPoint(drive);
+        turnToPoint(drive, turnP);
     } else {
-        turnToAngle(drive, finalAngleDeg, final_angle_tolerance_deg, false);   
+        turnToAngle(drive, finalAngleDeg, final_angle_tolerance_deg, false, turnP);   
     }
     moveMotors(drive, 0.0, 0.0);
 
@@ -280,7 +280,7 @@ void followPath(std::vector<std::vector<double>>& path, traditional_drive& drive
 }
 
 // default x, y coords are the goal/net
-void turnToPoint(traditional_drive& drive, double pointX, double pointY) {
+void turnToPoint(traditional_drive& drive, double pointX, double pointY, double turnP) {
     double FINAL_ANGLE_TOLERANCE = 3.0;
     double desiredAngle = atan2(pointX - drive.getX(), pointY - drive.getY()) * 180 / M_PI;
     if (desiredAngle < 0) desiredAngle += 360;
@@ -288,7 +288,7 @@ void turnToPoint(traditional_drive& drive, double pointX, double pointY) {
     while (std::abs(optimizeAngle(desiredAngle - drive.get_imu().get_heading())) > FINAL_ANGLE_TOLERANCE) {
         desiredAngle = atan2(pointX - drive.getX(), pointY - drive.getY()) * 180 / M_PI;
         if (desiredAngle < 0) desiredAngle += 360;
-        double rotationalRPM = getRotationalRPM(drive, desiredAngle, false);
+        double rotationalRPM = getRotationalRPM(drive, desiredAngle, false, turnP);
         moveMotors(drive, rotationalRPM, -rotationalRPM);
 
         if (drive.get_controller().get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN)) {
