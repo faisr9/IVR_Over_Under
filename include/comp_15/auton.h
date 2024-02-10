@@ -3,6 +3,4 @@
 #include "comp_15/devices.h"
 #include "common_code/movement_tank.h"
 
-void auton_15();
-
-void skills_15();
+void auton_15(double auton_duration_time_millis, bool climb);
