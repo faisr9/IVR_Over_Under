@@ -36,14 +36,13 @@ void autonomous() {
 	odom_task.suspend();
 	*/
 
-	auton_15();
-
-	// skills_15();
+	auton_15(45000, false); // COMP
+	// auton_15(60000, true); // SKILLS
+	// auton_15(20000, true); // TESTING
+	pros::delay(5000); // just putting this here to make sure nothing weird happens that we don't want upon auton code ending
 }
 
 /* Opcontrol method runs by default (unless connected to comp controller )*/
 void opcontrol() {
-	// auton_15();
-	// skills_15();
 	controls();
 }
