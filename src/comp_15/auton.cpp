@@ -41,7 +41,7 @@ void auton_15(double auton_duration_time_millis, bool climb) {
     pros::Task shooting_task{[=] {
         bool hasFired = false;
         CompetitionCatapult::getInstance()->set_cata_mode("P");
-        pros::delay(1500);
+        pros::delay(3000); // delay so jonah can place the triball
 	    int cycleCounter = 0;
         while (1) {
             // doinker down
@@ -64,7 +64,7 @@ void auton_15(double auton_duration_time_millis, bool climb) {
             CompetitionCatapult::getInstance()->set_cata_mode("RP");
             cycleCounter++;
             // wait for human player
-            pros::delay(2000);
+            pros::delay(2500);
         }
 	}}; // lambda function with a task
 
