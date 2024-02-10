@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "IVR_15_SKILLS_OVER_UNDER",
+    "project_name": "IVR_18_SKILLS_OVER_UNDER",
     "target": "v5",
     "templates": {
       "kernel": {
