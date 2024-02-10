@@ -38,9 +38,10 @@ void auton18() {
             Intake::getInstance()->set_power(127 / 1.5);
             delay(250);
             moveMotors(tank_drive_18,60, 60);
-            delay(1500);
+            delay(1200);
             left_drive_motors.move_velocity(0);
             right_drive_motors.move_velocity(0);
+            //vector<vector<double>> oscillate = {};
             //followPath(curvePath2, tank_drive_18, 88, false, true, false, 0.5, 3.0, 200.0 / 3.0, 450.0 / 3.0, 30, false, 1.12);
             move(curvePath4, 88, 1, true);
         }
