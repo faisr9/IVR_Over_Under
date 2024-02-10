@@ -1,7 +1,7 @@
 #include "comp_18/auton.h"
 #include "comp_18/devices.h"
 #include "common_code/movement_tank.h"
-
+using namespace pros;
 
 void auton18() {
     //1 tile is .61 meters (2 ft)
@@ -9,8 +9,8 @@ void auton18() {
     
 	std::vector<std::vector<double>> move1 = {start, vect(3.8, 0.5)}; //Movement 1 (Move to intake depot)
 	std::vector<std::vector<double>> move2 = {move1.back(), vect(5, .8)}; // Movement 2 (Turn to flick triball)
-    std::vector<std::vector<double>> move3 = {move2.back(), vect(5.2, 1.3)}; // Movement 3 (Drive forward to score)
-    std::vector<std::vector<double>> move4 = {move3.back(), vect(3.5, .5)}; // Movement 4 (Drive back to go to pick up ball)
+    std::vector<std::vector<double>> move3 = {move2.back(), vect(5, 2)}; // Movement 3 (Drive forward to score)
+    std::vector<std::vector<double>> move4 = {move3.back(), vect(5.2, 2)}; // Movement 4 (Drive back to go to pick up ball)
 
     // 1. drop intake (activate climbing piston)
     Pneumatics::getInstance()->getClimber()->on();
@@ -36,14 +36,6 @@ void auton18() {
     pros::lcd::set_text(1, "move 2 end");
 
     pros::delay(100);
-
-    Pneumatics::getInstance()->getWingRight()->on();
-
-    pros::delay(1000);
-
-    Pneumatics::getInstance()->getWingRight()->off();
-
-    pros::delay(100);
     
     Intake::getInstance()->set_power(127);
 
@@ -51,8 +43,17 @@ void auton18() {
 
     pros::lcd::set_text(1, "move 3 start");
     turnToAngle(tank_drive_18, 30, 3.0,false, 1.12);
-    move(move3, 5, false, false);
+    move(move3, 45, false, false);
     pros::lcd::set_text(1, "move 3 end");
+
+    delay(100);
+
+    turnToAngle(tank_drive_18, 90, 3.0, false, 1.12);
+
+    lcd::set_text(1, "move 4 start");
+    move(move4, 0, false, false);
+    lcd::set_text(1, "move 4 end");
+
     pros::delay(1000);
 
     Intake::getInstance()->set_power(0);
