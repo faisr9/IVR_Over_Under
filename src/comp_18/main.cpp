@@ -1,6 +1,7 @@
 #include "comp_18/controls.h"
 #include "main.h"
 #include "common_code/movement_tank.h"
+#include "comp_18/auton.h"
 
 /* First method to run when program starts */
 void initialize() {
@@ -9,7 +10,7 @@ void initialize() {
     transverse_rot_sensor.reset();
 	radial_rot_sensor.reset();
     pros::delay(3000);
-    tank_drive_18.getOdom().initTracker(0, 0, 0);
+    tank_drive_18.getOdom().initTracker(.61*2.15, .61*.5, 90);
     pros::delay(50);
 }
 
@@ -21,21 +22,24 @@ void competition_initialize() {}
 
 /* Autonomous method */
 void autonomous() {
-	/*
-	Example odometry task, leaving this here because this bit of code is quite important
+
+	pros::delay(50);
 
 	pros::Task odom_task{[=] {
 		while (1) {
-			drive.getOdom().updatePosition();
-			pros::lcd::set_text(7, "In task");
+			tank_drive_18.getOdom().updatePosition();
+			pros::lcd::set_text(7, "A: " + std::to_string(tank_drive_18.getOdom().getHeading()));
 			pros::delay(50);
 		}
 	}}; // lambda function with a task
 
-	// do something noteworthy
-
+	auton18();
+	while(1)
+	{
+		pros::delay(50);
+	
+	}
 	odom_task.suspend();
-	*/
 }
 
 /* Opcontrol method runs by default (unless connected to comp controller )*/
