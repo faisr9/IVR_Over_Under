@@ -32,7 +32,7 @@ void auton18() {
     pros::delay(100);
 
     pros::lcd::set_text(1, "move 2 start");
-    move(move2, 45, false, false);
+    move(move2, 5, false, false);
     pros::lcd::set_text(1, "move 2 end");
 
     pros::delay(100);
@@ -43,7 +43,7 @@ void auton18() {
 
     pros::lcd::set_text(1, "move 3 start");
     turnToAngle(tank_drive_18, 30, 3.0,false, 1.12);
-    move(move3, 45, false, false);
+    move(move3,0, false, false);
     pros::lcd::set_text(1, "move 3 end");
 
     delay(100);
@@ -82,6 +82,6 @@ std::vector<double> vectOff(double x, double y){
 }
 
 void move(std::vector<std::vector<double>> moveVec, int angle, bool isReversed, bool isSpinAtEnd){
-    followPath(moveVec, tank_drive_18, angle, isReversed, false,  false, 0.5, 3.0, 200.0/10, 450.0/10, 40.0/10, false);
+    followPath(moveVec, tank_drive_18, angle, isReversed, false, false, 0.5, 3.0, 200.0 / 10, 450.0 / 10, 40.0 / 10, false, 1.12);
 }
 
