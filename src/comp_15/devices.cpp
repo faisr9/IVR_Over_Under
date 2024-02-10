@@ -25,7 +25,7 @@ pros::Motor cata_right  (1, GEARSET_36, true);
 pros::Motor cata_left   (17, GEARSET_36);
 pros::MotorGroup cata   ({cata_right, cata_left});
 
-pros::Motor intake_motor  (15, GEARSET_06, true);
+pros::Motor intake_motor  (4, GEARSET_06, true);
 
 pros::Motor doinker_motor (3, true); // reversed so a positive power increases the pot value
 

@@ -43,11 +43,11 @@ void controls() {
         // pros::lcd::set_text(7, "Doinker desired state: " + std::to_string(doinker_state));
 
     
-        // if (ctrl_master.get_digital_new_press(E_CONTROLLER_DIGITAL_L1)) {
-        //     doinker_state = DoinkerClass::UP;
-        // } else if (ctrl_master.get_digital_new_press(E_CONTROLLER_DIGITAL_L2)) {
-        //     doinker_state = DoinkerClass::DOWN;
-        // } 
+        if (ctrl_master.get_digital_new_press(E_CONTROLLER_DIGITAL_L1)) {
+            doinker_state = DoinkerClass::UP;
+        } else if (ctrl_master.get_digital_new_press(E_CONTROLLER_DIGITAL_L2)) {
+            doinker_state = DoinkerClass::DOWN;
+        } 
         DoinkerClass::getInstance()->move(doinker_state);
 
         // 3600 to 1240
