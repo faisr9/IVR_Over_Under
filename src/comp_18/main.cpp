@@ -32,7 +32,7 @@ void autonomous() {
 			pros::delay(50);
 		}
 	}}; // lambda function with a task
-	
+
 	auton18();
 	while(1)
 	{

@@ -17,22 +17,24 @@ void auton18() {
     vector<double> start = vectOff(0, 0); //Start position
     Intake::getInstance()->set_power(-127 / 1.5);
 
-    delay(100);
-    vector<vector<double>> curvePath = {start, {2.90, 0.4}, {2.2, 1.6}};//, {2.75,1.5}};
+    delay(75);
+    vector<vector<double>> curvePath = {start, {2.90, 0.4}, {2, 1.6}};//, {2.75,1.5}};
     move(curvePath, 88, false, true);
     vector<vector<double>> curvePath2 = {curvePath.back(), {2.6, 1.6}};
-    vector<vector<double>> curvePath3 = {curvePath2.back(), {2.45, 1.6}};
+    vector<vector<double>> curvePath3 = {curvePath2.back(), {2.43, 1.6}};
     vector<vector<double>> curvePath4 = {curvePath2.back(), {2.5, 1.6}};
     Intake::getInstance()->set_power(127 / 1.5);
     delay(250);
+    Pneumatics::getInstance()->setLeft(1);
     followPath(curvePath2, tank_drive_18, 88, false, true, false, 0.5, 3.0, 200.0 / 3.0, 450.0 / 3.0, 30, false, 1.12);
+    //Pneumatics::getInstance()->setLeft(0);
     move(curvePath3, 88, 1, true);
     
     //int counter=0;
 
     while(1)
     {
-        Intake::getInstance()->set_power(0);
+        //Intake::getInstance()->set_power(0);
         if (triBall())
         {
             Intake::getInstance()->set_power(127 / 1.5);
@@ -41,9 +43,11 @@ void auton18() {
             delay(1200);
             left_drive_motors.move_velocity(0);
             right_drive_motors.move_velocity(0);
-            //vector<vector<double>> oscillate = {};
+            double x=tank_drive_18.getOdom().getX(),
+                y=tank_drive_18.getOdom().getY();
+            vector<vector<double>> oscillate = {{x,y}, {x-.275,y}};
             //followPath(curvePath2, tank_drive_18, 88, false, true, false, 0.5, 3.0, 200.0 / 3.0, 450.0 / 3.0, 30, false, 1.12);
-            move(curvePath4, 88, 1, true);
+            move(oscillate, 88, 1, true);
         }
         delay(50);
     }
