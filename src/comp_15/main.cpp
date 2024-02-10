@@ -20,7 +20,7 @@ void disabled() {}
 void competition_initialize() {}
 
 /* Autonomous method */
-void autonomous() {
+// void autonomous() {
 	/*
 	Example odometry task, leaving this here because this bit of code is quite important
 
@@ -36,7 +36,7 @@ void autonomous() {
 
 	odom_task.suspend();
 	*/
-}
+// }
 
 /* Opcontrol method runs by default (unless connected to comp controller )*/
 void opcontrol() {

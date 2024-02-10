@@ -39,6 +39,12 @@
 #define TASK_PRIORITY_HIGH 14
 ///////////////////////////////////////
 
+// Vex defined function, might as well have just in case
+#define waitUntil(condition)                                                   \
+  do {                                                                         \
+    pros::delay(5);                                                            \
+  } while (!(condition))
+
 /**
  * Add other header files here;
  * Add the common code headers here
@@ -52,11 +58,17 @@
 ///////////////////////////////////////
 
 /**
+ * Enable this to run the competition auton method
+ * Comment out to run the skills auton method
+*/
+#define COMPETITION_AUTON
+
+/**
  * If defined, some commonly used enums will have preprocessor macros which give
  * a shorter, more convenient naming pattern. If this isn't desired, simply
  * comment the following line out.
  */
-// #define ILLINI_SIMPLE_NAMES
+#define ILLINI_SIMPLE_NAMES
 
 #ifdef ILLINI_SIMPLE_NAMES
 #define CONTROLLER_MASTER   pros::E_CONTROLLER_MASTER
