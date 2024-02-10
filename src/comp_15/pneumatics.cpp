@@ -1,6 +1,4 @@
 #include "comp_15/pneumatics.h"
-#include <iostream>
-#include "api.h"
 
 
 //This subsystem have three objects of the Piston class for wings and floor brake.

@@ -1,9 +1,16 @@
-#include "comp_15/comp15_includeList.h"
+#include "comp_15/controls.h"
+#include "main.h"
+#include "common_code/movement_tank.h"
 
 /* First method to run when program starts */
 void initialize() {
 	pros::lcd::initialize(); // Temp until custom GUI
-	Pneumatics::createInstance(WINGS, FLOOR_BRAKE);
+	imu.reset(); // Very important!!!
+	horizontal_track_adi.reset();
+	vertical_track_adi.reset();
+	pros::delay(3000);
+	drive.getOdom().initTracker(0, 0, 0);
+	pros::delay(50);
 }
 
 /* Runs when robot is disabled from competition controller after driver/auton */
@@ -14,31 +21,24 @@ void competition_initialize() {}
 
 /* Autonomous method */
 void autonomous() {
-}
+	/*
+	Example odometry task, leaving this here because this bit of code is quite important
 
-pros::Controller master(CONTROLLER_MASTER);
-Pneumatics* pneumatics = Pneumatics::createInstance('A', 'G');
+	pros::Task odom_task{[=] {
+		while (1) {
+			drive.getOdom().updatePosition();
+			pros::lcd::set_text(7, "In task");
+			pros::delay(50);
+		}
+	}}; // lambda function with a task
+
+	// do something noteworthy
+
+	odom_task.suspend();
+	*/
+}
 
 /* Opcontrol method runs by default (unless connected to comp controller )*/
 void opcontrol() {
-
-	while(1){
-
-		pros::lcd::set_text(2, std::to_string(pneumatics->getWings()->getStatus()));
-		if(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A)){
-			pneumatics->getWings()->toggle();
-		}
-		if(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B)){
-			pneumatics->getWings()->off();
-		}
-		if(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_X)){
-			pneumatics->getWings()->on();
-		}
-		if(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_Y)){
-			pneumatics->stop();
-		}
-
-		delay(50);
-	}
-
+	controls();
 }

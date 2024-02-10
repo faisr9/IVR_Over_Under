@@ -1,20 +1,21 @@
 #pragma once
-#include "main.h"
+#include "common_code/include_list.h"
+
 //positive power goes in and negative goes out;
-class IntakeClass : public SubsystemParent
+class Intake : public SubsystemParent
 {
     public:
-        IntakeClass(const IntakeClass& other) = delete;
-        ~IntakeClass();
-        static IntakeClass* createInstance(pros::Motor& motor);
-        static IntakeClass* getInstance();
+        Intake(const Intake& other) = delete;
+        ~Intake();
+        static Intake* createInstance(pros::Motor& motor);
+        static Intake* getInstance();
         void stop();
         void set_power(int power);
 
     private:
-        IntakeClass(pros::Motor& subsystem_motor) : SubsystemParent("Intake"), intake_motor_(subsystem_motor){};
+        Intake(pros::Motor& subsystem_motor) : SubsystemParent("Intake"), intake_motor_(subsystem_motor){};
         pros::Motor intake_motor_;
-        static IntakeClass* instance_;
+        static Intake* instance_;
 };
 
 // TEST_CODE: Throw the bottom things in main

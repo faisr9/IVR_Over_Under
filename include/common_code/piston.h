@@ -1,5 +1,5 @@
 #pragma once
-#include "api.h"
+#include "include_list.h"
 
 class Piston {
     public:
@@ -14,9 +14,11 @@ class Piston {
 
         bool getStatus();
 
+        int getToggleCount();
 
     private:
         pros::ADIDigitalOut piston;
         bool status;
+        int toggle_count = 1;
 
 };

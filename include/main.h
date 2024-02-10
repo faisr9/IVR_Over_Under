@@ -43,19 +43,12 @@
  * Add other header files here;
  * Add the common code headers here
  */
-#include "common_code/subsystem_parent.h"
-#include "common_code/example_subsystem.h"
 ///////////////////////////////////////
 
 /**
  * Add C++ headers here
  */
-#include <iostream>
-#include <chrono>
-#include <string>
-#include <math.h>
-#include <vector>
-#include <fstream>
+
 ///////////////////////////////////////
 
 /**
@@ -63,7 +56,7 @@
  * a shorter, more convenient naming pattern. If this isn't desired, simply
  * comment the following line out.
  */
-#define ILLINI_SIMPLE_NAMES
+// #define ILLINI_SIMPLE_NAMES
 
 #ifdef ILLINI_SIMPLE_NAMES
 #define CONTROLLER_MASTER   pros::E_CONTROLLER_MASTER
@@ -112,6 +105,7 @@
  * namespace.
  */
 using namespace pros;
+using namespace std;
 // using namespace pros::literals;
 // using namespace okapi;
 
