@@ -47,7 +47,7 @@ void auton_15(double auton_duration_time_millis, bool climb) {
             // doinker down
             DoinkerClass::getInstance()->move(DoinkerClass::DOWN); // did not go past here
             // small delay
-            pros::delay(100);
+            pros::delay(600);
             // doinker up
             DoinkerClass::getInstance()->move(DoinkerClass::UP);
             // medium delay
