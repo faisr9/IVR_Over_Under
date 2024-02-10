@@ -11,10 +11,10 @@ void controls() {
         drive.toggle_drive_mode();
 
         //INTAKE CONTROLS
-        if (ctrl_master.get_digital(E_CONTROLLER_DIGITAL_A) || ctrl_master.get_digital(BUTTON_R1)){
+        if (ctrl_master.get_digital(E_CONTROLLER_DIGITAL_A) || ctrl_master.get_digital(BUTTON_R2)){
             Intake::getInstance()->set_power(12000);
         }
-        else if (ctrl_master.get_digital(E_CONTROLLER_DIGITAL_B) || ctrl_master.get_digital(BUTTON_R2)){
+        else if (ctrl_master.get_digital(E_CONTROLLER_DIGITAL_B) || ctrl_master.get_digital(BUTTON_R1)){
             Intake::getInstance()->set_power(-12000);
         } else {
             Intake::getInstance()->set_power(0);
@@ -32,15 +32,15 @@ void controls() {
         }
 
         //PNEUMATICS CONTROLS
-        if(ctrl_master.get_digital_new_press(E_CONTROLLER_DIGITAL_X)) {
-            Pneumatics::getInstance()->getWings()->toggle();
-        }
+        // if(ctrl_master.get_digital_new_press(E_CONTROLLER_DIGITAL_X)) {
+        //     Pneumatics::getInstance()->getWings()->toggle();
+        // }
         if(ctrl_master.get_digital_new_press(E_CONTROLLER_DIGITAL_Y)) {
             Pneumatics::getInstance()->getFloorBrake()->toggle();
         }
 
-        pros::lcd::set_text(6, "Doinker pot: " + std::to_string(doinker_pot.get_value()));
-        pros::lcd::set_text(7, "Doinker desired state: " + std::to_string(doinker_state));
+        // pros::lcd::set_text(6, "Doinker pot: " + std::to_string(doinker_pot.get_value()));
+        // pros::lcd::set_text(7, "Doinker desired state: " + std::to_string(doinker_state));
 
     
         // if (ctrl_master.get_digital_new_press(E_CONTROLLER_DIGITAL_L1)) {
