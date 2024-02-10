@@ -25,7 +25,7 @@ void auton18(double auton_duration_time_millis) {
     Pneumatics::getInstance()->getClimber()->on();
 
     // 2. retract climbing piston
-    delay(350);
+    delay(500);
     //Pneumatics::getInstance()->getClimber()->off();
 
     vector<double> start = vectOff(0, 0); //Start position
@@ -82,6 +82,7 @@ void auton18(double auton_duration_time_millis) {
         pros::delay(100);
     }
     comp18goal_task.suspend();
+	Pneumatics::getInstance()->getClimber()->off();
     Intake::getInstance()->set_power(0);
 }
 

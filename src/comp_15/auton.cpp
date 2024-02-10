@@ -22,12 +22,14 @@ void auton_15(double auton_duration_time_millis, bool climb) {
 		}
 	}}; // lambda function with a task
 
-    // release intake and catapult
-    Intake::getInstance()->set_power(127);
-    // kickstand down
     Pneumatics::getInstance()->getFloorBrake()->on();
     pros::delay(500);
+    // release intake and catapult
+    Intake::getInstance()->set_power(127);
+    pros::delay(250);
+    // kickstand down
     Intake::getInstance()->set_power(0);
+    delay(1500);
 
     // start shooting portion of autonomous
 
