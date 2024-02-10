@@ -41,7 +41,7 @@ void auton_15(double auton_duration_time_millis, bool climb) {
     pros::Task shooting_task{[=] {
         bool hasFired = false;
         CompetitionCatapult::getInstance()->set_cata_mode("P");
-        pros::delay(500);
+        pros::delay(1500);
 	    int cycleCounter = 0;
         while (1) {
             // doinker down

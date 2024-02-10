@@ -7,10 +7,26 @@ LinkHelper* comp18link = LinkHelper::createInstance(8, E_LINK_RX);
 using namespace pros;
 using namespace std;
 
-void auton18(double auton_duration_time_millis) {
+void auton18(double auton_duration_time_millis, bool skills) {
 
 	const double kSTART_TIME = pros::millis();
-	
+
+    vector<double> start; //Start position
+	vector<vector<double>> curvePath;
+	double endY = 0.0;
+	if (!skills) {
+		start = vectOff(0, 0);
+		endY = 1.6;
+		curvePath = {start, {2.90, 0.4}, {2, endY}};
+	} else {
+		start = {2.15 * 0.61, 3.3};
+		endY = 1.55;
+		curvePath = {start, {2.90, 3.2}, {2, endY}};
+	}
+
+	tank_drive_18.getOdom().initTracker(start[0], start[1], 90);
+    pros::delay(50);
+
 	pros::Task odom_task{[=] {
 		while (1) {
 			tank_drive_18.getOdom().updatePosition();
@@ -26,23 +42,26 @@ void auton18(double auton_duration_time_millis) {
 
     // 2. retract climbing piston
     delay(500);
-    //Pneumatics::getInstance()->getClimber()->off();
+	if(skills)
+    	Pneumatics::getInstance()->getClimber()->off();	
 
-    vector<double> start = vectOff(0, 0); //Start position
     Intake::getInstance()->set_power(-127 / 1.5);
 
     delay(75);
-    vector<vector<double>> curvePath = {start, {2.90, 0.4}, {2, 1.6}};//, {2.75,1.5}};
+
     move(curvePath, 88, false, true);
-    vector<vector<double>> curvePath2 = {curvePath.back(), {2.6, 1.6}};
-    vector<vector<double>> curvePath3 = {curvePath2.back(), {2.43, 1.6}};
-    vector<vector<double>> curvePath4 = {curvePath2.back(), {2.5, 1.6}};
+    vector<vector<double>> curvePath2 = {curvePath.back(), {2.6, endY}};
+    vector<vector<double>> curvePath3 = {curvePath2.back(), {2.43, endY}};
+    vector<vector<double>> curvePath4 = {curvePath2.back(), {2.5, endY}};
     Intake::getInstance()->set_power(127 / 1.5);
     delay(250);
     Pneumatics::getInstance()->setLeft(1);
     followPath(curvePath2, tank_drive_18, 88, false, true, false, 0.5, 3.0, 200.0 / 3.0, 450.0 / 3.0, 30, false, 1.12);
     //Pneumatics::getInstance()->setLeft(0);
     move(curvePath3, 88, 1, true);
+
+	if(skills)
+		Pneumatics::getInstance()->getClimber()->on();
     
     //int counter=0;
 	comp18link->notify();
@@ -61,7 +80,7 @@ void auton18(double auton_duration_time_millis) {
 			//Intake::getInstance()->set_power(0);
 			if (triBall())
 			{
-				Intake::getInstance()->set_power(127 / 1.5);
+				Intake::getInstance()->set_power(127);
 				delay(250);
 				moveMotors(tank_drive_18,60, 60);
 				delay(1200);
