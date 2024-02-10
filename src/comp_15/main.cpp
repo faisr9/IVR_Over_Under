@@ -24,10 +24,10 @@ void competition_initialize() {}
 /* Autonomous method */
 void autonomous() {
 	// COMP
-	auton_15(45000, false); // COMP
+	// auton_15(45000, false); // COMP
 
 	// SKILLS
-	// auton_15(60000, true);
+	auton_15(60000, true);
 
 	// auton_15(20000, true); // TESTING
 	pros::delay(5000); // just putting this here to make sure nothing weird happens that we don't want upon auton code ending
@@ -35,7 +35,7 @@ void autonomous() {
 
 /* Opcontrol method runs by default (unless connected to comp controller )*/
 void opcontrol() {
-	controls(); // COMP
+	// controls(); // COMP
 
-	// auton_15(60000, true); // SKILLS
+	auton_15(60000, true); // SKILLS
 }
