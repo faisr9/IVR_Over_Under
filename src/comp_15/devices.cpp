@@ -27,9 +27,12 @@ pros::MotorGroup cata   ({cata_right, cata_left});
 
 pros::Motor intake_motor  (15, GEARSET_06, true);
 
+pros::Motor doinker_motor (3, true); // reversed so a positive power increases the pot value
+
 // V5 Sensors //
 pros::ADIEncoder vertical_track_adi(3, 4, true); // tracking wheel #1 cd
 pros::ADIEncoder horizontal_track_adi(5, 6, true); // tracking wheel #2 ef
+pros::ADIPotentiometer doinker_pot('B', pros::adi_potentiometer_type_e_t::E_ADI_POT_EDR);
 
 Generic_Rotation* vertical_track = new Generic_Rotation_Digikey(vertical_track_adi, 1.96 * 0.0254 / 2);
 Generic_Rotation* horizontal_track = new Generic_Rotation_Digikey(horizontal_track_adi, 1.96 * 0.0254 / 2);
@@ -43,11 +46,12 @@ pros::ADIButton cata_limit('A');
 Odom odometry(imu, horizontal_track, vertical_track);
 traditional_drive drive(imu, ctrl_master, left_drive, right_drive, odometry);
 
-// Instances
+// Instance
 Intake* intake_instance = Intake::createInstance(intake_motor);
 CompetitionCatapult* cata_instance = CompetitionCatapult::createInstance(cata, cata_limit);
 
 const char FLOOR_BRAKE = 'G';
 const char WINGS = 'H';
 Pneumatics* pneumatics_instance = Pneumatics::createInstance(WINGS, FLOOR_BRAKE);
+DoinkerClass* doinker_instance = DoinkerClass::createInstance(doinker_motor, doinker_pot);
 

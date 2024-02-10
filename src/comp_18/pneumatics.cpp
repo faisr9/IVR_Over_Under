@@ -52,7 +52,7 @@ Pneumatics::~Pneumatics() {
 void Pneumatics::setLeft(bool OnOff) {
     if(OnOff) {
         rightWing.off();
-        delay(250);
+        pros::delay(250);
         leftWing.on();
     }
     else leftWing.off();
@@ -60,7 +60,7 @@ void Pneumatics::setLeft(bool OnOff) {
 void Pneumatics::setRight(bool OnOff) {
     if(OnOff) {
         leftWing.off();
-        delay(250);
+        pros::delay(250);
         rightWing.on();
     }
     else rightWing.off();
@@ -68,13 +68,13 @@ void Pneumatics::setRight(bool OnOff) {
 // will turn the opposite one off just in case
 bool Pneumatics::toggleLeft() {
     rightWing.off();
-    delay(250);
+    pros::delay(250);
     leftWing.toggle();
     return leftWing.getStatus();    
 }
 bool Pneumatics::toggleRight() {
     leftWing.off();
-    delay(250);
+    pros::delay(250);
     rightWing.toggle();
     return rightWing.getStatus();    
 }

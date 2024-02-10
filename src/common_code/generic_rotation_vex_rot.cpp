@@ -14,7 +14,7 @@ double Generic_Rotation_VEX_Rot::get_meters_travelled() {
 
 double Generic_Rotation_VEX_Rot::get_delta_rotation() {
     double current_position = rotation_sensor.get_position();
-    pros::lcd::set_text(4, "Current angle is " + std::to_string(current_position));
+    //pros::lcd::set_text(4, "Current angle is " + std::to_string(current_position));
 
     double rotation_difference = current_position - last_value;
     

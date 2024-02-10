@@ -22,7 +22,6 @@ traditional_drive::traditional_drive(Imu &imu, Controller &mstr, Motor_Group &l,
     init(imu, l, r, mode);
 }
 
-
 // with odometry
 traditional_drive::traditional_drive(Imu &imu, Motor_Group &l, Motor_Group &r, Odom& odometry) : DriveParent(imu, drive_mode[0]) {
     odom_inst = &odometry;
