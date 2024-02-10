@@ -61,12 +61,12 @@ double getTranslationalRPM(double dist_to_goal_meters, double max_translational_
     if ((total_path_distance / 3) < std::abs(dist_to_goal_meters)) {
         // less than 2 thirds through path
         MIN_RPM = 125.0;
-        pros::lcd::set_text(5, "First 2/3");
+        // pros::lcd::set_text(5, "First 2/3");
     } else {
-        pros::lcd::set_text(5, "Last 1/3");
+        // pros::lcd::set_text(5, "Last 1/3");
     }
-    pros::lcd::set_text(6, "dist left: " + std::to_string(dist_to_goal_meters));
-    pros::lcd::set_text(7, "total dist: " + std::to_string(total_path_distance));
+    // pros::lcd::set_text(6, "dist left: " + std::to_string(dist_to_goal_meters));
+    // pros::lcd::set_text(7, "total dist: " + std::to_string(total_path_distance));
     // double NOT_TURNING_CONST = 20.0;
     // double INACCURACY_THRESHOLD = 0.75;
     // double left_avg = (left_front_mtr.get_actual_velocity() + left_back_bot_mtr.get_actual_velocity() + left_back_top_mtr.get_actual_velocity()) / 3;

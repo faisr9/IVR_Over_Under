@@ -1,6 +1,7 @@
 #include "comp_15/controls.h"
 #include "main.h"
 #include "common_code/movement_tank.h"
+#include "auton.h"
 
 /* First method to run when program starts */
 void initialize() {
@@ -9,8 +10,6 @@ void initialize() {
 	horizontal_track_adi.reset();
 	vertical_track_adi.reset();
 	pros::delay(3000);
-	drive.getOdom().initTracker(0, 0, 0);
-	pros::delay(50);
 }
 
 /* Runs when robot is disabled from competition controller after driver/auton */
@@ -36,9 +35,15 @@ void competition_initialize() {}
 
 	odom_task.suspend();
 	*/
-// }
+
+	auton_15();
+
+	// skills_15();
+}
 
 /* Opcontrol method runs by default (unless connected to comp controller )*/
 void opcontrol() {
+	// auton_15();
+	// skills_15();
 	controls();
 }

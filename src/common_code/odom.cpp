@@ -78,12 +78,12 @@ void Odom::updatePosition() {
     positionX += isnan(deltaX) ? 0 : deltaX;
     positionY += isnan(deltaY) ? 0 : deltaY;
 
-    pros::lcd::set_text(5, "Position X: " + std::to_string(positionX));
-    pros::lcd::set_text(6, "Position Y: " + std::to_string(positionY));
-    if (transverseWheel) {
-        pros::lcd::set_text(2, "Horizontal Track: " + std::to_string(transverseWheel->get_raw_data()));
-    }
-    pros::lcd::set_text(3, "Vertical Track: " + std::to_string(radialWheel->get_raw_data()));
+    pros::lcd::set_text(3, "Position X: " + std::to_string(positionX));
+    pros::lcd::set_text(4, "Position Y: " + std::to_string(positionY));
+    // if (transverseWheel) {
+    //     pros::lcd::set_text(2, "Horizontal Track: " + std::to_string(transverseWheel->get_raw_data()));
+    // }
+    // pros::lcd::set_text(3, "Vertical Track: " + std::to_string(radialWheel->get_raw_data()));
 }
 
 double Odom::getX() { return positionX; }

@@ -212,17 +212,17 @@ void followPath(std::vector<std::vector<double>>& path, traditional_drive& drive
         if (last_current_index != currentIndex) {
             // for behind of currentIndex (bc of funny look ahead angle)
             remaining_dist = distances_to_end[currentIndex] + calculate_distance_two_points({positionX, positionY}, path[currentIndex]);
-            pros::lcd::set_text(3, "APP behind mode");
+            if (printMessages) ::lcd::set_text(3, "APP behind mode");
         } else {
             // for ahead of currentIndex (normal for long path segments)
             remaining_dist = distances_to_end[currentIndex] - calculate_distance_two_points({positionX, positionY}, path[currentIndex]);
-            pros::lcd::set_text(3, "APP ahead mode");
+            if (printMessages) pros::lcd::set_text(3, "APP ahead mode");
         }
 
         last_calculated_distance = distance_to_index;
         // if current index increments start adding calc_dist_two_points instead of subtracting until calculate_distance_two_points starts increasing again
 
-        pros::lcd::set_text(2, "remaining dist: " + std::to_string(remaining_dist));
+        if (printMessages) pros::lcd::set_text(2, "remaining dist: " + std::to_string(remaining_dist));
         // pros::lcd::set_text(2, "dist_to_end: " + std::to_string(distances_to_end[currentIndex]));
         double translationalRPM = getTranslationalRPM(remaining_dist, MAX_TRANSLATIONAL_RPM, distances_to_end[0], minTransRPM);
         // pros::lcd::set_text(3, "trans RPM: " + std::to_string(translationalRPM));
