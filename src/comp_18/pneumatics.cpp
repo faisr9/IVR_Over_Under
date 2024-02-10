@@ -67,14 +67,18 @@ void Pneumatics::setRight(bool OnOff) {
 }
 // will turn the opposite one off just in case
 bool Pneumatics::toggleLeft() {
-    rightWing.off();
-    pros::delay(250);
+    if (rightWing.getStatus()) {
+        rightWing.off();
+        pros::delay(250);
+    }
     leftWing.toggle();
     return leftWing.getStatus();    
 }
 bool Pneumatics::toggleRight() {
-    leftWing.off();
-    pros::delay(250);
+    if (leftWing.getStatus()) {
+        leftWing.off();
+        pros::delay(250);
+    }
     rightWing.toggle();
     return rightWing.getStatus();    
 }

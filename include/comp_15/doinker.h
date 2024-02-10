@@ -11,7 +11,7 @@ class DoinkerClass : public SubsystemParent
 
         const int doinker_pot_min = 0;
         const int doinker_pot_low = 500;
-        const int doinker_pot_down = 1400;
+        const int doinker_pot_down = 1520;
         const int doinker_pot_up = 2500;
         const int doinker_pot_max = 4095;
         const int doinker_pot_tolerance = 500;
@@ -39,7 +39,7 @@ class DoinkerClass : public SubsystemParent
          * 
          * @param move The direction to move the doinker
          */
-        void move(doinker_move_t move);
+        void move(doinker_move_t move, double timeout_millis = 1200);
 
         /**
          * Stop the doinker

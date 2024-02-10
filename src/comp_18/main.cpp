@@ -24,18 +24,18 @@ void competition_initialize() {}
 /* Autonomous method */
 void autonomous() {
 
-	// pros::delay(50);
-
-	 // lambda function with a task
-
 	// Comp
-	auton18(45000, false);
+	// auton18(45000, false);
 
 	// Skills
-	// auton18(60000, true);
+	auton18(60000, true);
 }
 
 /* Opcontrol method runs by default (unless connected to comp controller )*/
 void opcontrol() {
-    controls();
+	// Comp
+    // controls();
+
+	// Skills
+	auton18(60000, true);
 }
