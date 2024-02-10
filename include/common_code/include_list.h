@@ -22,5 +22,5 @@
     pros::delay(5);                                                            \
   } while (!(condition))
 
-// using namespace pros;
-// using namespace std;
+using namespace pros;
+using namespace std;

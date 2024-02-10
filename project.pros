@@ -310,7 +310,8 @@
     },
     "upload_options": {
       "slot": 6,
-      "description": "Master Code"
+      "description": "Master Code",
+      "icon": "planet"
     }
   }
 }

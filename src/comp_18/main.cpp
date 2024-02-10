@@ -3,9 +3,12 @@
 #include "common_code/movement_tank.h"
 #include "comp_18/auton.h"
 
+extern LinkHelper* comp18link;
+
 /* First method to run when program starts */
 void initialize() {
 	pros::lcd::initialize(); // Temp until custom GUI
+	comp18link->init();
 	imu.reset(); // Very important!!!
     transverse_rot_sensor.reset();
 	radial_rot_sensor.reset();
@@ -23,23 +26,15 @@ void competition_initialize() {}
 /* Autonomous method */
 void autonomous() {
 
-	pros::delay(50);
+	// pros::delay(50);
 
-	pros::Task odom_task{[=] {
-		while (1) {
-			tank_drive_18.getOdom().updatePosition();
-			pros::lcd::set_text(7, "A: " + std::to_string(tank_drive_18.getOdom().getHeading()));
-			pros::delay(50);
-		}
-	}}; // lambda function with a task
+	 // lambda function with a task
 
-	auton18();
-	while(1)
-	{
-		pros::delay(50);
-	
-	}
-	odom_task.suspend();
+	// Comp
+	auton18(45000);
+
+	// Skills
+	// auton18(60000);
 }
 
 /* Opcontrol method runs by default (unless connected to comp controller )*/

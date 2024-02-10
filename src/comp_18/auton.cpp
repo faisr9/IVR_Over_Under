@@ -1,10 +1,24 @@
 #include "comp_18/auton.h"
 #include "comp_18/devices.h"
 #include "common_code/movement_tank.h"
+
+LinkHelper* comp18link = LinkHelper::createInstance(8, E_LINK_RX);
+
 using namespace pros;
 using namespace std;
 
-void auton18() {
+void auton18(double auton_duration_time_millis) {
+
+	const double kSTART_TIME = pros::millis();
+	
+	pros::Task odom_task{[=] {
+		while (1) {
+			tank_drive_18.getOdom().updatePosition();
+			pros::lcd::set_text(7, "A: " + std::to_string(tank_drive_18.getOdom().getHeading()));
+			pros::delay(50);
+		}
+	}};
+
     //1 tile is .61 meters (2 ft)
 
     // 1. drop intake (activate climbing piston)
@@ -31,97 +45,44 @@ void auton18() {
     move(curvePath3, 88, 1, true);
     
     //int counter=0;
+	comp18link->notify();
 
-    while(1)
-    {
-        //Intake::getInstance()->set_power(0);
-        if (triBall())
-        {
-            Intake::getInstance()->set_power(127 / 1.5);
-            delay(250);
-            moveMotors(tank_drive_18,60, 60);
-            delay(1200);
-            left_drive_motors.move_velocity(0);
-            right_drive_motors.move_velocity(0);
-            double x=tank_drive_18.getOdom().getX(),
-                y=tank_drive_18.getOdom().getY();
-            vector<vector<double>> oscillate = {{x,y}, {x-.275,y}};
-            //followPath(curvePath2, tank_drive_18, 88, false, true, false, 0.5, 3.0, 200.0 / 3.0, 450.0 / 3.0, 30, false, 1.12);
-            move(oscillate, 88, 1, true);
-        }
-        delay(50);
+	// pros::Task endWait{[=] {
+	// 		comp18link->setMsgRecvTimeout(40000);
+	// 		std::string recvMsg = comp18link->recvMsg();
+	// 		if (recvMsg == "end") {
+				
+	// 		}
+	// }};
+
+	pros::Task comp18goal_task {[=] {
+		while(1)
+		{
+			//Intake::getInstance()->set_power(0);
+			if (triBall())
+			{
+				Intake::getInstance()->set_power(127 / 1.5);
+				delay(250);
+				moveMotors(tank_drive_18,60, 60);
+				delay(1200);
+				left_drive_motors.move_velocity(0);
+				right_drive_motors.move_velocity(0);
+				double x=tank_drive_18.getOdom().getX(),
+					y=tank_drive_18.getOdom().getY();
+				vector<vector<double>> oscillate = {{x,y}, {x-.275,y}};
+				//followPath(curvePath2, tank_drive_18, 88, false, true, false, 0.5, 3.0, 200.0 / 3.0, 450.0 / 3.0, 30, false, 1.12);
+				move(oscillate, 88, 1, true);
+			}
+			delay(50);
+		}
+	}};
+
+	const double kABORT_TIME = kSTART_TIME + auton_duration_time_millis - 500;
+	while (pros::millis() < kABORT_TIME) {
+        pros::delay(100);
     }
-
-    delay(1000);
+    comp18goal_task.suspend();
     Intake::getInstance()->set_power(0);
-    return;
-
-
-
-	vector<vector<double>> move1 = {start, vect(3.8, 0.5)}; //Movement 1 (Move to intake depot)
-	vector<vector<double>> move2 = {move1.back(), vect(5, .8)}; // Movement 2 (Turn to flick triball)
-    vector<vector<double>> move3 = {move2.back(), vect(4, 2.5)}; // Movement 3 (Drive forward to score)
-    vector<vector<double>> move4 = {move3.back(), vect(4.5, 2.5)}; // Movement 4 (Drive back to go to pick up ball)
-
-    // 1. drop intake (activate climbing piston)
-    Pneumatics::getInstance()->getClimber()->on();
-
-    // 2. retract climbing piston
-    delay(350);
-    Pneumatics::getInstance()->getClimber()->off();
-
-    // 3. turn on intake
-
-    Intake::getInstance()->set_power(-127/1.5);
-    
-    delay(100);
-
-    lcd::set_text(1, "move 1 start");
-    move(move1, 90, false, false);
-    lcd::set_text(1, "move 1 end");
-
-    delay(100);
-
-    lcd::set_text(1, "move 2 start");
-    move(move2, 5, false, true);
-    lcd::set_text(1, "move 2 end");
-
-    delay(100);
-    
-    Intake::getInstance()->set_power(127);
-
-    delay(100);
-
-    lcd::set_text(1, "move 3 start");
-    turnToAngle(tank_drive_18, 30, 3.0,false, 1.12);
-    move(move3,0, false, false);
-    lcd::set_text(1, "move 3 end");
-
-    //delay(100);
-
-    turnToAngle(tank_drive_18, 90, 3.0, false, 1.12);
-
-    lcd::set_text(1, "move 4 start");
-    move(move4, 0, false, false);
-    lcd::set_text(1, "move 4 end");
-
-    delay(1000);
-
-    Intake::getInstance()->set_power(0);
-    
-
-    // lcd::set_text(1, "move 3 start");
-    // move(move3, 0, false, false);
-    // lcd::set_text(1, "move 3 end");
-
-    // lcd::set_text(1, "move 4 start");
-    // move(move4, 0, true, false);
-    // lcd::set_text(1, "move 4 end");
-
-    // delay(100);
-
-    // lcd::set_text(1, "move 4 start");
-    // followPath(move4, tank_drive_18, 180, true);
 }
 
 vector<double> vect(double x, double y){
@@ -137,4 +98,49 @@ void move(vector<vector<double>> moveVec, int angle, bool isReversed, bool isSpi
     double speedfactor=3.0;
     followPath(moveVec, tank_drive_18, angle, isReversed, isSpinAtEnd, false, 0.5, 3.0, 200.0 / speedfactor, 450.0 / speedfactor, 40.0 / speedfactor, false, 1.12);
 }
+
+/*
+
+
+15-Comp
+=====================
+$ Brakes Down
+$ Intake to Open Bot
+$ Cata Down
+---- Cycle #X Times (Send this number via string to Comp18)
+Doinker Down (Once Cata is down)
+Doinker Up
+~ Wait for Comp 18 (Get to Position | Cycle Triball into goal)
+	~ Set timeout delay
+Cata Cycle
+Increment Counter on Controller
+Controller Rumble?
+Delay 1.5 sec (For placing Tribal)
+---- To Cycle
+Cata Release
+Doinker Up
+Notify Comp18
+Drive to Contact Vertial Elevation (Inside)
+.END
+
+18-Comp
+=====================
+Intake Down
+Retract Climb Pistion
+Drive to Goal (AWP Attenpt)
+Notify Comp15 (At goal ready for cycle)
+Start Distance Sensor Loop
+---- Cycle #X Times (Recieve Data from Comp 15)
+Intake Out
+Move Forward (Score Triball)
+Move Back
+Intake Stop
+---- To Cycle
+Wait for Comp15 to confirm completion
+Drive to contact vertical elevation (Outside)
+.END
+
+
+*/
+
 

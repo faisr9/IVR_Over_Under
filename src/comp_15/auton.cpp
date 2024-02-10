@@ -31,16 +31,17 @@ void auton_15(double auton_duration_time_millis, bool climb) {
 
     // start shooting portion of autonomous
 
-	const int numCycles	= 3;
+	// const int numCycles	= 3;
 	// std::string numCyclesStr = std::to_string(numCycles);
 	// send the number of cycles to the other robot
-	comp15link->sendMsg(std::to_string(numCycles));
+	// comp15link->sendMsg(std::to_string(numCycles));
 
     pros::Task shooting_task{[=] {
-	    int cycleCounter = 0;
+        bool hasFired = false;
         CompetitionCatapult::getInstance()->set_cata_mode("P");
-        pros::delay(750);
-        while (cycleCounter++ < numCycles) {
+        pros::delay(500);
+	    int cycleCounter = 0;
+        while (1) {
             // doinker down
             DoinkerClass::getInstance()->move(DoinkerClass::DOWN);
             // small delay
@@ -48,22 +49,28 @@ void auton_15(double auton_duration_time_millis, bool climb) {
             // doinker up
             DoinkerClass::getInstance()->move(DoinkerClass::UP);
             // medium delay
-            pros::delay(750);
+            pros::delay(1000);
+
+            if (!hasFired) {
+                comp15link->waitForNotify(8000);
+                hasFired = true;
+            }
             // wait for comp18 to get to position / cycle triball into goal
-            comp15link->waitForNotify(???);
+            // comp15link->waitForNotify(???);
             
             // fire catapult and put it back down
             CompetitionCatapult::getInstance()->set_cata_mode("RP");
+            cycleCounter++;
             // wait for human player
             pros::delay(2000);
         }
 	}}; // lambda function with a task
 
-    comp15link->sendMsg("end_auton");
+    // comp15link->sendMsg("end_auton");
 
     // create while loop that will exit after kMAX_SHOOTING_TIME/1000 seconds
-    const int kMAX_SHOOTING_TIME = 30000;
-    const double start_shoot_time = pros::millis();
+    // const int kMAX_SHOOTING_TIME = 30000;
+    // const double start_shoot_time = pros::millis();
     // create while loop that will exit right before the end of auton
     // const int kMAX_SHOOTING_TIME = 30000;
     // const double start_shoot_time = pros::millis();
