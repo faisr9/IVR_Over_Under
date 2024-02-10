@@ -7,10 +7,23 @@ LinkHelper* comp18link = LinkHelper::createInstance(8, E_LINK_RX);
 using namespace pros;
 using namespace std;
 
-void auton18(double auton_duration_time_millis) {
+void auton18(double auton_duration_time_millis, bool skills) {
 
 	const double kSTART_TIME = pros::millis();
-	
+
+    vector<double> start; //Start position
+	vector<vector<double>> curvePath;
+	if (!skills) {
+		start = vectOff(0, 0);
+		curvePath = {start, {2.90, 0.4}, {2, 1.6}};
+	} else {
+		start = {2.15 * 0.61, 3.3};
+		curvePath = {start, {2.90, 3.2}, {2, 1.6}};
+	}
+
+	tank_drive_18.getOdom().initTracker(start[0], start[1], 90);
+    pros::delay(50);
+
 	pros::Task odom_task{[=] {
 		while (1) {
 			tank_drive_18.getOdom().updatePosition();
@@ -28,11 +41,10 @@ void auton18(double auton_duration_time_millis) {
     delay(350);
     //Pneumatics::getInstance()->getClimber()->off();
 
-    vector<double> start = vectOff(0, 0); //Start position
     Intake::getInstance()->set_power(-127 / 1.5);
 
     delay(75);
-    vector<vector<double>> curvePath = {start, {2.90, 0.4}, {2, 1.6}};//, {2.75,1.5}};
+
     move(curvePath, 88, false, true);
     vector<vector<double>> curvePath2 = {curvePath.back(), {2.6, 1.6}};
     vector<vector<double>> curvePath3 = {curvePath2.back(), {2.43, 1.6}};

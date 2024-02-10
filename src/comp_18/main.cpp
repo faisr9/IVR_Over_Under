@@ -13,8 +13,6 @@ void initialize() {
     transverse_rot_sensor.reset();
 	radial_rot_sensor.reset();
     pros::delay(3000);
-    tank_drive_18.getOdom().initTracker(.61*2.15, .61*.5, 90);
-    pros::delay(50);
 }
 
 /* Runs when robot is disabled from competition controller after driver/auton */
@@ -31,10 +29,10 @@ void autonomous() {
 	 // lambda function with a task
 
 	// Comp
-	auton18(45000);
+	auton18(45000, false);
 
 	// Skills
-	// auton18(60000);
+	// auton18(60000, true);
 }
 
 /* Opcontrol method runs by default (unless connected to comp controller )*/
