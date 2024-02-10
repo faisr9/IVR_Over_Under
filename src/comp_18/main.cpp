@@ -34,7 +34,11 @@ void autonomous() {
 	}}; // lambda function with a task
 	
 	auton18();
-
+	while(1)
+	{
+		pros::delay(50);
+	
+	}
 	odom_task.suspend();
 }
 

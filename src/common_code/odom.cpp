@@ -88,7 +88,7 @@ void Odom::updatePosition() {
 
 double Odom::getX() { return positionX; }
 double Odom::getY() { return positionY; }
-double Odom::getHeading() { return imu.get_rotation(); }
+double Odom::getHeading() { return imu.get_heading(); }
 double Odom::getTransverseValue() { 
     return (transverseWheel) ? transverseWheel->get_raw_data() : 0;
 }
