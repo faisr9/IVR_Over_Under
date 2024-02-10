@@ -30,8 +30,9 @@ DoinkerClass::DoinkerClass (pros::Motor& subsystem_motor, pros::ADIPotentiometer
     doinkerRunning = false;
 }
 
-void DoinkerClass::move(doinker_move_t move)
+void DoinkerClass::move(doinker_move_t move, double timeout_millis)
 {
+    const double start_time = pros::millis();
     if (move == UP)
     {
         if (doinker_pot_.get_value() > doinker_pot_up && doinker_pot_.get_value() < doinker_pot_max) // Acts as a mutex
@@ -42,7 +43,8 @@ void DoinkerClass::move(doinker_move_t move)
             while(doinker_pot_.get_value() > doinker_pot_up || doinker_pot_.get_value() < doinker_pot_low)
             {
                 doinker_motor_.move(kDOINKER_DOWN_SPEED);
-                pros::delay(5);
+                if (pros::millis() > start_time + timeout_millis) break;
+                pros::delay(15);
             }
         }
         else
@@ -51,7 +53,8 @@ void DoinkerClass::move(doinker_move_t move)
             while(doinker_pot_.get_value() < doinker_pot_up && doinker_pot_.get_value() > doinker_pot_low)
             {
                 doinker_motor_.move(kDOINKER_UP_SPEED);
-                pros::delay(5);
+                if (pros::millis() > start_time + timeout_millis) break;
+                pros::delay(15);
             }
         }
         doinker_motor_.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
@@ -63,7 +66,8 @@ void DoinkerClass::move(doinker_move_t move)
         while(doinker_pot_.get_value() > doinker_pot_down || doinker_pot_.get_value() < doinker_pot_low)
         {
             doinker_motor_.move(kDOINKER_DOWN_SPEED);
-            pros::delay(5);
+            if (pros::millis() > start_time + timeout_millis) break;
+            pros::delay(15);
         }
 
         doinker_motor_.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);

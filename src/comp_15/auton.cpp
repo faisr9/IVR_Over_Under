@@ -45,7 +45,7 @@ void auton_15(double auton_duration_time_millis, bool climb) {
 	    int cycleCounter = 0;
         while (1) {
             // doinker down
-            DoinkerClass::getInstance()->move(DoinkerClass::DOWN);
+            DoinkerClass::getInstance()->move(DoinkerClass::DOWN); // did not go past here
             // small delay
             pros::delay(100);
             // doinker up
