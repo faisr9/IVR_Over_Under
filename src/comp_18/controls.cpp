@@ -17,17 +17,6 @@ void controls() {
             Intake::getInstance()->set_power(0);
         }
 
-        // CATAPULT CONTROLS
-        // if (ctrl_master.get_digital_new_press(E_CONTROLLER_DIGITAL_DOWN)){
-        //     if (cata_limit.get_value()) {
-        //         CompetitionCatapult::getInstance()->set_cata_mode("RP");
-        //     } else {
-        //         CompetitionCatapult::getInstance()->set_cata_mode("P");
-        //     }
-        // } else if (ctrl_master.get_digital(E_CONTROLLER_DIGITAL_LEFT)) {
-        //     CompetitionCatapult::getInstance()->set_cata_mode("I");
-        // }
-
         //PNEUMATICS CONTROLS
         if(ctrl_master.get_digital_new_press(BUTTON_L1)) {
             Pneumatics::getInstance()->toggleLeft();
