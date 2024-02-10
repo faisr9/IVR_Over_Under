@@ -27,6 +27,7 @@ pros::Motor_Group left_drive_motors = {left_front_top, left_front_bottom, left_m
 pros::Motor_Group right_drive_motors = {right_front_top, right_front_bottom, right_middle, right_back};
 
 pros::Motor intake(15); // in = negative, out = positive
+Intake* intake_instance = Intake::createInstance(intake);
 
 // V5 Sensors //
 pros::IMU imu(2);
@@ -39,9 +40,10 @@ Generic_Rotation* horizontal_tracker = new Generic_Rotation_VEX_Rot(transverse_r
 
 Odom odometry_18(imu, horizontal_tracker, radial_tracker);
 
-const char WINGS_PORT = 'A';
-const char CLIMBER_SOLENOID_PORT = 'B';
-Pneumatics* pneumatics_instance = Pneumatics::createInstance(WINGS_PORT, CLIMBER_SOLENOID_PORT);
+const char LEFT_WING = 'A';
+const char RIGHT_WING = 'B';
+const char CLIMBER_SOLENOID_PORT = 'C';
+Pneumatics* pneumatics_instance = Pneumatics::createInstance(LEFT_WING, RIGHT_WING, CLIMBER_SOLENOID_PORT);
 
 // Other //
 traditional_drive tank_drive_18(imu, ctrl_master, left_drive_motors, right_drive_motors, odometry_18);
