@@ -1,5 +1,4 @@
-#include "comp_18/comp18_includeList.h"
-
+#include "comp_18/pneumatics.h"
 
 //This subsystem have three objects of the Piston class for wings and climber.
 //This class is necessary because it implements toggle() method and the getStatus() method.
@@ -53,7 +52,7 @@ Pneumatics::~Pneumatics() {
 void Pneumatics::setLeft(bool OnOff) {
     if(OnOff) {
         rightWing.off();
-        delay(1000);
+        delay(250);
         leftWing.on();
     }
     else leftWing.off();
@@ -61,7 +60,7 @@ void Pneumatics::setLeft(bool OnOff) {
 void Pneumatics::setRight(bool OnOff) {
     if(OnOff) {
         leftWing.off();
-        delay(1000);
+        delay(250);
         rightWing.on();
     }
     else rightWing.off();
@@ -69,13 +68,13 @@ void Pneumatics::setRight(bool OnOff) {
 // will turn the opposite one off just in case
 bool Pneumatics::toggleLeft() {
     rightWing.off();
-    delay(1000);
+    delay(250);
     leftWing.toggle();
     return leftWing.getStatus();    
 }
 bool Pneumatics::toggleRight() {
     leftWing.off();
-    delay(1000);
+    delay(250);
     rightWing.toggle();
     return rightWing.getStatus();    
 }
