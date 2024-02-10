@@ -1,5 +1,5 @@
 #include "comp_15/auton.h"
-
+LinkHelper* comp15link = LinkHelper::createInstance(16, E_LINK_TX);
 
 void auton_15() {
 
@@ -27,10 +27,17 @@ void auton_15() {
     Intake::getInstance()->set_power(0);
 
     // start shooting portion of autonomous
+
+	const int numCycles	= 3;
+	// std::string numCyclesStr = std::to_string(numCycles);
+	// send the number of cycles to the other robot
+	comp15link->sendMsg(std::to_string(numCycles));
+
     pros::Task shooting_task{[=] {
+	    int cycleCounter = 0;
         CompetitionCatapult::getInstance()->set_cata_mode("P");
         pros::delay(750);
-        while (1) {
+        while (cycleCounter++ < numCycles) {
             // doinker down
             DoinkerClass::getInstance()->move(DoinkerClass::DOWN);
             // small delay
@@ -39,13 +46,17 @@ void auton_15() {
             DoinkerClass::getInstance()->move(DoinkerClass::UP);
             // medium delay
             pros::delay(750);
+            // wait for comp18 to get to position / cycle triball into goal
+            comp15link->waitForNotify(???);
+            
             // fire catapult and put it back down
             CompetitionCatapult::getInstance()->set_cata_mode("RP");
-    
             // wait for human player
             pros::delay(2000);
         }
 	}}; // lambda function with a task
+
+    comp15link->sendMsg("end_auton");
 
     // create while loop that will exit after kMAX_SHOOTING_TIME/1000 seconds
     const int kMAX_SHOOTING_TIME = 30000;
@@ -149,45 +160,24 @@ void skills_15() {
 
     odom_task.suspend();
 }
-#include "main.h"
-#include "comp_15/devices.h"
-
-#ifdef COMPETITION_AUTON
-void autonomous()
-{
-    Pneumatics::getInstance()->getFloorBrake()->on();
-	Intake::getInstance()->set_power(50);
-	delay(500);
-	Intake::getInstance()->stop();
-	CompetitionCatapult::getInstance()->;
-}
-
-#else
-void autonomous()
-{
-
-}
-#endif
 
 /*
 
 
 15-Comp
 =====================
-Brakes Down
-Intake to Open Bot
-Cata Down
-Doinker Down
-~ Wait for Comp 18 (Get to Position)
+$ Brakes Down
+$ Intake to Open Bot
+$ Cata Down
 ---- Cycle #X Times (Send this number via string to Comp18)
+Doinker Down (Once Cata is down)
 Doinker Up
-~ Wait for Comp 18 (Cycle Triball into goal)
+~ Wait for Comp 18 (Get to Position | Cycle Triball into goal)
 	~ Set timeout delay
 Cata Cycle
 Increment Counter on Controller
 Controller Rumble?
 Delay 1.5 sec (For placing Tribal)
-Doinker Down (Once Cata is down)
 ---- To Cycle
 Cata Release
 Doinker Up

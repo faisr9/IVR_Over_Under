@@ -14,6 +14,7 @@
 #include <sstream>
 
 #include "common_code/subsystem_parent.h"
+#include "common_code/link_helper.h"
 
 // Vex defined function, might as well have just in case
 #define waitUntil(condition)                                                   \

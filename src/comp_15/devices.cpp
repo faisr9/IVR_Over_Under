@@ -46,7 +46,7 @@ pros::ADIButton cata_limit('A');
 Odom odometry(imu, horizontal_track, vertical_track);
 traditional_drive drive(imu, ctrl_master, left_drive, right_drive, odometry);
 
-// Instances
+// Instance
 Intake* intake_instance = Intake::createInstance(intake_motor);
 CompetitionCatapult* cata_instance = CompetitionCatapult::createInstance(cata, cata_limit);
 

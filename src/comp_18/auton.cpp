@@ -1,38 +1,31 @@
 #include "comp_18/auton.h"
 #include "main.h"
 
-#ifdef COMPETITION_AUTON
 void autonomous()
 {
 
 }
 
-#else
-void autonomous()
-{
+/*
 
-}
-#endif
 
 /*
 
 
 15-Comp
 =====================
-Brakes Down
-Intake to Open Bot
-Cata Down
-Doinker Down
-~ Wait for Comp 18 (Get to Position)
+$ Brakes Down
+$ Intake to Open Bot
+$ Cata Down
 ---- Cycle #X Times (Send this number via string to Comp18)
-Doinker Up
-~ Wait for Comp 18 (Cycle Triball into goal)
-	~ Set timeout delay
-Cata Cycle
-Increment Counter on Controller
-Controller Rumble?
-Delay 1.5 sec (For placing Tribal)
-Doinker Down (Once Cata is down)
+$ Doinker Down (Once Cata is down)
+$ Doinker Up
+$ ~ Wait for Comp 18 (Get to Position | Cycle Triball into goal)
+	? ~ Set timeout delay
+$ Cata Cycle
+$ Increment Counter on Controller
+$ Controller Rumble?
+$ Delay 1.5 sec (For placing Tribal)
 ---- To Cycle
 Cata Release
 Doinker Up

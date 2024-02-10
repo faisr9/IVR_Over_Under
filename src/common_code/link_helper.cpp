@@ -98,7 +98,7 @@ std::string LinkHelper::recvMsg( /*bool waitForResponse*/)
         int time_s = pros::millis();
         do {
             link_->receive(&msg_c, sizeRecv);
-            delay(15);
+            pros::delay(15);
         } while (msg_c[0] == '\0' && pros::millis()-time_s < msgRecvTimeout);
         int time_e = pros::millis();
 

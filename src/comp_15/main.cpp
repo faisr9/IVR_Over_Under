@@ -19,7 +19,7 @@ void disabled() {}
 void competition_initialize() {}
 
 /* Autonomous method */
-// void autonomous() {
+void autonomous() {
 	/*
 	Example odometry task, leaving this here because this bit of code is quite important
 
