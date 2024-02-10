@@ -17,12 +17,12 @@ void auton18() {
     Intake::getInstance()->set_power(-127 / 1.5);
 
     pros::delay(100);
-    std::vector<std::vector<double>> curvePath = {start, {2.90, 0.4}, {2.3, 1.6}};//, {2.75,1.5}};
+    std::vector<std::vector<double>> curvePath = {start, {2.90, 0.4}, {2.2, 1.6}};//, {2.75,1.5}};
     move(curvePath, 88, false, true);
     std::vector<std::vector<double>> curvePath2 = {curvePath.back(), {2.6, 1.6}};
     std::vector<std::vector<double>> curvePath3 = {curvePath2.back(), {2.4, 1.6}};
     Intake::getInstance()->set_power(127 / 1.5);
-    move(curvePath2, 88, 0, true);
+    followPath(curvePath2, tank_drive_18, 88, false, true, false, 0.5, 3.0, 200.0 / 3.0, 450.0 / 3.0, 30, false, 1.12);
     move(curvePath3, 88, 1, true);
     pros::delay(1000);
 
