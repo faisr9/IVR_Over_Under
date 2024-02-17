@@ -9,6 +9,7 @@
 #pragma once
 #include "common_code/drive_parent.h"
 #include "common_code/odom.h"
+#include "main.h"
 
 // drive systems
 class traditional_drive : public DriveParent

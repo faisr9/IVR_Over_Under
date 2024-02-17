@@ -1,4 +1,7 @@
 #pragma once
+#include "main.h"
+#include "common_code/traditional_drive.h"
+#include "common_code/movement_helper.h"
 #include "common_code/traditional_drive.h"
 
 // void followPath(std::vector<std::vector<double>>& path, double lookForwardRadius, double translationalRPM, double maxRPM, double finalAngleDeg, bool reversed, bool printMessages);
