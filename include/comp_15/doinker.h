@@ -75,3 +75,5 @@ class DoinkerClass : public SubsystemParent
          */
         int get_pos();
 };
+
+void move_if_cata();
