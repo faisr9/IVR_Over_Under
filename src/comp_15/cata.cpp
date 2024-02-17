@@ -57,6 +57,11 @@ void CompetitionCatapult::cycle() {
     }
 }
 
+bool CompetitionCatapult::get_kill_switch_on(){
+    return kill_switch.get_value();
+}
+
+
 void CompetitionCatapult::release() {
     while (kill_switch.get_value()) {
         motors.move(cata_move_power);

@@ -16,7 +16,7 @@ class CompetitionCatapult : public SubsystemParent {
         std::string get_cata_mode();
         void set_cata_mode(std::string new_cata_mode);
         void set_cata_mode_internal(std::string new_cata_mode);
-        
+        bool get_kill_switch_on();
         
     private:
         // reference to passed in motor so it doesn't create a new motor object 

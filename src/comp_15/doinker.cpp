@@ -94,3 +94,9 @@ int DoinkerClass::get_pos()
 {
     return doinker_pot_.get_value();
 }
+
+void move_if_cata(DoinkerClass::doinker_move_t move){
+    if (CompetitionCatapult::getInstance()->get_kill_switch_on()){
+        DoinkerClass::getInstance()->move(move);
+    }
+}

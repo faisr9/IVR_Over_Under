@@ -1,5 +1,6 @@
 #pragma once
 #include "common_code/include_list.h"
+#include "comp_15/cata.h"
 
 class DoinkerClass : public SubsystemParent
 {
@@ -76,4 +77,4 @@ class DoinkerClass : public SubsystemParent
         int get_pos();
 };
 
-void move_if_cata();
+void move_if_cata(DoinkerClass::doinker_move_t move);
