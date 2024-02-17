@@ -1,6 +1,4 @@
 #include "comp_18/controls.h"
-#include "main.h"
-#include "common_code/movement_tank.h"
 #include "comp_18/auton.h"
 
 extern LinkHelper* comp18link;

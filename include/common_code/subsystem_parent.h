@@ -1,8 +1,7 @@
 #pragma once
-// want (this to be) abstract base class
 #include "main.h"
 
-// #include <string>
+// want (this to be) abstract base class
 
 class SubsystemParent {
     public:

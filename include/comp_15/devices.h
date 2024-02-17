@@ -1,13 +1,5 @@
 #pragma once
-#include "common_code/include_list.h"    
-// #include "common_code/traditional_drive.h"
-// #include "comp_15/intake.h"
-// #include "comp_15/cata.h"
-// #include "comp_15/pneumatics.h"
-// #include "common_code/generic_rotation_digikey.h"
-// #include "comp_15/doinker.h"
-// #include "main.h"
-// #include "comp_15/include_list.h"
+#include "common_code/include_list.h"
 
 // Forward declare all devices here so that all of the robot files and subsystem classes can access them //
 

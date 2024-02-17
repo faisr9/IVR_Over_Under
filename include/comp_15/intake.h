@@ -1,5 +1,4 @@
 #pragma once
-// #include "common_code/include_list.h"
 #include "comp_15/devices.h"
 
 //positive power goes in and negative goes out;

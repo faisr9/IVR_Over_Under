@@ -1,6 +1,4 @@
 #include "common_code/movement_tank.h"
-// #include "common_code/movement_helper.h"
-// #include "common_code/traditional_drive.h"
 
 void moveMotors(traditional_drive& drive, double leftRPM, double rightRPM) {
     drive.get_motor_group(0).move_velocity(leftRPM);
