@@ -185,5 +185,9 @@ Wait for Comp15 to confirm completion
 Drive to contact vertical elevation (Outside)
 .END
 
+Load Bar Shift Right
+Back right contact load bar
+align to white tape
+
 
 */
