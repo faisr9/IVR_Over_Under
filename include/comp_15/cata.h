@@ -13,7 +13,9 @@ class CompetitionCatapult : public SubsystemParent {
         void cycle();
         void release();
         void move_forward_manual();
-        std::string get_cata_mode();
+        std::string get_cata_mode();   
+        bool get_switch_state();
+
         void set_cata_mode(std::string new_cata_mode);
         void set_cata_mode_internal(std::string new_cata_mode);
         

@@ -44,11 +44,15 @@ void auton_15(double auton_duration_time_millis, bool climb) {
         pros::delay(3000); // delay so jonah can place the triball
 	    int cycleCounter = 0;
         while (1) {
+            while(!CompetitionCatapult::getInstance()->get_switch_state()){
+                CompetitionCatapult::getInstance()->prime();
+                pros::lcd::set_text(2, "Priming");
+            }
             // doinker down
             DoinkerClass::getInstance()->move(DoinkerClass::DOWN); // did not go past here
             // small delay
             pros::delay(600);
-            // doinker up
+            // doinker up if cata primed
             DoinkerClass::getInstance()->move(DoinkerClass::UP);
             // medium delay
             pros::delay(1000);
