@@ -39,23 +39,22 @@
 #define TASK_PRIORITY_HIGH 14
 ///////////////////////////////////////
 
+// Vex defined function, might as well have just in case
+#define waitUntil(condition)                                                   \
+  do {                                                                         \
+    pros::delay(5);                                                            \
+  } while (!(condition))
+
 /**
  * Add other header files here;
  * Add the common code headers here
  */
-#include "common_code/subsystem_parent.h"
-#include "common_code/example_subsystem.h"
 ///////////////////////////////////////
 
 /**
  * Add C++ headers here
  */
-#include <iostream>
-#include <chrono>
-#include <string>
-#include <math.h>
-#include <vector>
-#include <fstream>
+
 ///////////////////////////////////////
 
 /**
@@ -112,6 +111,7 @@
  * namespace.
  */
 using namespace pros;
+using namespace std;
 // using namespace pros::literals;
 // using namespace okapi;
 

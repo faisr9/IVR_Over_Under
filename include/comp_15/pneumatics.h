@@ -1,11 +1,25 @@
 #pragma once
-#include "main.h"
+#include "common_code/piston.h"
 
-class PneumaticsClass : public SubsystemParent
-{
-    private:
-
+class Pneumatics : public SubsystemParent {
     public:
-        PneumaticsClass(const PneumaticsClass& other) = delete;
-        ~PneumaticsClass();
+        static Pneumatics* createInstance(char wings_port, char floor_brake_port);
+        static Pneumatics* getInstance(); // static because need to be able to access without ExampleSubsystem objecct
+        ~Pneumatics();
+        Pneumatics(const Pneumatics& other) = delete;
+
+        void stop();
+
+        Piston* getWings();
+        Piston* getFloorBrake();
+
+
+    private:
+        Pneumatics(char piston1, char piston2);
+
+        //instance_ is set to nullptr in cpp file
+        static Pneumatics* instance_;
+
+        Piston wings;
+        Piston floor_brake;
 };
