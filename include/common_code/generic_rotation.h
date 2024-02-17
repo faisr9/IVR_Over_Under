@@ -1,5 +1,5 @@
 #pragma once
-
+#include "main.h"
 
 // The purpose of this class is to provide a parent class that can
 // leverage polymorphism to generically interact with either a Digikey
