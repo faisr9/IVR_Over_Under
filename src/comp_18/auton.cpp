@@ -12,12 +12,14 @@ void auton18(double auton_duration_time_millis, bool skills) {
     vector<double> start; //Start position
 	vector<vector<double>> curvePath;
 	double endY = 0.0;
+
 	if (!skills) {
 		start = vectOff(0, 0);
 		endY = 1.6;
 		curvePath = {start, {2.90, 0.4}, {2, endY}};
 	} else {
-		start = {2.15 * 0.61, 3.3};
+		start = {0.8 * 0.61, 5.3 * 0.61};
+		
 		endY = 1.55;
 		curvePath = {start, {2.90, 3.2}, {2, endY}};
 	}
@@ -35,17 +37,9 @@ void auton18(double auton_duration_time_millis, bool skills) {
 
     //1 tile is .61 meters (2 ft)
 
-    // 1. drop intake (activate climbing piston)
-    Pneumatics::getInstance()->getClimber()->on();
+	Pneumatics::getInstance()->setRight(1);
 
-    // 2. retract climbing piston
-    delay(500);
-	if(skills)
-    	Pneumatics::getInstance()->getClimber()->off();	
-
-    Intake::getInstance()->set_power(-127 / 1.5);
-
-    delay(75);
+    delay(100);
 
     move(curvePath, 88, false, true);
     vector<vector<double>> curvePath2 = {curvePath.back(), {2.6, endY}};
@@ -72,33 +66,33 @@ void auton18(double auton_duration_time_millis, bool skills) {
 	// 		}
 	// }};
 
-	pros::Task comp18goal_task {[=] {
-		while(1)
-		{
-			//Intake::getInstance()->set_power(0);
-			if (triBall())
-			{
-				Intake::getInstance()->set_power(127);
-				delay(250);
-				moveMotors(tank_drive_18,60, 60);
-				delay(1200);
-				left_drive_motors.move_velocity(0);
-				right_drive_motors.move_velocity(0);
-				double x=tank_drive_18.getOdom().getX(),
-					y=tank_drive_18.getOdom().getY();
-				vector<vector<double>> oscillate = {{x,y}, {x-.275,y}};
-				//followPath(curvePath2, tank_drive_18, 88, false, true, false, 0.5, 3.0, 200.0 / 3.0, 450.0 / 3.0, 30, false, 1.12);
-				move(oscillate, 88, 1, true);
-			}
-			delay(50);
-		}
-	}};
+	// pros::Task comp18goal_task {[=] {
+	// 	while(1)
+	// 	{
+	// 		//Intake::getInstance()->set_power(0);
+	// 		if (triBall())
+	// 		{
+	// 			Intake::getInstance()->set_power(127);
+	// 			delay(250);
+	// 			moveMotors(tank_drive_18,60, 60);
+	// 			delay(1200);
+	// 			left_drive_motors.move_velocity(0);
+	// 			right_drive_motors.move_velocity(0);
+	// 			double x=tank_drive_18.getOdom().getX(),
+	// 				y=tank_drive_18.getOdom().getY();
+	// 			vector<vector<double>> oscillate = {{x,y}, {x-.275,y}};
+	// 			//followPath(curvePath2, tank_drive_18, 88, false, true, false, 0.5, 3.0, 200.0 / 3.0, 450.0 / 3.0, 30, false, 1.12);
+	// 			move(oscillate, 88, 1, true);
+	// 		}
+	// 		delay(50);
+	// 	}
+	// }};
 
 	const double kABORT_TIME = kSTART_TIME + auton_duration_time_millis - 500;
 	while (pros::millis() < kABORT_TIME) {
         pros::delay(100);
     }
-    comp18goal_task.suspend();
+    // comp18goal_task.suspend();
 	Pneumatics::getInstance()->getClimber()->off();
     Intake::getInstance()->set_power(0);
 }
