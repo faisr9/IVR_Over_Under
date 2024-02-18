@@ -1,7 +1,12 @@
+// #include "comp_15/controls.h"
+// #include "main.h"
+// #include "common_code/movement_tank.h"
+// #include "auton.h"
+// #include "comp_15/include_list.h"
+#include "main.h" // Not needed, but present to show its included
+#include "comp_15/auton.h"
 #include "comp_15/controls.h"
-#include "main.h"
-#include "common_code/movement_tank.h"
-#include "auton.h"
+
 
 extern LinkHelper* comp15link;
 
@@ -36,6 +41,8 @@ void autonomous() {
 /* Opcontrol method runs by default (unless connected to comp controller )*/
 void opcontrol() {
 	controls(); // COMP
+	double vlue = 2;
+	vlue += M_PI;
 
 	// auton_15(60000, true); // SKILLS
 }

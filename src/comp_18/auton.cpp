@@ -1,6 +1,4 @@
 #include "comp_18/auton.h"
-#include "comp_18/devices.h"
-#include "common_code/movement_tank.h"
 
 LinkHelper* comp18link = LinkHelper::createInstance(8, E_LINK_RX);
 

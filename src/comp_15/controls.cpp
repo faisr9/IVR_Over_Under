@@ -1,4 +1,5 @@
-#include "comp_15/controls.h"
+// #include "comp_15/controls.h"
+#include "comp_15/include_list.h"
 
 // Will add driver profiles later
 void controls() {
