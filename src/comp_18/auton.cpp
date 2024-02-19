@@ -33,33 +33,36 @@ void auton18(double auton_duration_time_millis, bool skills) {
 		}
 	}};
 
-    //1 tile is .61 meters (2 ft)
+    // //1 tile is .61 meters (2 ft)
 
-    // 1. drop intake (activate climbing piston)
-    Pneumatics::getInstance()->getClimber()->on();
+    // // 1. drop intake (activate climbing piston)
+    // Pneumatics::getInstance()->getClimber()->on();
 
-    // 2. retract climbing piston
-    delay(500);
-	if(skills)
-    	Pneumatics::getInstance()->getClimber()->off();	
+    // // 2. retract climbing piston
+    // delay(500);
+	// if(skills)
+    // 	Pneumatics::getInstance()->getClimber()->off();	
 
-    Intake::getInstance()->set_power(-127 / 1.5);
+    // Intake::getInstance()->set_power(-127 / 1.5);
 
-    delay(75);
+    // delay(75);
 
-    move(curvePath, 88, false, true);
-    vector<vector<double>> curvePath2 = {curvePath.back(), {2.6, endY}};
-    vector<vector<double>> curvePath3 = {curvePath2.back(), {2.43, endY}};
-    vector<vector<double>> curvePath4 = {curvePath2.back(), {2.5, endY}};
-    Intake::getInstance()->set_power(127 / 1.5);
-    delay(250);
-    Pneumatics::getInstance()->setLeft(1);
-    followPath(curvePath2, tank_drive_18, 88, false, true, false, 0.5, 3.0, 200.0 / 3.0, 450.0 / 3.0, 30, false, 1.12);
-    //Pneumatics::getInstance()->setLeft(0);
-    move(curvePath3, 88, 1, true);
+    // move(curvePath, 88, false, true);
+    // vector<vector<double>> curvePath2 = {curvePath.back(), {2.6, endY}};
+    // vector<vector<double>> curvePath3 = {curvePath2.back(), {2.43, endY}};
+    // vector<vector<double>> curvePath4 = {curvePath2.back(), {2.5, endY}};
+    // Intake::getInstance()->set_power(127 / 1.5);
+    // delay(250);
+    // Pneumatics::getInstance()->setLeft(1);
+    // followPath(curvePath2, tank_drive_18, 88, false, true, false, 0.5, 3.0, 200.0 / 3.0, 450.0 / 3.0, 30, false, 1.12);
+    // //Pneumatics::getInstance()->setLeft(0);
+    // move(curvePath3, 88, 1, true);
 
-	if(skills)
-		Pneumatics::getInstance()->getClimber()->on();
+	// if(skills)
+	// 	Pneumatics::getInstance()->getClimber()->on();
+
+	delay(3500);
+	ctrl_master.rumble("-");
     
     //int counter=0;
 	comp18link->notify();
@@ -81,12 +84,13 @@ void auton18(double auton_duration_time_millis, bool skills) {
 				Intake::getInstance()->set_power(127);
 				delay(250);
 				moveMotors(tank_drive_18,60, 60);
-				delay(1200);
+				delay(1000);
 				left_drive_motors.move_velocity(0);
 				right_drive_motors.move_velocity(0);
 				double x=tank_drive_18.getOdom().getX(),
 					y=tank_drive_18.getOdom().getY();
-				vector<vector<double>> oscillate = {{x,y}, {x-.275,y}};
+				vector<vector<double>> oscillate = {vect(x,y), vect(x-.333,y)};
+				// vector<vector<double>> oscillate = {{x,y}, {x-(0.025*1),y}};
 				//followPath(curvePath2, tank_drive_18, 88, false, true, false, 0.5, 3.0, 200.0 / 3.0, 450.0 / 3.0, 30, false, 1.12);
 				move(oscillate, 88, 1, true);
 			}

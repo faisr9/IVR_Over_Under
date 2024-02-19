@@ -22,14 +22,14 @@ void auton_15(double auton_duration_time_millis, bool climb) {
 		}
 	}}; // lambda function with a task
 
-    Pneumatics::getInstance()->getFloorBrake()->on();
-    pros::delay(500);
+    // Pneumatics::getInstance()->getFloorBrake()->on();
+    // pros::delay(500);
     // release intake and catapult
-    Intake::getInstance()->set_power(127);
-    pros::delay(250);
+    // Intake::getInstance()->set_power(127);
+    // pros::delay(250);
     // kickstand down
-    Intake::getInstance()->set_power(0);
-    delay(1500);
+    // Intake::getInstance()->set_power(0);
+    // delay(1500);
 
     // start shooting portion of autonomous
 
@@ -41,13 +41,14 @@ void auton_15(double auton_duration_time_millis, bool climb) {
     pros::Task shooting_task{[=] {
         bool hasFired = false;
         CompetitionCatapult::getInstance()->set_cata_mode("P");
-        pros::delay(3000); // delay so jonah can place the triball
+        pros::delay(2500); // delay so jonah can place the triball
 	    int cycleCounter = 0;
         while (1) {
-            while(!CompetitionCatapult::getInstance()->get_switch_state()){
-                CompetitionCatapult::getInstance()->prime();
-                pros::lcd::set_text(2, "Priming");
-            }
+            if (!hasFired)
+                while(!CompetitionCatapult::getInstance()->get_switch_state()){
+                    CompetitionCatapult::getInstance()->prime();
+                    pros::lcd::set_text(2, "Priming");
+                }
             // doinker down
             DoinkerClass::getInstance()->move(DoinkerClass::DOWN); // did not go past here
             // small delay
@@ -66,6 +67,10 @@ void auton_15(double auton_duration_time_millis, bool climb) {
             
             // fire catapult and put it back down
             CompetitionCatapult::getInstance()->set_cata_mode("RP");
+            while(!CompetitionCatapult::getInstance()->get_switch_state()){
+                    CompetitionCatapult::getInstance()->prime();
+                    pros::lcd::set_text(2, "Priming");
+                }
             cycleCounter++;
             // wait for human player
             pros::delay(2500);
