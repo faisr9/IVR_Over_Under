@@ -138,48 +138,88 @@ void auton_15(double auton_duration_time_millis, bool climb) {
     odom_task.suspend();
 }
 
-/*
+void skills_15() {
+    const double starting_time = pros::millis();
+
+    const double kSKILLS_DURATION = 40000; // NEED TO CHANGE THIS LATER, 40000 FOR TESTING
+
+    const double kBOWL_TIME = 25000; // time we are driving the robot and pushing things in for
+    const double kBACK_FORTHS = 3; // we will shove in and back out 3 times
+
+    const double kSTART_ANGLE = 290.0;
+    vector<double> kSTARTING_POS = {0.6, 0.45};
+
+    drive.getOdom().initTracker(kSTARTING_POS[0], kSTARTING_POS[1], kSTART_ANGLE);
+
+    pros::Task odom_task{[=] {
+		while (1) {
+			drive.getOdom().updatePosition();
+			pros::delay(50);
+		}
+	}}; // lambda function with a task
+
+    // Intake::getInstance()->set_power(127);
+    // pros::delay(500);
+    // Intake::getInstance()->set_power(0);
+
+    // load until need to go bc of kBOWL_TIME
+
+    pros::Task wings_task{[=] {
+        int wing_cycles = 0;
+        const double kIN_TIME = 1000;
+        const double kHP_WAIT_TIME = 2500;
+
+        while (1) {
+            Pneumatics::getInstance()->getWings()->on();
+            pros::delay(kHP_WAIT_TIME);
+            Pneumatics::getInstance()->getWings()->off();
+            wing_cycles++;
+            pros::delay(kIN_TIME);
+        }
+    }};
+
+    // kSKILLS_DURATION - kBOWL_TIME = time we have left to do wings for
+    double time_since_start = pros::millis() - starting_time;
+    pros::delay((kSKILLS_DURATION - kBOWL_TIME) - (time_since_start));
+
+    // cleanup for wings task
+    wings_task.suspend();
+    Pneumatics::getInstance()->getWings()->off();
+
+    pros::Task to_bowl_pos_task{[=] {
+        
+        turnToAngle(drive, 270.0, 3.0);
+        vector<vector<double>> path_to_goal = {{drive.getOdom().getX(), drive.getOdom().getY()}, {2.8, 0.3}};
+
+        followPath(path_to_goal, drive, 270, true, false, false, 0.5, 5.0);
+
+        vector<vector<double>> back_up = {path_to_goal.back(), {2.4, 0.3}};
+        followPath(back_up, drive, 90, false, true, false, 0.5, 5.0);
+    }};
 
 
-15-Comp
-=====================
-$ Brakes Down
-$ Intake to Open Bot
-$ Cata Down
----- Cycle #X Times (Send this number via string to Comp18)
-Doinker Down (Once Cata is down)
-Doinker Up
-~ Wait for Comp 18 (Get to Position | Cycle Triball into goal)
-	~ Set timeout delay
-Cata Cycle
-Increment Counter on Controller
-Controller Rumble?
-Delay 1.5 sec (For placing Tribal)
----- To Cycle
-Cata Release
-Doinker Up
-Notify Comp18
-Drive to Contact Vertial Elevation (Inside)
-.END
+    while (to_bowl_pos_task.get_state() != pros::E_TASK_STATE_DELETED) {
+        // while path is not done
+        // have this here in case we want to extend/retract wings during path
+        pros::delay(100);
+    }
+    // no need to call suspend because it finishes on its own
+   
+    vector<vector<double>> push_in = {{drive.getOdom().getX(), drive.getOdom().getY()}, {3.3, 0.3}, {3.3, 0.9}};
 
-18-Comp
-=====================
-Intake Down
-Retract Climb Pistion
-Drive to Goal (AWP Attenpt)
-Notify Comp15 (At goal ready for cycle)
----- Cycle #X Times (Recieve Data from Comp 15)
-Notify Comp15
-~ Wait Til Distance Trigger
-	~ Set timeout
-Intake Out
-Move Forward (Score Triball)
-Move Back
-Intake Stop
----- To Cycle
-Wait for Comp15 to confirm completion
-Drive to contact vertical elevation (Outside)
-.END
+    followPath(push_in, drive, 0, false, false, false, 0.5, 4.0, 200.0, 450.0, 150.0);
 
+    for (int i = 0; i < kBACK_FORTHS; i++) {
+        vector<vector<double>> go_back = {{drive.getOdom().getX(), drive.getOdom().getY()}, {3.2, 0.6}};
+        followPath(go_back, drive, 0, true, true);
+        pros::delay(100);
+        moveMotors(drive, 150, 150);
+        pros::delay(1200);
+    }
 
-*/
+    moveMotors(drive, -50, -50);
+    pros::delay(500);
+
+    Pneumatics::getInstance()->getWings()->off();
+    odom_task.suspend();
+}

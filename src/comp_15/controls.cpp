@@ -32,10 +32,10 @@ void controls() {
             CompetitionCatapult::getInstance()->set_cata_mode("I");
         }
 
-        //PNEUMATICS CONTROLS
-        // if(ctrl_master.get_digital_new_press(E_CONTROLLER_DIGITAL_X)) {
-        //     Pneumatics::getInstance()->getWings()->toggle();
-        // }
+        // PNEUMATICS CONTROLS
+        if(ctrl_master.get_digital_new_press(E_CONTROLLER_DIGITAL_X)) {
+            Pneumatics::getInstance()->getWings()->toggle();
+        }
         if(ctrl_master.get_digital_new_press(E_CONTROLLER_DIGITAL_Y)) {
             Pneumatics::getInstance()->getFloorBrake()->toggle();
         }
