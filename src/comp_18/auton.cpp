@@ -11,8 +11,7 @@ void auton18(double auton_duration_time_millis, bool skills) {
 
 	const double kSTART_TIME = pros::millis();
 
-	vector<vector<double>> curvePath;
-	double endY;	
+	vector<vector<double>> curvePath;	
 
 	// if (!skills) {
 	// 	start = vectOffComp(0, 0);
@@ -20,8 +19,7 @@ void auton18(double auton_duration_time_millis, bool skills) {
 	// 	curvePath = {start, {2.90, 0.4}, {2, endY}};
 	// } else {
 		start = {0.8 * 0.61, 5.1 * 0.61};
-		endY = 5.4 * 0.61;
-		curvePath = {start, vect(2,5.5), vect(4,5.5)};
+		curvePath = {start, vect(1.5,5.5), vect(4,5.5)};
 	// }
 
 	tank_drive_18.getOdom().initTracker(start[0], start[1], 45);
@@ -40,24 +38,31 @@ void auton18(double auton_duration_time_millis, bool skills) {
 	vector<vector<double>> curvePath3Fwd = {curvePath3Rev.back(), curvePath2.back()};
 
     //1 tile is .61 meters (2 ft)
-	turn(75);
+
 	Pneumatics::getInstance()->setLeft(1);
+	pros::delay(250);
+	turn(75);
 	pros::Task comp18bowl_task {[=] {
 		for(int i=0; i<9; i++){
-			delay(250);
+			pros::delay(250);
 			turn(55);
-			delay(1500);
+			pros::delay(1500);
 			turn(75);
 		}
 		Pneumatics::getInstance()->setLeft(0);
-		delay(250);
+		pros::delay(250);
 		move(curvePath, 90, false, true);
-		delay(250);
+		pros::delay(250);
 		move(curvePath2, 180, false, true);
-		delay(250);
+		pros::delay(250);
 		move(curvePath3Rev, 180, true, true);
-		delay(250);
+		pros::delay(250);
 		move(curvePath3Fwd, 180, false, true);
+		pros::delay(250);
+		move(curvePath3Rev, 180, true, true);
+		pros::delay(250);
+		move(curvePath3Fwd, 180, false, true);
+		
 	}};
 
     
