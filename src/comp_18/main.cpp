@@ -23,17 +23,17 @@ void competition_initialize() {}
 void autonomous() {
 
 	// Comp
-	// auton18(45000, false);
+	auton18(45000, false);
 
 	// Skills
-	auton18(60000, true);
+	// auton18(60000, true);
 }
 
 /* Opcontrol method runs by default (unless connected to comp controller )*/
 void opcontrol() {
 	// Comp
-    // controls();
+    controls();
 
 	// Skills
-	auton18(60000, true);
+	// auton18(60000, true);
 }
