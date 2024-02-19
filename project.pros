@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "IVR_Over_Under",
+    "project_name": "Raze_Test",
     "target": "v5",
     "templates": {
       "kernel": {
@@ -309,9 +309,9 @@
       }
     },
     "upload_options": {
-      "slot": 1,
+      "slot": 6,
       "description": "Master Code",
-      "icon": "X"
+      "icon": "power"
     }
   }
 }
