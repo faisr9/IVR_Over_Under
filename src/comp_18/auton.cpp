@@ -11,20 +11,19 @@ void auton18(double auton_duration_time_millis, bool skills) {
 
     vector<double> start; //Start position
 	vector<vector<double>> curvePath;
-	double endY = 0.0;
+	double endY;	
 
-	if (!skills) {
-		start = vectOff(0, 0);
-		endY = 1.6;
-		curvePath = {start, {2.90, 0.4}, {2, endY}};
-	} else {
+	// if (!skills) {
+	// 	start = vectOffComp(0, 0);
+	// 	endY = 1.6;
+	// 	curvePath = {start, {2.90, 0.4}, {2, endY}};
+	// } else {
 		start = {0.8 * 0.61, 5.3 * 0.61};
-		
-		endY = 1.55;
-		curvePath = {start, {2.90, 3.2}, {2, endY}};
-	}
+		endY = 5.45 * 0.61;
+		curvePath = {start, {0.9 * 0.61, endY}};
+	// }
 
-	tank_drive_18.getOdom().initTracker(start[0], start[1], 90);
+	tank_drive_18.getOdom().initTracker(start[0], start[1], 50);
     pros::delay(50);
 
 	pros::Task odom_task{[=] {
@@ -35,25 +34,42 @@ void auton18(double auton_duration_time_millis, bool skills) {
 		}
 	}};
 
-    //1 tile is .61 meters (2 ft)
-
-	Pneumatics::getInstance()->setRight(1);
-
-    delay(100);
-
-    move(curvePath, 88, false, true);
-    vector<vector<double>> curvePath2 = {curvePath.back(), {2.6, endY}};
+	vector<vector<double>> curvePath2 = {curvePath.back(), {2.6, endY}};
     vector<vector<double>> curvePath3 = {curvePath2.back(), {2.43, endY}};
     vector<vector<double>> curvePath4 = {curvePath2.back(), {2.5, endY}};
-    Intake::getInstance()->set_power(127 / 1.5);
-    delay(250);
-    Pneumatics::getInstance()->setLeft(1);
-    followPath(curvePath2, tank_drive_18, 88, false, true, false, 0.5, 3.0, 200.0 / 3.0, 450.0 / 3.0, 30, false, 1.12);
+
+    //1 tile is .61 meters (2 ft)
+	Intake::getInstance()->set_power(127 / 1.5);
+    delay(600);
+	Intake::getInstance()->set_power(0);
+
+    move(curvePath, 52, false, true);
+	Pneumatics::getInstance()->setLeft(1);
+	pros::Task comp18bowl_task {[=] {
+		for(int i=0; i<9; i++){
+			delay(250);
+			Pneumatics::getInstance()->setLeft(0);
+			delay(2500);
+			Pneumatics::getInstance()->setLeft(1);
+		}
+		// followPath(curvePath2, tank_drive_18, 88, false, true, false, 0.5, 3.0, 200.0 / 3.0, 450.0 / 3.0, 30, false, 1.12);
+
+		// move(curvePath2, 88, 1, true);
+
+		// delay(250);
+
+		// move(curvePath3, 88, 1, true);
+
+		// delay(250);
+
+		// move(curvePath3, 88, 1, true);
+	}};
+
+
+    // 
+
     //Pneumatics::getInstance()->setLeft(0);
     move(curvePath3, 88, 1, true);
-
-	if(skills)
-		Pneumatics::getInstance()->getClimber()->on();
     
     //int counter=0;
 	comp18link->notify();
@@ -66,45 +82,41 @@ void auton18(double auton_duration_time_millis, bool skills) {
 	// 		}
 	// }};
 
-	// pros::Task comp18goal_task {[=] {
-	// 	while(1)
-	// 	{
-	// 		//Intake::getInstance()->set_power(0);
-	// 		if (triBall())
-	// 		{
-	// 			Intake::getInstance()->set_power(127);
-	// 			delay(250);
-	// 			moveMotors(tank_drive_18,60, 60);
-	// 			delay(1200);
-	// 			left_drive_motors.move_velocity(0);
-	// 			right_drive_motors.move_velocity(0);
-	// 			double x=tank_drive_18.getOdom().getX(),
-	// 				y=tank_drive_18.getOdom().getY();
-	// 			vector<vector<double>> oscillate = {{x,y}, {x-.275,y}};
-	// 			//followPath(curvePath2, tank_drive_18, 88, false, true, false, 0.5, 3.0, 200.0 / 3.0, 450.0 / 3.0, 30, false, 1.12);
-	// 			move(oscillate, 88, 1, true);
-	// 		}
-	// 		delay(50);
-	// 	}
-	// }};
-
 	const double kABORT_TIME = kSTART_TIME + auton_duration_time_millis - 500;
 	while (pros::millis() < kABORT_TIME) {
         pros::delay(100);
     }
     // comp18goal_task.suspend();
-	Pneumatics::getInstance()->getClimber()->off();
+	Pneumatics::getInstance()->setLeft(0);
     Intake::getInstance()->set_power(0);
 }
 
+/** Converts inputted tile coordinates, x and y, into meters.
+ * usage example: 
+ * 
+ *     vect(1, 2);
+ *
+*/
 vector<double> vect(double x, double y){
     return {(x*.61), (y*.61)};
 }
 
-vector<double> vectOff(double x, double y){
+/** Converts inputted tile coordinates, x and y, into meters, with the starting location offset for comp.
+ * usage example: 
+ * 
+ *     vectOffComp(1, 2);
+ *
+*/
+vector<double> vectOffComp(double x, double y){
     return {(.61*2.2)+(x*.61), (.61*.5)+(y*.61)};
 }
 
+/** Moves the robot to the specified location and angle using movement vectors.
+ * usage example: 
+ * 
+ *     move(vect(1, 2), 90, false, true);
+ *
+*/
 void move(vector<vector<double>> moveVec, int angle, bool isReversed, bool isSpinAtEnd)
 {
     double speedfactor=3.0;
