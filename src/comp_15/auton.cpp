@@ -146,10 +146,11 @@ void skills_15() {
     const double kBOWL_TIME = 25000; // time we are driving the robot and pushing things in for
     const double kBACK_FORTHS = 3; // we will shove in and back out 3 times
 
-    const double kSTART_ANGLE = 290.0;
-    vector<double> kSTARTING_POS = {0.6, 0.45};
+    const double kSTART_ANGLE = 287.0;
+    vector<double> kSTARTING_POS = {0.55, 0.45};
 
     drive.getOdom().initTracker(kSTARTING_POS[0], kSTARTING_POS[1], kSTART_ANGLE);
+    pros::delay(100);
 
     pros::Task odom_task{[=] {
 		while (1) {
@@ -163,18 +164,20 @@ void skills_15() {
     // Intake::getInstance()->set_power(0);
 
     // load until need to go bc of kBOWL_TIME
-
-    pros::Task wings_task{[=] {
-        int wing_cycles = 0;
-        const double kIN_TIME = 1000;
-        const double kHP_WAIT_TIME = 2500;
+    pros::Task spinning_task{[=] {
+        int cycles = 0;
+        const double kHP_WAIT_TIME = 1500;
+        const int turn_amount = 45;
+        Pneumatics::getInstance()->getWings()->on();
+        pros::delay(kHP_WAIT_TIME);
 
         while (1) {
-            Pneumatics::getInstance()->getWings()->on();
+            turnToAngle(drive, kSTART_ANGLE - turn_amount, 8.0, false, 3.0, 150); // more p because triball is in the way and don't care as much about precision
+            turnToAngle(drive, kSTART_ANGLE, 5.0);
+            // Pneumatics::getInstance()->getWings()->on();
             pros::delay(kHP_WAIT_TIME);
-            Pneumatics::getInstance()->getWings()->off();
-            wing_cycles++;
-            pros::delay(kIN_TIME);
+            // Pneumatics::getInstance()->getWings()->off();
+            cycles++;
         }
     }};
 
@@ -183,13 +186,14 @@ void skills_15() {
     pros::delay((kSKILLS_DURATION - kBOWL_TIME) - (time_since_start));
 
     // cleanup for wings task
-    wings_task.suspend();
+    spinning_task.suspend();
     Pneumatics::getInstance()->getWings()->off();
 
+    // task to drive to the bowl
     pros::Task to_bowl_pos_task{[=] {
         
         turnToAngle(drive, 270.0, 3.0);
-        vector<vector<double>> path_to_goal = {{drive.getOdom().getX(), drive.getOdom().getY()}, {2.8, 0.3}};
+        vector<vector<double>> path_to_goal = {{drive.getOdom().getX(), drive.getOdom().getY()}, {0.9, 0.25}, {2.7, 0.3}};
 
         followPath(path_to_goal, drive, 270, true, false, false, 0.5, 5.0);
 
@@ -198,6 +202,7 @@ void skills_15() {
     }};
 
 
+    // wait until task is over
     while (to_bowl_pos_task.get_state() != pros::E_TASK_STATE_DELETED) {
         // while path is not done
         // have this here in case we want to extend/retract wings during path
@@ -205,10 +210,11 @@ void skills_15() {
     }
     // no need to call suspend because it finishes on its own
    
+    // first push in
     vector<vector<double>> push_in = {{drive.getOdom().getX(), drive.getOdom().getY()}, {3.3, 0.3}, {3.3, 0.9}};
-
     followPath(push_in, drive, 0, false, false, false, 0.5, 4.0, 200.0, 450.0, 150.0);
 
+    // go back and forth some number of times
     for (int i = 0; i < kBACK_FORTHS; i++) {
         vector<vector<double>> go_back = {{drive.getOdom().getX(), drive.getOdom().getY()}, {3.2, 0.6}};
         followPath(go_back, drive, 0, true, true);
@@ -217,9 +223,12 @@ void skills_15() {
         pros::delay(1200);
     }
 
+    // final drive back, make sure there's time for this bc any triballs being touched at end don't count
     moveMotors(drive, -50, -50);
     pros::delay(500);
 
-    Pneumatics::getInstance()->getWings()->off();
+    // we should decide if taking the wings in at the end is a good idea or not (risk of touching triballs)
+
+    // Pneumatics::getInstance()->getWings()->off();
     odom_task.suspend();
 }

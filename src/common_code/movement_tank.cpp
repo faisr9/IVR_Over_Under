@@ -11,11 +11,19 @@ void stopMotors(traditional_drive& drive) {
 }
 
 // to be used exclusively when only turning (no translation)
-void turnToAngle(traditional_drive& drive, double desiredAngleDeg, double toleranceDeg, bool debug, double p) {
+void turnToAngle(traditional_drive& drive, double desiredAngleDeg, double toleranceDeg, bool debug, double p, int time_in_range) {
     double degFromFinalAngle = desiredAngleDeg - drive.get_imu().get_heading();
     degFromFinalAngle = optimizeAngle(degFromFinalAngle);
     double start_time = pros::millis();
-    while (std::abs(degFromFinalAngle) > toleranceDeg) {
+    double in_range_time = 0;
+    const int required_time = time_in_range;
+    const int delay_time = 20;
+    while (in_range_time < required_time) {
+        if (std::abs(degFromFinalAngle) <= toleranceDeg) {
+            in_range_time += (delay_time);
+        } else {
+            in_range_time = 0;
+        }
         degFromFinalAngle = optimizeAngle(desiredAngleDeg - drive.get_imu().get_heading());
         double rotRPM = degFromFinalAngle * p;
         moveMotors(drive, rotRPM, -rotRPM);
@@ -24,7 +32,7 @@ void turnToAngle(traditional_drive& drive, double desiredAngleDeg, double tolera
             if (debug) pros::lcd::set_text(6, "Turn to angle timeout reached!!!");
             break;
         } 
-        pros::delay(50);
+        pros::delay(delay_time);
     }
     // need to stop motors in case of break statement
     stopMotors(drive);

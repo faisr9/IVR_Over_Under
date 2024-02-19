@@ -11,6 +11,11 @@ void controls() {
         //ACTIVATE DRIVE
         drive.toggle_drive_mode();
 
+        // // TESTING CODE, REMOVE THIS BEFORE MERGING TO MASTER
+        // if (ctrl_master.get_digital_new_press(E_CONTROLLER_DIGITAL_UP)) {
+        //     turnToAngle(drive, 0, 5.0, false, 1.9, wait_time);
+        // }
+
         //INTAKE CONTROLS
         if (ctrl_master.get_digital(E_CONTROLLER_DIGITAL_A) || ctrl_master.get_digital(BUTTON_R2)){
             Intake::getInstance()->set_power(12000);
@@ -52,7 +57,7 @@ void controls() {
         DoinkerClass::getInstance()->move(doinker_state);
 
         // 3600 to 1240
-
+        
         // Keeps doinkerUp during driver control
         pros::delay(15);
     }
