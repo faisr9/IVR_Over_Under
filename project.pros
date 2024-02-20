@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "IVR_Over_Under",
+    "project_name": "IVR_15_Bowling",
     "target": "v5",
     "templates": {
       "kernel": {
@@ -311,7 +311,7 @@
     "upload_options": {
       "slot": 2,
       "description": "Master Code",
-      "icon": "X"
+      "icon": "planet"
     }
   }
 }

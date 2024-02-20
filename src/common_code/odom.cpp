@@ -78,6 +78,15 @@ void Odom::updatePosition() {
     positionX += isnan(deltaX) ? 0 : deltaX;
     positionY += isnan(deltaY) ? 0 : deltaY;
 
+    
+    if (transverseWheel) {
+        pros::lcd::set_text(5, "Transverse Raw: " + std::to_string(transverseWheel->get_raw_data()));
+    }
+    if (radialWheel) {
+        pros::lcd::set_text(6, "Radial Raw: " + std::to_string(radialWheel->get_raw_data()));
+    }
+    pros::lcd::set_text(7, "IMU degrees: " + std::to_string(getHeading()));
+
     pros::lcd::set_text(3, "Position X: " + std::to_string(positionX));
     pros::lcd::set_text(4, "Position Y: " + std::to_string(positionY));
     // if (transverseWheel) {

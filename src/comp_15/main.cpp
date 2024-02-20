@@ -29,10 +29,10 @@ void competition_initialize() {}
 /* Autonomous method */
 void autonomous() {
 	// COMP
-	auton_15(45000, false); // COMP
+	// auton_15(45000, false); // COMP
 
 	// SKILLS
-	// auton_15(60000, true);
+	skills_15();
 
 	// auton_15(20000, true); // TESTING
 	pros::delay(5000); // just putting this here to make sure nothing weird happens that we don't want upon auton code ending
@@ -40,9 +40,18 @@ void autonomous() {
 
 /* Opcontrol method runs by default (unless connected to comp controller )*/
 void opcontrol() {
+
+	drive.getOdom().initTracker(0, 0, 0);
+
+	pros::Task odom_task{[=] {
+		while (1) {
+			drive.getOdom().updatePosition();
+			pros::delay(50);
+		}
+	}}; // lambda function with a task
+
+
 	controls(); // COMP
-	double vlue = 2;
-	vlue += M_PI;
 
 	// auton_15(60000, true); // SKILLS
 }
