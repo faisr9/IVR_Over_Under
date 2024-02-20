@@ -21,19 +21,24 @@ void competition_initialize() {}
 
 /* Autonomous method */
 void autonomous() {
+	if(gui::selected_auton == gui::AUTON_COMP) {
+		auton18(45000, false);
+	}
+	else if(gui::selected_auton == gui::AUTON_SKILLS) {
+		auton18(60000, true);
+	}
+	else {
+		return;
+	}
 
-	// Comp
-	// auton18(45000, false);
-
-	// Skills
-	auton18(60000, true);
+	pros::delay(5000); // just putting this here to make sure nothing weird happens that we don't want upon auton code ending
 }
 
 /* Opcontrol method runs by default (unless connected to comp controller )*/
 void opcontrol() {
 	// Comp
-    // controls();
+    controls();
 
 	// Skills
-	auton18(60000, true);
+	// auton18(60000, true);
 }

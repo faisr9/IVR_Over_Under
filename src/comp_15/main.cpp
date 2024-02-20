@@ -3,10 +3,10 @@
 // #include "common_code/movement_tank.h"
 // #include "auton.h"
 // #include "comp_15/include_list.h"
-#include "main.h" // Not needed, but present to show its included
+// #include "main.h" // Not needed, but present to show its included
 #include "comp_15/auton.h"
 #include "comp_15/controls.h"
-
+#include "comp_15/gui.h"
 
 extern LinkHelper* comp15link;
 
@@ -17,6 +17,7 @@ void initialize() {
 	imu.reset(); // Very important!!!
 	horizontal_track_adi.reset();
 	vertical_track_adi.reset();
+	gui_init();
 	pros::delay(3000);
 }
 
@@ -28,13 +29,16 @@ void competition_initialize() {}
 
 /* Autonomous method */
 void autonomous() {
-	// COMP
-	auton_15(45000, false); // COMP
+	if(gui::selected_auton == gui::AUTON_COMP) {
+		auton_15(45000, false);
+	}
+	else if(gui::selected_auton == gui::AUTON_SKILLS) {
+		auton_15(60000, true);
+	}
+	else {
+		return;
+	}
 
-	// SKILLS
-	// auton_15(60000, true);
-
-	// auton_15(20000, true); // TESTING
 	pros::delay(5000); // just putting this here to make sure nothing weird happens that we don't want upon auton code ending
 }
 
