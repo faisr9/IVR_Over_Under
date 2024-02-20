@@ -33,6 +33,13 @@ void autonomous() {
 
 /* Opcontrol method runs by default (unless connected to comp controller )*/
 void opcontrol() {
+	pros::Task odom_task{[=] {
+		while (1) {
+			tank_drive_18.getOdom().updatePosition();
+			pros::lcd::set_text(7, "A: " + std::to_string(tank_drive_18.getOdom().getHeading()));
+			pros::delay(50);
+		}
+	}};
 	// Comp
     controls();
 

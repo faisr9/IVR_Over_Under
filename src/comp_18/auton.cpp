@@ -1,13 +1,11 @@
 #include "comp_18/auton.h"
-#include "comp_18/devices.h"
 
 LinkHelper* comp18link = LinkHelper::createInstance(8, E_LINK_RX);
 
 using namespace pros;
 using namespace std;
 
-vector<double> start; //Start position
-double p=1.12;
+vector<double> start= {1.1 * 0.61, 5.4 * 0.61};; //Start position
 
 void auton18(double auton_duration_time_millis, bool skills) {
 
@@ -20,11 +18,10 @@ void auton18(double auton_duration_time_millis, bool skills) {
 	// 	endY = 1.6;
 	// 	curvePath = {start, {2.90, 0.4}, {2, endY}};
 	// } else {
-		start = {1.1 * 0.61, 5.2 * 0.61};
 		// curvePath = {start, vect(.9, 5}};
 	// }
 
-	tank_drive_18.getOdom().initTracker(start[0], start[1], 225);
+	tank_drive_18.getOdom().initTracker(start[0], start[1], 223);
     pros::delay(50);
 
 	pros::Task odom_task{[=] {
@@ -35,8 +32,8 @@ void auton18(double auton_duration_time_millis, bool skills) {
 		}
 	}};
 	vector<vector<double>> curvePath1 = {start, vect(1.5,5.5), vect(4,5.5)};
-	vector<vector<double>> curvePath2 = {curvePath1.back(), vect(1.5, 5.5), vect(5,5.5), vect(5.2, 4.5)};
-	vector<vector<double>> curvePath3Rev = {curvePath2.back(), vect(5.5, 5.5)};
+	vector<vector<double>> curvePath2 = {curvePath1.back(), vect(5,5.4), vect(5.2, 4.5)};
+	vector<vector<double>> curvePath3Rev = {curvePath2.back(), vect(5.2, 5.5)};
 	vector<vector<double>> curvePath3Fwd = {curvePath3Rev.back(), curvePath2.back()};
 
     //1 tile is .61 meters (2 ft)
@@ -47,31 +44,31 @@ void auton18(double auton_duration_time_millis, bool skills) {
 		pros::delay(50);
 	}
 	stopMotors(tank_drive_18);
-	pros::delay(250);
-	turn(270);
-	pros::delay(250);
+
 	Pneumatics::getInstance()->setRight(1);
+
+	pros::delay(250);
+	turnF(270);
+	pros::delay(250);
 	
 	pros::Task comp18bowl_task {[=] {
 		for(int i=0; i<14; i++){
 			// Pneumatics::getInstance()->setRight(0);
-			p=1.5;
 			pros::delay(250/2);
-			turn(240);
+			turnF(240);
 			pros::delay(500/2);
 			// Pneumatics::getInstance()->setRight(1);
-			turn(270);
+			turnF(270);
 		}
 		
 		Pneumatics::getInstance()->setRight(0);
-		turn(225);
+		turn(45);
 		pros::delay(150);
-		move(curvePath1, 270, true, true, 3.0);
-		
+		move(curvePath1, 90, false, true, 3.0);
 		pros::delay(150);
 		
-		/*
-		move(curvePath2, 0, true, true, 3.0);
+		// /*
+		move(curvePath2, 180, false, true, 3.0);
 		pros::delay(150);
 
 		Pneumatics::getInstance()->setLeft(1);
@@ -80,12 +77,12 @@ void auton18(double auton_duration_time_millis, bool skills) {
 
 		for(int i=0; i<3; i++){
 			// followPath(curvePath3Rev, tank_drive_18, 0, false, true, false, 0.5, 3.0, 200.0, 450.0, 40.0, false, 1.12);
-			move(curvePath3Rev, 0, false, true, 1.0);
+			move(curvePath3Rev, 180, true, true, 1.0);
 			pros::delay(250);
 			// followPath(curvePath3Fwd, tank_drive_18, 0, true, true, false, 0.5, 3.0, 200.0, 450.0, 40.0, false, 1.12);
-			move(curvePath3Fwd, 0, true, true, 1.0);
+			move(curvePath3Fwd, 180, false, true, 1.0);
 		}
-		*/
+		// */
 	}};
 
     
@@ -148,7 +145,18 @@ void move(vector<vector<double>> moveVec, int angle, bool isReversed, bool isSpi
  *
 */
  void turn(double angle){
-	turnToAngle(tank_drive_18, angle, 10.0, false, p, 50); //p=1.12 // turndegtolerance=3 //time 150
+	turnToAngle(tank_drive_18, angle, 3.0, false, 1.12, 150); //p=1.12 // turndegtolerance=3 //time 150
+ }
+/*
+
+/** Turns the robot to the specified angle with increased velocity.
+ * usage example: 
+ * 
+ *     turn(90);
+ *
+*/
+ void turnF(double angle){
+	turnToAngle(tank_drive_18, angle, 10.0, false, 1.5, 50); //p=1.12 // turndegtolerance=3 //time 150
  }
 /*
 
