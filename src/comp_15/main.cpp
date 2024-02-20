@@ -6,7 +6,6 @@
 // #include "main.h" // Not needed, but present to show its included
 #include "comp_15/auton.h"
 #include "comp_15/controls.h"
-#include "comp_15/gui.h"
 
 extern LinkHelper* comp15link;
 

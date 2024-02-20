@@ -63,6 +63,7 @@ lv_obj_t* createLabel(lv_obj_t * parent, lv_coord_t x, lv_coord_t y, lv_coord_t 
 lv_res_t autonSelection(lv_obj_t *btn)
 {
     short int id = lv_obj_get_free_num(btn);
+    screenSave_delay = 0;
     
     switch(id)
     {
@@ -92,39 +93,38 @@ lv_res_t autonSelection(lv_obj_t *btn)
 lv_res_t driveTypeUpdate(lv_obj_t *btn_inp)
 {
     short int id = lv_obj_get_free_num(btn_inp);
+    screenSave_delay = 0;
 
     switch (id)
     {
         case 1:
-            lv_sw_on(tank_drive_switch);
-            lv_sw_off(arcade_drive_switch);
-            gui::tank_drive = true;
+            lv_sw_on_anim(tank_drive_switch);
+            lv_sw_off_anim(arcade_drive_switch);
+            // gui::tank_drive = true;
+            drive.change_drive_mode(1);
             break;
         case 2:
-            lv_sw_on(arcade_drive_switch);
-            lv_sw_off(tank_drive_switch);
-            gui::tank_drive = false;
+            lv_sw_on_anim(arcade_drive_switch);
+            lv_sw_off_anim(tank_drive_switch);
+            // gui::tank_drive = false;
+            drive.change_drive_mode(0);
             break;
     }
 
-    return LV_RES_OK;   
-}
+    // printf("Tank Drive: %s\n", gui::tank_drive ? "True" : "False");
 
-lv_res_t manualDoinkerToggle(lv_obj_t *btn)
-{
-    lv_sw_toggle(manual_doinker_switch);
-    gui::manual_doinker_enable = lv_sw_get_state(manual_doinker_switch);
-    return LV_RES_OK;
+    return LV_RES_OK;   
 }
 
 lv_res_t manualTrigger(lv_obj_t *btn)
 {
     short int id = lv_obj_get_free_num(btn);
+    screenSave_delay = 0;
 
     switch (id)
     {
         case 1:
-            CompetitionCatapult::getInstance()->release();
+            CompetitionCatapult::getInstance()->set_cata_mode("I");
             break;
         case 2:
             Pneumatics::getInstance()->stop();
@@ -132,6 +132,112 @@ lv_res_t manualTrigger(lv_obj_t *btn)
     }
 
     return LV_RES_OK;
+}
+
+void raze_ss_runner()
+{
+    frameObj = lv_img_create(lv_scr_act(), NULL);
+    lv_img_set_src(frameObj, &Frame);
+    lv_obj_align(frameObj, NULL, LV_ALIGN_CENTER, 0, 0);
+    razeImg = lv_img_create(lv_scr_act(), NULL);
+    lv_img_set_src(razeImg, &BothOpen);
+    lv_obj_align(razeImg, NULL, LV_ALIGN_CENTER, 0, 0);
+    runRaze = true;
+
+    razeImg->hidden = true;
+    frameObj->hidden = true;
+    
+    pros::delay(1000); // Delay to allow the screen to be fully initialized
+    
+    screenSave_delay = 0;
+
+    while(1)
+    {
+        if (screenSave_delay > 15 || (pros::competition::is_connected() && !pros::competition::is_disabled()))
+        {
+            screenSave_delay = 0;
+            lv_obj_del(illini_label);
+            lv_obj_del(robot_label);
+            lv_obj_del(auton_select_label);
+            lv_obj_del(comp_auton_btn);
+            lv_obj_del(skills_auton_btn);
+            lv_obj_del(no_auton_btn);
+            lv_obj_del(tank_drive_btn);
+            lv_obj_del(tank_drive_switch);
+            lv_obj_del(arcade_drive_btn);
+            lv_obj_del(arcade_drive_switch);
+            lv_obj_del(manual_trigger_btn1);
+            lv_obj_del(manual_trigger_btn2);
+
+            frameObj->hidden = false;
+            razeImg->hidden = false;
+
+            pros::delay(1000); // Delay to allow the screen to be fully initialized
+            lv_obj_align(frameObj, NULL, LV_ALIGN_CENTER, 10, 0);
+            delay(150);
+            lv_obj_align(frameObj, NULL, LV_ALIGN_CENTER, 0, 0);
+
+            if(pros::competition::is_connected() && !pros::competition::is_disabled())
+                glitch = true;
+            else
+                glitch = false;
+
+            break;
+        }
+        else
+        {
+            screenSave_delay++;
+        }
+
+        pros::delay(1000);
+    }
+
+    while(runRaze)
+    {
+        if(pros::competition::is_connected() && !pros::competition::is_disabled())
+            glitch = true;
+        else
+            glitch = false;
+
+        lastClick = pros::c::screen_touch_status();
+        if(delayCountOne >= razeBlickDelay)
+        {
+            if(rand()%2 == 0)
+                lv_img_set_src(razeImg, &LeftOpen);
+            else
+                lv_img_set_src(razeImg, &RightOpen);
+            pros::delay(100);
+            lv_img_set_src(razeImg, &BothClosed);
+            pros::delay(100);
+            lv_img_set_src(razeImg, &BothOpen);
+            razeBlickDelay = ((double)((rand()%4) + 1.5) + (double)((rand()%8)/10.0));  // Blinking (1.5-5.5)
+            delayCountOne = 0.0;
+        }
+        else
+        {
+            if(glitch)
+            {
+                delayCountOne += 0.033;
+                lv_obj_align(razeImg, NULL, LV_ALIGN_CENTER, (rand() % 21 + (-10)), 0);
+                pros::Task::delay(33);
+            }
+            else
+            {
+                lv_obj_align(razeImg, NULL, LV_ALIGN_CENTER, 0, 0);
+                delayCountOne += 0.05;
+                pros::Task::delay(50);
+            }
+        }
+
+        if(lastClick.touch_status == pros::E_TOUCH_HELD)
+        {
+            runRaze = false;      
+            lv_obj_del(frameObj);
+            lv_obj_del(razeImg);
+
+            Task ss_restart(gui_init);
+        }
+    }
 }
 
 void gui_init()
@@ -199,14 +305,35 @@ void gui_init()
     manualReleased.body.radius = 2;
 
     lv_style_copy(&manualPressed, &lv_style_plain);
-    manualPressed.body.main_color = LV_COLOR_MAKE(200, 200, 200);
-    manualPressed.body.grad_color = LV_COLOR_MAKE(200, 200, 200);
+    manualPressed.body.main_color = LV_COLOR_MAKE(145, 145, 145);
+    manualPressed.body.grad_color = LV_COLOR_MAKE(145, 145, 145);
     manualPressed.body.border.color = LV_COLOR_MAKE(24, 84, 182);
     manualPressed.body.border.width = 2;
     manualPressed.body.radius = 8;
 
-    lv_style_copy(&switchStyle, &lv_style_plain);
-    // need to make
+    lv_style_copy(&switch_knob_off_style, &lv_style_plain);
+    switch_knob_off_style.body.main_color = LV_COLOR_MAKE(100, 0, 0);
+    switch_knob_off_style.body.grad_color = LV_COLOR_MAKE(100, 0, 0);
+    switch_knob_off_style.body.radius = 15;
+
+    lv_style_copy(&switch_knob_on_style, &lv_style_plain);
+    switch_knob_on_style.body.main_color = LV_COLOR_MAKE(0, 0, 255);
+    switch_knob_on_style.body.grad_color = LV_COLOR_MAKE(0, 0, 255);
+    switch_knob_on_style.body.radius = 15;
+
+    lv_style_copy(&switch_bg_style, &lv_style_plain);
+    switch_bg_style.body.main_color = LV_COLOR_MAKE(50, 50, 50);
+    switch_bg_style.body.grad_color = LV_COLOR_MAKE(50, 50, 50);
+    switch_bg_style.body.border.color = LV_COLOR_MAKE(50, 50, 50);
+    switch_bg_style.body.radius = 8;
+    switch_bg_style.body.border.width = 10; 
+
+    lv_style_copy(&switch_indic_style, &lv_style_plain);
+    switch_indic_style.body.main_color = LV_COLOR_MAKE(0, 255, 0);
+    switch_indic_style.body.grad_color = LV_COLOR_MAKE(0, 255, 0);
+    switch_indic_style.body.border.color = LV_COLOR_MAKE(0, 255, 0);
+    switch_indic_style.body.radius = 8;
+    switch_indic_style.body.border.width = 8;
 
     // Create Objects //
     backround = createBtn(lv_scr_act(), 0, 0, SCREEN_WIDTH_MAX, SCREEN_HEIGHT_MAX,
@@ -235,33 +362,39 @@ void gui_init()
     tank_drive_btn = createBtn(lv_scr_act(), 180, 40, 70, 35,
         &modeBtnStyle, &modeBtnStyle, LV_BTN_ACTION_CLICK, NULL, 0, "Tank");
     tank_drive_switch = lv_sw_create(lv_scr_act(), NULL);
-    lv_obj_set_pos(tank_drive_switch, 180+70+10, 40);
-    // lv_sw_set_style(tank_drive_switch, LV_SW_STYLE_BG, &switchStyle);
+    lv_obj_set_pos(tank_drive_switch, 180+70+10, 40-2);
+    lv_obj_set_size(tank_drive_switch, 70, 40);
+    lv_sw_set_style(tank_drive_switch, LV_SW_STYLE_KNOB_OFF, &switch_knob_off_style);
+    lv_sw_set_style(tank_drive_switch, LV_SW_STYLE_KNOB_ON, &switch_knob_on_style);
+    lv_sw_set_style(tank_drive_switch, LV_SW_STYLE_BG, &switch_bg_style);
+    lv_sw_set_style(tank_drive_switch, LV_SW_STYLE_INDIC, &switch_indic_style);
     lv_sw_off(tank_drive_switch);
     lv_obj_set_free_num(tank_drive_switch, 1);
+    lv_sw_set_anim_time(tank_drive_switch, 300);
     lv_sw_set_action(tank_drive_switch, driveTypeUpdate);
 
     arcade_drive_btn = createBtn(lv_scr_act(), 180, 40+35+10, 70, 35,
         &modeBtnStyle, &modeBtnStyle, LV_BTN_ACTION_CLICK, NULL, 0, "Arcade");
     arcade_drive_switch = lv_sw_create(lv_scr_act(), NULL);
-    lv_obj_set_pos(arcade_drive_switch, 180+70+10, 50);
-    // lv_sw_set_style(arcade_drive_switch, LV_SW_STYLE_BG, &switchStyle);
+    lv_obj_set_pos(arcade_drive_switch, 180+70+10, 40+45-2);
+    lv_obj_set_size(arcade_drive_switch, 70, 40);
+    lv_sw_set_style(arcade_drive_switch, LV_SW_STYLE_KNOB_OFF, &switch_knob_off_style);
+    lv_sw_set_style(arcade_drive_switch, LV_SW_STYLE_KNOB_ON, &switch_knob_on_style);
+    lv_sw_set_style(arcade_drive_switch, LV_SW_STYLE_BG, &switch_bg_style);
+    lv_sw_set_style(arcade_drive_switch, LV_SW_STYLE_INDIC, &switch_indic_style);
     lv_sw_on(arcade_drive_switch);
     lv_obj_set_free_num(arcade_drive_switch, 2);
+    lv_sw_set_anim_time(tank_drive_switch, 300);
     lv_sw_set_action(arcade_drive_switch, driveTypeUpdate);
 
-    // manual_doinker_btn = createBtn(lv_scr_act(), 50, 150, 100, 35,
-    //     &modeBtnStyle, &modeBtnStyle, LV_BTN_ACTION_CLICK, NULL, 1, "Manual\nDoinker");
-    // manual_doinker_switch = lv_sw_create(lv_scr_act(), NULL);
-    // lv_sw_set_style(manual_doinker_switch, LV_SW_STYLE_BG, &switchStyle);
-    // lv_obj_set_pos(manual_doinker_switch, 50, 150);
-    // lv_sw_off(manual_doinker_switch);
-    // lv_sw_set_action(manual_doinker_switch, manualDoinkerToggle);
-    // lv_obj_set_free_num(manual_doinker_switch, 0);
-
-    // manual_trigger_btn1 = createBtn(lv_scr_act(), 50, 150, 100, 35,
-    //     &manualPressed, &manualReleased, LV_BTN_ACTION_CLICK, NULL, 2, "Cata\nRelease");
+    manual_trigger_btn1 = createBtn(lv_scr_act(), 0, 0, 130, 35,
+        &manualPressed, &manualReleased, LV_BTN_ACTION_CLICK, manualTrigger, 1, "Cata Release");
+    lv_obj_align(manual_trigger_btn1, NULL, LV_ALIGN_IN_RIGHT_MID, -10, -35);
     
-    // manual_trigger_btn2 = createBtn(lv_scr_act(), 50, 150, 100, 35,
-    //     &manualPressed, &manualReleased, LV_BTN_ACTION_CLICK, NULL, 3, "Wings\nClose");
+    manual_trigger_btn2 = createBtn(lv_scr_act(), 0, 0, 130, 35,
+        &manualPressed, &manualReleased, LV_BTN_ACTION_CLICK, manualTrigger, 2, "Wings Close");
+    lv_obj_align(manual_trigger_btn2, NULL, LV_ALIGN_IN_RIGHT_MID, -10, 35);
+
+    Task raze_ss(raze_ss_runner);
+    raze_ss.set_priority(TASK_PRIORITY_LOW);
 }

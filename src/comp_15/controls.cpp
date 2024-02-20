@@ -1,5 +1,5 @@
-// #include "comp_15/controls.h"
-#include "comp_15/include_list.h"
+#include "comp_15/controls.h"
+// #include "comp_15/include_list.h"
 
 // Will add driver profiles later
 void controls() {
@@ -9,6 +9,9 @@ void controls() {
 
     while(1) {
         //ACTIVATE DRIVE
+        if(pros::competition::is_connected())
+            drive.change_drive_mode(0);
+
         drive.toggle_drive_mode();
 
         //INTAKE CONTROLS
@@ -43,7 +46,6 @@ void controls() {
         // pros::lcd::set_text(6, "Doinker pot: " + std::to_string(doinker_pot.get_value()));
         // pros::lcd::set_text(7, "Doinker desired state: " + std::to_string(doinker_state));
 
-    
         if (ctrl_master.get_digital_new_press(E_CONTROLLER_DIGITAL_L1)) {
             doinker_state = DoinkerClass::UP;
         } else if (ctrl_master.get_digital_new_press(E_CONTROLLER_DIGITAL_L2)) {

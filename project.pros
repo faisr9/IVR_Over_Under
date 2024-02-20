@@ -309,10 +309,10 @@
       }
     },
     "upload_options": {
-      "slot": 1,
+      "slot": 3,
       "description": "Master Code",
       "icon": "power",
-      "after": "run"
+      "after": "screen"
     }
   }
 }

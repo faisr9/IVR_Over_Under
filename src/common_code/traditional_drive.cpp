@@ -53,6 +53,9 @@ traditional_drive::~traditional_drive()
     stop();
 };
 
+void traditional_drive::change_drive_mode(int mode) {
+    this->mode = mode;
+}
 
 // toggle drive mode (arcade, tank, hybrid)
 void traditional_drive::toggle_drive_mode()

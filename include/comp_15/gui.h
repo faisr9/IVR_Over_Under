@@ -19,7 +19,10 @@ static lv_style_t brainBTNpressed;
 static lv_style_t modeBtnStyle;
 static lv_style_t manualPressed;
 static lv_style_t manualReleased;
-static lv_style_t switchStyle;
+static lv_style_t switch_knob_off_style;
+static lv_style_t switch_knob_on_style;
+static lv_style_t switch_bg_style;
+static lv_style_t switch_indic_style;
 
 static lv_obj_t *illini_label;
 static lv_obj_t *robot_label;
@@ -31,10 +34,18 @@ static lv_obj_t *tank_drive_btn;
 static lv_obj_t *tank_drive_switch;
 static lv_obj_t *arcade_drive_btn;
 static lv_obj_t *arcade_drive_switch;
-static lv_obj_t *manual_doinker_btn;
-static lv_obj_t *manual_doinker_switch;
 static lv_obj_t *manual_trigger_btn1;
 static lv_obj_t *manual_trigger_btn2;
+
+static lv_obj_t *frameObj;
+static lv_obj_t *razeImg;
+
+static double razeBlickDelay;
+static bool runRaze;
+static bool glitch;
+static float delayCountOne;
+static pros::screen_touch_status_s_t lastClick;
+static int screenSave_delay;
 
 namespace gui {
     typedef enum autonomous_type {
@@ -45,7 +56,6 @@ namespace gui {
 
     static autonomous_type_t selected_auton = autonomous_type_t::AUTON_NONE;
     static bool tank_drive = false;
-    static bool manual_doinker_enable = false;
 
 } // namespace gui
 void gui_init();
