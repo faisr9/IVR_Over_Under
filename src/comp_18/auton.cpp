@@ -18,11 +18,11 @@ void auton18(double auton_duration_time_millis, bool skills) {
 	// 	endY = 1.6;
 	// 	curvePath = {start, {2.90, 0.4}, {2, endY}};
 	// } else {
-		start = {0.65 * 0.61, 5.1 * 0.61};
-		curvePath = {start, vect(.8,5.3)};
+		start = {0.7 * 0.61, 5.1 * 0.61};
+		curvePath = {start, vect(1.5,5.5), vect(4,5.5)};
 	// }
 
-	tank_drive_18.getOdom().initTracker(start[0], start[1], 225);
+	tank_drive_18.getOdom().initTracker(start[0], start[1], 227);
     pros::delay(50);
 
 	pros::Task odom_task{[=] {
@@ -32,37 +32,44 @@ void auton18(double auton_duration_time_millis, bool skills) {
 			pros::delay(50);
 		}
 	}};
-	vector<vector<double>> curvePath1 = {curvePath.back(), vect(1.5,5.5), vect(4,5.5)};
-	vector<vector<double>> curvePath2 = {curvePath1.back(), vect(5.5, 4.3)};
+
+	vector<vector<double>> curvePath2 = {curvePath.back(), vect(1.5, 5.5), vect(5,5.5), vect(5.2, 4.5)};
 	vector<vector<double>> curvePath3Rev = {curvePath2.back(), vect(5.5, 5.5)};
 	vector<vector<double>> curvePath3Fwd = {curvePath3Rev.back(), curvePath2.back()};
 
     //1 tile is .61 meters (2 ft)
 
-	Pneumatics::getInstance()->setLeft(0);
+	Pneumatics::getInstance()->setRight(1);
 	pros::delay(250);
-	move(curvePath, 270, false, true);
+	turn(270);
 	pros::Task comp18bowl_task {[=] {
 		for(int i=0; i<9; i++){
-			pros::delay(250);
-			Pneumatics::getInstance()->setLeft(1);
+			pros::delay(150);
+			turn(225);
 			pros::delay(1500);
-			Pneumatics::getInstance()->setLeft(0);
+			turn(270);
 		}
-		Pneumatics::getInstance()->setLeft(0);
+		/*
+		Pneumatics::getInstance()->setRight(0);
+		turn(245);
+		pros::delay(150);
+		move(curvePath, 270, true, true, 3.0);
+		pros::delay(150);
+		move(curvePath2, 0, true, true, 3.0);
+		pros::delay(150);
+
+		Pneumatics::getInstance()->setLeft(1);
+		// Pneumatics::getInstance()->setRight(1);
 		pros::delay(250);
-		// move(curvePath, 90, false, true);
-		// pros::delay(250);
-		// move(curvePath2, 180, false, true);
-		// pros::delay(250);
-		// move(curvePath3Rev, 180, true, true);
-		// pros::delay(250);
-		// move(curvePath3Fwd, 180, false, true);
-		// pros::delay(250);
-		// move(curvePath3Rev, 180, true, true);
-		// pros::delay(250);
-		// move(curvePath3Fwd, 180, false, true);
-		
+
+		for(int i=0; i<3; i++){
+			// followPath(curvePath3Rev, tank_drive_18, 0, false, true, false, 0.5, 3.0, 200.0, 450.0, 40.0, false, 1.12);
+			move(curvePath3Rev, 0, false, true, 1.0);
+			pros::delay(250);
+			// followPath(curvePath3Fwd, tank_drive_18, 0, true, true, false, 0.5, 3.0, 200.0, 450.0, 40.0, false, 1.12);
+			move(curvePath3Fwd, 0, true, true, 1.0);
+		}
+		*/
 	}};
 
     
@@ -83,6 +90,7 @@ void auton18(double auton_duration_time_millis, bool skills) {
     }
     comp18bowl_task.suspend();
 	Pneumatics::getInstance()->setLeft(0);
+	Pneumatics::getInstance()->setRight(0);
     Intake::getInstance()->set_power(0);
 }
 
@@ -112,15 +120,23 @@ vector<double> vectOff(double x, double y){
  *     move(vect(1, 2), 90, false, true);
  *
 */
-void move(vector<vector<double>> moveVec, int angle, bool isReversed, bool isSpinAtEnd)
+void move(vector<vector<double>> moveVec, int angle, bool isReversed, bool isSpinAtEnd, double speedfactor)
 {
-    double speedfactor=3.0;
     followPath(moveVec, tank_drive_18, angle, isReversed, isSpinAtEnd, false, 0.5, 3.0, 200.0 / speedfactor, 450.0 / speedfactor, 40.0 / speedfactor, false, 1.12);
 }
 
-
-
+/** Turns the robot to the specified angle.
+ * usage example: 
+ * 
+ *     turn(90);
+ *
+*/
+ void turn(double angle){
+	turnToAngle(tank_drive_18, angle, 3.0, false, 1.12, 150);
+ }
 /*
+
+
 15-Comp
 =====================
 $ Brakes Down
