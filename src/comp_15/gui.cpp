@@ -96,8 +96,8 @@ lv_res_t driveTypeUpdate(lv_obj_t *btn_inp)
     switch (id)
     {
         case 1:
-            lv_sw_on_anim(tank_drive_switch);
-            lv_sw_off_anim(arcade_drive_switch);
+            lv_sw_on(tank_drive_switch);
+            lv_sw_off(arcade_drive_switch);
             gui::tank_drive = true;
             break;
         case 2:
@@ -112,7 +112,7 @@ lv_res_t driveTypeUpdate(lv_obj_t *btn_inp)
 
 lv_res_t manualDoinkerToggle(lv_obj_t *btn)
 {
-    lv_sw_toggle_anim(manual_doinker_switch);
+    lv_sw_toggle(manual_doinker_switch);
     gui::manual_doinker_enable = lv_sw_get_state(manual_doinker_switch);
     return LV_RES_OK;
 }
@@ -163,18 +163,18 @@ void gui_init()
     label_style.text.color = LV_COLOR_WHITE;
 
     lv_style_copy(&comp_auton_style, &lv_style_plain);
-    comp_auton_style.body.main_color = LV_COLOR_MAKE(205, 0, 0);
-    comp_auton_style.body.grad_color = LV_COLOR_MAKE(0, 0, 205);
+    comp_auton_style.body.main_color = LV_COLOR_MAKE(205-80, 0, 0);
+    comp_auton_style.body.grad_color = LV_COLOR_MAKE(0, 0, 205-80);
     comp_auton_style.body.radius = 1;
-    comp_auton_style.text.color = LV_COLOR_MAKE(205, 205, 205);
+    comp_auton_style.text.color = LV_COLOR_MAKE(205-80, 205-80, 205-80);
 
     lv_style_copy(&skills_auton_style, &comp_auton_style);
-    skills_auton_style.body.main_color = LV_COLOR_MAKE(0, 205, 0);
-    skills_auton_style.body.grad_color = LV_COLOR_MAKE(0, 205, 0);
+    skills_auton_style.body.main_color = LV_COLOR_MAKE(0, 205-80, 0);
+    skills_auton_style.body.grad_color = LV_COLOR_MAKE(0, 205-80, 0);
 
     lv_style_copy(&no_auton_style, &comp_auton_style);
-    no_auton_style.body.main_color = LV_COLOR_MAKE(205, 0, 0);
-    no_auton_style.body.grad_color = LV_COLOR_MAKE(205, 0, 0);
+    no_auton_style.body.main_color = LV_COLOR_MAKE(205-80, 0, 0);
+    no_auton_style.body.grad_color = LV_COLOR_MAKE(205-80, 0, 0);
 
     lv_style_copy(&comp_auton_style_sel, &lv_style_plain);
     comp_auton_style_sel.body.main_color = LV_COLOR_MAKE(255, 0, 0);
@@ -218,34 +218,37 @@ void gui_init()
     robot_label = createLabel(lv_scr_act(), 0, 0, 0, 0, &label_style, "comp 15");
     lv_obj_align(robot_label, NULL, LV_ALIGN_IN_BOTTOM_RIGHT, 0, 0);
 
-    auton_select_label = createLabel(lv_scr_act(), 50, 70, 0, 0, &label_style, "Choose Auton:");
+    auton_select_label = createLabel(lv_scr_act(), 30, 35, 0, 0, &label_style, "Choose Auton:");
 
-    // comp_auton_btn = createBtn(lv_scr_act(), 50, 100, 100, 35, 
-    //     &comp_auton_style, &comp_auton_style, LV_BTN_ACTION_CLICK, autonSelection, 1, "Comp");
+    comp_auton_btn = createBtn(lv_scr_act(), 45, 65, 100, 35, 
+        &comp_auton_style_sel, &comp_auton_style, LV_BTN_ACTION_CLICK, autonSelection, 1, "Comp");
+    lv_btn_set_state(comp_auton_btn, LV_BTN_STATE_REL);
 
-    // skills_auton_btn = createBtn(lv_scr_act(), 50, 100, 145, 35, 
-    //     &skills_auton_style, &skills_auton_style, LV_BTN_ACTION_CLICK, autonSelection, 2, "Skills");
+    skills_auton_btn = createBtn(lv_scr_act(), 45, 65+35+10, 100, 35, 
+        &skills_auton_style_sel, &skills_auton_style, LV_BTN_ACTION_CLICK, autonSelection, 2, "Skills");
+    lv_btn_set_state(skills_auton_btn, LV_BTN_STATE_REL);
 
-    // no_auton_btn = createBtn(lv_scr_act(), 50, 100, 190, 35,
-    //     &no_auton_style, &no_auton_style, LV_BTN_ACTION_CLICK, autonSelection, 3, "None");
+    no_auton_btn = createBtn(lv_scr_act(), 45, 110+35+10, 100, 35,
+        &no_auton_style_sel, &no_auton_style, LV_BTN_ACTION_CLICK, autonSelection, 3, "None");
+    lv_btn_set_state(no_auton_btn, LV_BTN_STATE_REL);
 
-    // tank_drive_btn = createBtn(lv_scr_act(), 150, 50, 55, 35,
-    //     &modeBtnStyle, &modeBtnStyle, LV_BTN_ACTION_CLICK, NULL, 0, "Tank");
-    // tank_drive_switch = lv_sw_create(lv_scr_act(), NULL);
+    tank_drive_btn = createBtn(lv_scr_act(), 180, 40, 70, 35,
+        &modeBtnStyle, &modeBtnStyle, LV_BTN_ACTION_CLICK, NULL, 0, "Tank");
+    tank_drive_switch = lv_sw_create(lv_scr_act(), NULL);
+    lv_obj_set_pos(tank_drive_switch, 180+70+10, 40);
     // lv_sw_set_style(tank_drive_switch, LV_SW_STYLE_BG, &switchStyle);
-    // lv_obj_set_pos(tank_drive_switch, 150, 50);
-    // lv_sw_off(tank_drive_switch);
-    // lv_obj_set_free_num(tank_drive_switch, 1);
-    // lv_sw_set_action(tank_drive_switch, driveTypeUpdate);
+    lv_sw_off(tank_drive_switch);
+    lv_obj_set_free_num(tank_drive_switch, 1);
+    lv_sw_set_action(tank_drive_switch, driveTypeUpdate);
 
-    // arcade_drive_btn = createBtn(lv_scr_act(), 150, 50, 55, 35,
-    //     &modeBtnStyle, &modeBtnStyle, LV_BTN_ACTION_CLICK, NULL, 0, "Arcade");
-    // arcade_drive_switch = lv_sw_create(lv_scr_act(), NULL);
+    arcade_drive_btn = createBtn(lv_scr_act(), 180, 40+35+10, 70, 35,
+        &modeBtnStyle, &modeBtnStyle, LV_BTN_ACTION_CLICK, NULL, 0, "Arcade");
+    arcade_drive_switch = lv_sw_create(lv_scr_act(), NULL);
+    lv_obj_set_pos(arcade_drive_switch, 180+70+10, 50);
     // lv_sw_set_style(arcade_drive_switch, LV_SW_STYLE_BG, &switchStyle);
-    // lv_obj_set_pos(arcade_drive_switch, 150, 50);
-    // lv_sw_on(arcade_drive_switch);
-    // lv_obj_set_free_num(arcade_drive_switch, 2);
-    // lv_sw_set_action(arcade_drive_switch, driveTypeUpdate);
+    lv_sw_on(arcade_drive_switch);
+    lv_obj_set_free_num(arcade_drive_switch, 2);
+    lv_sw_set_action(arcade_drive_switch, driveTypeUpdate);
 
     // manual_doinker_btn = createBtn(lv_scr_act(), 50, 150, 100, 35,
     //     &modeBtnStyle, &modeBtnStyle, LV_BTN_ACTION_CLICK, NULL, 1, "Manual\nDoinker");
