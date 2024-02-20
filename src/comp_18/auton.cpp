@@ -5,6 +5,15 @@ LinkHelper* comp18link = LinkHelper::createInstance(8, E_LINK_RX);
 using namespace pros;
 using namespace std;
 
+void fake() {
+	delay(3500);
+	ctrl_master.rumble("-");
+	
+	comp18link->notify();
+
+
+}
+
 void auton18(double auton_duration_time_millis, bool skills) {
 
 	const double kSTART_TIME = pros::millis();
@@ -60,9 +69,15 @@ void auton18(double auton_duration_time_millis, bool skills) {
 
 	// if(skills)
 	// 	Pneumatics::getInstance()->getClimber()->on();
-
-	delay(3500);
-	ctrl_master.rumble("-");
+	//  Sid was here
+	// waitUntil(comp18link->isLinked());
+	comp18link->waitForNotify(60000);
+	ctrl_master.rumble(".");
+	delay(500);
+	for (int i=0; i<2; i++) {
+		ctrl_master.rumble("-");
+		delay(1000);
+	}
     
     //int counter=0;
 	comp18link->notify();

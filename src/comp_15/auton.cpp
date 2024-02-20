@@ -37,11 +37,16 @@ void auton_15(double auton_duration_time_millis, bool climb) {
 	// std::string numCyclesStr = std::to_string(numCycles);
 	// send the number of cycles to the other robot
 	// comp15link->sendMsg(std::to_string(numCycles));
-
+    // comp15link->notify();
+    for(int i=0;i<3;i++)
+    {
+        ctrl_master.rumble("-");
+        delay(1000);
+    }
     pros::Task shooting_task{[=] {
         bool hasFired = false;
         CompetitionCatapult::getInstance()->set_cata_mode("P");
-        pros::delay(2500); // delay so jonah can place the triball
+        pros::delay(2100); // delay so jonah can place the triball
 	    int cycleCounter = 0;
         while (1) {
             if (!hasFired)
@@ -52,16 +57,16 @@ void auton_15(double auton_duration_time_millis, bool climb) {
             // doinker down
             DoinkerClass::getInstance()->move(DoinkerClass::DOWN); // did not go past here
             // small delay
-            pros::delay(600);
+            pros::delay(400);
             // doinker up if cata primed
             DoinkerClass::getInstance()->move(DoinkerClass::UP);
             // medium delay
-            pros::delay(1000);
+            pros::delay(900);
 
-            if (!hasFired) {
-                comp15link->waitForNotify(8000);
-                hasFired = true;
-            }
+            // if (!hasFired) {
+            //     comp15link->waitForNotify(8000);
+            //     hasFired = true;
+            // }
             // wait for comp18 to get to position / cycle triball into goal
             // comp15link->waitForNotify(???);
             
@@ -73,7 +78,7 @@ void auton_15(double auton_duration_time_millis, bool climb) {
                 }
             cycleCounter++;
             // wait for human player
-            pros::delay(2500);
+            pros::delay(2100);
         }
 	}}; // lambda function with a task
 

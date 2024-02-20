@@ -41,8 +41,8 @@ void autonomous() {
 /* Opcontrol method runs by default (unless connected to comp controller )*/
 void opcontrol() {
 	controls(); // COMP
-	double vlue = 2;
-	vlue += M_PI;
+	// double vlue = 2;
+	// vlue += M_PI;
 
 	// auton_15(60000, true); // SKILLS
 }
