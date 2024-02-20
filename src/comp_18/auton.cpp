@@ -1,4 +1,5 @@
 #include "comp_18/auton.h"
+#include "comp_18/devices.h"
 
 LinkHelper* comp18link = LinkHelper::createInstance(8, E_LINK_RX);
 
@@ -6,23 +7,24 @@ using namespace pros;
 using namespace std;
 
 vector<double> start; //Start position
+double p=1.12;
 
 void auton18(double auton_duration_time_millis, bool skills) {
 
 	const double kSTART_TIME = pros::millis();
 
-	vector<vector<double>> curvePath;	
+	// vector<vector<double>> curvePath;	
 
 	// if (!skills) {
 	// 	start = vectOffComp(0, 0);
 	// 	endY = 1.6;
 	// 	curvePath = {start, {2.90, 0.4}, {2, endY}};
 	// } else {
-		start = {0.7 * 0.61, 5.1 * 0.61};
-		curvePath = {start, vect(1.5,5.5), vect(4,5.5)};
+		start = {1.1 * 0.61, 5.2 * 0.61};
+		// curvePath = {start, vect(.9, 5}};
 	// }
 
-	tank_drive_18.getOdom().initTracker(start[0], start[1], 227);
+	tank_drive_18.getOdom().initTracker(start[0], start[1], 225);
     pros::delay(50);
 
 	pros::Task odom_task{[=] {
@@ -32,29 +34,43 @@ void auton18(double auton_duration_time_millis, bool skills) {
 			pros::delay(50);
 		}
 	}};
-
-	vector<vector<double>> curvePath2 = {curvePath.back(), vect(1.5, 5.5), vect(5,5.5), vect(5.2, 4.5)};
+	vector<vector<double>> curvePath1 = {start, vect(1.5,5.5), vect(4,5.5)};
+	vector<vector<double>> curvePath2 = {curvePath1.back(), vect(1.5, 5.5), vect(5,5.5), vect(5.2, 4.5)};
 	vector<vector<double>> curvePath3Rev = {curvePath2.back(), vect(5.5, 5.5)};
 	vector<vector<double>> curvePath3Fwd = {curvePath3Rev.back(), curvePath2.back()};
 
     //1 tile is .61 meters (2 ft)
 
-	Pneumatics::getInstance()->setRight(1);
+	// move(curvePath, 225, false, true, 3.0);
+	while(tank_drive_18.getOdom().getRadialValue() < 6.0){
+		moveMotors(tank_drive_18, 150, 150);
+		pros::delay(50);
+	}
+	stopMotors(tank_drive_18);
 	pros::delay(250);
 	turn(270);
+	pros::delay(250);
+	Pneumatics::getInstance()->setRight(1);
+	
 	pros::Task comp18bowl_task {[=] {
-		for(int i=0; i<9; i++){
-			pros::delay(150);
-			turn(225);
-			pros::delay(1500);
+		for(int i=0; i<14; i++){
+			// Pneumatics::getInstance()->setRight(0);
+			p=1.5;
+			pros::delay(250/2);
+			turn(240);
+			pros::delay(500/2);
+			// Pneumatics::getInstance()->setRight(1);
 			turn(270);
 		}
-		/*
+		
 		Pneumatics::getInstance()->setRight(0);
-		turn(245);
+		turn(225);
 		pros::delay(150);
-		move(curvePath, 270, true, true, 3.0);
+		move(curvePath1, 270, true, true, 3.0);
+		
 		pros::delay(150);
+		
+		/*
 		move(curvePath2, 0, true, true, 3.0);
 		pros::delay(150);
 
@@ -132,7 +148,7 @@ void move(vector<vector<double>> moveVec, int angle, bool isReversed, bool isSpi
  *
 */
  void turn(double angle){
-	turnToAngle(tank_drive_18, angle, 3.0, false, 1.12, 150);
+	turnToAngle(tank_drive_18, angle, 10.0, false, p, 50); //p=1.12 // turndegtolerance=3 //time 150
  }
 /*
 

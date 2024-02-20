@@ -10,6 +10,8 @@ void initialize() {
 	imu.reset(); // Very important!!!
     transverse_rot_sensor.reset();
 	radial_rot_sensor.reset();
+	Pneumatics::getInstance()->setRight(0);
+	Pneumatics::getInstance()->setLeft(0);
     pros::delay(3000);
 }
 
@@ -23,10 +25,10 @@ void competition_initialize() {}
 void autonomous() {
 
 	// Comp
-	auton18(45000, false);
+	// auton18(45000, false);
 
 	// Skills
-	// auton18(60000, true);
+	auton18(60000, true);
 }
 
 /* Opcontrol method runs by default (unless connected to comp controller )*/
