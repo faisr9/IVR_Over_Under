@@ -32,7 +32,19 @@ void autonomous() {
 	// auton_15(45000, false); // COMP
 
 	// SKILLS
-	skills_15();
+	pros::Task skils_task{[=] {
+		skills_15();
+	}};
+
+	while (1) {
+		if (ctrl_master.get_digital_new_press(E_CONTROLLER_DIGITAL_B)) {
+			skils_task.suspend(); // this will cause many problems and will only be done for testing
+			stopMotors(drive);
+			break;
+		}
+
+		pros::delay(50);
+	}
 
 	// auton_15(20000, true); // TESTING
 	pros::delay(5000); // just putting this here to make sure nothing weird happens that we don't want upon auton code ending
