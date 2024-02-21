@@ -1,4 +1,5 @@
 #include "comp_15/auton.h"
+
 LinkHelper* comp15link = LinkHelper::createInstance(16, E_LINK_TX);
 
 void auton_15(double auton_duration_time_millis, bool climb) {
@@ -22,38 +23,30 @@ void auton_15(double auton_duration_time_millis, bool climb) {
 		}
 	}}; // lambda function with a task
 
-    // Pneumatics::getInstance()->getFloorBrake()->on();
-    // pros::delay(500);
+    // Use kickstand to prevent shift when opening bot
+    Pneumatics::getInstance()->getFloorBrake()->on();
+    pros::delay(250);
     // release intake and catapult
-    // Intake::getInstance()->set_power(127);
-    // pros::delay(250);
-    // kickstand down
-    // Intake::getInstance()->set_power(0);
-    // delay(1500);
+    Intake::getInstance()->set_power(127);
+    pros::delay(250);
+    Intake::getInstance()->set_power(0);
+    delay(1500); // Allow robot to settle
+    // release kickstand
+    Pneumatics::getInstance()->getFloorBrake()->off();
 
     // start shooting portion of autonomous
-
-	// const int numCycles	= 3;
-	// std::string numCyclesStr = std::to_string(numCycles);
-	// send the number of cycles to the other robot
-	// comp15link->sendMsg(std::to_string(numCycles));
-    // comp15link->notify();
-    for(int i=0;i<3;i++)
-    {
-        ctrl_master.rumble("-");
-        delay(1000);
-    }
     pros::Task shooting_task{[=] {
-        bool hasFired = false;
+        bool oncetrigger = false;
         CompetitionCatapult::getInstance()->set_cata_mode("P");
-        pros::delay(2100); // delay so jonah can place the triball
+        // Ensure that the catapult is primed before starting the shooting task
+        while(!CompetitionCatapult::getInstance()->get_switch_state()){
+            CompetitionCatapult::getInstance()->prime();
+            pros::lcd::set_text(2, "Priming");
+        }
+        pros::delay(2500); // longer delay for two triballs
+
 	    int cycleCounter = 0;
         while (1) {
-            if (!hasFired)
-                while(!CompetitionCatapult::getInstance()->get_switch_state()){
-                    CompetitionCatapult::getInstance()->prime();
-                    pros::lcd::set_text(2, "Priming");
-                }
             // doinker down
             DoinkerClass::getInstance()->move(DoinkerClass::DOWN); // did not go past here
             // small delay
@@ -63,12 +56,10 @@ void auton_15(double auton_duration_time_millis, bool climb) {
             // medium delay
             pros::delay(900);
 
-            // if (!hasFired) {
-            //     comp15link->waitForNotify(8000);
-            //     hasFired = true;
-            // }
-            // wait for comp18 to get to position / cycle triball into goal
-            // comp15link->waitForNotify(???);
+            if (!oncetrigger) {
+                comp15link->waitForNotify(8000);
+                oncetrigger = true;
+            }
             
             // fire catapult and put it back down
             CompetitionCatapult::getInstance()->set_cata_mode("RP");
@@ -82,7 +73,6 @@ void auton_15(double auton_duration_time_millis, bool climb) {
         }
 	}}; // lambda function with a task
 
-    // comp15link->sendMsg("end_auton");
 
     // create while loop that will exit after kMAX_SHOOTING_TIME/1000 seconds
     // const int kMAX_SHOOTING_TIME = 30000;
