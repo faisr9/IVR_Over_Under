@@ -23,8 +23,7 @@ void competition_initialize() {}
 void autonomous() {
 
 	// Comp
-	// auton18(45000, false);
-	fake();
+	auton18(45000, false);
 
 	// Skills
 	// auton18(60000, true);

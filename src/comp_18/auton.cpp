@@ -5,14 +5,15 @@ LinkHelper* comp18link = LinkHelper::createInstance(8, E_LINK_RX);
 using namespace pros;
 using namespace std;
 
-void fake() {
-	delay(3500);
-	ctrl_master.rumble("-");
-	
-	comp18link->notify();
-
-
-}
+/** Turns the robot to the specified angle.
+ * usage example: 
+ * 
+ *     turn(90);
+ *
+*/
+ void turn(double angle){
+	turnToAngle(tank_drive_18, angle, 2.0, false, 0.9); //p=1.12 // turndegtolerance=3 //time 150
+ }
 
 void auton18(double auton_duration_time_millis, bool skills) {
 
@@ -21,15 +22,23 @@ void auton18(double auton_duration_time_millis, bool skills) {
     vector<double> start; //Start position
 	vector<vector<double>> curvePath;
 	double endY = 0.0;
-	if (!skills) {
-		start = vectOff(0, 0);
-		endY = 1.6;
-		curvePath = {start, {2.90, 0.4}, {2, endY}};
-	} else {
-		start = {2.15 * 0.61, 3.3};
-		endY = 1.55;
-		curvePath = {start, {2.90, 3.2}, {2, endY}};
-	}
+	// if (!skills) {
+		start = {1.342, 0.305};
+		endY = 1.6-0.0404;
+		curvePath = {start, {2.90-.2, start[1]+0.03}};
+		vector<vector<double>> curvePath2 = {curvePath.back(), {2.202+0.043, endY}};
+	// } else {
+	// 	start = {2.15 * 0.61, 3.3};
+	// 	endY = 1.55;
+	// 	curvePath = {start, {2.90, 3.2}, {2, endY}};
+	// }
+
+	// start = {convert::inToM(54), convert::inToM(12)};
+	// curvePath = { 
+	// 				start,
+	// 			  	{convert::inToM(54+48), convert::inToM(12+3)},
+	// 			  	{convert::inToM(54+48-16), convert::inToM(12+3+32)}
+	// 			};
 
 	tank_drive_18.getOdom().initTracker(start[0], start[1], 90);
     pros::delay(50);
@@ -52,50 +61,69 @@ void auton18(double auton_duration_time_millis, bool skills) {
 	// if(skills)
     // 	Pneumatics::getInstance()->getClimber()->off();	
 
-    // Intake::getInstance()->set_power(-127 / 1.5);
+    Intake::getInstance()->set_power(-127 / 1.5);
 
     // delay(75);
 
-    // move(curvePath, 88, false, true);
+    move(curvePath, 90, false, false);
+	Intake::getInstance()->set_power(0);
+	turn(350);
+	delay(50);
+
+	move(curvePath2, 315, false, false);
+	Pneumatics::getInstance()->setLeft(1);
+	delay(50);
+	turn(89);
+	delay(50);
+	Pneumatics::getInstance()->toggleWings();
+
+    vector<vector<double>> curvePath3 = {curvePath2.back(), {convert::inToM((24*4)+3.5), endY}};
+
     // vector<vector<double>> curvePath2 = {curvePath.back(), {2.6, endY}};
-    // vector<vector<double>> curvePath3 = {curvePath2.back(), {2.43, endY}};
     // vector<vector<double>> curvePath4 = {curvePath2.back(), {2.5, endY}};
     // Intake::getInstance()->set_power(127 / 1.5);
     // delay(250);
     // Pneumatics::getInstance()->setLeft(1);
     // followPath(curvePath2, tank_drive_18, 88, false, true, false, 0.5, 3.0, 200.0 / 3.0, 450.0 / 3.0, 30, false, 1.12);
     // //Pneumatics::getInstance()->setLeft(0);
-    // move(curvePath3, 88, 1, true);
+	Intake::getInstance()->set_power(127 / 1.5);
+    move(curvePath3, 90, false, false);
+	Intake::getInstance()->set_power(0);
+
+	// vector<vector<double>> curvePath4 = {curvePath3.back(), {convert::inToM((24*4)+12), endY}};
+	// move(curvePath4, 90, true, false);
 
 	// if(skills)
 	// 	Pneumatics::getInstance()->getClimber()->on();
 	//  Sid was here
 	// waitUntil(comp18link->isLinked());
-	comp18link->waitForNotify(60000);
-	ctrl_master.rumble(".");
-	delay(500);
-	for (int i=0; i<2; i++) {
-		ctrl_master.rumble("-");
-		delay(1000);
-	}
+	// comp18link->waitForNotify(60000);
+	// ctrl_master.rumble(".");
+	// delay(500);
+	// for (int i=0; i<2; i++) {
+	// 	ctrl_master.rumble("-");
+	// 	delay(1000);
+	// }
     
-    //int counter=0;
-	comp18link->notify();
+    // //int counter=0;
+	// comp18link->notify();
 
-	// pros::Task endWait{[=] {
-	// 		comp18link->setMsgRecvTimeout(40000);
-	// 		std::string recvMsg = comp18link->recvMsg();
-	// 		if (recvMsg == "end") {
+	// // pros::Task endWait{[=] {
+	// // 		comp18link->setMsgRecvTimeout(40000);
+	// // 		std::string recvMsg = comp18link->recvMsg();
+	// // 		if (recvMsg == "end") {
 				
-	// 		}
-	// }};
+	// // 		}
+	// // }};
 
 	pros::Task comp18goal_task {[=] {
+		bool oncetrigger = false;
 		while(1)
 		{
 			//Intake::getInstance()->set_power(0);
-			if (triBall())
+			if (triBall() || !oncetrigger)
 			{
+				oncetrigger = true;
 				Intake::getInstance()->set_power(127);
 				delay(250);
 				moveMotors(tank_drive_18,60, 60);
@@ -104,10 +132,10 @@ void auton18(double auton_duration_time_millis, bool skills) {
 				right_drive_motors.move_velocity(0);
 				double x=tank_drive_18.getOdom().getX(),
 					y=tank_drive_18.getOdom().getY();
-				vector<vector<double>> oscillate = {vect(x,y), vect(x-.333,y)};
+				vector<vector<double>> oscillate = {{x,y}, {x-.1,y}};
 				// vector<vector<double>> oscillate = {{x,y}, {x-(0.025*1),y}};
 				//followPath(curvePath2, tank_drive_18, 88, false, true, false, 0.5, 3.0, 200.0 / 3.0, 450.0 / 3.0, 30, false, 1.12);
-				move(oscillate, 88, 1, true);
+				move(oscillate, 89, 1, true);
 			}
 			delay(50);
 		}
@@ -117,7 +145,7 @@ void auton18(double auton_duration_time_millis, bool skills) {
 	while (pros::millis() < kABORT_TIME) {
         pros::delay(100);
     }
-    comp18goal_task.suspend();
+    // comp18goal_task.suspend();
 	Pneumatics::getInstance()->getClimber()->off();
     Intake::getInstance()->set_power(0);
 }
