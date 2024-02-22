@@ -155,7 +155,7 @@ void skills_15() {
     const double kBACK_FORTHS = 2; // we will shove in and back out 3 times
 
     const double kSTART_ANGLE = 315.0;
-    const double kTURN_BACK_ANGLE = 295.0;
+    const double kTURN_BACK_ANGLE = 305.0;
     vector<double> kSTARTING_POS = {0.53, 0.5};
 
     drive.getOdom().initTracker(kSTARTING_POS[0], kSTARTING_POS[1], kSTART_ANGLE);
@@ -177,7 +177,7 @@ void skills_15() {
         int cycles = 0;
         const double kHP_WAIT_TIME = 0;
         const double kHP_FIRST_WAIT_TIME = 0;
-        const int turn_amount = 45;
+        const int turn_amount = 35;
         Pneumatics::getInstance()->getWings()->on();
         pros::delay(kHP_FIRST_WAIT_TIME);
 
