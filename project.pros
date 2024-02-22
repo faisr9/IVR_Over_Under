@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "Thrid Auton Test",
+    "project_name": "FRFR",
     "target": "v5",
     "templates": {
       "kernel": {

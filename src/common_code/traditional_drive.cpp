@@ -182,11 +182,14 @@ void traditional_drive::field_centric_move(pair<double, double> movement_vector)
 void traditional_drive::turn_with_power(double power)
 {
     // multiply voltage by power factor
-    left*=power;
-    right*=power;
+    // left*=power;
+    // right=-(std::abs(right)*power);
+
+    left_side->move(power);
+    right_side->move(-power);
 
     // send voltage to motors
-    setV();
+    // setV();
 }
 Motor_Group& traditional_drive::get_motor_group(bool side)
 {

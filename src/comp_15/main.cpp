@@ -21,7 +21,11 @@ void initialize() {
 }
 
 /* Runs when robot is disabled from competition controller after driver/auton */
-void disabled() {}
+void disabled() 
+{
+	if(CompetitionCatapult::getInstance()->get_switch_state())
+		CompetitionCatapult::getInstance()->set_cata_mode("R");
+}
 
 /* If connected to competition controller, this runs after initialize */
 void competition_initialize() {}

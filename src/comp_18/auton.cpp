@@ -20,7 +20,7 @@ void auton18(double auton_duration_time_millis, bool skills) {
 	vector<vector<double>> curvePath;
 	double endY = 0.0;
 	start = {1.342, 0.305};
-	endY = 1.6-0.0404;
+	endY = 1.6-0.0404-convert::inToM(1.5);
 	curvePath = {start, {2.90 - .2, start[1] + 0.03}};
 	vector<vector<double>> curvePath2 = {curvePath.back(), {2.202 + 0.043, endY}};
 
@@ -36,7 +36,7 @@ void auton18(double auton_duration_time_millis, bool skills) {
 	}};
 
 	// Turn on Intake
-    Intake::getInstance()->set_power(-127 / 1.5);
+    Intake::getInstance()->set_power(-127);
 
 	// Move to other side
     move(curvePath, 90, false, false);
@@ -54,8 +54,8 @@ void auton18(double auton_duration_time_millis, bool skills) {
 
     vector<vector<double>> curvePath3 = {curvePath2.back(), {convert::inToM((24*4)+3.5), endY}};
 
-	Intake::getInstance()->set_power(127 / 1.5);
     move(curvePath3, 90, false, false);
+	Intake::getInstance()->set_power(127 / 1.5);
 	// Intake::getInstance()->set_power(0);
 
 	// Sid was here
@@ -67,20 +67,24 @@ void auton18(double auton_duration_time_millis, bool skills) {
 			//Intake::getInstance()->set_power(0);
 			if (triBall() || !oncetrigger)
 			{
-				Intake::getInstance()->set_power(127 / 1.25);
-				delay(250); // Allow triball to be removed from intake
-				moveMotors(tank_drive_18, 60, 60);
-				delay(1000); // Drive forward delay
+				if(oncetrigger)
+					delay(180); // Allow triball to be removed from intake
+				Intake::getInstance()->set_power(127);
+				moveMotors(tank_drive_18, 85, 85);
+				delay(850); // Drive forward delay
 				left_drive_motors.move_velocity(0);
 				right_drive_motors.move_velocity(0);
 				double x=tank_drive_18.getOdom().getX(),
 					y=tank_drive_18.getOdom().getY();
-				vector<vector<double>> oscillate = {{x,y}, {x-.09,y}};
+				vector<vector<double>> oscillate = {{x,y}, {x-.065,y}};
 				move(oscillate, 89, true, true);
 				delay(50);
 
-				if (oncetrigger)
+				if (!oncetrigger)
+				{
+					Pneumatics::getInstance()->setRight(0);
 					comp18link->notify();
+				}
 
 				oncetrigger = true;
 			}
@@ -90,11 +94,12 @@ void auton18(double auton_duration_time_millis, bool skills) {
 
 	const double kABORT_TIME = kSTART_TIME + auton_duration_time_millis - 500;
 	while (pros::millis() < kABORT_TIME) {
-        pros::delay(100);
+        pros::delay(70);
     }
     comp18goal_task.suspend();
 	Pneumatics::getInstance()->stop();
     Intake::getInstance()->stop();
+	odom_task.suspend();
 }
 
 vector<double> vect(double x, double y){
@@ -107,9 +112,11 @@ vector<double> vectOff(double x, double y){
 
 void move(vector<vector<double>> moveVec, int angle, bool isReversed, bool isSpinAtEnd)
 {
-    double speedfactor=3.0;
+    double speedfactor=2.7;
     followPath(moveVec, tank_drive_18, angle, isReversed, isSpinAtEnd, false, 0.5, 3.0, 200.0 / speedfactor, 450.0 / speedfactor, 40.0 / speedfactor, false, 1.12);
 }
+
+
 
 /*
 

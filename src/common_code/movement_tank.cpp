@@ -6,8 +6,15 @@ void moveMotors(traditional_drive& drive, double leftRPM, double rightRPM) {
 }
 
 void stopMotors(traditional_drive& drive) {
-    drive.get_motor_group(0).move_velocity(0.0);
-    drive.get_motor_group(1).move_velocity(0.0);
+    // drive.get_motor_group(0).move_velocity(0.0);
+    // drive.get_motor_group(1).move_velocity(0.0);
+    drive.get_motor_group(0).set_brake_modes(BRAKETYPE_BRAKE);
+    drive.get_motor_group(1).set_brake_modes(BRAKETYPE_BRAKE);
+    drive.get_motor_group(0).brake();
+    drive.get_motor_group(1).brake();
+    delay(15);
+    drive.get_motor_group(0).set_brake_modes(BRAKETYPE_COAST);
+    drive.get_motor_group(1).set_brake_modes(BRAKETYPE_COAST);
 }
 
 // to be used exclusively when only turning (no translation)
@@ -256,7 +263,8 @@ void followPath(std::vector<std::vector<double>>& path, traditional_drive& drive
         pros::delay(50);
     }
 
-    moveMotors(drive, 0.0, 0.0);
+    // moveMotors(drive, 0.0, 0.0);
+    stopMotors(drive);
     pros::delay(400); // give the robot time to come to a full stop
 
     // Turn to face final angle. This runs regardless of spinOnSpot to guarantee we're facing
@@ -266,7 +274,8 @@ void followPath(std::vector<std::vector<double>>& path, traditional_drive& drive
     } else {
         turnToAngle(drive, finalAngleDeg, final_angle_tolerance_deg, false, turnP);   
     }
-    moveMotors(drive, 0.0, 0.0);
+    // moveMotors(drive, 0.0, 0.0);
+    stopMotors(drive);
 
 
     // Delay and reprint final dist from target location to see how inaccurate this is because this isn't using a trapezoidal profile

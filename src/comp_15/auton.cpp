@@ -11,7 +11,7 @@ void auton_15(double auton_duration_time_millis, bool climb) {
     const double kSTARTING_ANGLE = 60.0;
 
     const double kAUTON_START_TIME = pros::millis();
-    const double kAUTON_CODE_DURATION = auton_duration_time_millis - 500;
+    // const double kAUTON_CODE_DURATION = auton_duration_time_millis - 500;
 
     drive.getOdom().initTracker(kSTARTING_X, kSTARTING_Y, kSTARTING_ANGLE);
     pros::delay(50);
@@ -27,7 +27,7 @@ void auton_15(double auton_duration_time_millis, bool climb) {
     Pneumatics::getInstance()->getFloorBrake()->on();
     pros::delay(250);
     // release intake and catapult
-    Intake::getInstance()->set_power(127);
+    Intake::getInstance()->set_power(-127);
     pros::delay(250);
     Intake::getInstance()->set_power(0);
     delay(1500); // Allow robot to settle
@@ -40,7 +40,7 @@ void auton_15(double auton_duration_time_millis, bool climb) {
         CompetitionCatapult::getInstance()->set_cata_mode("P");
         // Ensure that the catapult is primed before starting the shooting task
         while(!CompetitionCatapult::getInstance()->get_switch_state()){
-            CompetitionCatapult::getInstance()->prime();
+            CompetitionCatapult::getInstance()->set_cata_mode("P");
             pros::lcd::set_text(2, "Priming");
         }
         pros::delay(2500); // longer delay for two triballs
@@ -54,17 +54,20 @@ void auton_15(double auton_duration_time_millis, bool climb) {
             // doinker up if cata primed
             DoinkerClass::getInstance()->move(DoinkerClass::UP);
             // medium delay
-            pros::delay(900);
+            pros::delay(750);
 
             if (!oncetrigger) {
-                comp15link->waitForNotify(8000);
+                comp15link->waitForNotify(10000);
                 oncetrigger = true;
             }
+            // else
+                // comp15link->waitForNotify(1500);
             
             // fire catapult and put it back down
             CompetitionCatapult::getInstance()->set_cata_mode("RP");
+            delay(50);
             while(!CompetitionCatapult::getInstance()->get_switch_state()){
-                    CompetitionCatapult::getInstance()->prime();
+                    CompetitionCatapult::getInstance()->set_cata_mode("P");
                     pros::lcd::set_text(2, "Priming");
                 }
             cycleCounter++;
@@ -82,63 +85,28 @@ void auton_15(double auton_duration_time_millis, bool climb) {
     // const double start_shoot_time = pros::millis();
     // no need to check if task has terminated because it can't
     bool set_rumble = false;
-    const double kCLIMB_TIME = 4000;
-    const double kSHOOT_ABORT_TIME = (climb) ? kAUTON_START_TIME + kAUTON_CODE_DURATION - kCLIMB_TIME : kAUTON_START_TIME + kAUTON_CODE_DURATION;
-    while (pros::millis() < kSHOOT_ABORT_TIME) {
-        if (pros::millis() > kSHOOT_ABORT_TIME - 2000 && !set_rumble) {
+
+    // const double kSHOOT_ABORT_TIME = (climb) ? kAUTON_START_TIME + kAUTON_CODE_DURATION - kCLIMB_TIME : kAUTON_START_TIME + kAUTON_CODE_DURATION;
+    // while (pros::millis() < kSHOOT_ABORT_TIME) {
+    //     if (pros::millis() > kSHOOT_ABORT_TIME - 2000 && !set_rumble) {
+    //         ctrl_master.rumble("--");
+    //         set_rumble = true;
+    //     }
+    //     pros::delay(100);
+    // }
+    const double kABORT_TIME = kAUTON_START_TIME + auton_duration_time_millis - 500;
+	while (pros::millis() < kABORT_TIME) {
+        if(pros::millis() > kABORT_TIME - 1700 && !set_rumble){
             ctrl_master.rumble("--");
             set_rumble = true;
         }
-        pros::delay(100);
+        pros::delay(70);
     }
+
+	if(CompetitionCatapult::getInstance()->get_switch_state())
+		CompetitionCatapult::getInstance()->set_cata_mode("R");
+    
     shooting_task.suspend();
-    
-    // deconstruction and reset systems
-    ctrl_master.rumble(" ");
-    Pneumatics::getInstance()->getFloorBrake()->off();
-    CompetitionCatapult::getInstance()->set_cata_mode("R");
-    pros::lcd::set_text(1, "Done with the path!");
-    if (!climb) odom_task.suspend(); // doinker will take program cycles to move so make sure odom is suspended first
-    DoinkerClass::getInstance()->move(DoinkerClass::UP);
-    
-    
-    if (!climb) {
-        pros::lcd::set_text(7, "SUCCESSFULLY FINISHED AUTON CODE");
-        return; 
-    }
-    // go climb
-
-    pros::Task path_task{[=] {
-        std::vector<std::vector<double>> to_climb_bar = {{kSTARTING_X, kSTARTING_Y}, {1.2, 0.25}, {2.4, 0.2}};
-        followPath(to_climb_bar, drive, 90, false, false, false, 0.5, 3.0, 220.0, 450.0, 220);
-	}}; // lambda function with a task
-
-    const int kCATA_TIME = 1000;
-    const double kPATH_MAX_TIME = kCLIMB_TIME - kCATA_TIME;
-    double start_time = pros::millis();
-    while (pros::millis() < start_time + kPATH_MAX_TIME && path_task.get_state() != pros::E_TASK_STATE_DELETED) {
-        if (pros::millis() < start_time + (kPATH_MAX_TIME / 2)) {
-            CompetitionCatapult::getInstance()->set_cata_mode("R");
-            // in case cata task was busy when it was told to come up
-        }
-    
-        pros::delay(100);
-    }
-
-    // if the path is still going
-    if (path_task.get_state() != pros::E_TASK_STATE_DELETED && path_task.get_state() != pros::E_TASK_STATE_INVALID) {
-        // if call suspend on deleted task program will crash! (data abort)
-        // this is why program would only crash if program successfully completed
-        path_task.suspend();
-        stopMotors(drive);
-    }
-
-    CompetitionCatapult::getInstance()->set_cata_mode("PR");
-
-    // pros::delay(350);
-
-    // CompetitionCatapult::getInstance()->set_cata_mode("R");
-
     odom_task.suspend();
 }
 
