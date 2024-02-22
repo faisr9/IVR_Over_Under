@@ -31,7 +31,7 @@ pros::Motor intake(16); // in = negative, out = positive
 Intake* intake_instance = Intake::createInstance(intake);
 
 // V5 Sensors //
-pros::IMU imu(4);
+pros::IMU imu(2);
 pros::Distance distance_sensor(3);
 pros::Rotation radial_rot_sensor(10);
 pros::Rotation transverse_rot_sensor(9, true); // reversed so that going right is positive

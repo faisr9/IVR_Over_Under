@@ -7,19 +7,9 @@ using namespace std;
 
 vector<double> start= {1.1 * 0.61, 5.4 * 0.61};; //Start position
 
-void auton18(double auton_duration_time_millis, bool skills) {
+void skills18(double auton_duration_time_millis) {
 
 	const double kSTART_TIME = pros::millis();
-
-	// vector<vector<double>> curvePath;	
-
-	// if (!skills) {
-	// 	start = vectOffComp(0, 0);
-	// 	endY = 1.6;
-	// 	curvePath = {start, {2.90, 0.4}, {2, endY}};
-	// } else {
-		// curvePath = {start, vect(.9, 5}};
-	// }
 
 	tank_drive_18.getOdom().initTracker(start[0], start[1], 223);
     pros::delay(50);
@@ -31,15 +21,10 @@ void auton18(double auton_duration_time_millis, bool skills) {
 			pros::delay(50);
 		}
 	}};
-	vector<vector<double>> curvePath1 = {start, vect(1.5,5.5), vect(4,5.5)};
-	vector<vector<double>> curvePath2 = {curvePath1.back(), vect(5,5.4), vect(5.2, 4.5)};
-	vector<vector<double>> curvePath3Rev = {curvePath2.back(), vect(5.2, 5.5)};
-	vector<vector<double>> curvePath3Fwd = {curvePath3Rev.back(), curvePath2.back()};
 
     //1 tile is .61 meters (2 ft)
 
-	// move(curvePath, 225, false, true, 3.0);
-	while(tank_drive_18.getOdom().getRadialValue() < 6.0){
+	while(tank_drive_18.getOdom().getRadialValue() < 7.5){
 		moveMotors(tank_drive_18, 150, 150);
 		pros::delay(50);
 	}
@@ -51,7 +36,7 @@ void auton18(double auton_duration_time_millis, bool skills) {
 	turnF(270);
 	pros::delay(250);
 	
-	pros::Task comp18bowl_task {[=] {
+	pros::Task bowl_task {[=] {
 		for(int i=0; i<14; i++){
 			// Pneumatics::getInstance()->setRight(0);
 			pros::delay(250/2);
@@ -60,20 +45,48 @@ void auton18(double auton_duration_time_millis, bool skills) {
 			// Pneumatics::getInstance()->setRight(1);
 			turnF(270);
 		}
-		
-		Pneumatics::getInstance()->setRight(0);
-		turn(45);
-		pros::delay(150);
-		move(curvePath1, 90, false, true, 3.0);
-		pros::delay(150);
-		
-		// /*
-		move(curvePath2, 180, false, true, 3.0);
-		pros::delay(150);
+	}};
+	while(bowl_task.get_state()!=pros::E_TASK_STATE_DELETED){
+		pros::delay(50);
+	}
 
-		Pneumatics::getInstance()->setLeft(1);
-		// Pneumatics::getInstance()->setRight(1);
-		pros::delay(250);
+	pros::delay(150);
+	Pneumatics::getInstance()->setRight(0);
+	turn(45);
+	pros::delay(150);
+	Pneumatics::getInstance()->setRight(1);
+
+	vector<vector<double>> curvePath1 = {start, vect(1.5,5.5), vect(3.8,5.5)};
+		
+	pros::Task acrossMiddle_task {[=] {
+		move(curvePath1, 90, false, true, 2.7);
+	}};
+		
+	while(acrossMiddle_task.get_state()!=pros::E_TASK_STATE_DELETED){
+		if (tank_drive_18.getOdom().getX() < 3.25*.61 && tank_drive_18.getOdom().getX() > 2.3*.61)
+			Pneumatics::getInstance()->setRight(0);
+		else
+			Pneumatics::getInstance()->setRight(1);
+		pros::delay(50);	
+	}
+		
+	vector<vector<double>> curvePath2 = {curvePath1.back(), vect(4.5, 5.5), vect(5, 5), vect(5.3,4.5)};//vect(5,5.4),vect(5.2, 4.5)
+
+	pros::Task toGoal_task {[=] {
+		move(curvePath2, 180, false, true, 2.7);
+	}};
+
+	while(toGoal_task.get_state()!=pros::E_TASK_STATE_DELETED){
+		if (tank_drive_18.getOdom().getX() < 4.2*.61)
+			Pneumatics::getInstance()->setLeft(0);
+		else
+			Pneumatics::getInstance()->setLeft(1);
+		pros::delay(50);	
+	}
+
+		/*
+		vector<vector<double>> curvePath3Rev = {curvePath2.back(), vect(5.2, 5.5)};
+		vector<vector<double>> curvePath3Fwd = {curvePath3Rev.back(), curvePath2.back()};
 
 		for(int i=0; i<3; i++){
 			// followPath(curvePath3Rev, tank_drive_18, 0, false, true, false, 0.5, 3.0, 200.0, 450.0, 40.0, false, 1.12);
@@ -82,8 +95,7 @@ void auton18(double auton_duration_time_millis, bool skills) {
 			// followPath(curvePath3Fwd, tank_drive_18, 0, true, true, false, 0.5, 3.0, 200.0, 450.0, 40.0, false, 1.12);
 			move(curvePath3Fwd, 180, false, true, 1.0);
 		}
-		// */
-	}};
+		*/
 
     
     //int counter=0;
@@ -101,10 +113,10 @@ void auton18(double auton_duration_time_millis, bool skills) {
 	while (pros::millis() < kABORT_TIME) {
         pros::delay(100);
     }
-    comp18bowl_task.suspend();
 	Pneumatics::getInstance()->setLeft(0);
 	Pneumatics::getInstance()->setRight(0);
     Intake::getInstance()->set_power(0);
+	odom_task.suspend();
 }
 
 /** Converts inputted tile coordinates, x and y, into meters.
