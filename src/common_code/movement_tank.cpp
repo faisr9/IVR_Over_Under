@@ -6,8 +6,12 @@ void moveMotors(traditional_drive& drive, double leftRPM, double rightRPM) {
 }
 
 void stopMotors(traditional_drive& drive) {
+    drive.get_motor_group(0).set_brake_modes(pros::E_MOTOR_BRAKE_BRAKE);
+    drive.get_motor_group(1).set_brake_modes(pros::E_MOTOR_BRAKE_BRAKE);
     drive.get_motor_group(0).move_velocity(0.0);
     drive.get_motor_group(1).move_velocity(0.0);
+    drive.get_motor_group(0).set_brake_modes(pros::E_MOTOR_BRAKE_COAST);
+    drive.get_motor_group(1).set_brake_modes(pros::E_MOTOR_BRAKE_COAST);
 }
 
 // to be used exclusively when only turning (no translation)

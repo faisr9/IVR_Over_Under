@@ -1,5 +1,4 @@
 #include "comp_18/auton.h"
-$include "comp_18/devices.h"
 
 LinkHelper* comp18link = LinkHelper::createInstance(8, E_LINK_RX);
 
@@ -25,8 +24,8 @@ void skills18(double auton_duration_time_millis) {
 
     //1 tile is .61 meters (2 ft)
 
-	while(radial_tracker.get_meters_travel() < .1){ //2*M_PI
-		moveMotors(tank_drive_18, 150, 150);
+	while(tank_drive_18.getOdom().getX() > 1.05*.61){ //2*M_PI
+		moveMotors(tank_drive_18, 35, 35);
 		pros::delay(50);
 	}
 	stopMotors(tank_drive_18);
@@ -51,19 +50,22 @@ void skills18(double auton_duration_time_millis) {
 		pros::delay(50);
 	}
 
-	while(radialWheel.get_meters_travelled() < .1){ //2*M_PI
-		moveMotors(tank_drive_18, 150, 150);
+	turn(225);
+	pros::delay(150);
+
+	while(tank_drive_18.getOdom().getX() > (.95)*.61){ //2*M_PI
+		moveMotors(tank_drive_18, 50, 50);
 		pros::delay(50);
 	}
 	stopMotors(tank_drive_18);
+	Pneumatics::getInstance()->setRight(0);
 
 	pros::delay(150);
-	Pneumatics::getInstance()->setRight(0);
 	turn(45);
 	pros::delay(150);
 	Pneumatics::getInstance()->setRight(1);
 
-	vector<vector<double>> curvePath1 = {start, vect(1.1,5.55), vect(1.5,5.55), vect(4,5.55)};
+	vector<vector<double>> curvePath1 = {start, vect(1.3,5.55), vect(1.5,5.55), vect(4,5.6)};
 		
 	pros::Task acrossMiddle_task {[=] {
 		move(curvePath1, 90, false, true, 2.7);
@@ -76,40 +78,41 @@ void skills18(double auton_duration_time_millis) {
 			Pneumatics::getInstance()->setRight(1);
 		pros::delay(50);	
 	}
+
+	turn(110);
 		
-	vector<vector<double>> curvePath2 = {curvePath1.back(), vect(4.5, 5.55), vect(5, 5), vect(5,4.5)};//vect(5,5.4),vect(5.2, 4.5)
+	vector<vector<double>> curvePath2 = {curvePath1.back(), vect(4.5, 5.55), vect(5, 5)};//vect(5,5.4),vect(5.2, 4.5),
+	pros::delay(150);
 
 	pros::Task toGoal_task {[=] {
-		move(curvePath2, 135, false, true, 1);
+		move(curvePath2, 180, false, true, 2);
 	}};
 
 	while(toGoal_task.get_state()!=pros::E_TASK_STATE_DELETED){
-		Pneumatics::getInstance()->setRight(1);
-		// if (tank_drive_18.getOdom().getX() < 4.2*.61 && tank_drive_18.getOdom().getY() > 5.1*.61)
-		// 	Pneumatics::getInstance()->setLeft(0);
-		// else
+		// Pneumatics::getInstance()->setRight(1);
+		// if (tank_drive_18.getOdom().getX() < 4.8*.61 && tank_drive_18.getOdom().getY() > 5.1*.61)
 		// 	Pneumatics::getInstance()->setLeft(1);
+		// else
+		// 	Pneumatics::getInstance()->setLeft(0);
 		pros::delay(50);	
 	}
 
 	pros::delay(150);
 	// vector<vector<double>> curvePath3Rev = {curvePath2.back(), vect(5.3, 5.5)};
 	// vector<vector<double>> curvePath3Fwd = {curvePath3Rev.back(), curvePath2.back()};
-	vector<vector<double>> go_back = {{tank_drive_18.getOdom().getX(), tank_drive_18.getOdom().getY()}, curvePath2.back()};
+	
 	pros::Task goBack_task {[=] {
 		for(int i=0; i<2; i++){
+			vector<vector<double>> go_back = {{tank_drive_18.getOdom().getX(), tank_drive_18.getOdom().getY()}, curvePath2.back()};
 			move(go_back, 180, true, true, 2.7);
 			pros::delay(100);
 			moveMotors(tank_drive_18, 300, 300);
 		}
 	}};
-	while(toGoal_task.get_state()!=pros::E_TASK_STATE_DELETED){
-		pros::delay(50);
-	}
 
 	const double kABORT_TIME = kSTART_TIME + auton_duration_time_millis - 500;
 	while (pros::millis() < kABORT_TIME) {
-        pros::delay(100)
+        pros::delay(100);
     }
 	Pneumatics::getInstance()->setLeft(0);
 	Pneumatics::getInstance()->setRight(0);
