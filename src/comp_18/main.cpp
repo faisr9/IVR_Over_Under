@@ -40,6 +40,38 @@ void opcontrol() {
 			pros::delay(50);
 		}
 	}};
+
+	vector<double> start= {1.1 * 0.61, 5.4 * 0.61};; //Start position
+	tank_drive_18.getOdom().initTracker(start[0], start[1], 220);
+
+	while(tank_drive_18.getOdom().getX() > 1.05*.61){ //2*M_PI
+		moveMotors(tank_drive_18, 35, 35);
+		pros::delay(50);
+	}
+	stopMotors(tank_drive_18);
+
+	Pneumatics::getInstance()->setRight(1);
+
+	pros::delay(250);
+	turnF(270);
+	pros::delay(250);
+	
+	pros::Task bowl_task {[=] {
+		for(int i=0; i<21; i++){
+			// Pneumatics::getInstance()->setRight(0);
+			pros::delay(250/2);
+			turnF(240);
+			pros::delay(500/2);
+			// Pneumatics::getInstance()->setRight(1);
+			turnF(270);
+		}
+	}};
+	while(bowl_task.get_state()!=pros::E_TASK_STATE_DELETED){
+		if(ctrl_master.get_digital(BUTTON_B)){
+			bowl_task.remove();
+		}
+		pros::delay(50);
+	}
 	// Comp
     controls();
 
