@@ -152,7 +152,7 @@ void skills_15(bool driver) {
     const double kSKILLS_DURATION = 45000; // NEED TO CHANGE THIS LATER, 40000 FOR TESTING
 
     const double kBOWL_TIME = 25000; // time we are driving the robot and pushing things in for
-    const double kBACK_FORTHS = 1; // we will shove in and back out 3 times
+    const double kBACK_FORTHS = 2; // we will shove in and back out 3 times
 
     const double kSTART_ANGLE = 315.0;
     const double kTURN_BACK_ANGLE = 300.0;
@@ -268,12 +268,13 @@ void skills_15(bool driver) {
     // first push in
 
     pros::Task to_goal_task {[=] {
+        Intake::getInstance()->set_power(-127);
         // need to be sure to account for width of triballs and to turn early // 2.94 0.28
         // vector<vector<double>> push_in = {{drive.getOdom().getX(), drive.getOdom().getY()}, {0.7, 0.35}, {2.6, 0.35}, {3.2, 0.5}, {3.3, 0.9}}; // was 2.5 and 3.0 earlier!!!
         // vector<vector<double>> push_in = {{drive.getOdom().getX(), drive.getOdom().getY()}, {0.7, 0.31}, {2.8, 0.31}, {3.3, 0.5}, {3.3, 0.9}}; // was 2.5 and 3.0 earlier!!!
         vector<vector<double>> push_in = {{drive.getOdom().getX(), drive.getOdom().getY()}, {0.7, 0.38}, {3.0, 0.38}, {3.4, 0.5}, {3.3, 0.9}}; // was 2.5 and 3.0 earlier!!!
 
-        followPath(push_in, drive, 0, false, false, false, 0.5, 4.0, 200.0, 450.0, 150.0, false, 1.9);
+        followPath(push_in, drive, 0, false, false, false, 0.5, 4.0, 150.0, 450.0, 100.0, false, 1.9);
     }};
 
     // TODO: make it so wings go out before (but then back in) before going under
@@ -293,6 +294,7 @@ void skills_15(bool driver) {
         if (ctrl_master.get_digital_new_press(E_CONTROLLER_DIGITAL_B)) {
             to_goal_task.suspend();
             stopMotors(drive);
+            Intake::getInstance()->set_power(0);
             return;
         }
 
@@ -314,6 +316,7 @@ void skills_15(bool driver) {
     moveMotors(drive, -300, -300);
     pneumatic_wings->off();
     pros::delay(500);
+    Intake::getInstance()->set_power(0);
     stopMotors(drive);
 
     // we should decide if taking the wings in at the end is a good idea or not (risk of touching triballs)
