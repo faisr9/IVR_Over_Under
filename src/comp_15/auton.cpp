@@ -159,17 +159,19 @@ void skills_15() {
     vector<double> kSTARTING_POS = {0.53, 0.5};
 
     drive.getOdom().initTracker(kSTARTING_POS[0], kSTARTING_POS[1], kSTART_ANGLE);
-    Intake::getInstance()->set_power(-100);
-    pros::delay(500);
-    Intake::getInstance()->set_power(0);
-
+    pros::delay(50);
     pros::Task odom_task{[=] {
 		while (1) {
 			drive.getOdom().updatePosition();
 			pros::delay(50);
 		}
 	}}; // lambda function with a task
+    Pneumatics::getInstance()->getWings()->on();
+    Intake::getInstance()->set_power(-100);
+    pros::delay(500);
+    Intake::getInstance()->set_power(0);
 
+    
     // Intake::getInstance()->set_power(127);
     // pros::delay(500);
     // Intake::getInstance()->set_power(0);
