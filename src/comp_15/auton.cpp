@@ -146,7 +146,7 @@ void auton_15(double auton_duration_time_millis, bool climb) {
 
 
 
-void skills_15() {
+void skills_15(bool driver) {
     const double starting_time = pros::millis();
 
     const double kSKILLS_DURATION = 45000; // NEED TO CHANGE THIS LATER, 40000 FOR TESTING
@@ -195,13 +195,28 @@ void skills_15() {
         }
     }};
 
-    // kSKILLS_DURATION - kBOWL_TIME = time we have left to do wings for
-    double time_since_start = pros::millis() - starting_time;
-    pros::delay((kSKILLS_DURATION - kBOWL_TIME) - (time_since_start));
+
+    while (pros::millis() - starting_time < (kSKILLS_DURATION - kBOWL_TIME)) {
+        if (driver && ctrl_master.get_digital_new_press(E_CONTROLLER_DIGITAL_B)) {
+            // abort code for driver control
+            spinning_task.suspend();
+            odom_task.suspend();
+            stopMotors(drive);
+            return;
+        }
+
+        pros::delay(50);
+    }
 
     // stop spinning to get match loads and get ready for next part of auton
     spinning_task.suspend();
     
+    if (driver) {
+        odom_task.suspend();
+        stopMotors(drive);
+        return;
+    }
+
     Pneumatics::getInstance()->getWings()->off();
     turnToAngle(drive, 120, 3.0, false, 1.9);
     // turnToAngle(drive, 90, 3.0, false, 1.9);

@@ -32,7 +32,7 @@ void autonomous() {
 	// auton_15(45000, false); // COMP
 
 	// SKILLS
-	skills_15();
+	skills_15(false);
 
 	while (1) {
 		// no work bc whatever internal task is running will still be happening
@@ -52,15 +52,7 @@ void autonomous() {
 /* Opcontrol method runs by default (unless connected to comp controller )*/
 void opcontrol() {
 
-	drive.getOdom().initTracker(0, 0, 0);
-
-	pros::Task odom_task{[=] {
-		while (1) {
-			drive.getOdom().updatePosition();
-			pros::delay(50);
-		}
-	}}; // lambda function with a task
-
+	skills_15(true);
 
 	controls(); // COMP
 
