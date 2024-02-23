@@ -11,12 +11,12 @@ extern LinkHelper* comp15link;
 
 /* First method to run when program starts */
 void initialize() {
-	pros::lcd::initialize(); // Temp until custom GUI
+	// pros::lcd::initialize(); // Temp until custom GUI
 	comp15link->init();
 	imu.reset(); // Very important!!!
 	horizontal_track_adi.reset();
 	vertical_track_adi.reset();
-	gui_init();
+	gui::gui_init();
 	pros::delay(3000);
 }
 
@@ -44,8 +44,6 @@ void autonomous() {
 /* Opcontrol method runs by default (unless connected to comp controller )*/
 void opcontrol() {
 	controls(); // COMP
-	double vlue = 2;
-	vlue += M_PI;
 
 	// auton_15(60000, true); // SKILLS
 }

@@ -47,18 +47,18 @@ static float delayCountOne;
 static pros::screen_touch_status_s_t lastClick;
 static int screenSave_delay;
 
-namespace gui {
-    typedef enum autonomous_type {
-        AUTON_COMP,
-        AUTON_SKILLS,
-        AUTON_NONE
-    } autonomous_type_t;
+class gui {
+    public:
+        typedef enum autonomous_type {
+            AUTON_COMP,
+            AUTON_SKILLS,
+            AUTON_NONE
+        } autonomous_type_t;
 
-    static autonomous_type_t selected_auton = autonomous_type_t::AUTON_NONE;
-    static bool tank_drive = false;
-
-} // namespace gui
-void gui_init();
+        inline static autonomous_type_t selected_auton = autonomous_type_t::AUTON_NONE;
+        inline static bool tank_drive = false;
+        static void gui_init();
+};
 
 LV_IMG_DECLARE(Frame);
 LV_IMG_DECLARE(BothOpen);

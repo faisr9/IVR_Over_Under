@@ -235,12 +235,12 @@ void raze_ss_runner()
             lv_obj_del(frameObj);
             lv_obj_del(razeImg);
 
-            Task ss_restart(gui_init);
+            Task ss_restart(gui::gui_init);
         }
     }
 }
 
-void gui_init()
+void gui::gui_init()
 {
     if (pros::lcd::is_initialized())
         pros::lcd::shutdown();
