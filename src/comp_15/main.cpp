@@ -17,7 +17,7 @@ void initialize() {
 	imu.reset(); // Very important!!!
 	horizontal_track_adi.reset();
 	vertical_track_adi.reset();
-	pros::delay(3000);
+	pros::delay(4000);
 }
 
 /* Runs when robot is disabled from competition controller after driver/auton */
@@ -37,11 +37,12 @@ void autonomous() {
 	}};
 
 	while (1) {
-		if (ctrl_master.get_digital_new_press(E_CONTROLLER_DIGITAL_B)) {
-			skils_task.suspend(); // this will cause many problems and will only be done for testing
-			stopMotors(drive);
-			break;
-		}
+		// no work bc whatever internal task is running will still be happening
+		// if (ctrl_master.get_digital_new_press(E_CONTROLLER_DIGITAL_B)) {
+		// 	skils_task.suspend(); // this will cause many problems and will only be done for testing
+		// 	stopMotors(drive);
+		// 	break;
+		// }
 
 		pros::delay(50);
 	}
