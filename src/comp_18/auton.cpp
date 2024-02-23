@@ -40,7 +40,7 @@ void skills18(double auton_duration_time_millis) {
 		for(int i=0; i<14; i++){
 			// Pneumatics::getInstance()->setRight(0);
 			pros::delay(250/2);
-			turnF(243);
+			turnF(240);
 			pros::delay(500/2);
 			// Pneumatics::getInstance()->setRight(1);
 			turnF(270);
@@ -65,14 +65,14 @@ void skills18(double auton_duration_time_millis) {
 	pros::delay(150);
 	Pneumatics::getInstance()->setRight(1);
 
-	vector<vector<double>> curvePath1 = {start, vect(1.3,5.55), vect(1.5,5.55), vect(4,5.6)};
+	vector<vector<double>> curvePath1 = {{tank_drive_18.getOdom().getX(), tank_drive_18.getOdom().getY()}, vect(1.3,5.55), vect(1.5,5.55), vect(4,5.55)};
 		
 	pros::Task acrossMiddle_task {[=] {
 		move(curvePath1, 90, false, true, 2.7);
 	}};
 		
 	while(acrossMiddle_task.get_state()!=pros::E_TASK_STATE_DELETED){
-		if (tank_drive_18.getOdom().getX() < 3.2*.61 && tank_drive_18.getOdom().getX() > 2.25*.61)
+		if (tank_drive_18.getOdom().getX() < 3.15*.61 && tank_drive_18.getOdom().getX() > 2.25*.61)
 			Pneumatics::getInstance()->setRight(0);
 		else
 			Pneumatics::getInstance()->setRight(1);
@@ -81,11 +81,15 @@ void skills18(double auton_duration_time_millis) {
 
 	turn(110);
 		
-	vector<vector<double>> curvePath2 = {curvePath1.back(), vect(4.5, 5.55), vect(5, 5)};//vect(5,5.4),vect(5.2, 4.5),
+	//vect(5,5.4),vect(5.2, 4.5),
+	// vector<vector<double>> push_in = {{tank_drive_18.getOdom().getX(),tank_drive_18.getOdom().getX(), vect(1.15, 5.62), vect(4.9, 5.62), vect(5.55, 5.82), vect(5.41, 4.48)};
+	
 	pros::delay(150);
-
+	
 	pros::Task toGoal_task {[=] {
-		move(curvePath2, 180, false, true, 2);
+		// move(curvePath2, 160, false, true, 2);
+		vector<vector<double>> curvePath2 = {curvePath1.back(), vect(4.5, 5.55), vect(5.2,5.2)};
+		followPath(curvePath2, tank_drive_18, 150, false, true, false, 0.5, 3.0, 250.0 / 2.0, 450.0 / 2.5, 40.0 / 2.5, false, .9);
 	}};
 
 	while(toGoal_task.get_state()!=pros::E_TASK_STATE_DELETED){
@@ -103,10 +107,13 @@ void skills18(double auton_duration_time_millis) {
 	
 	pros::Task goBack_task {[=] {
 		for(int i=0; i<2; i++){
-			vector<vector<double>> go_back = {{tank_drive_18.getOdom().getX(), tank_drive_18.getOdom().getY()}, curvePath2.back()};
-			move(go_back, 180, true, true, 2.7);
-			pros::delay(100);
 			moveMotors(tank_drive_18, 300, 300);
+			pros::delay(400);
+			turn(180);
+			vector<vector<double>> go_back = {{tank_drive_18.getOdom().getX(), tank_drive_18.getOdom().getY()}, vect(5.5, 4.8)};
+			move(go_back, 167, true, true, 2.7);
+			pros::delay(150);
+			
 		}
 	}};
 
@@ -150,7 +157,7 @@ vector<double> vectOff(double x, double y){
 */
 void move(vector<vector<double>> moveVec, int angle, bool isReversed, bool isSpinAtEnd, double speedfactor)
 {
-    followPath(moveVec, tank_drive_18, angle, isReversed, isSpinAtEnd, false, 0.5, 3.0, 200.0 / speedfactor, 450.0 / speedfactor, 40.0 / speedfactor, false, .9);
+    followPath(moveVec, tank_drive_18, angle, isReversed, isSpinAtEnd, false, 0.5, 3.0, 250.0 / speedfactor, 450.0 / speedfactor, 40.0 / speedfactor, false, .9);
 }
 
 /** Turns the robot to the specified angle.
@@ -171,7 +178,7 @@ void move(vector<vector<double>> moveVec, int angle, bool isReversed, bool isSpi
  *
 */
  void turnF(double angle){
-	turnToAngle(tank_drive_18, angle, 10.0, false, 1.5, 50); //p=1.12 // turndegtolerance=3 //time 150
+	turnToAngle(tank_drive_18, angle, 10.0, false, 1.4, 50); //p=1.12 // turndegtolerance=3 //time 150
  }
 /*
 
