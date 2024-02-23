@@ -32,9 +32,7 @@ void autonomous() {
 	// auton_15(45000, false); // COMP
 
 	// SKILLS
-	pros::Task skils_task{[=] {
-		skills_15();
-	}};
+	skills_15();
 
 	while (1) {
 		// no work bc whatever internal task is running will still be happening

@@ -155,7 +155,7 @@ void skills_15() {
     const double kBACK_FORTHS = 1; // we will shove in and back out 3 times
 
     const double kSTART_ANGLE = 315.0;
-    const double kTURN_BACK_ANGLE = 295.0;
+    const double kTURN_BACK_ANGLE = 300.0;
     vector<double> kSTARTING_POS = {0.53, 0.5};
 
     drive.getOdom().initTracker(kSTARTING_POS[0], kSTARTING_POS[1], kSTART_ANGLE);
@@ -179,15 +179,15 @@ void skills_15() {
         int cycles = 0;
         const double kHP_WAIT_TIME = 0;
         const double kHP_FIRST_WAIT_TIME = 0;
-        const int turn_amount = 30;
+        const int turn_amount = 45;
         Pneumatics::getInstance()->getWings()->on();
         pros::delay(kHP_FIRST_WAIT_TIME);
 
         while (1) {
             // whack triball out of match load zone
-            turnToAngle(drive, kTURN_BACK_ANGLE - turn_amount, 10.0, false, 3.0, 100); // more p because triball is in the way and don't care as much about precision
+            turnToAngle(drive, kTURN_BACK_ANGLE - turn_amount, 6.0, false, 3.3, 10); // more p because triball is in the way and don't care as much about precision
             // turn back so the human player can place another triball
-            turnToAngle(drive, kTURN_BACK_ANGLE, 5.0);
+            turnToAngle(drive, kTURN_BACK_ANGLE, 5.0, false, 1.9, 80);
             pros::delay(kHP_WAIT_TIME);
             cycles++;
         }
@@ -254,7 +254,7 @@ void skills_15() {
         // need to be sure to account for width of triballs and to turn early // 2.94 0.28
         // vector<vector<double>> push_in = {{drive.getOdom().getX(), drive.getOdom().getY()}, {0.7, 0.35}, {2.6, 0.35}, {3.2, 0.5}, {3.3, 0.9}}; // was 2.5 and 3.0 earlier!!!
         // vector<vector<double>> push_in = {{drive.getOdom().getX(), drive.getOdom().getY()}, {0.7, 0.31}, {2.8, 0.31}, {3.3, 0.5}, {3.3, 0.9}}; // was 2.5 and 3.0 earlier!!!
-        vector<vector<double>> push_in = {{drive.getOdom().getX(), drive.getOdom().getY()}, {0.7, 0.33}, {3.05, 0.33}, {3.45, 0.5}, {3.3, 0.9}}; // was 2.5 and 3.0 earlier!!!
+        vector<vector<double>> push_in = {{drive.getOdom().getX(), drive.getOdom().getY()}, {0.7, 0.38}, {3.0, 0.38}, {3.4, 0.5}, {3.3, 0.9}}; // was 2.5 and 3.0 earlier!!!
 
         followPath(push_in, drive, 0, false, false, false, 0.5, 4.0, 200.0, 450.0, 150.0, false, 1.9);
     }};
