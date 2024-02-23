@@ -149,7 +149,7 @@ void auton_15(double auton_duration_time_millis, bool climb) {
 void skills_15(bool driver) {
     const double starting_time = pros::millis();
 
-    const double kSKILLS_DURATION = 45000; // NEED TO CHANGE THIS LATER, 40000 FOR TESTING
+    const double kSKILLS_DURATION = (driver) ? 55000 : 45000; // NEED TO CHANGE THIS LATER, 40000 FOR TESTING
 
     const double kBOWL_TIME = 25000; // time we are driving the robot and pushing things in for
     const double kBACK_FORTHS = 2; // we will shove in and back out 3 times
