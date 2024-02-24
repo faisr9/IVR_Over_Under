@@ -202,9 +202,9 @@ void skills18(bool driver)
 
 	// 1 tile is .61 meters (2 ft)
 
-	while (tank_drive_18.getOdom().getX() > 1.04 * .61)
+	while (tank_drive_18.getOdom().getX() > 1.15 * .61)
 	{ // 2*M_PI
-		moveMotors(tank_drive_18, 35, 35);
+		moveMotors(tank_drive_18, 20, 20);
 		pros::delay(50);
 	}
 	stopMotors(tank_drive_18);
