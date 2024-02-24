@@ -322,6 +322,7 @@ void skills18(bool driver)
 				moveMotors(tank_drive_18, 300, 300);
 				pros::delay(750);
 				stopMotors(tank_drive_18);
+				pros::delay(200);
 				turn_skills(180);
 				// pure pursuit not working
 				// vector<vector<double>> go_back = {{tank_drive_18.getOdom().getX(), tank_drive_18.getOdom().getY()}, vect(5.2, 4.8)};
@@ -330,6 +331,7 @@ void skills18(bool driver)
 				pros::delay(500);
 				pros::delay(150);
 				stopMotors(tank_drive_18);
+				pros::delay(200);
 				turn_skills(180);
 			}
 		}};
