@@ -10,6 +10,8 @@ void initialize() {
 	imu.reset(); // Very important!!!
     transverse_rot_sensor.reset();
 	radial_rot_sensor.reset();
+	Pneumatics::getInstance()->setRight(0);
+	Pneumatics::getInstance()->setLeft(0);
     pros::delay(3000);
 }
 
@@ -22,18 +24,22 @@ void competition_initialize() {}
 /* Autonomous method */
 void autonomous() {
 
-	// Comp
-	auton18(45000, false);
+	// Comp auton
+	// auton18(45000, false);
 
 	// Skills
-	// auton18(60000, true);
+	skills18(60000);
 }
 
 /* Opcontrol method runs by default (unless connected to comp controller )*/
 void opcontrol() {
+
 	// Comp
-    // controls();
+    controls();
+
+	// Comp auton
+	// auton18(45000, false);
 
 	// Skills
-	auton18(45000, false);
+	// auton18(60000, true);
 }

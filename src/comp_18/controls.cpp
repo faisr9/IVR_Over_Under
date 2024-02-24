@@ -2,6 +2,18 @@
 
 // Will add driver profiles later
 void controls() {
+
+
+    // for debugging
+	pros::Task odom_task{[=] {
+		while (1) {
+			tank_drive_18.getOdom().updatePosition();
+			pros::lcd::set_text(7, "A: " + std::to_string(tank_drive_18.getOdom().getHeading()));
+			pros::delay(50);
+		}
+	}};
+
+
     pros::lcd::set_text(1, "Running Controls");
     while(1) {
         //ACTIVATE DRIVE
@@ -31,55 +43,3 @@ void controls() {
         pros::delay(15);
     }
 }
-
-// void turnPID(int angle, double kP, double kD, double tolerance){
-//     double heading = tank_drive_18.getOdom().getHeading();
-//     double error = angle-heading;
-
-//     double lastError = 0;
-//     double derivative = 0;
-
-//     double velocity = 0;
-//     // pros::Task drivePID_lt{[&] {
-
-//         while(std::abs(error) > tolerance){
-//             heading = tank_drive_18.getOdom().getHeading(); //IMU Sensor returns current heading in degrees from 0-360
-            
-//             error = angle - heading;
-            
-//             derivative = error - lastError;
-//             lastError = error;
-
-//             velocity = kP * error + kD * derivative;   
-//             // drive.turn_with_power(turnPID_vars.velocity);
-// 			tank_drive_18.turn_with_power(velocity);
-// 			pros::delay(10);
-//         }
-//     // }};
-// }
-
-// void controls()
-// {
-//     vector<double> start = {1.342, 0.305};
-
-//     tank_drive_18.getOdom().initTracker(start[0], start[1], 90);
-//     pros::delay(50);
-
-// 	pros::Task odom_task{[=] {
-// 		while (1) {
-// 			tank_drive_18.getOdom().updatePosition();
-// 			pros::lcd::set_text(7, "A: " + std::to_string(tank_drive_18.getOdom().getHeading()));
-// 			pros::delay(50);
-// 		}
-// 	}};
-// }
-
-// 	while(1)
-// 	{
-// 		if (ctrl_master.get_digital_new_press(BUTTON_A))
-// 			turnPID(90, 0.9, 0.05, 2);
-		
-// 		tank_drive_18.toggle_drive_mode();
-// 		delay(15);
-// 	}
-// }

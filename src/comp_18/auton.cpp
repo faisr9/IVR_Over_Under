@@ -2,21 +2,44 @@
 
 LinkHelper* comp18link = LinkHelper::createInstance(8, E_LINK_RX);
 
-/** Turns the robot to the specified angle.
+using namespace pros;
+using namespace std;
+
+/// COMP AUTON
+
+/// COMP METHODS
+
+/** Converts inputted tile coordinates, x and y, into meters.
  * usage example: 
  * 
- *     turn(90);
+ *     vect(1, 2);
  *
 */
-void turn(double angle){
+vector<double> vect(double x, double y){
+    return {(x*.61), (y*.61)};
+}
+
+void turn_comp(double angle){
 	turnToAngle(tank_drive_18, angle, 2.0, false, 1); //p=1.12 // turndegtolerance=3 //time 150
 }
 
-void move_slw(vector<vector<double>> moveVec, int angle, bool isReversed, bool isSpinAtEnd)
+void move_slw_comp(vector<vector<double>> moveVec, int angle, bool isReversed, bool isSpinAtEnd)
 {
     double speedfactor=3.87;
     followPath(moveVec, tank_drive_18, angle, isReversed, isSpinAtEnd, false, 0.5, 3.0, 200.0 / speedfactor, 450.0 / speedfactor, 40.0 / speedfactor, false, 1.12);
 }
+
+vector<double> vectOff_comp(double x, double y){
+    return {(.61*2.2)+(x*.61), (.61*.5)+(y*.61)};
+}
+
+void move_comp(vector<vector<double>> moveVec, int angle, bool isReversed, bool isSpinAtEnd)
+{
+    double speedfactor=2.7;
+    followPath(moveVec, tank_drive_18, angle, isReversed, isSpinAtEnd, false, 0.5, 3.0, 200.0 / speedfactor, 450.0 / speedfactor, 40.0 / speedfactor, false, 1.12);
+}
+
+
 
 void auton18(double auton_duration_time_millis, bool skills) {
 
@@ -46,23 +69,23 @@ void auton18(double auton_duration_time_millis, bool skills) {
     Intake::getInstance()->set_power(-127);
 
 	// Move to other side
-    move(curvePath, 90, false, false);
+    move_comp(curvePath, 90, false, false);
 	Intake::getInstance()->set_power(0);
-	turn(335);
+	turn_comp(335);
 	delay(50);
 
 	// Move to center of field
-	move(curvePath2, 315, false, false);
+	move_comp(curvePath2, 315, false, false);
 	Pneumatics::getInstance()->setLeft(1);
 	delay(50);
-	turn(89);
+	turn_comp(89);
 	delay(50);
 	Pneumatics::getInstance()->toggleWings();
 
     // vector<vector<double>> curvePath3 = {curvePath2.back(), {convert::inToM((24*4)+3.5), endY}};
 	vector<vector<double>> curvePath3 = {curvePath2.back(), {2.654-convert::inToM(3.5), endY}};
 	// Pneumatics::getInstance()->getClimber()->toggle();
-    move(curvePath3, 89, false, false);
+    move_comp(curvePath3, 89, false, false);
 	Intake::getInstance()->set_power(127 / 1.5);
 	// Intake::getInstance()->set_power(0);
 
@@ -106,13 +129,13 @@ void auton18(double auton_duration_time_millis, bool skills) {
 
 				Intake::getInstance()->set_power(127);
 				vector<vector<double>> entergoal_path = {{atGoal[0], atGoal[1]}, {insideGoal[0], insideGoal[1]}};
-				move(entergoal_path, 89, false, false);
+				move_comp(entergoal_path, 89, false, false);
 				delay(150);
 
 				vector<vector<double>> exitgoal_path = {{insideGoal[0], insideGoal[1]}, 
 					{linedUpBack[0], linedUpBack[1]}};
 					// {x-convert::inToM(10), linedUpBack[1]}};
-				move_slw(exitgoal_path, 89, true, false);
+				move_slw_comp(exitgoal_path, 89, true, false);
 				delay(50);
 				
 				double x=tank_drive_18.getOdom().getX(),
@@ -121,7 +144,7 @@ void auton18(double auton_duration_time_millis, bool skills) {
 				// if (x < linedUpBack[0] - convert::inToM(2.5))
 				// {
 				// 	vector<vector<double>> oscillate = {{x,y}, {linedUpBack[0],y}};
-				// 	move_slw(oscillate, 89, false, false);
+				// 	move_slw_comp(oscillate, 89, false, false);
 				// 	delay(50);
 				// }
 
@@ -147,59 +170,179 @@ void auton18(double auton_duration_time_millis, bool skills) {
 	odom_task.suspend();
 }
 
-vector<double> vect(double x, double y){
-    return {(x*.61), (y*.61)};
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+// SKILLS AUTON
+
+vector<double> skills_start= {1.1 * 0.61, 5.4 * 0.61};; //Start position
+
+void skills18(double auton_duration_time_millis) {
+
+	const double kSTART_TIME = pros::millis();
+
+	tank_drive_18.getOdom().initTracker(skills_start[0], skills_start[1], 220);
+    pros::delay(50);
+
+	pros::Task odom_task{[=] {
+		while (1) {
+			tank_drive_18.getOdom().updatePosition();
+			pros::lcd::set_text(7, "A: " + std::to_string(tank_drive_18.getOdom().getHeading()));
+			pros::delay(50);
+		}
+	}};
+
+    //1 tile is .61 meters (2 ft)
+
+	while(tank_drive_18.getOdom().getX() > 1.04*.61){ //2*M_PI
+		moveMotors(tank_drive_18, 35, 35);
+		pros::delay(50);
+	}
+	stopMotors(tank_drive_18);
+
+	Pneumatics::getInstance()->setRight(1);
+
+	pros::delay(250);
+	turnF_skills(270);
+	pros::delay(250);
+	
+	pros::Task bowl_task {[=] {
+		for(int i=0; i<14; i++){
+			// Pneumatics::getInstance()->setRight(0);
+			pros::delay(250/1.5);
+			turnF_skills(240);
+			pros::delay(500/2);
+			// Pneumatics::getInstance()->setRight(1);
+			turnF_skills(270);
+		}
+	}};
+	while(bowl_task.get_state()!=pros::E_TASK_STATE_DELETED){
+		pros::delay(50);
+	}
+
+	turn_skills(225);
+	pros::delay(150);
+
+	while(tank_drive_18.getOdom().getX() > (.95)*.61){ //2*M_PI
+		moveMotors(tank_drive_18, 50, 50);
+		pros::delay(50);
+	}
+	stopMotors(tank_drive_18);
+	Pneumatics::getInstance()->setRight(0);
+
+	pros::delay(150);
+	turn_skills(45);
+	pros::delay(150);
+	Pneumatics::getInstance()->setRight(1);
+
+	vector<vector<double>> curvePath1 = {{tank_drive_18.getOdom().getX(), tank_drive_18.getOdom().getY()}, vect(1.3,5.55), vect(1.5,5.55), vect(4.7,5.6), vect(4.2,5.3), vect(5.15,5.15)};
+		
+	pros::Task acrossMid_task {[=] {
+		move_skills(curvePath1, 135, false, true, 2.7);
+	}};
+		
+	while(acrossMid_task.get_state()!=pros::E_TASK_STATE_DELETED){
+		Intake::getInstance()->set_power(127);
+		if (tank_drive_18.getOdom().getX() < 3.1*.61 && tank_drive_18.getOdom().getX() > 2.2*.61)
+			Pneumatics::getInstance()->setRight(0);
+		else
+			Pneumatics::getInstance()->setRight(1);
+		pros::delay(50);	
+	}
+
+	turn_skills(135);
+		
+	//vect(5,5.4),vect(5.2, 4.5),
+	// vector<vector<double>> push_in = {{tank_drive_18.getOdom().getX(),tank_drive_18.getOdom().getX(), vect(1.15, 5.62), vect(4.9, 5.62), vect(5.55, 5.82), vect(5.41, 4.48)};
+	
+	///////////// ---
+	pros::delay(150);
+	
+	pros::Task toGoal_task {[=] {
+		// move(curvePath2, 160, false, true, 2);
+		vector<vector<double>> curvePath2 = {curvePath1.back(), vect(5.2,4.9)};
+		followPath(curvePath2, tank_drive_18, 160, false, true, false, 0.5, 3.0, 250.0 / 1.8, 450.0 / 2.5, 40.0 / 2.5, false, .91);
+	}};
+	
+	while(toGoal_task.get_state()!=pros::E_TASK_STATE_DELETED){
+		Pneumatics::getInstance()->setRight(1);
+		if (tank_drive_18.getOdom().getX() < 4.8*.61 && tank_drive_18.getOdom().getY() > 5.1*.61)
+			Pneumatics::getInstance()->setLeft(1);
+		else
+			Pneumatics::getInstance()->setLeft(0);
+		pros::delay(50);	
+	}
+	//////////////// ---- 
+
+	pros::delay(150);
+	// vector<vector<double>> curvePath3Rev = {curvePath2.back(), vect(5.3, 5.5)};
+	// vector<vector<double>> curvePath3Fwd = {curvePath3Rev.back(), curvePath2.back()};
+	
+	pros::Task goBack_task {[=] {
+		for(int i=0; i<2; i++){
+			moveMotors(tank_drive_18, 300, 300);
+			pros::delay(400);
+			turn_skills(180);
+			vector<vector<double>> go_back = {{tank_drive_18.getOdom().getX(), tank_drive_18.getOdom().getY()}, vect(5.2, 4.8)};
+			move_skills(go_back, 165, true, true, 2.7);
+			pros::delay(150);
+		}
+	}};
+
+	const double kABORT_TIME = kSTART_TIME + auton_duration_time_millis - 500;
+	while (pros::millis() < kABORT_TIME) {
+        pros::delay(100);
+    }
+	Pneumatics::getInstance()->setLeft(0);
+	Pneumatics::getInstance()->setRight(0);
+    Intake::getInstance()->set_power(0);
+	odom_task.suspend();
 }
 
-vector<double> vectOff(double x, double y){
-    return {(.61*2.2)+(x*.61), (.61*.5)+(y*.61)};
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// SKILLS METHODS
+
+/** Converts inputted tile coordinates, x and y, into meters, with the starting location offset for comp.
+ * usage example: 
+ * 
+ *     vectOff_skills(1, 2);
+ *
+*/
+vector<double> vectOff_skills(double x, double y){
+    return {(.61*skills_start[0])+(x*.61), (.61*skills_start[1])+(y*.61)};
 }
 
-void move(vector<vector<double>> moveVec, int angle, bool isReversed, bool isSpinAtEnd)
+/** Moves the robot to the specified location and angle using movement vectors.
+ * usage example: 
+ * 
+ *     move(vect(1, 2), 90, false, true);
+ *
+*/
+void move_skills(vector<vector<double>> moveVec, int angle, bool isReversed, bool isSpinAtEnd, double speedfactor)
 {
-    double speedfactor=2.7;
-    followPath(moveVec, tank_drive_18, angle, isReversed, isSpinAtEnd, false, 0.5, 3.0, 200.0 / speedfactor, 450.0 / speedfactor, 40.0 / speedfactor, false, 1.12);
+    followPath(moveVec, tank_drive_18, angle, isReversed, isSpinAtEnd, false, 0.5, 3.0, 250.0 / speedfactor, 450.0 / speedfactor, 40.0 / speedfactor, false, .91);
 }
 
-
+/** Turns the robot to the specified angle.
+ * usage example: 
+ * 
+ *     turn(90);
+ *
+*/
+ void turn_skills(double angle){
+	turnToAngle(tank_drive_18, angle, 3.0, false, .91, 150); //p=1.12 // turndegtolerance=3 //time 150
+ }
 /*
 
-
-15-Comp
-=====================
-Intake to Open Bot
-Cata Down
----- Cycle Up to 10 Times; Dynamically stops via time
-Doinker Down (Once Cata is down)
-Doinker Up
-~ Wait for Comp 18 (Get to Position | Cycle Triball into goal)
-	~ Set timeout delay
-Cata Cycle
-Increment Counter on Controller
-Delay 2 sec (For placing Tribal)
----- To Cycle
-Cata Release
-Doinker Up
-Drive to Contact Vertial Elevation (IF AWP)
-.END
-
-18-Comp
-=====================
-Intake Down
-Retract Climb Pistion
-Drive to Goal
-Notify Comp15 (At goal ready for cycle)
-Start Distance Sensor Loop
----- Cycle til auton end
-Intake Out
-Move Forward (Score Triball)
-Move Back
-Intake Stop
----- To Cycle
-Drive to contact vertical elevation (IF AWP)
-.END
-
-
+/** Turns the robot to the specified angle with increased velocity.
+ * usage example: 
+ * 
+ *     turn(90);
+ *
 */
-
+ void turnF_skills(double angle){
+	turnToAngle(tank_drive_18, angle, 10.0, false, 1.4, 50); //p=1.12 // turndegtolerance=3 //time 150
+ }
 
