@@ -47,10 +47,16 @@ void autonomous() {
 
 /* Opcontrol method runs by default (unless connected to comp controller )*/
 void opcontrol() {
-
-	// Driver skills
-	// skills_15(true);
-
-	// Comp
-	controls();
+	if(gui::selected_auton == gui::AUTON_COMP) {
+		controls();
+		// ctrl_master.rumble("---");
+	}
+	else if(gui::selected_auton == gui::AUTON_SKILLS) {
+		skills_15(true);
+		controls();
+		// ctrl_master.rumble("-");
+	}
+	else {
+		controls();
+	}
 }
