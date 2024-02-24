@@ -114,55 +114,55 @@ void auton18(double auton_duration_time_millis, bool skills)
 	// 2.43x, 1.556y
 
 	pros::Task comp18goal_task{[=]
-							   {
-								   bool oncetrigger = false;
-								   while (1)
-								   {
-									   // Intake::getInstance()->set_power(0);
-									   if (triBall() || !oncetrigger)
-									   {
-										   // if(oncetrigger)
-										   delay(500); // Allow triball to be removed from intake
-										   // Intake::getInstance()->set_power(127);
-										   // moveMotors(tank_drive_18, 85, 85);
-										   // delay(900); // Drive forward delay
-										   // left_drive_motors.move_velocity(0);
-										   // right_drive_motors.move_velocity(0);
-										   // vector<vector<double>> oscillate = {{x,y}, {x-.07,y}};
-										   // move(oscillate, 89, true, true);
-										   // delay(50);
+	{
+		bool oncetrigger = false;
+		while (1)
+		{
+			// Intake::getInstance()->set_power(0);
+			if (triBall() || !oncetrigger)
+			{
+				// if(oncetrigger)
+				delay(500); // Allow triball to be removed from intake
+				// Intake::getInstance()->set_power(127);
+				// moveMotors(tank_drive_18, 85, 85);
+				// delay(900); // Drive forward delay
+				// left_drive_motors.move_velocity(0);
+				// right_drive_motors.move_velocity(0);
+				// vector<vector<double>> oscillate = {{x,y}, {x-.07,y}};
+				// move(oscillate, 89, true, true);
+				// delay(50);
 
-										   Intake::getInstance()->set_power(127);
-										   vector<vector<double>> entergoal_path = {{atGoal[0], atGoal[1]}, {insideGoal[0], insideGoal[1]}};
-										   move_comp(entergoal_path, 89, false, false);
-										   delay(150);
+				Intake::getInstance()->set_power(127);
+				vector<vector<double>> entergoal_path = {{atGoal[0], atGoal[1]}, {insideGoal[0], insideGoal[1]}};
+				move_comp(entergoal_path, 89, false, false);
+				delay(150);
 
-										   vector<vector<double>> exitgoal_path = {{insideGoal[0], insideGoal[1]},
-																				   {linedUpBack[0], linedUpBack[1]}};
-										   // {x-convert::inToM(10), linedUpBack[1]}};
-										   move_slw_comp(exitgoal_path, 89, true, false);
-										   delay(50);
+				vector<vector<double>> exitgoal_path = {{insideGoal[0], insideGoal[1]},
+														{linedUpBack[0], linedUpBack[1]}};
+				// {x-convert::inToM(10), linedUpBack[1]}};
+				move_slw_comp(exitgoal_path, 89, true, false);
+				delay(50);
 
-										   double x = tank_drive_18.getOdom().getX(),
-												  y = tank_drive_18.getOdom().getY();
+				double x = tank_drive_18.getOdom().getX(),
+						y = tank_drive_18.getOdom().getY();
 
-										   // if (x < linedUpBack[0] - convert::inToM(2.5))
-										   // {
-										   // 	vector<vector<double>> oscillate = {{x,y}, {linedUpBack[0],y}};
-										   // 	move_slw_comp(oscillate, 89, false, false);
-										   // 	delay(50);
-										   // }
+				// if (x < linedUpBack[0] - convert::inToM(2.5))
+				// {
+				// 	vector<vector<double>> oscillate = {{x,y}, {linedUpBack[0],y}};
+				// 	move_slw_comp(oscillate, 89, false, false);
+				// 	delay(50);
+				// }
 
-										   if (!oncetrigger)
-										   {
-											   Pneumatics::getInstance()->setRight(0);
-											   comp18link->notify();
-											   oncetrigger = true;
-										   }
-									   }
-									   delay(50);
-								   }
-							   }};
+				if (!oncetrigger)
+				{
+					Pneumatics::getInstance()->setRight(0);
+					comp18link->notify();
+					oncetrigger = true;
+				}
+			}
+			delay(50);
+		}
+	}};
 
 	const double kABORT_TIME = kSTART_TIME + auton_duration_time_millis - 500;
 	while (pros::millis() < kABORT_TIME)
@@ -191,14 +191,14 @@ void skills18(bool driver)
 	pros::delay(50);
 
 	pros::Task odom_task{[=]
-						 {
-							 while (1)
-							 {
-								 tank_drive_18.getOdom().updatePosition();
-								 pros::lcd::set_text(7, "A: " + std::to_string(tank_drive_18.getOdom().getHeading()));
-								 pros::delay(50);
-							 }
-						 }};
+	{
+		while (1)
+		{
+			tank_drive_18.getOdom().updatePosition();
+			pros::lcd::set_text(7, "A: " + std::to_string(tank_drive_18.getOdom().getHeading()));
+			pros::delay(50);
+		}
+	}};
 
 	// 1 tile is .61 meters (2 ft)
 
@@ -216,22 +216,23 @@ void skills18(bool driver)
 	pros::delay(250);
 
 	pros::Task bowl_task{[=]
-						 {
-							int iter;
-							if(driver)
-								iter = 22;
-							else 
-								iter = 14;
-							 for (int i = 0; i < iter; i++)
-							 {
-								 // Pneumatics::getInstance()->setRight(0);
-								 pros::delay(250 / 1.5);
-								 turnF_skills(240);
-								 pros::delay(500 / 2);
-								 // Pneumatics::getInstance()->setRight(1);
-								 turnF_skills(270);
-							 }
-						 }};
+		{
+		int iter;
+		if(driver)
+			iter = 22;
+		else 
+			iter = 14;
+		for (int i = 0; i < iter; i++)
+		{
+			// Pneumatics::getInstance()->setRight(0);
+			pros::delay(250 / 1.5);
+			turnF_skills(240);
+			pros::delay(500 / 2);
+			// Pneumatics::getInstance()->setRight(1);
+			turnF_skills(270);
+		}
+	}};
+
 	while (bowl_task.get_state() != pros::E_TASK_STATE_DELETED)
 	{
 		pros::delay(50);
@@ -270,9 +271,9 @@ void skills18(bool driver)
 	vector<vector<double>> curvePath1 = {{tank_drive_18.getOdom().getX(), tank_drive_18.getOdom().getY()}, vect(1.3, 5.55), vect(1.5, 5.55), vect(4.7, 5.6), vect(4.2, 5.3)};
 
 	pros::Task acrossMid_task{[=]
-							  {
-								  move_skills(curvePath1, 135, false, true, 2.7);
-							  }};
+		{
+			move_skills(curvePath1, 135, false, true, 2.7);
+		}};
 
 	while (acrossMid_task.get_state() != pros::E_TASK_STATE_DELETED)
 	{
@@ -293,11 +294,11 @@ void skills18(bool driver)
 	pros::delay(150);
 
 	pros::Task toGoal_task{[=]
-						   {
-							   // move(curvePath2, 160, false, true, 2);
-							   vector<vector<double>> curvePath2 = {curvePath1.back(), vect(5.2, 4.9)};
-							   followPath(curvePath2, tank_drive_18, 160, false, true, false, 0.5, 3.0, 250.0 / 1.8, 450.0 / 2.5, 40.0 / 2.5, false, .91);
-						   }};
+		{
+			// move(curvePath2, 160, false, true, 2);
+			vector<vector<double>> curvePath2 = {curvePath1.back(), vect(5.2, 4.9)};
+			followPath(curvePath2, tank_drive_18, 160, false, true, false, 0.5, 3.0, 250.0 / 1.8, 450.0 / 2.5, 40.0 / 2.5, false, .91);
+		}};
 
 	while (toGoal_task.get_state() != pros::E_TASK_STATE_DELETED)
 	{
@@ -315,17 +316,24 @@ void skills18(bool driver)
 	// vector<vector<double>> curvePath3Fwd = {curvePath3Rev.back(), curvePath2.back()};
 
 	pros::Task goBack_task{[=]
-						   {
-							   for (int i = 0; i < 2; i++)
-							   {
-								   moveMotors(tank_drive_18, 300, 300);
-								   pros::delay(400);
-								   turn_skills(180);
-								   vector<vector<double>> go_back = {{tank_drive_18.getOdom().getX(), tank_drive_18.getOdom().getY()}, vect(5.2, 4.8)};
-								   move_skills(go_back, 165, true, true, 2.7);
-								   pros::delay(150);
-							   }
-						   }};
+		{
+			for (int i = 0; i < 2; i++)
+			{
+				moveMotors(tank_drive_18, 300, 300);
+				pros::delay(750);
+				stopMotors(tank_drive_18);
+				turn_skills(180);
+				// pure pursuit not working
+				// vector<vector<double>> go_back = {{tank_drive_18.getOdom().getX(), tank_drive_18.getOdom().getY()}, vect(5.2, 4.8)};
+				// move_skills(go_back, 165, true, true, 2.7);
+				moveMotors(tank_drive_18, -50, -50);
+				pros::delay(500);
+				pros::delay(150);
+				stopMotors(tank_drive_18);
+				turn_skills(180);
+			}
+		}};
+
 	int auton_duration_time_millis = 60000;
 	const double kABORT_TIME = kSTART_TIME + auton_duration_time_millis - 500;
 	while (pros::millis() < kABORT_TIME)
