@@ -226,7 +226,7 @@ void skills18(bool driver)
 		{
 			// Pneumatics::getInstance()->setRight(0);
 			pros::delay(250 / 1.5);
-			turnF_skills(240);
+			turnF_skills(230);
 			pros::delay(500 / 2);
 			// Pneumatics::getInstance()->setRight(1);
 			turnF_skills(270);
@@ -394,5 +394,5 @@ void turn_skills(double angle)
 */
 void turnF_skills(double angle)
 {
-	turnToAngle(tank_drive_18, angle, 10.0, false, 1.4, 50); // p=1.12 // turndegtolerance=3 //time 150
+	turnToAngle(tank_drive_18, angle, 10.0, false, 1.5, 50); // p=1.12 // turndegtolerance=3 //time 150
 }
