@@ -35,8 +35,8 @@ pros::ADIEncoder vertical_track_adi(3, 4, true); // tracking wheel #1 cd
 pros::ADIEncoder horizontal_track_adi(5, 6, true); // tracking wheel #2 ef
 pros::ADIPotentiometer doinker_pot('B', pros::adi_potentiometer_type_e_t::E_ADI_POT_EDR);
 
-Generic_Rotation* vertical_track = new Generic_Rotation_Digikey(vertical_track_adi, 1.96 * 0.0254 / 2);
-Generic_Rotation* horizontal_track = new Generic_Rotation_Digikey(horizontal_track_adi, 1.96 * 0.0254 / 2);
+Generic_Rotation* vertical_track = new Generic_Rotation_Digikey(vertical_track_adi, 1.96 * 0.0254 / 2.0);
+Generic_Rotation* horizontal_track = NULL; // new Generic_Rotation_Digikey(horizontal_track_adi, 1.96 * 0.0254 / 2.0);
 
 pros::Imu imu(21);
 
