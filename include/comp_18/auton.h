@@ -3,7 +3,7 @@
 #include "comp_18/devices.h"
 
 void auton18(double auton_duration_time_millis, bool skills);
-void skills18(double auton_duration_time_millis);
+void skills18(bool driver=false);
 std::vector<double> vect(double x, double y);
 std::vector<double> vectOff_comp(double x, double y);
 std::vector<double> vectOff_skills(double x, double y);
