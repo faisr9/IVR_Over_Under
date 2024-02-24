@@ -5,11 +5,12 @@ extern LinkHelper* comp18link;
 
 /* First method to run when program starts */
 void initialize() {
-	pros::lcd::initialize(); // Temp until custom GUI
+	// pros::lcd::initialize(); // Temp until custom GUI
 	comp18link->init();
 	imu.reset(); // Very important!!!
     transverse_rot_sensor.reset();
 	radial_rot_sensor.reset();
+	gui::gui_init();
     pros::delay(3000);
 }
 
