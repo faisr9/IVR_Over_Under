@@ -31,7 +31,7 @@ void autonomous() {
 		skills18(false);
 	}
 	else {
-		return;
+		auton18(45000, false);
 	}
 }
 
