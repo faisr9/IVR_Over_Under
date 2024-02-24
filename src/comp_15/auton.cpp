@@ -69,7 +69,7 @@ void skills_15(bool driver) {
     }
 
     Pneumatics::getInstance()->getWings()->off();
-    turnToAngle(drive, 120, 3.0, false, 1.9);
+    turnToAngle(drive, 120, 3.0, false, 1.9, 150);
 
     moveMotors(drive, -150, -150);
     pros::delay(150);
