@@ -16,7 +16,7 @@ class DoinkerClass : public SubsystemParent
         const int doinker_pot_max = (int)(4095 * 70);
         const int doinker_pot_tolerance = 500;
 
-        const int kDOINKER_DOWN_SPEED = -70; // should be faster
+        const int kDOINKER_DOWN_SPEED = -72; // should be faster
         const int kDOINKER_UP_SPEED = 62; // should be slower so triball doesn't go flying
         int doinker_pos;
         bool doinkerState;

@@ -28,7 +28,7 @@ void controls() {
             } else {
                 CompetitionCatapult::getInstance()->set_cata_mode("P");
             }
-        } else if (ctrl_master.get_digital(E_CONTROLLER_DIGITAL_LEFT)) {
+        } else if (ctrl_master.get_digital(E_CONTROLLER_DIGITAL_L2)) {
             CompetitionCatapult::getInstance()->set_cata_mode("I");
         }
 

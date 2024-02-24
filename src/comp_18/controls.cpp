@@ -60,7 +60,9 @@ void controls() {
 
 // void controls()
 // {
-//     tank_drive_18.getOdom().initTracker(0, 0, 90);
+//     vector<double> start = {1.342, 0.305};
+
+//     tank_drive_18.getOdom().initTracker(start[0], start[1], 90);
 //     pros::delay(50);
 
 // 	pros::Task odom_task{[=] {
@@ -70,6 +72,7 @@ void controls() {
 // 			pros::delay(50);
 // 		}
 // 	}};
+// }
 
 // 	while(1)
 // 	{

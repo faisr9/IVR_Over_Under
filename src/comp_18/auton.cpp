@@ -9,7 +9,13 @@ LinkHelper* comp18link = LinkHelper::createInstance(8, E_LINK_RX);
  *
 */
 void turn(double angle){
-	turnToAngle(tank_drive_18, angle, 2.0, false, 0.9); //p=1.12 // turndegtolerance=3 //time 150
+	turnToAngle(tank_drive_18, angle, 2.0, false, 1); //p=1.12 // turndegtolerance=3 //time 150
+}
+
+void move_slw(vector<vector<double>> moveVec, int angle, bool isReversed, bool isSpinAtEnd)
+{
+    double speedfactor=3.87;
+    followPath(moveVec, tank_drive_18, angle, isReversed, isSpinAtEnd, false, 0.5, 3.0, 200.0 / speedfactor, 450.0 / speedfactor, 40.0 / speedfactor, false, 1.12);
 }
 
 void auton18(double auton_duration_time_millis, bool skills) {
@@ -20,7 +26,8 @@ void auton18(double auton_duration_time_millis, bool skills) {
 	vector<vector<double>> curvePath;
 	double endY = 0.0;
 	start = {1.342, 0.305};
-	endY = 1.6-0.0404-convert::inToM(1.5);
+	// endY = 1.6-0.0404-convert::inToM(1.5);
+	endY = 1.562+convert::inToM(2);
 	curvePath = {start, {2.90 - .2, start[1] + 0.03}};
 	vector<vector<double>> curvePath2 = {curvePath.back(), {2.202 + 0.043, endY}};
 
@@ -52,14 +59,33 @@ void auton18(double auton_duration_time_millis, bool skills) {
 	delay(50);
 	Pneumatics::getInstance()->toggleWings();
 
-    vector<vector<double>> curvePath3 = {curvePath2.back(), {convert::inToM((24*4)+3.5), endY}};
-
-    move(curvePath3, 90, false, false);
+    // vector<vector<double>> curvePath3 = {curvePath2.back(), {convert::inToM((24*4)+3.5), endY}};
+	vector<vector<double>> curvePath3 = {curvePath2.back(), {2.654-convert::inToM(3.5), endY}};
+	// Pneumatics::getInstance()->getClimber()->toggle();
+    move(curvePath3, 89, false, false);
 	Intake::getInstance()->set_power(127 / 1.5);
 	// Intake::getInstance()->set_power(0);
 
-	// Sid was here
+	//1st end: 2.619x 1.567y
+	//touching goal, 2.654x, 1.566y
+	//lined up back, 2.578x, 1.566y
+	//iside goal: 2.85x, 1.566y
+
+	// touching - lined up back = 0.076x, 0y
 	
+	// while(1)
+	// {
+	// 	pros::delay(5000);
+	// }
+	// double x=tank_drive_18.getOdom().getX(),
+	// 	y=tank_drive_18.getOdom().getY();
+
+	vector<double> atGoal = {tank_drive_18.getOdom().getX(), tank_drive_18.getOdom().getY()};
+	vector<double> insideGoal = {2.80, 1.566};
+	vector<double> linedUpBack = {2.578, 1.566};
+
+	// 2.43x, 1.556y
+
 	pros::Task comp18goal_task {[=] {
 		bool oncetrigger = false;
 		while(1)
@@ -67,26 +93,45 @@ void auton18(double auton_duration_time_millis, bool skills) {
 			//Intake::getInstance()->set_power(0);
 			if (triBall() || !oncetrigger)
 			{
-				if(oncetrigger)
-					delay(180); // Allow triball to be removed from intake
+				// if(oncetrigger)
+					delay(500); // Allow triball to be removed from intake
+				// Intake::getInstance()->set_power(127);
+				// moveMotors(tank_drive_18, 85, 85);
+				// delay(900); // Drive forward delay
+				// left_drive_motors.move_velocity(0);
+				// right_drive_motors.move_velocity(0);
+				// vector<vector<double>> oscillate = {{x,y}, {x-.07,y}};
+				// move(oscillate, 89, true, true);
+				// delay(50);
+
 				Intake::getInstance()->set_power(127);
-				moveMotors(tank_drive_18, 85, 85);
-				delay(850); // Drive forward delay
-				left_drive_motors.move_velocity(0);
-				right_drive_motors.move_velocity(0);
+				vector<vector<double>> entergoal_path = {{atGoal[0], atGoal[1]}, {insideGoal[0], insideGoal[1]}};
+				move(entergoal_path, 89, false, false);
+				delay(150);
+
+				vector<vector<double>> exitgoal_path = {{insideGoal[0], insideGoal[1]}, 
+					{linedUpBack[0], linedUpBack[1]}};
+					// {x-convert::inToM(10), linedUpBack[1]}};
+				move_slw(exitgoal_path, 89, true, false);
+				delay(50);
+				
 				double x=tank_drive_18.getOdom().getX(),
 					y=tank_drive_18.getOdom().getY();
-				vector<vector<double>> oscillate = {{x,y}, {x-.065,y}};
-				move(oscillate, 89, true, true);
-				delay(50);
+
+				// if (x < linedUpBack[0] - convert::inToM(2.5))
+				// {
+				// 	vector<vector<double>> oscillate = {{x,y}, {linedUpBack[0],y}};
+				// 	move_slw(oscillate, 89, false, false);
+				// 	delay(50);
+				// }
 
 				if (!oncetrigger)
 				{
 					Pneumatics::getInstance()->setRight(0);
 					comp18link->notify();
+					oncetrigger = true;
 				}
 
-				oncetrigger = true;
 			}
 			delay(50);
 		}
@@ -115,7 +160,6 @@ void move(vector<vector<double>> moveVec, int angle, bool isReversed, bool isSpi
     double speedfactor=2.7;
     followPath(moveVec, tank_drive_18, angle, isReversed, isSpinAtEnd, false, 0.5, 3.0, 200.0 / speedfactor, 450.0 / speedfactor, 40.0 / speedfactor, false, 1.12);
 }
-
 
 
 /*

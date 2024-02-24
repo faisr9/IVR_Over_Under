@@ -33,6 +33,7 @@ void auton_15(double auton_duration_time_millis, bool climb) {
     delay(1500); // Allow robot to settle
     // release kickstand
     Pneumatics::getInstance()->getFloorBrake()->off();
+    Pneumatics::getInstance()->stop();
 
     // start shooting portion of autonomous
     pros::Task shooting_task{[=] {

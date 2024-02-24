@@ -32,8 +32,8 @@ void autonomous() {
 /* Opcontrol method runs by default (unless connected to comp controller )*/
 void opcontrol() {
 	// Comp
-    controls();
+    // controls();
 
 	// Skills
-	// auton18(60000, true);
+	auton18(45000, false);
 }
