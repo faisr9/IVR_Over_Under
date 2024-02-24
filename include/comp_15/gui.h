@@ -52,10 +52,11 @@ class gui {
         typedef enum autonomous_type {
             AUTON_COMP,
             AUTON_SKILLS,
-            AUTON_NONE
+            AUTON_NONE,
+            NO_SELECTION
         } autonomous_type_t;
 
-        inline static autonomous_type_t selected_auton = autonomous_type_t::AUTON_NONE;
+        inline static autonomous_type_t selected_auton = autonomous_type_t::NO_SELECTION;
         inline static bool tank_drive = false;
         static void gui_init();
 };

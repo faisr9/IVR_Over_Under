@@ -29,10 +29,12 @@ void competition_initialize() {}
 /* Autonomous method */
 void autonomous() {
 	if(gui::selected_auton == gui::AUTON_COMP) {
-		auton_15(45000, false);
+		// auton_15(45000, false);
+		ctrl_master.rumble("---");
 	}
 	else if(gui::selected_auton == gui::AUTON_SKILLS) {
-		auton_15(60000, true);
+		// auton_15(60000, true);
+		ctrl_master.rumble("-");
 	}
 	else {
 		return;

@@ -11,7 +11,14 @@ void controls() {
         //ACTIVATE DRIVE
         if(pros::competition::is_connected())
             drive.change_drive_mode(0);
-
+        else
+        {
+            if(gui::tank_drive)
+                drive.change_drive_mode(1);
+            else
+                drive.change_drive_mode(0);
+        }
+        
         drive.toggle_drive_mode();
 
         //INTAKE CONTROLS

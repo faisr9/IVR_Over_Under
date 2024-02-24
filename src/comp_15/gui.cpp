@@ -100,14 +100,14 @@ lv_res_t driveTypeUpdate(lv_obj_t *btn_inp)
         case 1:
             lv_sw_on_anim(tank_drive_switch);
             lv_sw_off_anim(arcade_drive_switch);
-            // gui::tank_drive = true;
-            drive.change_drive_mode(1);
+            gui::tank_drive = true;
+            // drive.change_drive_mode(1);
             break;
         case 2:
             lv_sw_on_anim(arcade_drive_switch);
             lv_sw_off_anim(tank_drive_switch);
-            // gui::tank_drive = false;
-            drive.change_drive_mode(0);
+            gui::tank_drive = false;
+            // drive.change_drive_mode(0);
             break;
     }
 
@@ -124,10 +124,11 @@ lv_res_t manualTrigger(lv_obj_t *btn)
     switch (id)
     {
         case 1:
-            CompetitionCatapult::getInstance()->set_cata_mode("I");
+            CompetitionCatapult::getInstance()->release();
             break;
         case 2:
-            Pneumatics::getInstance()->stop();
+            Pneumatics::getInstance()->getWings()->off();
+            Pneumatics::getInstance()->getFloorBrake()->off();
             break;
     }
 
@@ -245,6 +246,8 @@ void gui::gui_init()
     if (pros::lcd::is_initialized())
         pros::lcd::shutdown();
 
+    gui::tank_drive = false;
+
     delay(200);
     lv_init();
 
@@ -358,6 +361,22 @@ void gui::gui_init()
     no_auton_btn = createBtn(lv_scr_act(), 45, 110+35+10, 100, 35,
         &no_auton_style_sel, &no_auton_style, LV_BTN_ACTION_CLICK, autonSelection, 3, "None");
     lv_btn_set_state(no_auton_btn, LV_BTN_STATE_REL);
+
+    if (gui::selected_auton != gui::autonomous_type::NO_SELECTION)
+    {
+        switch(gui::selected_auton)
+        {
+            case(gui::autonomous_type::AUTON_COMP):
+                lv_btn_set_state(comp_auton_btn, LV_BTN_STATE_PR);
+                break;
+            case(gui::autonomous_type::AUTON_SKILLS):
+                lv_btn_set_state(skills_auton_btn, LV_BTN_STATE_PR);
+                break;
+            case(gui::autonomous_type::AUTON_NONE):
+                lv_btn_set_state(no_auton_btn, LV_BTN_STATE_PR);
+                break;
+        }
+    }
 
     tank_drive_btn = createBtn(lv_scr_act(), 180, 40, 70, 35,
         &modeBtnStyle, &modeBtnStyle, LV_BTN_ACTION_CLICK, NULL, 0, "Tank");
