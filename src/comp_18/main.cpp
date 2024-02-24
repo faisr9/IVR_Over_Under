@@ -5,13 +5,14 @@ extern LinkHelper* comp18link;
 
 /* First method to run when program starts */
 void initialize() {
-	pros::lcd::initialize(); // Temp until custom GUI
+	// pros::lcd::initialize(); // Temp until custom GUI
 	comp18link->init();
 	imu.reset(); // Very important!!!
     transverse_rot_sensor.reset();
 	radial_rot_sensor.reset();
 	Pneumatics::getInstance()->setRight(0);
 	Pneumatics::getInstance()->setLeft(0);
+	gui::gui_init();
     pros::delay(3000);
 }
 
@@ -23,12 +24,15 @@ void competition_initialize() {}
 
 /* Autonomous method */
 void autonomous() {
-
-	// Comp auton
-	// auton18(45000, false);
-
-	// Skills
-	skills18(60000);
+	if(gui::selected_auton == gui::AUTON_COMP) {
+		auton18(45000, false);
+	}
+	else if(gui::selected_auton == gui::AUTON_SKILLS) {
+		skills18(60000);
+	}
+	else {
+		return;
+	}
 }
 
 /* Opcontrol method runs by default (unless connected to comp controller )*/
@@ -37,9 +41,7 @@ void opcontrol() {
 	// Comp
     controls();
 
-	// Comp auton
-	// auton18(45000, false);
 
-	// Skills
-	// auton18(60000, true);
+	// Driver Skills
+	// does not exist yet
 }

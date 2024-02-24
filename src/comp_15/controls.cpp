@@ -1,5 +1,5 @@
-// #include "comp_15/controls.h"
-#include "comp_15/include_list.h"
+#include "comp_15/controls.h"
+// #include "comp_15/include_list.h"
 
 // Will add driver profiles later
 void controls() {
@@ -9,6 +9,16 @@ void controls() {
 
     while(1) {
         //ACTIVATE DRIVE
+        if(pros::competition::is_connected())
+            drive.change_drive_mode(0);
+        else
+        {
+            if(gui::tank_drive)
+                drive.change_drive_mode(1);
+            else
+                drive.change_drive_mode(0);
+        }
+        
         drive.toggle_drive_mode();
 
         // // TESTING CODE, REMOVE THIS BEFORE MERGING TO MASTER

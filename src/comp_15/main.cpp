@@ -3,20 +3,20 @@
 // #include "common_code/movement_tank.h"
 // #include "auton.h"
 // #include "comp_15/include_list.h"
-#include "main.h" // Not needed, but present to show its included
+// #include "main.h" // Not needed, but present to show its included
 #include "comp_15/auton.h"
 #include "comp_15/controls.h"
-
 
 extern LinkHelper* comp15link;
 
 /* First method to run when program starts */
 void initialize() {
-	pros::lcd::initialize(); // Temp until custom GUI
+	// pros::lcd::initialize(); // Temp until custom GUI
 	comp15link->init();
 	imu.reset(); // Very important!!!
 	horizontal_track_adi.reset();
 	vertical_track_adi.reset();
+	gui::gui_init();
 	pros::delay(4000);
 }
 
@@ -32,34 +32,25 @@ void competition_initialize() {}
 
 /* Autonomous method */
 void autonomous() {
-	// COMP
-	// auton_15(45000, false); // COMP
-
-	// SKILLS
-	skills_15(false);
-
-	while (1) {
-		// no work bc whatever internal task is running will still be happening
-		// if (ctrl_master.get_digital_new_press(E_CONTROLLER_DIGITAL_B)) {
-		// 	skils_task.suspend(); // this will cause many problems and will only be done for testing
-		// 	stopMotors(drive);
-		// 	break;
-		// }
-
-		pros::delay(50);
+	if(gui::selected_auton == gui::AUTON_COMP) {
+		auton_15(45000, false);
+		// ctrl_master.rumble("---");
 	}
-
-	// auton_15(20000, true); // TESTING
-	pros::delay(5000); // just putting this here to make sure nothing weird happens that we don't want upon auton code ending
+	else if(gui::selected_auton == gui::AUTON_SKILLS) {
+		skills_15(false);
+		// ctrl_master.rumble("-");
+	}
+	else {
+		return;
+	}
 }
 
 /* Opcontrol method runs by default (unless connected to comp controller )*/
 void opcontrol() {
 
-	skills_15(true);
+	// Driver skills
+	// skills_15(true);
 
-	controls(); // COMP
-
-
-	// auton_15(60000, true); // SKILLS
+	// Comp
+	controls();
 }

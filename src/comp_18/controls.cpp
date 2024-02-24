@@ -17,6 +17,16 @@ void controls() {
     pros::lcd::set_text(1, "Running Controls");
     while(1) {
         //ACTIVATE DRIVE
+        if(pros::competition::is_connected())
+            tank_drive_18.change_drive_mode(0);
+        else
+        {
+            if(gui::tank_drive)
+                tank_drive_18.change_drive_mode(1);
+            else
+                tank_drive_18.change_drive_mode(0);
+        }
+        
         tank_drive_18.toggle_drive_mode();
 
         //INTAKE CONTROLS

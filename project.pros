@@ -311,7 +311,8 @@
     "upload_options": {
       "slot": 8,
       "description": "Master Code",
-      "icon": "pizza"
+      "icon": "pizza",
+      "after": "screen"
     }
   }
 }
