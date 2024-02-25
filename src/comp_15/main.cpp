@@ -41,7 +41,8 @@ void autonomous() {
 		// ctrl_master.rumble("-");
 	}
 	else {
-		return;
+		auton_15(45000, false);
+		// ctrl_master.rumble("---");
 	}
 }
 

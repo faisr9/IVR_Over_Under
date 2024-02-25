@@ -204,9 +204,9 @@ void skills18(bool driver)
 
 	// 1 tile is .61 meters (2 ft)
 
-	while (tank_drive_18.getOdom().getX() > 1.04 * .61)
+	while (tank_drive_18.getOdom().getX() > 1.15 * .61)
 	{ // 2*M_PI
-		moveMotors(tank_drive_18, 35, 35);
+		moveMotors(tank_drive_18, 20, 20);
 		pros::delay(50);
 	}
 	stopMotors(tank_drive_18);
@@ -228,7 +228,7 @@ void skills18(bool driver)
 		{
 			// Pneumatics::getInstance()->setRight(0);
 			pros::delay(250 / 1.5);
-			turnF_skills(240);
+			turnF_skills(230);
 			pros::delay(500 / 2);
 			// Pneumatics::getInstance()->setRight(1);
 			turnF_skills(270);
@@ -396,5 +396,5 @@ void turn_skills(double angle)
 */
 void turnF_skills(double angle)
 {
-	turnToAngle(tank_drive_18, angle, 10.0, false, 1.4, 50); // p=1.12 // turndegtolerance=3 //time 150
+	turnToAngle(tank_drive_18, angle, 10.0, false, 1.5, 50); // p=1.12 // turndegtolerance=3 //time 150
 }
