@@ -89,8 +89,8 @@ void auton18(double auton_duration_time_millis, bool skills)
 	// vector<vector<double>> curvePath3 = {curvePath2.back(), {convert::inToM((24*4)+3.5), endY}};
 	vector<vector<double>> curvePath3 = {curvePath2.back(), {2.654 - convert::inToM(3.5), endY}};
 	// Pneumatics::getInstance()->getClimber()->toggle();
-	move_comp(curvePath3, 89, false, false);
 	Intake::getInstance()->set_power(127 / 1.5);
+	move_comp(curvePath3, 89, false, false);
 	// Intake::getInstance()->set_power(0);
 
 	// 1st end: 2.619x 1.567y
@@ -133,9 +133,11 @@ void auton18(double auton_duration_time_millis, bool skills)
 				// delay(50);
 
 				Intake::getInstance()->set_power(127);
-				vector<vector<double>> entergoal_path = {{atGoal[0], atGoal[1]}, {insideGoal[0], insideGoal[1]}};
-				move_comp(entergoal_path, 89, false, false);
-				delay(150);
+				// vector<vector<double>> entergoal_path = {{atGoal[0], atGoal[1]}, {insideGoal[0], insideGoal[1]}};
+				// move_comp(entergoal_path, 89, false, false);
+				moveMotors(tank_drive_18, 80, 80);
+				delay(1500);
+				stopMotors(tank_drive_18);
 
 				vector<vector<double>> exitgoal_path = {{insideGoal[0], insideGoal[1]},
 														{linedUpBack[0], linedUpBack[1]}};
@@ -143,8 +145,8 @@ void auton18(double auton_duration_time_millis, bool skills)
 				move_slw_comp(exitgoal_path, 89, true, false);
 				delay(50);
 
-				double x = tank_drive_18.getOdom().getX(),
-						y = tank_drive_18.getOdom().getY();
+				// double x = tank_drive_18.getOdom().getX(),
+				// 		y = tank_drive_18.getOdom().getY();
 
 				// if (x < linedUpBack[0] - convert::inToM(2.5))
 				// {
@@ -155,7 +157,7 @@ void auton18(double auton_duration_time_millis, bool skills)
 
 				if (!oncetrigger)
 				{
-					Pneumatics::getInstance()->setRight(0);
+					Pneumatics::getInstance()->stop();
 					comp18link->notify();
 					oncetrigger = true;
 				}
@@ -268,7 +270,7 @@ void skills18(bool driver)
 	pros::delay(150);
 	Pneumatics::getInstance()->setRight(1);
 
-	vector<vector<double>> curvePath1 = {{tank_drive_18.getOdom().getX(), tank_drive_18.getOdom().getY()}, vect(1.3, 5.55), vect(1.5, 5.55), vect(4.7, 5.6), vect(4.2, 5.3)};
+	vector<vector<double>> curvePath1 = {{tank_drive_18.getOdom().getX(), tank_drive_18.getOdom().getY()}, vect(1.3, 5.75), vect(1.5, 5.75), vect(4, 5.75), vect(4.7, 5.7), vect(5.2,5.2)};
 
 	pros::Task acrossMid_task{[=]
 		{
