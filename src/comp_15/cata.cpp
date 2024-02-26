@@ -69,6 +69,10 @@ std::string CompetitionCatapult::get_cata_mode() {
     return cata_mode;
 }
 
+bool CompetitionCatapult::get_switch_state() {
+    return kill_switch.get_value();
+}
+
 // for use by everything but the actual catapult task
 void CompetitionCatapult::set_cata_mode(std::string new_cata_mode) {
     cata_task.suspend();

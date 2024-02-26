@@ -25,7 +25,7 @@ Pneumatics* Pneumatics::getInstance() {
 }
 
 Pneumatics::Pneumatics(char piston_l, char piston_r, char piston_c) : SubsystemParent("Pneumatics"), leftWing(piston_l), rightWing(piston_r), climber(piston_c){
-
+    wings_status = false;
 }
 
 //destructor deallocates instance_
@@ -81,6 +81,20 @@ bool Pneumatics::toggleRight() {
     }
     rightWing.toggle();
     return rightWing.getStatus();    
+}
+
+bool Pneumatics::toggleWings()
+{
+    if(wings_status) {
+        leftWing.off();
+        rightWing.off();
+    } else {
+        leftWing.on();
+        rightWing.on();
+    }
+    wings_status = !wings_status;
+
+    return wings_status;
 }
 
 /**

@@ -6,16 +6,31 @@ void moveMotors(traditional_drive& drive, double leftRPM, double rightRPM) {
 }
 
 void stopMotors(traditional_drive& drive) {
-    drive.get_motor_group(0).move_velocity(0.0);
-    drive.get_motor_group(1).move_velocity(0.0);
+    // drive.get_motor_group(0).move_velocity(0.0);
+    // drive.get_motor_group(1).move_velocity(0.0);
+    drive.get_motor_group(0).set_brake_modes(BRAKETYPE_BRAKE);
+    drive.get_motor_group(1).set_brake_modes(BRAKETYPE_BRAKE);
+    drive.get_motor_group(0).brake();
+    drive.get_motor_group(1).brake();
+    delay(15);
+    drive.get_motor_group(0).set_brake_modes(BRAKETYPE_COAST);
+    drive.get_motor_group(1).set_brake_modes(BRAKETYPE_COAST);
 }
 
 // to be used exclusively when only turning (no translation)
-void turnToAngle(traditional_drive& drive, double desiredAngleDeg, double toleranceDeg, bool debug, double p) {
+void turnToAngle(traditional_drive& drive, double desiredAngleDeg, double toleranceDeg, bool debug, double p, int time_in_range) {
     double degFromFinalAngle = desiredAngleDeg - drive.get_imu().get_heading();
     degFromFinalAngle = optimizeAngle(degFromFinalAngle);
     double start_time = pros::millis();
-    while (std::abs(degFromFinalAngle) > toleranceDeg) {
+    double in_range_time = 0;
+    const int required_time = time_in_range;
+    const int delay_time = 20;
+    while (in_range_time < required_time) {
+        if (std::abs(degFromFinalAngle) <= toleranceDeg) {
+            in_range_time += (delay_time);
+        } else {
+            in_range_time = 0;
+        }
         degFromFinalAngle = optimizeAngle(desiredAngleDeg - drive.get_imu().get_heading());
         double rotRPM = degFromFinalAngle * p;
         moveMotors(drive, rotRPM, -rotRPM);
@@ -24,7 +39,7 @@ void turnToAngle(traditional_drive& drive, double desiredAngleDeg, double tolera
             if (debug) pros::lcd::set_text(6, "Turn to angle timeout reached!!!");
             break;
         } 
-        pros::delay(50);
+        pros::delay(delay_time);
     }
     // need to stop motors in case of break statement
     stopMotors(drive);
@@ -256,7 +271,8 @@ void followPath(std::vector<std::vector<double>>& path, traditional_drive& drive
         pros::delay(50);
     }
 
-    moveMotors(drive, 0.0, 0.0);
+    // moveMotors(drive, 0.0, 0.0);
+    stopMotors(drive);
     pros::delay(400); // give the robot time to come to a full stop
 
     // Turn to face final angle. This runs regardless of spinOnSpot to guarantee we're facing
@@ -266,7 +282,8 @@ void followPath(std::vector<std::vector<double>>& path, traditional_drive& drive
     } else {
         turnToAngle(drive, finalAngleDeg, final_angle_tolerance_deg, false, turnP);   
     }
-    moveMotors(drive, 0.0, 0.0);
+    // moveMotors(drive, 0.0, 0.0);
+    stopMotors(drive);
 
 
     // Delay and reprint final dist from target location to see how inaccurate this is because this isn't using a trapezoidal profile
