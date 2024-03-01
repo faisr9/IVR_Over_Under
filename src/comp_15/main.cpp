@@ -1,8 +1,3 @@
-// #include "comp_15/controls.h"
-// #include "main.h"
-// #include "common_code/movement_tank.h"
-// #include "auton.h"
-// #include "comp_15/include_list.h"
 // #include "main.h" // Not needed, but present to show its included
 #include "comp_15/auton.h"
 #include "comp_15/controls.h"
@@ -11,12 +6,12 @@ extern LinkHelper* comp15link;
 
 /* First method to run when program starts */
 void initialize() {
-	// pros::lcd::initialize(); // Temp until custom GUI
+	pros::lcd::initialize(); // Temp until custom GUI
 	comp15link->init();
 	imu.reset(); // Very important!!!
 	horizontal_track_adi.reset();
 	vertical_track_adi.reset();
-	gui::gui_init();
+	// gui::gui_init();
 	pros::delay(4000);
 }
 

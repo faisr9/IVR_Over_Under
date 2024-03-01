@@ -39,8 +39,9 @@ void skills_15(bool driver) {
         while (1) {
             // whack triball out of match load zone
             turnToAngle(drive, kTURN_BACK_ANGLE - turn_amount, 6.0, false, 3.3, 10); // more p because triball is in the way and don't care as much about precision
+            pros::delay(500);
             // turn back so the human player can place another triball
-            turnToAngle(drive, kTURN_BACK_ANGLE, 5.0, false, 1.9, 80);
+            turnToAngle(drive, kTURN_BACK_ANGLE, 5.0, false, 2.2, 400);
             pros::delay(kHP_WAIT_TIME);
             cycles++;
         }
@@ -69,7 +70,7 @@ void skills_15(bool driver) {
     }
 
     Pneumatics::getInstance()->getWings()->off();
-    turnToAngle(drive, 120, 3.0, false, 1.9, 150);
+    turnToAngle(drive, 120, 3.0);
 
     moveMotors(drive, -150, -150);
     pros::delay(150);
@@ -78,9 +79,9 @@ void skills_15(bool driver) {
     pros::Task to_goal_task {[=] {
         Intake::getInstance()->set_power(-127);
         
-        vector<vector<double>> push_in = {{drive.getOdom().getX(), drive.getOdom().getY()}, {0.7, 0.38}, {3.0, 0.38}, {3.4, 0.5}, {3.3, 0.9}}; // was 2.5 and 3.0 earlier!!!
+        vector<vector<double>> push_in = {{drive.getOdom().getX(), drive.getOdom().getY()}, {0.7, 0.38}, {2.94, 0.38}, {3.4, 0.6}, {3.4, 0.75}}; // was 2.5 and 3.0 earlier!!!
 
-        followPath(push_in, drive, 0, false, false, false, 0.5, 4.0, 150.0, 450.0, 100.0, false, 1.9);
+        followPath(push_in, drive, 0, false, false, false, 0.5, 2.0, 150.0, 450.0, 100.0, false, 2.2);
     }};
 
     // TODO: make it so wings go out before (but then back in) before going under
@@ -108,11 +109,29 @@ void skills_15(bool driver) {
     }
 
     // go back and forth some number of times
+    const double kGO_BACK_TIMEOUT = 4000;
     for (int i = 0; i < kBACK_FORTHS; i++) {
-        vector<vector<double>> go_back = {{drive.getOdom().getX(), drive.getOdom().getY()}, {3.3, 0.7}};
-        followPath(go_back, drive, 0, true, true);
+        if (drive.getOdom().getY() >= 0.78) {
+
+            const double go_back_start_time = pros::millis();
+            pros::Task go_back_task {[=] {
+                vector<vector<double>> go_back = {{drive.getOdom().getX(), drive.getOdom().getY()}, {3.4, 0.7}};
+
+                followPath(go_back, drive, 0, true, true);
+            }};
+
+            while (go_back_task.get_state() != pros::E_TASK_STATE_DELETED) {
+                if (pros::millis() > go_back_start_time + kGO_BACK_TIMEOUT) {
+                    go_back_task.suspend();
+                    turnToAngle(drive, 0, 3.0, false, 2.5);
+                    break;
+                }
+            }
+        } else {
+            turnToAngle(drive, 0, 4.0, false, 2.8, 250);
+        }
         pros::delay(100);
-        moveMotors(drive, 140, 140);
+        moveMotors(drive, 350, 350);
 
         pros::delay(1200);
     }
