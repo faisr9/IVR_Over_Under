@@ -5,10 +5,10 @@ LinkHelper* comp15link = LinkHelper::createInstance(16, E_LINK_TX);
 void skills_15(bool driver) {
     const double starting_time = pros::millis();
 
-    const double kSKILLS_DURATION = (driver) ? 55000 : 45000; // NEED TO CHANGE THIS LATER, 40000 FOR TESTING
+    const double kSKILLS_DURATION = (driver) ? 55000 : 60000; // NEED TO CHANGE THIS LATER, 40000 FOR TESTING
 
     const double kBOWL_TIME = 25000; // time we are driving the robot and pushing things in for
-    const double kBACK_FORTHS = 2; // we will shove in and back out 3 times
+    const int kBACK_FORTHS = 3; // we will shove in and back out 3 times
 
     const double kSTART_ANGLE = 315.0;
     const double kTURN_BACK_ANGLE = 300.0;
@@ -79,7 +79,7 @@ void skills_15(bool driver) {
     pros::Task to_goal_task {[=] {
         Intake::getInstance()->set_power(-127);
         
-        vector<vector<double>> push_in = {{drive.getOdom().getX(), drive.getOdom().getY()}, {0.7, 0.38}, {2.94, 0.38}, {3.4, 0.6}, {3.4, 0.75}}; // was 2.5 and 3.0 earlier!!!
+        vector<vector<double>> push_in = {{drive.getOdom().getX(), drive.getOdom().getY()}, {0.7, 0.4}, {2.94, 0.4}, {3.4, 0.6}, {3.4, 0.75}}; // was 2.5 and 3.0 earlier!!!
 
         followPath(push_in, drive, 0, false, false, false, 0.5, 2.0, 150.0, 450.0, 100.0, false, 2.2);
     }};
@@ -111,11 +111,11 @@ void skills_15(bool driver) {
     // go back and forth some number of times
     const double kGO_BACK_TIMEOUT = 4000;
     for (int i = 0; i < kBACK_FORTHS; i++) {
-        if (drive.getOdom().getY() >= 0.78) {
+        if (drive.getOdom().getY() >= 0.82) {
 
             const double go_back_start_time = pros::millis();
             pros::Task go_back_task {[=] {
-                vector<vector<double>> go_back = {{drive.getOdom().getX(), drive.getOdom().getY()}, {3.4, 0.7}};
+                vector<vector<double>> go_back = {{drive.getOdom().getX(), drive.getOdom().getY()}, {3.4, 0.72}};
 
                 followPath(go_back, drive, 0, true, true);
             }};
@@ -123,12 +123,12 @@ void skills_15(bool driver) {
             while (go_back_task.get_state() != pros::E_TASK_STATE_DELETED) {
                 if (pros::millis() > go_back_start_time + kGO_BACK_TIMEOUT) {
                     go_back_task.suspend();
-                    turnToAngle(drive, 0, 3.0, false, 2.5);
+                    turnToAngle(drive, 5, 3.0, false, 2.5);
                     break;
                 }
             }
         } else {
-            turnToAngle(drive, 0, 4.0, false, 2.8, 250);
+            turnToAngle(drive, 5, 3.0, false, 2.8, 250);
         }
         pros::delay(100);
         moveMotors(drive, 350, 350);
