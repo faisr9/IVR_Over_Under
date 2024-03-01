@@ -21,11 +21,7 @@ void initialize() {
 }
 
 /* Runs when robot is disabled from competition controller after driver/auton */
-void disabled() 
-{
-	if(CompetitionCatapult::getInstance()->get_switch_state())
-		CompetitionCatapult::getInstance()->set_cata_mode("R");
-}
+void disabled() {}
 
 /* If connected to competition controller, this runs after initialize */
 void competition_initialize() {}
@@ -33,16 +29,16 @@ void competition_initialize() {}
 /* Autonomous method */
 void autonomous() {
 	if(gui::selected_auton == gui::AUTON_COMP) {
-		auton_15(45000, false);
 		// ctrl_master.rumble("---");
+		skills_15(false);
 	}
 	else if(gui::selected_auton == gui::AUTON_SKILLS) {
 		skills_15(false);
 		// ctrl_master.rumble("-");
 	}
 	else {
-		auton_15(45000, false);
 		// ctrl_master.rumble("---");
+		skills_15(false);
 	}
 }
 
