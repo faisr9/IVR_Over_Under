@@ -181,7 +181,7 @@ void auton18(double auton_duration_time_millis, bool skills)
 
 // SKILLS AUTON
 
-vector<double> skills_start = {1.2 * 0.61, 5.4 * 0.61};
+vector<double> skills_start = {1.2 * 0.61, 5.5 * 0.61};
  // Start position
 
 void skills18(bool driver)
@@ -189,7 +189,7 @@ void skills18(bool driver)
 
 	const double kSTART_TIME = pros::millis();
 
-	tank_drive_18.getOdom().initTracker(skills_start[0], skills_start[1], 220);
+	tank_drive_18.getOdom().initTracker(skills_start[0], skills_start[1], 225);
 	pros::delay(50);
 
 	pros::Task odom_task{[=]
@@ -270,7 +270,7 @@ void skills18(bool driver)
 	pros::delay(150);
 	Pneumatics::getInstance()->setRight(1);
 
-	vector<vector<double>> curvePath1 = {{tank_drive_18.getOdom().getX(), tank_drive_18.getOdom().getY()}, vect(1.3, 5.75), vect(1.5, 5.75), vect(4, 5.75), vect(4.7, 5.7), vect(5.2,5.2)};
+	vector<vector<double>> curvePath1 = {{tank_drive_18.getOdom().getX(), tank_drive_18.getOdom().getY()}, vect(1.3, 5.6), vect(1.5, 5.66), vect(4, 5.66), vect(4.77, 5.66), vect(5.2,5.2)};
 
 	pros::Task acrossMid_task{[=]
 		{
@@ -293,24 +293,24 @@ void skills18(bool driver)
 	//  vector<vector<double>> push_in = {{tank_drive_18.getOdom().getX(),tank_drive_18.getOdom().getX(), vect(1.15, 5.62), vect(4.9, 5.62), vect(5.55, 5.82), vect(5.41, 4.48)};
 
 	///////////// ---
-	pros::delay(150);
+	// pros::delay(150);
 
-	pros::Task toGoal_task{[=]
-		{
-			// move(curvePath2, 160, false, true, 2);
-			vector<vector<double>> curvePath2 = {curvePath1.back(), vect(5.2, 4.9)};
-			followPath(curvePath2, tank_drive_18, 160, false, true, false, 0.5, 3.0, 250.0 / 1.8, 450.0 / 2.5, 40.0 / 2.5, false, .91);
-		}};
+	// pros::Task toGoal_task{[=]
+	// 	{
+	// 		// move(curvePath2, 160, false, true, 2);
+	// 		vector<vector<double>> curvePath2 = {curvePath1.back(), vect(5.2, 4.9)};
+	// 		followPath(curvePath2, tank_drive_18, 160, false, true, false, 0.5, 3.0, 250.0 / 1.8, 450.0 / 2.5, 40.0 / 2.5, false, .91);
+	// 	}};
 
-	while (toGoal_task.get_state() != pros::E_TASK_STATE_DELETED)
-	{
-		Pneumatics::getInstance()->setRight(1);
-		if (tank_drive_18.getOdom().getX() < 4.8 * .61 && tank_drive_18.getOdom().getY() > 5.1 * .61)
-			Pneumatics::getInstance()->setLeft(1);
-		else
-			Pneumatics::getInstance()->setLeft(0);
-		pros::delay(50);
-	}
+	// while (toGoal_task.get_state() != pros::E_TASK_STATE_DELETED)
+	// {
+	// 	Pneumatics::getInstance()->setRight(1);
+	// 	if (tank_drive_18.getOdom().getX() < 4.8 * .61 && tank_drive_18.getOdom().getY() > 5.1 * .61)
+	// 		Pneumatics::getInstance()->setLeft(1);
+	// 	else
+	// 		Pneumatics::getInstance()->setLeft(0);
+	// 	pros::delay(50);
+	// }
 	//////////////// ----
 
 	pros::delay(150);
@@ -319,8 +319,9 @@ void skills18(bool driver)
 
 	pros::Task goBack_task{[=]
 		{
-			for (int i = 0; i < 2; i++)
+			for (int i = 0; i < 5; i++)
 			{
+				Intake::getInstance()->set_power(127);
 				moveMotors(tank_drive_18, 300, 300);
 				pros::delay(750);
 				stopMotors(tank_drive_18);
@@ -330,11 +331,15 @@ void skills18(bool driver)
 				// vector<vector<double>> go_back = {{tank_drive_18.getOdom().getX(), tank_drive_18.getOdom().getY()}, vect(5.2, 4.8)};
 				// move_skills(go_back, 165, true, true, 2.7);
 				moveMotors(tank_drive_18, -50, -50);
-				pros::delay(500);
-				pros::delay(150);
+				pros::delay(400);
 				stopMotors(tank_drive_18);
 				pros::delay(200);
-				turn_skills(180);
+				if(i%3==0){
+					turnF_skills(145);
+					Pneumatics::getInstance()->setLeft(0);
+				} else 
+					turnF_skills(180);
+				pros::delay(150);
 			}
 		}};
 
@@ -342,6 +347,11 @@ void skills18(bool driver)
 	const double kABORT_TIME = kSTART_TIME + auton_duration_time_millis - 500;
 	while (pros::millis() < kABORT_TIME)
 	{
+		Pneumatics::getInstance()->setRight(1);
+		if (tank_drive_18.getOdom().getX() < 4.8 * .61 && tank_drive_18.getOdom().getY() > 5.1 * .61)
+			Pneumatics::getInstance()->setLeft(1);
+		else
+			Pneumatics::getInstance()->setLeft(0);
 		pros::delay(100);
 	}
 	Pneumatics::getInstance()->setLeft(0);
@@ -384,7 +394,7 @@ void move_skills(vector<vector<double>> moveVec, int angle, bool isReversed, boo
  */
 void turn_skills(double angle)
 {
-	turnToAngle(tank_drive_18, angle, 3.0, false, .91, 150); // p=1.12 // turndegtolerance=3 //time 150
+	turnToAngle(tank_drive_18, angle, 3.0, false, .915, 150); // p=1.12 // turndegtolerance=3 //time 150
 }
 /*
 

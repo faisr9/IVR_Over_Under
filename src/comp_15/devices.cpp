@@ -49,10 +49,10 @@ traditional_drive drive(imu, ctrl_master, left_drive, right_drive, odometry);
 
 // Instance
 Intake* intake_instance = Intake::createInstance(intake_motor);
-CompetitionCatapult* cata_instance = CompetitionCatapult::createInstance(cata, cata_limit);
+
 
 const char FLOOR_BRAKE = 'H';
 const char WINGS = 'G';
 Pneumatics* pneumatics_instance = Pneumatics::createInstance(WINGS, FLOOR_BRAKE);
-DoinkerClass* doinker_instance = DoinkerClass::createInstance(doinker_motor, doinker_pot);
+
 

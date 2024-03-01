@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "Purdue_Code",
+    "project_name": "master",
     "target": "v5",
     "templates": {
       "kernel": {
