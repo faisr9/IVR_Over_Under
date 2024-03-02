@@ -5,7 +5,7 @@ LinkHelper* comp15link = LinkHelper::createInstance(16, E_LINK_TX);
 void skills_15(bool driver) {
     const double starting_time = pros::millis();
 
-    const double kSKILLS_DURATION = (driver) ? 55000 : 60000; // NEED TO CHANGE THIS LATER, 40000 FOR TESTING
+    const double kSKILLS_DURATION = (driver) ? 55000 : 50000; // NEED TO CHANGE THIS LATER, 40000 FOR TESTING
 
     const double kBOWL_TIME = 25000; // time we are driving the robot and pushing things in for
     const int kBACK_FORTHS = 3; // we will shove in and back out 3 times
@@ -39,9 +39,9 @@ void skills_15(bool driver) {
         while (1) {
             // whack triball out of match load zone
             turnToAngle(drive, kTURN_BACK_ANGLE - turn_amount, 6.0, false, 3.3, 10); // more p because triball is in the way and don't care as much about precision
-            pros::delay(500);
+            pros::delay(300);
             // turn back so the human player can place another triball
-            turnToAngle(drive, kTURN_BACK_ANGLE, 5.0, false, 2.2, 400);
+            turnToAngle(drive, kTURN_BACK_ANGLE, 5.0, false, 2.2, 300);
             pros::delay(kHP_WAIT_TIME);
             cycles++;
         }
@@ -79,9 +79,14 @@ void skills_15(bool driver) {
     pros::Task to_goal_task {[=] {
         Intake::getInstance()->set_power(-127);
         
-        vector<vector<double>> push_in = {{drive.getOdom().getX(), drive.getOdom().getY()}, {0.7, 0.4}, {2.94, 0.4}, {3.4, 0.6}, {3.4, 0.75}}; // was 2.5 and 3.0 earlier!!!
+        vector<vector<double>> push_in_1 = {{drive.getOdom().getX(), drive.getOdom().getY()}, {0.7, 0.4}, {2.0, 0.4}};
+        vector<vector<double>> push_in_2 = {push_in_1.back(), {2.94, 0.4}, {3.4, 0.6}, {3.4, 0.75}}; // was 2.5 and 3.0 earlier!!!
 
-        followPath(push_in, drive, 0, false, false, false, 0.5, 2.0, 150.0, 450.0, 100.0, false, 2.2);
+        followPath(push_in_1, drive, 90, false, false, false, 0.5, 2.0, 150.0, 450.0, 100.0, false, 2.2);
+        moveMotors(drive, -100, -100);
+        pros::delay(1000);
+        stopMotors(drive);
+        followPath(push_in_2, drive, 0, false, false, false, 0.5, 2.0, 150.0, 450.0, 100.0, false, 2.2);
     }};
 
     // TODO: make it so wings go out before (but then back in) before going under
