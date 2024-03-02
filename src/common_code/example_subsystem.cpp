@@ -52,9 +52,10 @@ ExampleSubsystem::~ExampleSubsystem() {
 
 //stops subsystem_motor_
 void ExampleSubsystem::stop() {
-    subsystem_motor_.move_voltage(0);
+    subsystem_motor_.brake();
 }
 
-void ExampleSubsystem::set_power(int power) {
-    subsystem_motor_.move(power);
+void ExampleSubsystem::set_velocity(int velocity)
+{
+    subsystem_motor_.move_velocity(velocity);
 }

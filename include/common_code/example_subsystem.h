@@ -11,7 +11,8 @@ class ExampleSubsystem : public SubsystemParent {
 
         void stop();
 
-        void set_power(int power);
+        void set_velocity(int velocity);
+
     private:
         // reference to passed in motor so it doesn't create a new motor object 
         ExampleSubsystem(pros::Motor& subsystem_motor);
