@@ -6,6 +6,7 @@
 //
 
 #include "common_code/traditional_drive.h"
+#include "common_code/movement_helper.h"
 //
 // ************ overloaded constructors ************
 //
@@ -121,12 +122,49 @@ void traditional_drive::setV()
 // operator control arcade drive
 void traditional_drive::arcade_drive()
 {
+    const double turn_mult = 0.45333;
     // get joystick values and apply square scaling
     fwd = square_scale(normalize_joystick(master->get_analog(E_CONTROLLER_ANALOG_LEFT_Y)));   // vertical input from left joystick
-    turn = square_scale(normalize_joystick(master->get_analog(E_CONTROLLER_ANALOG_RIGHT_X))) * 0.5333; // horizontal input from right joystick
+    // turn = square_scale(normalize_joystick(master->get_analog(E_CONTROLLER_ANALOG_RIGHT_X))) * turn_mult; // horizontal input from right joystick
+    turn = normalize_joystick(master->get_analog(E_CONTROLLER_ANALOG_RIGHT_X)) * turn_mult; // horizontal input from right joystick
+
+    // if it goes from above limit to below need to grab angle and try to maintain
+
+    if (std::abs(turn) < 0.05 && !should_maintain) { // effectively 0
+        // maintain current angle
+        should_maintain = true;
+        arcade_maintain_angle = get_imu().get_heading();
+    } else if (std::abs(turn) > 0.05) {
+        should_maintain = false;
+    }
+
+    should_maintain = false; // ended up not wanting to use maintaining good and prob for the best
+
+    if (should_maintain) {
+        // rotate to arcade_maintain_angle
+        double degrees_away = optimizeAngle(arcade_maintain_angle - get_imu().get_heading());
+        double rotVoltMult = degrees_away * 2.2 * turn_mult / 180.0;
+        // max for rotRPM is 180 * 2.2
+        // so need 180*2.2 -> 0.5333
+        // so like /(180*2.2) and * 0.5333
+
+
+
+        // domain is [-turn_mult, turn_mult]
+        // max here is 
+
+        left *= fwd + rotVoltMult;
+        right *= fwd - rotVoltMult;
+    } else {
+        left *= fwd + turn;
+        right *= fwd - turn;
+    }
+
+    pros::lcd::set_text(4, "Should maintain " + std::to_string(should_maintain));
+
     // use fwd and turn to calculate voltage to send to motors
-    left *= fwd + turn;
-    right *= fwd - turn;
+    // left *= fwd + turn;
+    // right *= fwd - turn;
 
     setV(); // set voltage to motors
 };
