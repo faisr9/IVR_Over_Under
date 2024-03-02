@@ -27,12 +27,6 @@ class traditional_drive : public DriveParent
         void init(Imu &imu, Motor_Group &l, Motor_Group &r, int mode);
         // drive mode methods
         void arcade_drive();
-        double arcade_maintain_angle;
-        const double turn_deadzone = 0.2;
-        bool should_maintain = false;
-        const double grab_angle_delay = 50;
-        double current_delay_val;
-
         void tank_drive();
         void hybrid_drive();
 

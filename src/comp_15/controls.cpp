@@ -5,8 +5,6 @@
 void controls() {
     pros::lcd::set_text(1, "Running Controls");
 
-    double p = 1.9;
-
     while(1) {
         //ACTIVATE DRIVE
         if(pros::competition::is_connected())
@@ -22,18 +20,16 @@ void controls() {
         drive.toggle_drive_mode();
 
         // // TESTING CODE, REMOVE THIS BEFORE MERGING TO MASTER
-        if (ctrl_master.get_digital_new_press(E_CONTROLLER_DIGITAL_UP)) {
-            turnToAngle(drive, 0, 2.5, false, p);
-        }
+        // if (ctrl_master.get_digital_new_press(E_CONTROLLER_DIGITAL_UP)) {
+        //     turnToAngle(drive, 0, 2.5, false, p);
+        // }
 
         //INTAKE CONTROLS
         if (ctrl_master.get_digital(BUTTON_R2)){
             Intake::getInstance()->set_power(12000);
-            p += 0.1;
         }
         else if (ctrl_master.get_digital(BUTTON_R1)){
             Intake::getInstance()->set_power(-12000);
-            p -= 0.1;
         } else {
             Intake::getInstance()->set_power(0);
         }
@@ -53,8 +49,6 @@ void controls() {
         // 3600 to 1240
         
         // Keeps doinkerUp during driver control
-
-        pros::lcd::set_text(2, std::to_string(p));
 
         pros::delay(15);
     }
