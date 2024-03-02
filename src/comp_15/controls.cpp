@@ -28,12 +28,12 @@ void controls() {
 
         //INTAKE CONTROLS
         if (ctrl_master.get_digital(BUTTON_R2)){
-            Intake::getInstance()->set_power(12000);
+            Intake::getInstance()->set_velocity(600);
         }
         else if (ctrl_master.get_digital(BUTTON_R1)){
-            Intake::getInstance()->set_power(-12000);
+            Intake::getInstance()->set_velocity(-600);
         } else {
-            Intake::getInstance()->set_power(0);
+            Intake::getInstance()->stop();
         }
 
         // CATAPULT CONTROLS

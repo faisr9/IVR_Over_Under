@@ -27,9 +27,9 @@ void auton_15(double auton_duration_time_millis, bool climb) {
     Pneumatics::getInstance()->getFloorBrake()->on();
     pros::delay(250);
     // release intake and catapult
-    Intake::getInstance()->set_power(-127);
+    Intake::getInstance()->set_velocity(-600);
     pros::delay(250);
-    Intake::getInstance()->set_power(0);
+    Intake::getInstance()->stop();
     delay(1500); // Allow robot to settle
     // release kickstand
     Pneumatics::getInstance()->getFloorBrake()->off();
@@ -183,9 +183,9 @@ void skills_15(bool driver) {
 		}
 	}}; // lambda function with a task
     Pneumatics::getInstance()->getWings()->on();
-    Intake::getInstance()->set_power(-100);
+    Intake::getInstance()->set_velocity(-472);
     pros::delay(500);
-    Intake::getInstance()->set_power(0);
+    Intake::getInstance()->stop();
 
     // load until need to go bc of kBOWL_TIME
     pros::Task spinning_task{[=] {
@@ -236,7 +236,7 @@ void skills_15(bool driver) {
     stopMotors(drive);
 
     pros::Task to_goal_task {[=] {
-        Intake::getInstance()->set_power(-127);
+        Intake::getInstance()->set_velocity(-600);
         
         vector<vector<double>> push_in = {{drive.getOdom().getX(), drive.getOdom().getY()}, {0.7, 0.38}, {3.0, 0.38}, {3.4, 0.5}, {3.3, 0.9}}; // was 2.5 and 3.0 earlier!!!
 
@@ -281,7 +281,7 @@ void skills_15(bool driver) {
     moveMotors(drive, -200, -200);
     pneumatic_wings->off();
     pros::delay(500);
-    Intake::getInstance()->set_power(0);
+    Intake::getInstance()->stop();
     stopMotors(drive);
 
     // we should decide if taking the wings in at the end is a good idea or not (risk of touching triballs)

@@ -10,7 +10,7 @@ class Intake : public SubsystemParent
         static Intake* createInstance(pros::Motor& motor);
         static Intake* getInstance();
         void stop();
-        void set_power(int power);
+        void set_velocity(int velocity);
 
     private:
         Intake(pros::Motor& subsystem_motor) : SubsystemParent("Intake"), intake_motor_(subsystem_motor){};

@@ -27,10 +27,10 @@ Intake* Intake::getInstance(){
     return instance_;
 }
 void Intake::stop(){
-    intake_motor_.move_voltage(0);
+    intake_motor_.brake();
 }
 
-//input is from -127 to 127
-void Intake::set_power(int power){
-    intake_motor_.move(power);
+// The new motor velocity from -+-100, +-200, or +-600 depending on the motor's gearset
+void Intake::set_velocity(int velocity){
+    intake_motor_.move_velocity(velocity);
 }

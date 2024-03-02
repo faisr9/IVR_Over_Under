@@ -70,11 +70,11 @@ void auton18(double auton_duration_time_millis, bool skills)
 						 }};
 
 	// Turn on Intake
-	Intake::getInstance()->set_power(-127);
+	Intake::getInstance()->set_velocity(-600);
 
 	// Move to other side
 	move_comp(curvePath, 90, false, false);
-	Intake::getInstance()->set_power(0);
+	Intake::getInstance()->stop();
 	turn_comp(335);
 	delay(50);
 
@@ -89,7 +89,7 @@ void auton18(double auton_duration_time_millis, bool skills)
 	// vector<vector<double>> curvePath3 = {curvePath2.back(), {convert::inToM((24*4)+3.5), endY}};
 	vector<vector<double>> curvePath3 = {curvePath2.back(), {2.654 - convert::inToM(3.5), endY}};
 	// Pneumatics::getInstance()->getClimber()->toggle();
-	Intake::getInstance()->set_power(127 / 1.5);
+	Intake::getInstance()->set_velocity(600 / 1.5);
 	move_comp(curvePath3, 89, false, false);
 	// Intake::getInstance()->set_power(0);
 
@@ -132,7 +132,7 @@ void auton18(double auton_duration_time_millis, bool skills)
 				// move(oscillate, 89, true, true);
 				// delay(50);
 
-				Intake::getInstance()->set_power(127);
+				Intake::getInstance()->set_velocity(600);
 				// vector<vector<double>> entergoal_path = {{atGoal[0], atGoal[1]}, {insideGoal[0], insideGoal[1]}};
 				// move_comp(entergoal_path, 89, false, false);
 				moveMotors(tank_drive_18, 80, 80);
@@ -279,7 +279,7 @@ void skills18(bool driver)
 
 	while (acrossMid_task.get_state() != pros::E_TASK_STATE_DELETED)
 	{
-		Intake::getInstance()->set_power(127);
+		Intake::getInstance()->set_velocity(600);
 		if (tank_drive_18.getOdom().getX() < 3.1 * .61 && tank_drive_18.getOdom().getX() > 2.2 * .61)
 			Pneumatics::getInstance()->setRight(0);
 		else
@@ -346,7 +346,7 @@ void skills18(bool driver)
 	}
 	Pneumatics::getInstance()->setLeft(0);
 	Pneumatics::getInstance()->setRight(0);
-	Intake::getInstance()->set_power(0);
+	Intake::getInstance()->stop();
 	odom_task.suspend();
 }
 
