@@ -1,5 +1,5 @@
 #pragma once
-#include "common_code/include_list.h"
+#include "comp_15/devices.h"
 
 class DoinkerClass : public SubsystemParent
 {
@@ -11,13 +11,13 @@ class DoinkerClass : public SubsystemParent
 
         const int doinker_pot_min = 0;
         const int doinker_pot_low = 500;
-        const int doinker_pot_down = 1520;
+        const int doinker_pot_down = (int)(1520);
         const int doinker_pot_up = 2500;
-        const int doinker_pot_max = 4095;
+        const int doinker_pot_max = (int)(4095 * 70);
         const int doinker_pot_tolerance = 500;
 
-        const int kDOINKER_DOWN_SPEED = -80; // should be faster
-        const int kDOINKER_UP_SPEED = 50; // should be slower so triball doesn't go flying
+        const int kDOINKER_DOWN_SPEED = -72; // should be faster
+        const int kDOINKER_UP_SPEED = 62; // should be slower so triball doesn't go flying
         int doinker_pos;
         bool doinkerState;
         bool doinkerRunning;

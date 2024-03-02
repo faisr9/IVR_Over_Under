@@ -1,5 +1,5 @@
 #pragma once
-#include "common_code/piston.h"
+#include "comp_15/devices.h"
 
 class Pneumatics : public SubsystemParent {
     public:

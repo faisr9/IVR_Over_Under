@@ -14,11 +14,6 @@
 #define _PROS_MAIN_H_
 
 /**
- * Add global defines/constants here;
- */
-#define M_PI 3.14159265358979323846
-
-/**
  * Add PROS header files here;
  * NOTE: There shouldn't be anything else here
  */
@@ -27,11 +22,48 @@
 ///////////////////////////////////////
 
 /**
+ * Add C++ headers here
+ */
+#include <iostream>
+#include <chrono>
+#include <string>
+#include <math.h>
+#include <cmath>
+#include <vector>
+#include <fstream>
+#include <sstream>
+///////////////////////////////////////
+
+/**
+ * Add global defines/constants here;
+ */
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+#ifndef M_PI_2
+#define M_PI_2 1.57079632679489661923
+#endif
+#ifndef M_PI_4
+#define M_PI_4 0.78539816339744830962
+#endif
+#ifndef M_E
+#define M_E 2.71828182845904523536
+#endif
+///////////////////////////////////////
+
+/**
+ * Add other header files here;
+ * Add the common code headers here
+ */
+// Common Code //
+
+// Other Headers - There should be none //
+// #include "goated.h"
+///////////////////////////////////////
+
+/**
  * When multitasking, these values indicate the priority levels of tasks, and
  * how often they will run relative to other tasks.
- * 
- * Range; 2 (lowest) - 15 (highest)
- * IMPORTANT: Use these values to set task priorities
 */
 #define TASK_PRIORITY_LOW 4
 #define TASK_PRIORITY_MEDIUM_LOW 7
@@ -44,18 +76,52 @@
   do {                                                                         \
     pros::delay(5);                                                            \
   } while (!(condition))
-
-/**
- * Add other header files here;
- * Add the common code headers here
- */
 ///////////////////////////////////////
 
-/**
- * Add C++ headers here
- */
+#ifndef CONVERT_NAMESPACE
+#define CONVERT_NAMESPACE
+namespace convert {
+  // Convert degrees to radians
+  static double degToRad(double degrees) {
+    return degrees * (M_PI / 180);
+  }
 
-///////////////////////////////////////
+  // Convert radians to degrees
+  static double radToDeg(double radians) {
+    return radians * (180 / M_PI);
+  }
+
+  // Convert inches to meters
+  static double inToM(double inches) {
+    return inches * 0.0254;
+  }
+  
+  // Convert meters to inches
+  static double mToIn(double meters) {
+    return meters * 39.3701;
+  }
+  
+  // Convert inches to feet
+  static double inToFt(double inches) {
+    return inches * 0.0833333;
+  }
+
+  // Convert feet to inches
+  static double ftToIn(double feet) {
+    return feet * 12;
+  }
+
+  // Convert feet to meters
+  static double ftToM(double feet) {
+    return feet * 0.3048;
+  }
+
+  // Convert meters to feet
+  static double mToFt(double meters) {
+    return meters * 3.28084;
+  }
+} // namespace convert
+#endif
 
 /**
  * If defined, some commonly used enums will have preprocessor macros which give
@@ -89,6 +155,8 @@
 #define BUTTON_R2           pros::E_CONTROLLER_DIGITAL_R2
 #define BUTTON_L1           pros::E_CONTROLLER_DIGITAL_L1
 #define BUTTON_L2           pros::E_CONTROLLER_DIGITAL_L2
+#define LINK_TRANSMIT       pros::E_LINK_TRANSMITTER
+#define LINK_RECEIVE        pros::E_LINK_RECIEVER
 #else
 // Use PROS Default Simple Name List //
 #define PROS_USE_SIMPLE_NAMES
@@ -100,6 +168,7 @@
  *
  * For instance, you can do `4_mtr = 50` to set motor 4's target velocity to 50
  */
+// Commented out because it's not used and misleading
 // #define PROS_USE_LITERAL
 
 /**
@@ -112,7 +181,6 @@
  */
 using namespace pros;
 using namespace std;
-// using namespace pros::literals;
 // using namespace okapi;
 
 /**

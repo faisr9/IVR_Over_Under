@@ -1,10 +1,5 @@
 #pragma once
-#include "common_code/traditional_drive.h"
-#include "comp_15/intake.h"
-#include "comp_15/cata.h"
-#include "comp_15/pneumatics.h"
-#include "common_code/generic_rotation_digikey.h"
-#include "comp_15/doinker.h"
+#include "common_code/include_list.h"
 
 // Forward declare all devices here so that all of the robot files and subsystem classes can access them //
 
@@ -44,8 +39,8 @@ extern pros::ADIPotentiometer doinker_pot;
 
 // extern pros::ADIDigitalOut Floor_brake;
 // extern pros::ADIDigitalOut Wings;
-extern const char WINGS;
-extern const char FLOOR_BRAKE;
+// extern const char WINGS;
+// extern const char FLOOR_BRAKE;
 
 // Traditional Drive
 extern traditional_drive drive;

@@ -1,7 +1,3 @@
-#include <cmath>
-#include <string>
-#include "pros/llemu.hpp"
-#include "pros/misc.h"
 #include "common_code/movement_helper.h"
 
 int sgn(double number) {

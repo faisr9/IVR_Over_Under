@@ -1,5 +1,5 @@
 #pragma once
-#include "common_code/piston.h"
+#include "comp_18/devices.h"
 
 class Pneumatics : public SubsystemParent {
     public:
@@ -15,6 +15,7 @@ class Pneumatics : public SubsystemParent {
         void setRight(bool OnOff);
         bool toggleLeft();
         bool toggleRight();
+        bool toggleWings();
 
         Piston* getClimber();
 
@@ -26,5 +27,6 @@ class Pneumatics : public SubsystemParent {
         static Pneumatics* instance_;
 
         Piston leftWing, rightWing;
+        bool wings_status;
         Piston climber;
 };

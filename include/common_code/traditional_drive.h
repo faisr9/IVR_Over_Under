@@ -9,6 +9,7 @@
 #pragma once
 #include "common_code/drive_parent.h"
 #include "common_code/odom.h"
+#include "main.h"
 
 // drive systems
 class traditional_drive : public DriveParent
@@ -46,6 +47,7 @@ class traditional_drive : public DriveParent
         void robot_centric_move(std::pair<double, double> mag_angle_vector); 
         void field_centric_move(std::pair<double, double> mag_angle_vector);
         void turn_with_power(double power);
+        void change_drive_mode(int mode);
         Motor_Group &get_motor_group(bool side);
         Imu& get_imu();
         Controller& get_controller();
