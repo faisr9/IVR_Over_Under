@@ -12,4 +12,8 @@ double getTranslationalRPM(double dist_to_goal_meters, double max_translational_
 double calculate_distance_two_points(std::vector<double> point_one, std::vector<double> point_two);
 std::vector<double> calculate_remaining_dist(std::vector<std::vector<double>>& path, bool ignore_last_point = true);
 
-//void function that takes in vector<vector<double>> changes it to meters from either feet, tiles, or inches
+
+
+//void function that takes in vector<vector<double>> changes it from either feet, tiles, or inches to meters 
+enum Unit {Feet, Tiles, Inches};
+void pursuit_converter(vector<vector<double>>& pursuit_arr, Unit units);

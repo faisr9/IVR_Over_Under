@@ -101,3 +101,30 @@ std::vector<double> calculate_remaining_dist(std::vector<std::vector<double>>& p
 
     return distances;
 }
+
+
+void pursuit_converter(vector<vector<double>>& pursuit_arr, Unit units){
+    if (units == Unit::Feet){
+        for (int r = 0; r < pursuit_arr.size(); r++){
+            for (int c = 0; c < pursuit_arr[r].size(); c++){
+                pursuit_arr[r][c] = convert::ftToM(pursuit_arr[r][c]);
+            }
+        }
+    }
+    // Times 2 as 2 ft is 1 tile
+    else if (units == Unit::Tiles){
+        for (int r = 0; r < pursuit_arr.size(); r++){
+            for (int c = 0; c < pursuit_arr[r].size(); c++){
+                pursuit_arr[r][c] = (convert::ftToM(pursuit_arr[r][c])) * 2;
+            }
+        }
+    }   
+    else if (units == Unit::Inches){
+        for (int r = 0; r < pursuit_arr.size(); r++){
+            for (int c = 0; c < pursuit_arr[r].size(); c++){
+                pursuit_arr[r][c] = convert::inToM(pursuit_arr[r][c]);
+            }
+        }
+    }
+
+}
