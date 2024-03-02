@@ -11,3 +11,5 @@ double getRotationalRPM(traditional_drive& drive, double desiredAngleDeg, bool r
 double getTranslationalRPM(double dist_to_goal_meters, double max_translational_rpm, double total_path_distance, double minTransRPM = 40.0, double rpm_per_meter = 580.0); // 540
 double calculate_distance_two_points(std::vector<double> point_one, std::vector<double> point_two);
 std::vector<double> calculate_remaining_dist(std::vector<std::vector<double>>& path, bool ignore_last_point = true);
+
+//void function that takes in vector<vector<double>> changes it to meters from either feet, tiles, or inches
