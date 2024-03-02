@@ -30,7 +30,7 @@ class traditional_drive : public DriveParent
         void tank_drive();
         void hybrid_drive();
 
-        void stop(); // turn off motors
+        void stop(); // brake motors
 
         void setV(); // set voltage to motors
 

@@ -105,9 +105,8 @@ void traditional_drive::hybrid_drive()
 void traditional_drive::stop()
 {
     // set voltage to 0 for both groups
-    left = 0;
-    right = 0;
-    setV();
+    left_side->brake();
+    right_side->brake();
 };
 
 // set voltage to motors

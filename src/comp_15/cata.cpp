@@ -11,7 +11,7 @@ CompetitionCatapult::CompetitionCatapult(pros::MotorGroup& motorgroup, pros::ADI
     : SubsystemParent("Competition Catapult"), motors(motorgroup), kill_switch(limit_switch), cata_task(cata_task_funct){
 
     cata_mode = "X";
-    cata_move_power = 127;
+    cata_move_vel = 200;
     motors.set_brake_modes(pros::E_MOTOR_BRAKE_BRAKE);
 }
 
@@ -31,16 +31,16 @@ CompetitionCatapult::~CompetitionCatapult() {
 }
 
 void CompetitionCatapult::stop() {
-    motors.move(0);
+    motors.brake();
 }
 
 void CompetitionCatapult::move_forward_manual() {
-    motors.move(cata_move_power);
+    motors.move_velocity(cata_move_vel);
 }
 
 void CompetitionCatapult::prime() {
     while (!kill_switch.get_value()) {
-        motors.move(cata_move_power);
+        motors.move_velocity(cata_move_vel);
 		pros::delay(30);
 	}
 
@@ -59,7 +59,7 @@ void CompetitionCatapult::cycle() {
 
 void CompetitionCatapult::release() {
     while (kill_switch.get_value()) {
-        motors.move(cata_move_power);
+        motors.move_velocity(cata_move_vel);
         pros::delay(30);
     }
     stop();
