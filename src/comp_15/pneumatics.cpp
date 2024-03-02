@@ -1,22 +1,14 @@
 #include "comp_15/pneumatics.h"
 
-
-//This subsystem have three objects of the Piston class for wings and floor brake.
-//This class is necessary because it implements toggle() method and the getStatus() method.
-//get_value() from pros::ADIDigitalOutput doesn't work because VS Code says it's "inaccessible".
-
 Pneumatics* Pneumatics::instance_ = nullptr;
 
-bool currentPiston = false;
-
-Pneumatics* Pneumatics::createInstance(char piston_wings, char piston_floor_brake) {
+Pneumatics* Pneumatics::createInstance(char left_wing_port, char right_wing_port, char intake_port) {
     if (!instance_) {
-        instance_ = new Pneumatics(piston_wings, piston_floor_brake);
+        instance_ = new Pneumatics(left_wing_port, right_wing_port, intake_port);
     }
 
     return instance_;
 }
-
 
 Pneumatics* Pneumatics::getInstance() {
     if (instance_ == nullptr) {
@@ -26,11 +18,8 @@ Pneumatics* Pneumatics::getInstance() {
     return instance_;
 }
 
-Pneumatics::Pneumatics(char piston_w, char piston_f) : SubsystemParent("Pneumatics"), wings(piston_w), floor_brake(piston_f){
+Pneumatics::Pneumatics(char left_wing_port, char right_wing_port, char intake_port) : SubsystemParent("Pneumatics"), left_wing_(left_wing_port), right_wing_(right_wing_port), intake_(intake_port) {}
 
-}
-
-//destructor deallocates instance_
 Pneumatics::~Pneumatics() {
     if (instance_ != nullptr) {
         delete instance_;
@@ -38,39 +27,20 @@ Pneumatics::~Pneumatics() {
     }
 }
 
-
-/**
- * usage examples: 
- * 
- *     getWings()->off();
- * 
- * or
- * 
- *     getWings()->toggle();
- * 
- * 
-*/
-Piston* Pneumatics::getWings(){
-    return &wings;
+Piston& Pneumatics::getLeftWing() {
+    return left_wing_;
 }
 
+Piston& Pneumatics::getRightWing() {
+    return right_wing_;
+}
 
-/**
- * usage examples: 
- * 
- *     getFloorBrake()->off();
- * 
- * or
- * 
- *     getFloorBrake()->toggle();
- * 
- * 
-*/
-Piston* Pneumatics::getFloorBrake(){
-    return &floor_brake;
+Piston& Pneumatics::getIntake() {
+    return intake_;
 }
 
 void Pneumatics::stop() {
-    wings.off();
-    floor_brake.off();
+    left_wing_.off();
+    right_wing_.off();
+    intake_.off();
 }

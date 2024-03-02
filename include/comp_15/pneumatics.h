@@ -1,25 +1,37 @@
 #pragma once
 #include "comp_15/devices.h"
 
+/*
+Class is used to implement the pnuematics functionality of the comp_15 robot (both wings and intake)
+
+Class constructor takes in 3 ports and creates Piston objects using each port
+- left_wing_port
+- right_wing_port
+- intake_port
+
+There are getter functions for each wing and intake which will return a reference to the Piston object
+- getLeftWing
+- getRightWing
+- getIntake
+*/
 class Pneumatics : public SubsystemParent {
     public:
-        static Pneumatics* createInstance(char wings_port, char floor_brake_port);
-        static Pneumatics* getInstance(); // static because need to be able to access without ExampleSubsystem objecct
-        ~Pneumatics();
-        Pneumatics(const Pneumatics& other) = delete;
+        static Pneumatics* createInstance(char left_wing_port, char right_wing_port, char intake_port);
+        static Pneumatics* getInstance();
+
+        Piston& getLeftWing();
+        Piston& getRightWing();
+        Piston& getIntake();
 
         void stop();
 
-        Piston* getWings();
-        Piston* getFloorBrake();
-
 
     private:
-        Pneumatics(char piston1, char piston2);
+        Pneumatics(char left_wing_port, char right_wing_port, char intake_port);
 
-        //instance_ is set to nullptr in cpp file
         static Pneumatics* instance_;
 
-        Piston wings;
-        Piston floor_brake;
+        Piston left_wing_;
+        Piston right_wing_;
+        Piston intake_;
 };
