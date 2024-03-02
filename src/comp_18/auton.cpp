@@ -336,7 +336,6 @@ void skills18(bool driver)
 				pros::delay(200);
 				if(i%3==0){
 					turnF_skills(145);
-					Pneumatics::getInstance()->setLeft(0);
 				} else 
 					turnF_skills(180);
 				pros::delay(150);
