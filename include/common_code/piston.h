@@ -12,19 +12,14 @@ class Piston {
         /* Class constructor takes in one arguement and creates a pros::ADIDigitalOut */
         Piston(char port_value);
 
-        /* activates piston */
         void on();
         
-        /* deactivates piston */
         void off();
 
-        /* flips the status of the piston */
         void toggle();
 
-        /* returns status of piston */
         bool getStatus();
 
-        /* returns the # of times toggle() is called */
         int getToggleCount();
 
     private:
