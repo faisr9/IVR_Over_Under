@@ -29,7 +29,7 @@ class CompetitionCatapult : public SubsystemParent {
 
         pros::MotorGroup& motors;
         pros::ADIButton& kill_switch;
-        int cata_move_vel = 200;
+        int cata_move_vel = 100; //max velocity based on gear ratio of 36:1
 
         pros::Task cata_task;
         std::string cata_mode = "X";

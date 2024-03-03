@@ -55,6 +55,7 @@ void ExampleSubsystem::stop() {
     subsystem_motor_.brake();
 }
 
+// input is based on the gear ratio of subsystem_motor_
 void ExampleSubsystem::set_velocity(int velocity)
 {
     subsystem_motor_.move_velocity(velocity);

@@ -11,7 +11,7 @@ CompetitionCatapult::CompetitionCatapult(pros::MotorGroup& motorgroup, pros::ADI
     : SubsystemParent("Competition Catapult"), motors(motorgroup), kill_switch(limit_switch), cata_task(cata_task_funct){
 
     cata_mode = "X";
-    cata_move_vel = 200;
+    cata_move_vel = 100; //max velocity based on gear ratio of 36:1
     motors.set_brake_modes(pros::E_MOTOR_BRAKE_BRAKE);
 }
 

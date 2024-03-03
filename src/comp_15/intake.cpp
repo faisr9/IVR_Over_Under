@@ -30,7 +30,7 @@ void Intake::stop(){
     intake_motor_.brake();
 }
 
-//input is from -127 to 127
-void Intake::set_power(int power){
-    intake_motor_.move(power);
+//input is based on the gear ratio of the motor
+void Intake::set_velocity(int power){
+    intake_motor_.move_velocity(power);
 }
