@@ -1,8 +1,6 @@
 #pragma once
-#include "api.h"
+#include "comp_15/devices.h"
+#include "comp_15/include_list.h"
 
-void drivePID(double inches);
-double getAngleError(double target, double currHeading);
-void turnPID(double deg, double kp, double ki, double kd, double max_speed, double min_speed);
-void auton_thread();
-void auton();
+void auton_15(double auton_duration_time_millis, bool climb);
+void skills_15(bool driver = false);
