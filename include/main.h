@@ -71,11 +71,13 @@
 #define TASK_PRIORITY_HIGH 14
 ///////////////////////////////////////
 
-// Vex defined function, might as well have just in case
-#define waitUntil(condition)                                                   \
-  do {                                                                         \
-    pros::delay(5);                                                            \
-  } while (!(condition))
+/**
+ * Add other header files here;
+ * Add the common code headers here
+ */
+#include "common_code/subsystem_parent.h"
+#include "common_code/example_subsystem.h"
+#include "traditional_drive.h"
 ///////////////////////////////////////
 
 #ifndef CONVERT_NAMESPACE

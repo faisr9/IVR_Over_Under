@@ -173,7 +173,6 @@ void traditional_drive::field_centric_move(pair<double, double> movement_vector)
     robot_centric_move(movement_vector);
 }
 
-
 /**
  * Turns the robot on a point.
  *
@@ -194,6 +193,25 @@ void traditional_drive::turn_with_power(double power)
     // send voltage to motors
     // setV();
 }
+
+/**
+ * Independtely controls wither side regardless of mode.
+ *
+ * @param power The power to move normalized to [-1, 1] where +/- 1 is the maximum forward speed.
+ * Positive for clockwise (laterally forward), negative for counterclockwise (laterally backwards).
+ *
+ * @return Moves and turns the robot with a seperate powers to left and right motor groups.
+ */
+void traditional_drive::move_with_power(double rightPower, double leftPower, double turnPower)
+{
+    // multiply voltage by power factor
+    left = leftPower + turnPower;
+    right = rightPower - turnPower;
+
+    // send voltage to motors
+    setV();
+}
+
 Motor_Group& traditional_drive::get_motor_group(bool side)
 {
     if (side == 0)

@@ -48,6 +48,7 @@ class traditional_drive : public DriveParent
         void field_centric_move(std::pair<double, double> mag_angle_vector);
         void turn_with_power(double power);
         void change_drive_mode(int mode);
+        void move_with_power(double leftPower, double rightPower, double turnPower);
         Motor_Group &get_motor_group(bool side);
         Imu& get_imu();
         Controller& get_controller();
