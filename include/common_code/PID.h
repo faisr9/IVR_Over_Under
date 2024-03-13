@@ -1,47 +1,46 @@
 #pragma once
-#include "api.h"
+#include "main.h"
 
-class PID{
+class PID {
     private:
-        struct PIDConstants{
+        // All private variables like PID constants, sensor and/or motor pointers
+        struct PID_consts_s{
             double kP;
             double kI;
             double kD;
-        };
+        } pid_consts;
 
-        PIDConstants fwdPID_consts;
-        PIDConstants turnPID_consts;
-        PIDConstants strafePID_consts;
+        // PID state variables like error, lastError, derivative, integral, etc
+        // This struct can be used to store the state of the PID loop so if 
+        // edge cases like saturation, etc can be handled by the user
+        struct PID_state_s{
+            double error;
+            double lastError;
+            double derivative;
+            double integral;
+            double velocity;
+            bool saturated = false;
+        } pid_state;
 
-        // //Fwd PID constants
-        // double KP;
-        // double KI;
-        // double KD;
-
-        // //Turn PID constants
-        // double turnKP;
-        // double turnKI;
-        // double turnKD;
-
-        // //Strafe PID constants
-        // double strafeKP;
-        // double strafeKI;
-        // double strafeKD;
-    
+        // All private methods like PID calculations, sensor readings, motor movements
     public:
         PID(double Kp, double Ki, double Kd);
-        PID(double Kp, double Ki, double Kd, double turnKp, double turnKi, double turnKd);
-        PID(double Kp, double Ki, double Kd, double turnKp, double turnKi, double turnKd, double strafeKp, double strafeKi, double strafeKd);
-        void setFwdConstants(double kp, double ki, double kd);
-        void setTurnConstants(double kp, double ki, double kd);
-        void setStrafeConstants(double kp, double ki, double kd);
+        ~PID(); // Any needed deconstructors
 
-        void drivePID(double target, pros::ADIEncoder* yEnc);
-        void drivePID(double target, pros::ADIEncoder* yEnc, int angle);
-        void drivePID(double target, pros::ADIEncoder* yEnc, int angle, double strafeTarget, pros::ADIEncoder* xEnc);
+        void set_kP(double kp);
+        void set_kI(double ki);
+        void set_kD(double kd);
+        void setConstants(double kp, double ki, double kd);
 
-        void turnPID(int angle);
-        void strafePID(double strafeTarget, pros::ADIEncoder *xEnc);
+        // Getters and Setters for PID constants
+        PID_consts_s getConstants();
+        PID_state_s getState();
 
-    
+        double updatePID(double target, double current, double tolerance);
+        // double runPID(double target, pros::ADIEncoder &sensor);
+        // double runPID(double target, pros::IMU &sensor);
+
+        // Other variations of runPID and other methods
+        virtual void turnTo_PID(double target, double angle);
+        virtual void moveTo_PID(vector<double> target, double current);
 };
