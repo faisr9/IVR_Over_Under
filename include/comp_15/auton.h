@@ -2,5 +2,8 @@
 #include "comp_15/devices.h"
 #include "comp_15/include_list.h"
 
-void auton_15(double auton_duration_time_millis, bool climb);
-void skills_15(bool driver = false);
+namespace _15_autons {
+    void comp_auton_1();
+    void comp_auton_2();
+    void skills_auton();
+};
