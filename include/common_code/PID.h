@@ -41,6 +41,6 @@ class PID {
         // double runPID(double target, pros::IMU &sensor);
 
         // Other variations of runPID and other methods
-        virtual void turnTo_PID(double target, double angle);
-        virtual void moveTo_PID(vector<double> target, double current);
+        virtual void turnTo_PID(double target, double current, double tolerance);
+        virtual void moveTo_PID(vector<double> target, double current, double tolerance);
 };
