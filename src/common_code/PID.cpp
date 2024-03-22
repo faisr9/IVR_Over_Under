@@ -1,10 +1,12 @@
 #pragma once
 #include "PID.h"
 
-PID::PID(double kp, double ki, double kd){
+PID::PID(double kp, double ki, double kd, double min, double max){
     pid_consts.kP = kp;
     pid_consts.kI = ki;
     pid_consts.kD = kd;
+    pid_state.out_min = min;
+    pid_state.out_max = max;
 }
 
 //Set kP
@@ -47,7 +49,19 @@ double PID::updatePID(double target, double current, double tolerance){
         //Update derivative and lastError
         pid_state.derivative = pid_state.error - pid_state.lastError;
         pid_state.lastError = pid_state.error; 
-        return pid_state.velocity = pid_consts.kP * pid_state.error + pid_consts.kI * pid_state.integral + pid_consts.kD * pid_state.derivative;
+        pid_state.velocity = pid_consts.kP * pid_state.error + pid_consts.kI * pid_state.integral + pid_consts.kD * pid_state.derivative;
+        //Ensures output doesn't exceed max/min (saturation)
+        if(pid_state.velocity > pid_state.out_max){
+            pid_state.velocity = pid_state.out_max;
+            pid_state.saturated = true;
+        } else if(pid_state.velocity < pid_state.out_min){
+            pid_state.velocity = pid_state.out_min;
+            pid_state.saturated = true;
+        } else {
+            pid_state.saturated = false;
+        }
+        return pid_state.velocity;
     }
+    saturation = true;
     return 0;
 }

@@ -8,6 +8,8 @@ class PID {
             double kP;
             double kI;
             double kD;
+            double out_min;
+            double out_max;
         } pid_consts;
 
         // PID state variables like error, lastError, derivative, integral, etc
