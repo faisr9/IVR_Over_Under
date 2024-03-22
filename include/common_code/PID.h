@@ -8,8 +8,8 @@ class PID {
             double kP;
             double kI;
             double kD;
-            double OUT_MIN;
-            double OUT_MAX;
+            double OUT_MIN = -127;
+            double OUT_MAX = 127;
         } pid_consts;
 
         // PID state variables like error, lastError, derivative, integral, etc
@@ -26,6 +26,7 @@ class PID {
 
         // All private methods like PID calculations, sensor readings, motor movements
     public:
+        PID(double Kp, double Ki, double Kd);
         PID(double Kp, double Ki, double Kd, double min, double max);
         ~PID(); // Any needed deconstructors
 

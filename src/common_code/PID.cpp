@@ -5,6 +5,12 @@ PID::PID(double kp, double ki, double kd, double min, double max){
     pid_consts.kP = kp;
     pid_consts.kI = ki;
     pid_consts.kD = kd;
+}
+
+PID::PID(double kp, double ki, double kd, double min, double max){
+    pid_consts.kP = kp;
+    pid_consts.kI = ki;
+    pid_consts.kD = kd;
     pid_state.OUT_MIN = min;
     pid_state.OUT_MAX = max;
 }
