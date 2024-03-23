@@ -41,6 +41,9 @@ void Odom::initTracker(double initial_x, double initial_y, double initial_headin
     positionY = initial_y;
     initHeading = initial_heading;
     imu.set_heading(initHeading);
+    last_heading = initHeading;
+    last_x_tracking_offset = RADIAL_WHEEL_TRANS_OFFSET * cos(initHeading * M_PI / 180.0);
+    last_y_tracking_offset = RADIAL_WHEEL_TRANS_OFFSET * sin(initHeading * M_PI / 180.0);
 }
 
 double Odom::headingCorrection (double currentRotation) {
@@ -78,18 +81,77 @@ void Odom::updatePosition() {
     positionX += isnan(deltaX) ? 0 : deltaX;
     positionY += isnan(deltaY) ? 0 : deltaY;
 
+
+
+    // when pure rotating (x_tracking_offset - last_x_tracking_offset) should = deltaX
+    // offset code
+
+    // KEVIN CODE
+    // double delta_theta = currentHeading - last_heading;
+    // double rot_delta_trans = 2 * sin(delta_theta / 2.0) * ((deltaTransverse / delta_theta) + TRANSVERSE_WHEEL_RAD_OFFSET);
+    // double rot_delta_radial = 2 * sin(delta_theta / 2.0) * ((deltaRadial / delta_theta) - RADIAL_WHEEL_TRANS_OFFSET);
+
+    // double deltaY = rot_delta_radial * sine + rot_delta_trans * cosine;
+    // double deltaX = rot_delta_radial * cosine - rot_delta_trans * sine;
+    // does not seem to work? Idk but there is significant change in value when turning
+
+    // positionX += isnan(deltaX) ? 0 : deltaX;
+    // positionY += isnan(deltaY) ? 0 : deltaY;
+
+    // note that this does not account for the rotation in the wheels it's purely based on the IMU but fundamentally
+    // that should still be fine
+
+    // x_tracking_offset = TRANSVERSE_WHEEL_RAD_OFFSET * sine;
+    // y_tracking_offset = TRANSVERSE_WHEEL_RAD_OFFSET * cosine;
+
+    // positionX -= isnan(x_tracking_offset - last_x_tracking_offset) ? 0 : (x_tracking_offset - last_x_tracking_offset);
+    // positionY += isnan(y_tracking_offset - last_y_tracking_offset) ? 0 : (y_tracking_offset - last_y_tracking_offset);
+
+    // last_x_tracking_offset = x_tracking_offset;
+    // last_y_tracking_offset = y_tracking_offset;
+
     
+    // TAKE 3 CODE
+    // transverse only for now
+    double delta_theta = currentHeading - last_heading; // 10 to 350 (=340), really -20
+    if (delta_theta > 340) {
+        delta_theta -= 360;
+    }
+
+    if (delta_theta < -340) {
+        delta_theta += 360;
+    }
+
+    double transverse_circumference = 2 * M_PI * TRANSVERSE_WHEEL_RAD_OFFSET * (delta_theta / 360.0);
+    double rot_delta_Y = transverse_circumference * sine;
+    double rot_delta_X = transverse_circumference * cosine;
+
+    positionX += isnan(rot_delta_X) ? 0 : rot_delta_X;
+    positionY += isnan(rot_delta_Y) ? 0 : rot_delta_Y;
+
+    // CONCLUSION RIGHT NOW IS THAT IT DOES APPEAR TO BE WORKING RELATIVELY WELL
+    // BUT THERE MIGHT BE A SLIGHT SCALING ISSUE 
+
+    last_heading = currentHeading;
+
     // if (transverseWheel) {
     //     pros::lcd::set_text(5, "Transverse Raw: " + std::to_string(transverseWheel->get_raw_data()));
     // }
     // if (radialWheel) {
     //     pros::lcd::set_text(6, "Radial Raw: " + std::to_string(radialWheel->get_raw_data()));
     // }
-    pros::lcd::set_text(6, "IMU rotation: " + std::to_string(imu.get_rotation()));
-    pros::lcd::set_text(7, "IMU degrees: " + std::to_string(getHeading()));
+    pros::lcd::set_text(4, "IMU degrees: " + std::to_string(getHeading()));
+    pros::lcd::set_text(2, "Position X: " + std::to_string(positionX));
+    pros::lcd::set_text(3, "Position Y: " + std::to_string(positionY));
+    
+    pros::lcd::set_text(5, "Delta Theta: " + std::to_string(currentHeading));
+    pros::lcd::set_text(6, "transDeltY: " + std::to_string((int) (transverseDeltaY * 100000)));
+    pros::lcd::set_text(7, "rot_delta_y: " + std::to_string((int) (rot_delta_Y * 100000)));
+    pros::lcd::set_text(1, "rot_trans_diff: " + std::to_string((int) (100000 * (rot_delta_Y - transverseDeltaY))));
 
-    pros::lcd::set_text(3, "Position X: " + std::to_string(positionX));
-    pros::lcd::set_text(4, "Position Y: " + std::to_string(positionY));
+
+
+
     // if (transverseWheel) {
     //     pros::lcd::set_text(2, "Horizontal Track: " + std::to_string(transverseWheel->get_raw_data()));
     // }

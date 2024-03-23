@@ -309,8 +309,8 @@
       }
     },
     "upload_options": {
-      "slot": 1,
-      "description": "Master Code",
+      "slot": 6,
+      "description": "Odom_Rot_Testing",
       "icon": "pizza",
       "after": "screen"
     }

@@ -5,15 +5,17 @@ extern LinkHelper* comp18link;
 
 /* First method to run when program starts */
 void initialize() {
-	// pros::lcd::initialize(); // Temp until custom GUI
-	comp18link->init();
+	pros::lcd::initialize(); // Temp until custom GUI
+	// comp18link->init();
 	imu.reset(); // Very important!!!
     transverse_rot_sensor.reset();
 	radial_rot_sensor.reset();
 	Pneumatics::getInstance()->setRight(0);
 	Pneumatics::getInstance()->setLeft(0);
-	gui::gui_init();
+	// gui::gui_init();
     pros::delay(3000);
+	tank_drive_18.getOdom().initTracker(1, 1, 90);
+	pros::delay(50);
 }
 
 /* Runs when robot is disabled from competition controller after driver/auton */
@@ -45,7 +47,14 @@ void opcontrol() {
 		controls();
 	}
 	else {
-		controls();
+		pros::Task odom_task{[=] {
+			while (1) {
+				tank_drive_18.getOdom().updatePosition();
+				pros::delay(50);
+			}
+		}}; // lambda function with a task
+
+		// controls();
 	}
 
 	// Driver Skills

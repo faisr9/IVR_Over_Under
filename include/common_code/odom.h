@@ -25,8 +25,12 @@ class Odom {
     double last_y_tracking_offset;
     double positionX = 0.0;
     double positionY = 0.0;
+    double last_heading = 0.0;
     const double TICKS_PER_ROTATION = 2000.0; // 19600.
     const double FEET_TO_METERS = 0.304;
+
+    const double RADIAL_WHEEL_TRANS_OFFSET = 0.013; // meters
+    const double TRANSVERSE_WHEEL_RAD_OFFSET = -0.132; // meters
 
     Generic_Rotation* transverseWheel = nullptr;
     Generic_Rotation* radialWheel = nullptr;
