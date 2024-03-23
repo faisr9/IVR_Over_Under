@@ -194,6 +194,20 @@ void traditional_drive::turn_with_power(double power)
     // send voltage to motors
     // setV();
 }
+
+void traditional_drive::move_with_power(double power)
+{
+    // multiply voltage by power factor
+    // left*=power;
+    // right=-(std::abs(right)*power);
+
+    left_side->move(power);
+    right_side->move(power);
+
+    // send voltage to motors
+    // setV();
+}
+
 Motor_Group& traditional_drive::get_motor_group(bool side)
 {
     if (side == 0)

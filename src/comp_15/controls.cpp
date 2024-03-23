@@ -1,5 +1,7 @@
 #include "comp_15/controls.h"
 // #include "comp_15/include_list.h"
+#include "common_code/PID.h"
+#include "common_code/traditional_drive.h"
 
 // Will add driver profiles later
 void controls() {
@@ -20,6 +22,22 @@ void controls() {
         }
         
         drive.toggle_drive_mode();
+
+        //***************** PID TESTING *****************
+        if (ctrl_master.get_digital(BUTTON_X)){
+            PID PID_tk = PID(.1,0,0);
+            double pid_output;
+            while(!PID_tk.getState().saturated){
+                pid_output=PID_tk.updatePID(12, drive.getOdom().getX(), 0.1);
+                drive.move_with_power(pid_output);
+                
+                lcd::print(1, "PID: %.2f", pid_output);
+
+                pros::delay(15);
+            }
+            drive.turn_with_power(0);
+        }
+        //***********************************************
 
         // // TESTING CODE, REMOVE THIS BEFORE MERGING TO MASTER
         // if (ctrl_master.get_digital_new_press(E_CONTROLLER_DIGITAL_UP)) {

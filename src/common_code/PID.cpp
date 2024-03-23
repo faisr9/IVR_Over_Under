@@ -1,7 +1,6 @@
-#pragma once
 #include "PID.h"
 
-PID::PID(double kp, double ki, double kd, double min, double max){
+PID::PID(double kp, double ki, double kd){
     pid_consts.kP = kp;
     pid_consts.kI = ki;
     pid_consts.kD = kd;

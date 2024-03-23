@@ -28,7 +28,7 @@ class PID {
     public:
         PID(double Kp, double Ki, double Kd);
         PID(double Kp, double Ki, double Kd, double min, double max);
-        ~PID(); // Any needed deconstructors
+        // ~PID(); // Any needed deconstructors
 
         void set_kP(double kp);
         void set_kI(double ki);
@@ -44,6 +44,6 @@ class PID {
         // double runPID(double target, pros::IMU &sensor);
 
         // Other variations of runPID and other methods
-        virtual void turnTo_PID(double target, double current, double tolerance);
-        virtual void moveTo_PID(vector<double> target, double current, double tolerance);
+        // virtual void turnTo_PID(double target, double current, double tolerance);
+        // virtual void moveTo_PID(vector<double> target, double current, double tolerance);
 };

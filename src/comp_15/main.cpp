@@ -16,7 +16,7 @@ void initialize() {
 	imu.reset(); // Very important!!!
 	horizontal_track_adi.reset();
 	vertical_track_adi.reset();
-	gui::gui_init();
+	// gui::gui_init();
 	pros::delay(4000);
 }
 
@@ -48,16 +48,6 @@ void autonomous() {
 
 /* Opcontrol method runs by default (unless connected to comp controller )*/
 void opcontrol() {
-	if(gui::selected_auton == gui::AUTON_COMP) {
 		controls();
-		// ctrl_master.rumble("---");
-	}
-	else if(gui::selected_auton == gui::AUTON_SKILLS) {
-		skills_15(true);
-		controls();
-		// ctrl_master.rumble("-");
-	}
-	else {
-		controls();
-	}
+	
 }

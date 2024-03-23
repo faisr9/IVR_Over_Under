@@ -46,6 +46,7 @@ class traditional_drive : public DriveParent
         void toggle_drive_mode(); //does one cycle of movement
         void robot_centric_move(std::pair<double, double> mag_angle_vector); 
         void field_centric_move(std::pair<double, double> mag_angle_vector);
+        void move_with_power(double power);
         void turn_with_power(double power);
         void change_drive_mode(int mode);
         Motor_Group &get_motor_group(bool side);
