@@ -45,8 +45,7 @@ PID::PID_consts_s PID::getConstants(){
 
 double PID::updatePID(double target, double current, double tolerance){
     pid_state.error = target-current;
-    if(std::abs(pid_state.error) > tolerance){        
-        pid_state.error = target - current;
+    if(std::abs(pid_state.error) > tolerance){
         pid_state.integral += pid_state.error;
         //Ensures integral doesn't get too large
         if((pid_state.error > 0 && pid_state.lastError < 0) || (pid_state.error < 0 && pid_state.lastError > 0))
@@ -67,6 +66,5 @@ double PID::updatePID(double target, double current, double tolerance){
         }
         return pid_state.output;
     }
-    pid_state.saturated = true;
     return 0;
 }

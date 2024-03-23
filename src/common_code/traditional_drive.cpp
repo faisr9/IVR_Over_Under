@@ -195,6 +195,14 @@ void traditional_drive::turn_with_power(double power)
     // setV();
 }
 
+/**
+ * Turns the robot on a point.
+ *
+ * @param power The power to move with normalized to [-1, 1] where +/- 1 is the maximum lateral speed.
+ * Positive for forward, negative for backward.
+ *
+ * @return Moves the robot with a rotational speed relative to power (in millivolts)
+ */
 void traditional_drive::move_with_power(double power)
 {
     // multiply voltage by power factor
