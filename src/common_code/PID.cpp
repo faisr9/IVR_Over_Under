@@ -11,8 +11,8 @@ PID::PID(double kp, double ki, double kd, double min, double max){
     pid_consts.kP = kp;
     pid_consts.kI = ki;
     pid_consts.kD = kd;
-    pid_state.OUT_MIN = min;
-    pid_state.OUT_MAX = max;
+    pid_consts.OUT_MIN = min;
+    pid_consts.OUT_MAX = max;
 }
 
 //Set kP
@@ -57,17 +57,17 @@ double PID::updatePID(double target, double current, double tolerance){
         pid_state.lastError = pid_state.error; 
         pid_state.output = pid_consts.kP * pid_state.error + pid_consts.kI * pid_state.integral + pid_consts.kD * pid_state.derivative;
         //Ensures output doesn't exceed max/min (saturation)
-        if(pid_state.output > pid_state.out_max){
-            pid_state.output = pid_state.out_max;
+        if(pid_state.output > pid_consts.OUT_MAX){
+            pid_state.output = pid_consts.OUT_MAX;
             pid_state.saturated = true;
-        } else if(pid_state.output < pid_state.out_min){
-            pid_state.output = pid_state.out_min;
+        } else if(pid_state.output < pid_consts.OUT_MIN){
+            pid_state.output = pid_consts.OUT_MIN;
             pid_state.saturated = true;
         } else {
             pid_state.saturated = false;
         }
         return pid_state.output;
     }
-    saturation = true;
+    pid_state.saturated = true;
     return 0;
 }
