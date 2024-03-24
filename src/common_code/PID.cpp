@@ -42,7 +42,6 @@ PID::PID_state_s PID::getState(){
 PID::PID_consts_s PID::getConstants(){
     return pid_consts;
 }
-
 double PID::updatePID(double target, double current, double tolerance){
     pid_state.error = target-current;
     if(std::abs(pid_state.error) > tolerance){
@@ -64,7 +63,24 @@ double PID::updatePID(double target, double current, double tolerance){
         } else {
             pid_state.saturated = false;
         }
+        if(std::abs(pid_state.output-pid_state.lastOutput) < .2){
+            pid_state.targetReached = true;
+            return 0;
+        }
+        pid_state.lastOutput = pid_state.output;
         return pid_state.output;
     }
+    pid_state.targetReached = true;
     return 0;
+}
+
+void PID::resetPID(){
+    pid_state.error = 0;
+    pid_state.lastError = 0;
+    pid_state.derivative = 0;
+    pid_state.integral = 0;
+    pid_state.output = 0;
+    pid_state.lastOutput = 0;
+    pid_state.saturated = false;
+    pid_state.targetReached = false;
 }

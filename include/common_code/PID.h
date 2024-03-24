@@ -21,7 +21,9 @@ class PID {
             double derivative=0;
             double integral=0;
             double output=0;
+            double lastOutput=0;
             bool saturated = false;
+            bool targetReached = false;
         } pid_state;
 
         // All private methods like PID calculations, sensor readings, motor movements
@@ -40,6 +42,7 @@ class PID {
         PID_state_s getState();
 
         double updatePID(double target, double current, double tolerance);
+        void resetPID();
         // double runPID(double target, pros::ADIEncoder &sensor);
         // double runPID(double target, pros::IMU &sensor);
 

@@ -14,10 +14,13 @@ void controls() {
 
     DoinkerClass::doinker_move doinker_state = DoinkerClass::UP;
 
-    PID PID_tk = PID(6,3,0);
+    PID PID_tk = PID(.6,0,.3);
     double pid_output;
     double y;
-
+    double target;
+    double theta;
+    double tolerance = 1;
+    int count = 0;
     while(1) {
         //ACTIVATE DRIVE
         // if(pros::competition::is_connected())
@@ -36,11 +39,50 @@ void controls() {
         // if (ctrl_master.get_digital(BUTTON_X)){
                 drive.getOdom().updatePosition();
                 y=drive.getOdom().getY()*39.37;
-                pid_output = PID_tk.updatePID(24, y, 0.1); //1m=39.37in
-                drive.move_with_power(pid_output);
+                theta = drive.get_imu().get_heading();
+                switch (count){
+                    case 0:
+                        // target = 24;
+                        // if(PID_tk.getState().targetReached){
+                        //     count++;
+                        //     ctrl_master.rumble(".");
+                        //     PID_tk.resetPID();
+                        //     pros::delay(150);
+                        // }
+
+                        target = 180;
+                        if(PID_tk.getState().targetReached){
+                            count++;
+                            ctrl_master.rumble(".");
+                            PID_tk.resetPID();
+                            pros::delay(150);
+                        }
+                        break;
+                    case 1:
+                    //     target = 0;
+                    //     if(PID_tk.getState().targetReached){
+                    //         count++;
+                    //         ctrl_master.rumble(".");
+                    //         PID_tk.resetPID();
+                    //     }
+                        target = 0;
+                        if(PID_tk.getState().targetReached){
+                            count++;
+                            ctrl_master.rumble("..");
+                            PID_tk.resetPID();
+                            pros::delay(150);
+                        }
+                        break;
+                }
+
+                // pid_output = PID_tk.updatePID(target, y, tolerance); //1m=39.37in
+                pid_output = PID_tk.updatePID(target, theta, tolerance); //1m=39.37in
+                drive.tank_with_power(0,pid_output);
 
                 lcd::print(1, "PID: %.2f", pid_output);
                 lcd::print(2, "Y: %.2f", y);
+                lcd::print(3, "Target Reached: %.2f", PID_tk.getState().targetReached);
+                lcd::print(3, "Error: %.2f", PID_tk.getState().error);
 
                 pros::delay(15);
         // }
