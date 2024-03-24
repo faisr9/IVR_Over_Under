@@ -93,6 +93,7 @@ void Odom::updatePosition() {
         delta_theta += 360;
     }
 
+    // Use the arc length of a circle
     double transverse_circumference = 2 * M_PI * TRANSVERSE_WHEEL_RAD_OFFSET * (delta_theta / 360.0);
     double radial_circumference = 2 * M_PI * RADIAL_WHEEL_TRANS_OFFSET * (delta_theta / 360.0);
 
@@ -113,6 +114,8 @@ void Odom::updatePosition() {
     pros::lcd::set_text(4, "IMU degrees: " + std::to_string(getHeading()));
     pros::lcd::set_text(2, "Position X: " + std::to_string(positionX));
     pros::lcd::set_text(3, "Position Y: " + std::to_string(positionY));
+
+    pros::lcd::set_text(5, "Trans offset: " + std::to_string(RADIAL_WHEEL_TRANS_OFFSET));
 }
 
 double Odom::getX() { return positionX; }
