@@ -70,11 +70,11 @@ void Odom::updatePosition() {
     double cosine = cos(currentHeading * M_PI / 180.0);
     double sine = sin(currentHeading* M_PI / 180.0);
 
-    double radialDeltaY = (deltaRadial) * cosine * 0;
+    double radialDeltaY = (deltaRadial) * cosine;
     double transverseDeltaY = -(deltaTransverse) * sine; // note the - sign
     double deltaY = radialDeltaY + transverseDeltaY;
 
-    double radialDeltaX = (deltaRadial) * sine * 0;
+    double radialDeltaX = (deltaRadial) * sine;
     double transverseDeltaX = (deltaTransverse) * cosine;
     double deltaX = radialDeltaX + transverseDeltaX;
 
@@ -126,8 +126,8 @@ void Odom::updatePosition() {
     double transverse_circumference = 2 * M_PI * TRANSVERSE_WHEEL_RAD_OFFSET * (delta_theta / 360.0);
     double radial_circumference = 2 * M_PI * RADIAL_WHEEL_TRANS_OFFSET * (delta_theta / 360.0);
 
-    double rot_delta_Y = transverse_circumference * sine + radial_circumference * cosine * 0;
-    double rot_delta_X = -transverse_circumference * cosine + radial_circumference * sine * 0;
+    double rot_delta_Y = transverse_circumference * sine + radial_circumference * cosine;
+    double rot_delta_X = -transverse_circumference * cosine + radial_circumference * sine;
 
     // when offset backwards (neg) and delta theta is positive
 
