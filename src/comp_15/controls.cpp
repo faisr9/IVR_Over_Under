@@ -14,9 +14,9 @@ void controls() {
 
     DoinkerClass::doinker_move doinker_state = DoinkerClass::UP;
 
-    PID PID_tk = PID(6,0,0);
+    PID PID_tk = PID(6,3,0);
     double pid_output;
-    double x;
+    double y;
 
     while(1) {
         //ACTIVATE DRIVE
@@ -35,12 +35,12 @@ void controls() {
         //***************** PID TESTING *****************
         // if (ctrl_master.get_digital(BUTTON_X)){
                 drive.getOdom().updatePosition();
-                x=drive.getOdom().getX()*39.37;
-                pid_output = PID_tk.updatePID(6, x, 0.1); //1m=39.37in
+                y=drive.getOdom().getY()*39.37;
+                pid_output = PID_tk.updatePID(24, y, 0.1); //1m=39.37in
                 drive.move_with_power(pid_output);
 
                 lcd::print(1, "PID: %.2f", pid_output);
-                lcd::print(2, "X: %.2f", x);
+                lcd::print(2, "Y: %.2f", y);
 
                 pros::delay(15);
         // }

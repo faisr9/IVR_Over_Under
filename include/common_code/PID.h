@@ -16,11 +16,11 @@ class PID {
         // This struct can be used to store the state of the PID loop so if 
         // edge cases like saturation, etc can be handled by the user
         struct PID_state_s{
-            double error;
-            double lastError;
-            double derivative;
-            double integral;
-            double output;
+            double error=0;
+            double lastError=0;
+            double derivative=0;
+            double integral=0;
+            double output=0;
             bool saturated = false;
         } pid_state;
 

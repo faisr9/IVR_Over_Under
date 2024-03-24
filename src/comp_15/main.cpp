@@ -11,7 +11,7 @@ extern LinkHelper* comp15link;
 
 /* First method to run when program starts */
 void initialize() {
-	// pros::lcd::initialize(); // Temp until custom GUI
+	pros::lcd::initialize(); // Temp until custom GUI
 	comp15link->init();
 	imu.reset(); // Very important!!!
 	horizontal_track_adi.reset();
