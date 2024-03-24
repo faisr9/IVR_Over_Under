@@ -48,7 +48,7 @@ class DriveParent {
         // apply square scaling
         static double square_scale(double input);
         
-    private:
+    protected:
         // motors stored at child level
         pros::Imu& imu_;
         const std::string kDriveType;
