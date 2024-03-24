@@ -13,7 +13,7 @@ extern LinkHelper* comp15link;
 void initialize() {
 	// pros::lcd::initialize(); // Temp until custom GUI
 	comp15link->init();
-	imu.reset(); // Very important!!!
+	testimu.reset(); // Very important!!!
 	horizontal_track_adi.reset();
 	vertical_track_adi.reset();
 	gui::gui_init();
