@@ -34,7 +34,7 @@ void controls() {
         //***************** PID TESTING *****************
         // if (ctrl_master.get_digital(BUTTON_X)){
                 drive.getOdom().updatePosition();
-                pid_output = PID_tk.updatePID(6, drive.getOdom().getX(), 0.1);
+                pid_output = PID_tk.updatePID(6, drive.getOdom().getX()*39.37, 0.1); //1m=39.37in
                 drive.move_with_power(pid_output);
 
                 lcd::print(1, "PID: %.2f", pid_output);
