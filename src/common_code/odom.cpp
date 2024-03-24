@@ -82,40 +82,12 @@ void Odom::updatePosition() {
     positionY += isnan(deltaY) ? 0 : deltaY;
 
 
-
-    // when pure rotating (x_tracking_offset - last_x_tracking_offset) should = deltaX
-    // offset code
-
-    // KEVIN CODE
-    // double delta_theta = currentHeading - last_heading;
-    // double rot_delta_trans = 2 * sin(delta_theta / 2.0) * ((deltaTransverse / delta_theta) + TRANSVERSE_WHEEL_RAD_OFFSET);
-    // double rot_delta_radial = 2 * sin(delta_theta / 2.0) * ((deltaRadial / delta_theta) - RADIAL_WHEEL_TRANS_OFFSET);
-
-    // double deltaY = rot_delta_radial * sine + rot_delta_trans * cosine;
-    // double deltaX = rot_delta_radial * cosine - rot_delta_trans * sine;
-    // does not seem to work? Idk but there is significant change in value when turning
-
-    // positionX += isnan(deltaX) ? 0 : deltaX;
-    // positionY += isnan(deltaY) ? 0 : deltaY;
-
-    // note that this does not account for the rotation in the wheels it's purely based on the IMU but fundamentally
-    // that should still be fine
-
-    // x_tracking_offset = TRANSVERSE_WHEEL_RAD_OFFSET * sine;
-    // y_tracking_offset = TRANSVERSE_WHEEL_RAD_OFFSET * cosine;
-
-    // positionX -= isnan(x_tracking_offset - last_x_tracking_offset) ? 0 : (x_tracking_offset - last_x_tracking_offset);
-    // positionY += isnan(y_tracking_offset - last_y_tracking_offset) ? 0 : (y_tracking_offset - last_y_tracking_offset);
-
-    // last_x_tracking_offset = x_tracking_offset;
-    // last_y_tracking_offset = y_tracking_offset;
-
-    
-    // TAKE 3 CODE
-    // transverse only for now
+    // Rotation correction code for odom wheels off its axis of rotation such that the wheel will
+    // rotate when the robot spins on a point (which would cause error in the robot's position awareness,
+    // if not for this code).
     double delta_theta = currentHeading - last_heading; // 10 to 350 (=340), really -20
 
-    // handle when the angle jumps between 0 and 360. This code will fail if the robot crosses the 0/360 angle
+    // Handle when the angle jumps between 0 and 360. This code will fail if the robot crosses the 0/360 angle
     // and turns > 90 degrees between a single cycle, but that shouldn't happen
     if (delta_theta > 270) {
         delta_theta -= 360;
@@ -129,16 +101,8 @@ void Odom::updatePosition() {
     double rot_delta_Y = transverse_circumference * sine + radial_circumference * cosine;
     double rot_delta_X = -transverse_circumference * cosine + radial_circumference * sine;
 
-    // when offset backwards (neg) and delta theta is positive
-
-    // when delta theta positive and if wheel offset to right (positive) then normal wheel will give negative change
-    // so need pos value here?
-
     positionX += isnan(rot_delta_X) ? 0 : rot_delta_X;
     positionY += isnan(rot_delta_Y) ? 0 : rot_delta_Y;
-
-    // CONCLUSION RIGHT NOW IS THAT IT DOES APPEAR TO BE WORKING RELATIVELY WELL
-    // BUT THERE MIGHT BE A SLIGHT SCALING ISSUE 
 
     last_heading = currentHeading;
 
@@ -151,19 +115,6 @@ void Odom::updatePosition() {
     pros::lcd::set_text(4, "IMU degrees: " + std::to_string(getHeading()));
     pros::lcd::set_text(2, "Position X: " + std::to_string(positionX));
     pros::lcd::set_text(3, "Position Y: " + std::to_string(positionY));
-    
-    pros::lcd::set_text(5, "Delta Theta: " + std::to_string(currentHeading));
-    pros::lcd::set_text(6, "transDeltaX: " + std::to_string((int) (transverseDeltaX * 100000)));
-    pros::lcd::set_text(7, "rot_delta_X: " + std::to_string((int) (rot_delta_X * 100000)));
-    pros::lcd::set_text(1, "rot_trans_diff: " + std::to_string((int) (100000 * (rot_delta_X + transverseDeltaX))));
-
-
-
-
-    // if (transverseWheel) {
-    //     pros::lcd::set_text(2, "Horizontal Track: " + std::to_string(transverseWheel->get_raw_data()));
-    // }
-    // pros::lcd::set_text(3, "Vertical Track: " + std::to_string(radialWheel->get_raw_data()));
 }
 
 double Odom::getX() { return positionX; }
