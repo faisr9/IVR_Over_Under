@@ -70,11 +70,11 @@ void Odom::updatePosition() {
     double cosine = cos(currentHeading * M_PI / 180.0);
     double sine = sin(currentHeading* M_PI / 180.0);
 
-    double radialDeltaY = (deltaRadial) * cosine;
+    double radialDeltaY = (deltaRadial) * cosine * 0;
     double transverseDeltaY = -(deltaTransverse) * sine; // note the - sign
     double deltaY = radialDeltaY + transverseDeltaY;
 
-    double radialDeltaX = (deltaRadial) * sine;
+    double radialDeltaX = (deltaRadial) * sine * 0;
     double transverseDeltaX = (deltaTransverse) * cosine;
     double deltaX = radialDeltaX + transverseDeltaX;
 
@@ -114,17 +114,25 @@ void Odom::updatePosition() {
     // TAKE 3 CODE
     // transverse only for now
     double delta_theta = currentHeading - last_heading; // 10 to 350 (=340), really -20
-    if (delta_theta > 340) {
-        delta_theta -= 360;
-    }
 
-    if (delta_theta < -340) {
+    // handle when the angle jumps between 0 and 360. This code will fail if the robot crosses the 0/360 angle
+    // and turns > 90 degrees between a single cycle, but that shouldn't happen
+    if (delta_theta > 270) {
+        delta_theta -= 360;
+    } else if (delta_theta < -270) {
         delta_theta += 360;
     }
 
     double transverse_circumference = 2 * M_PI * TRANSVERSE_WHEEL_RAD_OFFSET * (delta_theta / 360.0);
-    double rot_delta_Y = transverse_circumference * sine;
-    double rot_delta_X = transverse_circumference * cosine;
+    double radial_circumference = 2 * M_PI * RADIAL_WHEEL_TRANS_OFFSET * (delta_theta / 360.0);
+
+    double rot_delta_Y = transverse_circumference * sine + radial_circumference * cosine * 0;
+    double rot_delta_X = -transverse_circumference * cosine + radial_circumference * sine * 0;
+
+    // when offset backwards (neg) and delta theta is positive
+
+    // when delta theta positive and if wheel offset to right (positive) then normal wheel will give negative change
+    // so need pos value here?
 
     positionX += isnan(rot_delta_X) ? 0 : rot_delta_X;
     positionY += isnan(rot_delta_Y) ? 0 : rot_delta_Y;
@@ -145,9 +153,9 @@ void Odom::updatePosition() {
     pros::lcd::set_text(3, "Position Y: " + std::to_string(positionY));
     
     pros::lcd::set_text(5, "Delta Theta: " + std::to_string(currentHeading));
-    pros::lcd::set_text(6, "transDeltY: " + std::to_string((int) (transverseDeltaY * 100000)));
-    pros::lcd::set_text(7, "rot_delta_y: " + std::to_string((int) (rot_delta_Y * 100000)));
-    pros::lcd::set_text(1, "rot_trans_diff: " + std::to_string((int) (100000 * (rot_delta_Y - transverseDeltaY))));
+    pros::lcd::set_text(6, "transDeltaX: " + std::to_string((int) (transverseDeltaX * 100000)));
+    pros::lcd::set_text(7, "rot_delta_X: " + std::to_string((int) (rot_delta_X * 100000)));
+    pros::lcd::set_text(1, "rot_trans_diff: " + std::to_string((int) (100000 * (rot_delta_X + transverseDeltaX))));
 
 
 

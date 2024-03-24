@@ -54,7 +54,7 @@ void opcontrol() {
 			}
 		}}; // lambda function with a task
 
-		// controls();
+		controls();
 	}
 
 	// Driver Skills
