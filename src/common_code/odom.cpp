@@ -114,8 +114,6 @@ void Odom::updatePosition() {
     pros::lcd::set_text(4, "IMU degrees: " + std::to_string(getHeading()));
     pros::lcd::set_text(2, "Position X: " + std::to_string(positionX));
     pros::lcd::set_text(3, "Position Y: " + std::to_string(positionY));
-
-    pros::lcd::set_text(5, "Trans offset: " + std::to_string(RADIAL_WHEEL_TRANS_OFFSET));
 }
 
 double Odom::getX() { return positionX; }
