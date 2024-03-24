@@ -1,7 +1,7 @@
 #include "common_code/generic_rotation_vex_rot.h"
 
 
-Generic_Rotation_VEX_Rot::Generic_Rotation_VEX_Rot(pros::Rotation& rot_sensor, double wheel_radius_meters): Generic_Rotation(wheel_radius_meters), rotation_sensor(rot_sensor) {}
+Generic_Rotation_VEX_Rot::Generic_Rotation_VEX_Rot(pros::Rotation& rot_sensor, double wheel_radius_meters, double offset_from_rot_axis_meters): Generic_Rotation(wheel_radius_meters, offset_from_rot_axis_meters), rotation_sensor(rot_sensor) {}
 
 void Generic_Rotation_VEX_Rot::initialize_sensor() {
     rotation_sensor.set_position(0);

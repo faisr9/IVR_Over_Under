@@ -40,6 +40,8 @@ void Odom::initTracker(double initial_x, double initial_y, double initial_headin
     initHeading = initial_heading;
     imu.set_heading(initHeading);
     last_heading = initHeading;
+    RADIAL_WHEEL_TRANS_OFFSET = (radialWheel) ? radialWheel->get_rot_axis_offset() : 0.0;
+    TRANSVERSE_WHEEL_RAD_OFFSET = (transverseWheel) ? transverseWheel->get_rot_axis_offset() : 0.0;
 }
 
 double Odom::headingCorrection (double currentRotation) {
