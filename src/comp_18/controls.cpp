@@ -5,13 +5,12 @@ void controls() {
 
 
     // for debugging
-	// pros::Task odom_task{[=] {
-	// 	while (1) {
-	// 		tank_drive_18.getOdom().updatePosition();
-	// 		pros::lcd::set_text(7, "A: " + std::to_string(tank_drive_18.getOdom().getHeading()));
-	// 		pros::delay(50);
-	// 	}
-	// }};
+	pros::Task odom_task{[=] {
+		while (1) {
+			tank_drive_18.getOdom().updatePosition();
+			pros::delay(50);
+		}
+	}};
 
 
     pros::lcd::set_text(1, "Running Controls");

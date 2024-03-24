@@ -45,13 +45,6 @@ void opcontrol() {
 		controls();
 	}
 	else {
-		pros::Task odom_task{[=] {
-			while (1) {
-				tank_drive_18.getOdom().updatePosition();
-				pros::delay(50);
-			}
-		}}; // lambda function with a task
-
 		controls();
 	}
 }

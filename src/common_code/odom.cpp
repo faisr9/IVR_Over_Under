@@ -15,8 +15,6 @@ This class has accounted for that, so that other code can assume the position of
 */
 
 Odom::Odom(pros::IMU &theImu, Generic_Rotation* transWheel, Generic_Rotation* radWheel): imu(theImu), transverseWheel(transWheel), radialWheel(radWheel) {
-    last_x_tracking_offset = 0;
-    last_y_tracking_offset = 0;
     positionX = 0;                          
     positionY = 0;
 }
@@ -42,8 +40,6 @@ void Odom::initTracker(double initial_x, double initial_y, double initial_headin
     initHeading = initial_heading;
     imu.set_heading(initHeading);
     last_heading = initHeading;
-    last_x_tracking_offset = RADIAL_WHEEL_TRANS_OFFSET * cos(initHeading * M_PI / 180.0);
-    last_y_tracking_offset = RADIAL_WHEEL_TRANS_OFFSET * sin(initHeading * M_PI / 180.0);
 }
 
 double Odom::headingCorrection (double currentRotation) {
@@ -85,7 +81,7 @@ void Odom::updatePosition() {
     // Rotation correction code for odom wheels off its axis of rotation such that the wheel will
     // rotate when the robot spins on a point (which would cause error in the robot's position awareness,
     // if not for this code).
-    double delta_theta = currentHeading - last_heading; // 10 to 350 (=340), really -20
+    double delta_theta = currentHeading - last_heading;
 
     // Handle when the angle jumps between 0 and 360. This code will fail if the robot crosses the 0/360 angle
     // and turns > 90 degrees between a single cycle, but that shouldn't happen

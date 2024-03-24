@@ -37,7 +37,7 @@ pros::Rotation radial_rot_sensor(10);
 pros::Rotation transverse_rot_sensor(9, true); // reversed so that going right is positive
 
 Generic_Rotation* radial_tracker = new Generic_Rotation_VEX_Rot(radial_rot_sensor, 1.96 * 0.0254 / 2);
-Generic_Rotation* horizontal_tracker = new Generic_Rotation_VEX_Rot(transverse_rot_sensor, 1.96 * 0.0254 / 2);; // new Generic_Rotation_VEX_Rot(transverse_rot_sensor, 1.96 * 0.0254 / 2);
+Generic_Rotation* horizontal_tracker = new Generic_Rotation_VEX_Rot(transverse_rot_sensor, 1.96 * 0.0254 / 2);
 
 Odom odometry_18(imu, horizontal_tracker, radial_tracker);
 
