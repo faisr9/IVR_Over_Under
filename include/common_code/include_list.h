@@ -1,6 +1,7 @@
 #pragma once
 
 // All common code header files
+#include "common_code/drive_builder.h"
 #include "common_code/drive_parent.h"
 #include "common_code/example_subsystem.h"
 #include "common_code/generic_rotation_digikey.h"
