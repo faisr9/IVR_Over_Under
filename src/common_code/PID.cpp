@@ -64,10 +64,10 @@ double PID::updatePID(double target, double current, double tolerance){
         } else {
             pid_state.saturated = false;
         }
+        pid_state.lastOutput = pid_state.output;
         if(std::abs(pid_state.output-pid_state.lastOutput) >= .2){
-            pid_state.lastOutput = pid_state.output;
             return pid_state.output;
-        }   
+        }  
     }
     pid_state.targetReached = true;
     return 0;
