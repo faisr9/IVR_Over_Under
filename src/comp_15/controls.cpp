@@ -12,15 +12,17 @@ void controls() {
     pros::delay(50);
 
 
-    DoinkerClass::doinker_move doinker_state = DoinkerClass::UP;
-
-    PID PID_tk = PID(.6,0,.3);
-    double pid_output;
+    // DoinkerClass::doinker_move doinker_state = DoinkerClass::UP;
+    PID PID_lateral = PID(.6,0,.3);
+    PID PID_turn = PID(.6,0,.3);
+    double pid_turn_out;
+    double pid_lat_out;
     double y;
     double target;
     double theta;
     double tolerance = 1;
     int count = 0;
+
     while(1) {
         //ACTIVATE DRIVE
         // if(pros::competition::is_connected())
@@ -42,47 +44,41 @@ void controls() {
                 theta = drive.get_imu().get_heading();
                 switch (count){
                     case 0:
-                        // target = 24;
-                        // if(PID_tk.getState().targetReached){
-                        //     count++;
-                        //     ctrl_master.rumble(".");
-                        //     PID_tk.resetPID();
-                        //     pros::delay(150);
-                        // }
-
-                        target = 180;
-                        if(PID_tk.getState().targetReached){
+                        target = 24;
+                        theta = 0;
+                        if(PID_lateral.getState().targetReached){
                             count++;
                             ctrl_master.rumble(".");
-                            PID_tk.resetPID();
+                            PID_turn.resetPID();
+                            PID_lateral.resetPID();
                             pros::delay(150);
                         }
                         break;
-                    case 1:
+                    // case 1:
                     //     target = 0;
                     //     if(PID_tk.getState().targetReached){
                     //         count++;
                     //         ctrl_master.rumble(".");
                     //         PID_tk.resetPID();
                     //     }
-                        target = 0;
-                        if(PID_tk.getState().targetReached){
-                            count++;
-                            ctrl_master.rumble("..");
-                            PID_tk.resetPID();
-                            pros::delay(150);
-                        }
-                        break;
+                        // target = 0;
+                        // if(PID_tk.getState().targetReached){
+                        //     count++;
+                        //     ctrl_master.rumble("..");
+                        //     PID_tk.resetPID();
+                        //     pros::delay(150);
+                        // }
+                        // break;
                 }
 
-                // pid_output = PID_tk.updatePID(target, y, tolerance); //1m=39.37in
-                pid_output = PID_tk.updatePID(target, theta, tolerance); //1m=39.37in
-                drive.tank_with_power(0,pid_output);
+                pid_lat_out = PID_lateral.updatePID(target, y, tolerance); //1m=39.37in
+                pid_turn_out = PID_turn.updatePID(target, theta, tolerance);
+                drive.tank_with_power(pid_lat_out,pid_turn_out);
 
-                lcd::print(1, "PID: %.2f", pid_output);
+                lcd::print(1, "PID: %.2f, %.2f", pid_lat_out, pid_turn_out);
                 lcd::print(2, "Y: %.2f", y);
-                lcd::print(3, "Target Reached: %.2f", PID_tk.getState().targetReached);
-                lcd::print(3, "Error: %.2f", PID_tk.getState().error);
+                lcd::print(3, "Target Reached: %.2f, %.2f", PID_lateral.getState().targetReached, PID_turn.getState().targetReached);
+                lcd::print(4, "Error: %.2f, %.2f", PID_lateral.getState().error, PID_turn.getState().error);
 
                 pros::delay(15);
         // }
