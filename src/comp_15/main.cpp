@@ -60,4 +60,14 @@ void opcontrol() {
 	else {
 		controls();
 	}
+	pros::Motor left_front(1);
+	pros::Motor left_back(2);
+	pros::Motor right_front(3);
+	pros::Motor right_back(4);
+
+	drive_builder drive(drive_builder::HOLONOMIC, &ctrl_master)
+		.with_motors(&left_front, &left_back, &right_front, &right_back)
+		.add_ctrl_deadzone(10, 10)
+		.set_default_drive_mode(drive_builder::HOLONOMIC_SR)
+		.init();
 }
