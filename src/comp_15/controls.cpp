@@ -13,7 +13,7 @@ void controls() {
 
 
     // DoinkerClass::doinker_move doinker_state = DoinkerClass::UP;
-    PID PID_lateral = PID(.6,0,.3);
+    PID PID_lateral = PID(6,0,1);
     PID PID_turn = PID(.6,0,.3);
     double pid_turn_out;
     double pid_lat_out;
@@ -44,7 +44,7 @@ void controls() {
                 theta = drive.get_imu().get_heading();
                 switch (count){
                     case 0:
-                        target = 24;
+                        target = 24*3;
                         theta = 0;
                         if(PID_lateral.getState().targetReached){
                             count++;
