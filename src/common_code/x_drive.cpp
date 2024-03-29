@@ -49,21 +49,21 @@ void x_drive::turn_with_power(double power)
 
 void x_drive::run()
 {
-    // double r=0;
-    // double mag=0;
-    // if (pow(master_.get_analog(E_CONTROLLER_ANALOG_LEFT_X), 2) + pow(master_.get_analog(E_CONTROLLER_ANALOG_LEFT_Y), 2) > 0)
-    // {
-    //     mag = sqrt(pow(master_.get_analog(E_CONTROLLER_ANALALOG_LEFT_X), 2) + pow(master_.get_analog(E_CONTROLLER_ANALOG_LEFT_Y), 2));
-    //     double param = master_.get_analog(E_CONTROLLER_ANALOG_LEFT_X) / mag;
-    //     r = acos(param);
-    // }
+    auto r=0.0,
+        mag=0.0;
+    if (pow(master_.get_analog(E_CONTROLLER_ANALOG_LEFT_X), 2) + pow(master_.get_analog(E_CONTROLLER_ANALOG_LEFT_Y), 2) > 0)
+    {
+        mag = sqrt(pow(master_.get_analog(E_CONTROLLER_ANALOG_LEFT_X), 2) + pow(master_.get_analog(E_CONTROLLER_ANALOG_LEFT_Y), 2));
+        double param = master_.get_analog(E_CONTROLLER_ANALOG_LEFT_X) / mag;
+        r = acos(param);
+    }
 
-    // if (master_.get_analog(E_CONTROLLER_ANALOG_LEFT_Y) <= 0)
-    // {
-    //     r = 2 * M_PI - r;
-    // }
+    if (master_.get_analog(E_CONTROLLER_ANALOG_LEFT_Y) <= 0)
+    {
+        r = 2 * M_PI - r;
+    }
 
-    // pair<double, double> movement_vector(mag, r);
-    // double turn_right_x = (double)master_.get_analog(E_CONTROLLER_ANALOG_RIGHT_X);
-    // field_centric_move(movement_vector, turn_right_x);
+    pair<double, double> movement_vector(mag, r);
+    double turn_right_x = (double)master_.get_analog(E_CONTROLLER_ANALOG_RIGHT_X);
+    robot_centric_move(movement_vector, turn_right_x);
 }
