@@ -54,5 +54,5 @@ void x_drive::run()
     }
     
     auto turn = master_.get_analog(E_CONTROLLER_ANALOG_RIGHT_X)/127.0; // normalized turn amount
-    robot_centric_move(target, turn); // move the robot
+    field_centric_move(target, turn); // move the robot
 }
