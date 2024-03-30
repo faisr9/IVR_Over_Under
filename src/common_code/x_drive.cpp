@@ -3,30 +3,24 @@
 // add in a super for parent drive class later
 x_drive::x_drive(Controller &master, Motor &front_left, Motor &front_right, Motor &back_left, Motor &back_right, Imu &imu) : master_(master), front_left_(front_left), front_right_(front_right), back_left_(back_left), back_right_(back_right), DriveParent(imu, "x_drive") {}
 
-void x_drive::robot_centric_move(pair<double, double> movement_vector, double turn_right_x)
+void x_drive::robot_centric_move(pair<double, double> movement_vector, double turn)
 {
-    // cos and sin (cmath) use radians
-    // 0 is the right of the robot and π is forward
+    auto speed = 0.0;
+    if (movement_vector.first) speed=127.0*movement_vector.first; // normalized speed of movement times max speed
+    else if (turn) speed=127.0; // if only turning, set speed to max
+    auto dir = movement_vector.second; // direction in radians
 
-    // splitting the movement_vector
-    double magnitude = movement_vector.first;
-    double angle = movement_vector.second;
+    dir -= M_PI / 4; // adjust direction by 45˚ to get the diagonal components of movement
+    auto move_1 = -1*cos(dir); // first diagonal component of movement
+    auto move_2 = sin(dir); // second diagonal component of movement
 
-    // magnitude scales direction
-    double move_x = magnitude * cos(angle);
-    double move_y = magnitude * sin(angle);
+    auto scaling = speed/max(abs(move_1), abs(move_2)); // speed divided by max of x and y
+    auto turn_factor = 1 - abs(turn); // turn factor
 
-    double left_move = (move_y - move_x);
-    double right_move = (move_y + move_x);
-
-    front_left_.move(right_move + turn_right_x);
-    front_right_.move(left_move - turn_right_x);
-    back_left_.move(left_move + turn_right_x);
-    back_right_.move(right_move - turn_right_x);
-
-    // Total move amount √(x²+y²) is 2√2 times the initial magnitude
-    // This means a |movement|=1 and θ=π (turn=0) would cause robot motors to all move by 1 and finding the total x and y components,
-    // you get a y = 2√2 and x = 0 (forward) which produces a total of 2√2.
+    front_left_.move((move_1*scaling*turn_factor - speed*turn)); // fl and br use the first diagonal component
+    front_right_.move((move_2*scaling*turn_factor - speed*turn)); // front motors subtract turn
+    back_left_.move((move_2*scaling*turn_factor + speed*turn)); // bl and fr use the second diagonal component
+    back_right_.move(-(move_1*scaling*turn_factor + speed*turn)); // back motors add turn
 }
 
 void x_drive::field_centric_move(pair<double, double> movement_vector, double turn_right_x)
@@ -49,21 +43,16 @@ void x_drive::turn_with_power(double power)
 
 void x_drive::run()
 {
-    auto r=0.0,
-        mag=0.0;
-    if (pow(master_.get_analog(E_CONTROLLER_ANALOG_LEFT_X), 2) + pow(master_.get_analog(E_CONTROLLER_ANALOG_LEFT_Y), 2) > 0)
-    {
-        mag = sqrt(pow(master_.get_analog(E_CONTROLLER_ANALOG_LEFT_X), 2) + pow(master_.get_analog(E_CONTROLLER_ANALOG_LEFT_Y), 2));
-        double param = master_.get_analog(E_CONTROLLER_ANALOG_LEFT_X) / mag;
-        r = acos(param);
-    }
+    pair<double, double> target(0.0, 0.0);
+    auto x=master_.get_analog(E_CONTROLLER_ANALOG_LEFT_X); // target x
+    auto y=master_.get_analog(E_CONTROLLER_ANALOG_LEFT_Y); // target y
 
-    if (master_.get_analog(E_CONTROLLER_ANALOG_LEFT_Y) <= 0)
+    if (x || y ) // if there is any movement
     {
-        r = 2 * M_PI - r;
+        target.first = min(1.0,sqrt(pow(x,2) + pow(y,2)) / 127.0);///sqrt(2)); // normalized speed to move
+        target.second = atan2(y, x); // direction to move in radians
     }
-
-    pair<double, double> movement_vector(mag, r);
-    double turn_right_x = (double)master_.get_analog(E_CONTROLLER_ANALOG_RIGHT_X);
-    robot_centric_move(movement_vector, turn_right_x);
+    
+    auto turn = master_.get_analog(E_CONTROLLER_ANALOG_RIGHT_X)/127.0; // normalized turn amount
+    robot_centric_move(target, turn); // move the robot
 }
