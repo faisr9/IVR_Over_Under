@@ -15,7 +15,7 @@ void initialize() {
 	//Pneumatics::getInstance()->setRight(0);
 	//Pneumatics::getInstance()->setLeft(0);
 	//gui::gui_init();
-    pros::delay(3000);
+    pros::delay(300);
 }
 
 /* Runs when robot is disabled from competition controller after driver/auton */
