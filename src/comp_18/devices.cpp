@@ -14,20 +14,20 @@ pros::Controller ctrl_master(E_CONTROLLER_MASTER);
 
 // Motors //
 // front is where intake is
-pros::Motor right_front(11, true);
-pros::Motor right_front_middle(13, false);
-pros::Motor right_back_middle(14, true);
-pros::Motor right_back(15, false);
+pros::Motor right_front(11, false);
+pros::Motor right_front_middle(13, true);
+pros::Motor right_back_middle(14, false);
+pros::Motor right_back(15, true);
 
-pros::Motor left_front(1, false); 
-pros::Motor left_front_middle(3, true);
-pros::Motor left_back_middle(4, false);
-pros::Motor left_back(5, true);
+pros::Motor left_front(1, true); 
+pros::Motor left_front_middle(3, false);
+pros::Motor left_back_middle(4, true);
+pros::Motor left_back(5, false);
 
 pros::Motor_Group left_drive_motors = {left_front, left_front_middle, left_back_middle, left_back};
 pros::Motor_Group right_drive_motors = {right_front, right_front_middle, right_back_middle, right_back};
 
-pros::Motor intake(16); // in = negative, out = positive
+pros::Motor intake(10); // in = negative, out = positive
 Intake* intake_instance = Intake::createInstance(intake);
 
 // V5 Sensors //
