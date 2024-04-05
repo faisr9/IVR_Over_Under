@@ -41,10 +41,11 @@ Generic_Rotation* horizontal_tracker = nullptr; // new Generic_Rotation_VEX_Rot(
 
 Odom odometry_18(imu, horizontal_tracker, radial_tracker);
 
-const char LEFT_WING = 'A';
-const char RIGHT_WING = 'B';
-const char CLIMBER_SOLENOID_PORT = 'C';
-Pneumatics* pneumatics_instance = Pneumatics::createInstance(LEFT_WING, RIGHT_WING, CLIMBER_SOLENOID_PORT);
+const char LEFT_WING = 'B';
+const char RIGHT_WING = 'D';
+const char INTAKE = 'C';
+const char PTO = 'A';
+Pneumatics* pneumatics_instance = Pneumatics::createInstance(LEFT_WING, RIGHT_WING, PTO, INTAKE);
 
 // Other //
 traditional_drive tank_drive_18(imu, ctrl_master, left_drive_motors, right_drive_motors, odometry_18);
