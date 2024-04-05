@@ -8,9 +8,9 @@ Pneumatics* Pneumatics::instance_ = nullptr;
 
 bool currentPiston = false;
 
-Pneumatics* Pneumatics::createInstance(char left_piston, char right_piston, char piston_climber, char piston_intake) {
+Pneumatics* Pneumatics::createInstance(char left_piston, char right_piston, char piston_pto, char piston_intake) {
     if (!instance_) {
-        instance_ = new Pneumatics(left_piston, right_piston, piston_climber, piston_intake);
+        instance_ = new Pneumatics(left_piston, right_piston, piston_pto, piston_intake);
     }
 
     return instance_;
@@ -24,7 +24,7 @@ Pneumatics* Pneumatics::getInstance() {
     return instance_;
 }
 
-Pneumatics::Pneumatics(char piston_l, char piston_r, char piston_c, char piston_i) : SubsystemParent("Pneumatics"), leftWing(piston_l), rightWing(piston_r), pto(piston_c), intake(piston_i){
+Pneumatics::Pneumatics(char piston_l, char piston_r, char piston_p, char piston_i) : SubsystemParent("Pneumatics"), leftWing(piston_l), rightWing(piston_r), pto(piston_p), intake(piston_i){
     wings_status = false;
 }
 

@@ -3,7 +3,7 @@
 
 class Pneumatics : public SubsystemParent {
     public:
-        static Pneumatics* createInstance(char left_piston, char right_piston, char piston_climber, char piston_intake);
+        static Pneumatics* createInstance(char left_piston, char right_piston, char piston_pto, char piston_intake);
 
         static Pneumatics* getInstance(); // static because need to be able to access without ExampleSubsystem objecct
         ~Pneumatics();
