@@ -14,24 +14,24 @@ pros::Controller ctrl_master(E_CONTROLLER_MASTER);
 
 // Motors //
 // front is where intake is
-pros::Motor right_front_top(14, true); // 14
-pros::Motor right_front_bottom(11, false);
-pros::Motor right_middle(12, false); // might actually be port 13
-pros::Motor right_back(13, false); // might actually be port 12
+pros::Motor right_front(11, false);
+pros::Motor right_front_middle(13, true);
+pros::Motor right_back_middle(14, false);
+pros::Motor right_back(15, true);
 
-pros::Motor left_front_top(17, false); // 14
-pros::Motor left_front_bottom(18, true); // one of 18, 19, or 20
-pros::Motor left_middle(19, true); // one of 18, 19, or 20
-pros::Motor left_back(20, true); // one of 18, 19, or 20
+pros::Motor left_front(1, true); 
+pros::Motor left_front_middle(3, false);
+pros::Motor left_back_middle(4, true);
+pros::Motor left_back(5, false);
 
-pros::Motor_Group left_drive_motors = {left_front_top, left_front_bottom, left_middle, left_back};
-pros::Motor_Group right_drive_motors = {right_front_top, right_front_bottom, right_middle, right_back};
+pros::Motor_Group left_drive_motors = {left_front, left_front_middle, left_back_middle, left_back};
+pros::Motor_Group right_drive_motors = {right_front, right_front_middle, right_back_middle, right_back};
 
-pros::Motor intake(16); // in = negative, out = positive
+pros::Motor intake(10); // in = negative, out = positive
 Intake* intake_instance = Intake::createInstance(intake);
 
 // V5 Sensors //
-pros::IMU imu(2);
+pros::IMU imu(21);
 pros::Distance distance_sensor(3);
 pros::Rotation radial_rot_sensor(10);
 pros::Rotation transverse_rot_sensor(9, true); // reversed so that going right is positive
@@ -41,10 +41,11 @@ Generic_Rotation* horizontal_tracker = new Generic_Rotation_VEX_Rot(transverse_r
 
 Odom odometry_18(imu, horizontal_tracker, radial_tracker);
 
-const char LEFT_WING = 'A';
-const char RIGHT_WING = 'B';
-const char CLIMBER_SOLENOID_PORT = 'C';
-Pneumatics* pneumatics_instance = Pneumatics::createInstance(LEFT_WING, RIGHT_WING, CLIMBER_SOLENOID_PORT);
+const char LEFT_WING = 'B';
+const char RIGHT_WING = 'D';
+const char INTAKE = 'C';
+const char PTO = 'A';
+Pneumatics* pneumatics_instance = Pneumatics::createInstance(LEFT_WING, RIGHT_WING, PTO, INTAKE);
 
 // Other //
 traditional_drive tank_drive_18(imu, ctrl_master, left_drive_motors, right_drive_motors, odometry_18);

@@ -49,9 +49,8 @@ void controls() {
         //     Pneumatics::getInstance()->toggleRight();
         // }
         if(ctrl_master.get_digital_new_press(BUTTON_L1)) {
-            Pneumatics::getInstance()->getClimber()->toggle();
-        }
-        
+            Pneumatics::getInstance()->getIntake()->toggle();
+        }   
 
         pros::delay(15);
     }
