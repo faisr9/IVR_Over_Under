@@ -9,7 +9,7 @@
 # Skills 15in Robot = 2
 # Skills 18in Robot = 3
 ### NOTE: Changing the robot will auto delete the previous robot's binary files
-ROBOT_MODE := 2
+ROBOT_MODE := 0
 
 
 ###############################################################
