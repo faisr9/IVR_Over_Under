@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "Master_Code",
+    "project_name": "New Meta",
     "target": "v5",
     "templates": {
       "kernel": {
@@ -310,8 +310,8 @@
     },
     "upload_options": {
       "slot": 1,
-      "description": "Master_Code",
-      "icon": "pizza",
+      "description": "Master Code",
+      "icon": "alien",
       "after": "screen"
     }
   }

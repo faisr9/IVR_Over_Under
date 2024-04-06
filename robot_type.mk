@@ -8,6 +8,7 @@
 # Comp 18in Robot = 1
 # Skills 15in Robot = 2
 # Skills 18in Robot = 3
+### NOTE: Once you change the robot type perform a clean build!
 ### NOTE: Changing the robot will auto delete the previous robot's binary files
 ROBOT_MODE := 0
 
