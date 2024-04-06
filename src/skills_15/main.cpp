@@ -1,4 +1,5 @@
-#include "main.h"
+#include "skills_15/skills.h"
+#include "skills_15/controls.h"
 
 /* First method to run when program starts */
 void initialize() {
