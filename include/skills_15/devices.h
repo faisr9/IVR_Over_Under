@@ -20,6 +20,3 @@ extern pros::ADIEncoder vertical_track_adi;
 extern pros::ADIEncoder horizontal_track_adi;
 
 // Legacy Sensors //
-
-// Traditional Drive
-extern traditional_drive drive;

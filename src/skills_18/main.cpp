@@ -17,7 +17,7 @@ void autonomous() {}
 
 /* Opcontrol method runs by default (unless connected to comp controller )*/
 void opcontrol() {
-	lcd::print(2,"15 Skills");
+	lcd::print(2,"18 Skills");
 
 	while(1)
 		Task::delay(1000);

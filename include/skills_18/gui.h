@@ -50,9 +50,9 @@ static int screenSave_delay;
 class gui {
     public:
         typedef enum autonomous_type {
-            AUTON_COMP,
-            AUTON_SKILLS,
-            AUTON_NONE,
+            SKILLS_PROG,
+            SKILLS_DRIVER,
+            SKILLS_NONE,
             NO_SELECTION
         } autonomous_type_t;
 
