@@ -1,5 +1,5 @@
 #pragma once
-#include "api.h"
-#include "robot.h"
+#include "skills_18/devices.h"
+#include "skills_18/include_list.h"
 
 void controls();
