@@ -1,10 +1,70 @@
+/**
+ * Things to do:
+ * - Finish driveClass to run all code
+ * - Drive builder to build driveClass only
+ * - move methods from drive builder to driveClass
+ * - double check pointers and references
+*/
+
+
 #pragma once
 #include "main.h"
 
+using motor = pros::Motor;
+using motor_g = pros::Motor_Group;
+
+class driveClass {
+    public:
+        driveClass (
+            motor_g *left, motor_g *right, pros::Controller *controller,
+            bool isSquareScaling=false, bool isSinScaling=false, bool isAccelScaling=false,
+            double sin_scale_factor=-999, double accel_scale_factor=-999,
+            double left_scale=-999, double right_scale=-999,
+            int left_deadzone=-999, int right_deadzone=-999
+        );
+
+        driveClass (
+            std::vector<motor*> *drive_motors, pros::Controller *controller,
+            bool isSquareScaling=false, bool isSinScaling=false, bool isAccelScaling=false,
+            double sin_scale_factor=-999, double accel_scale_factor=-999,
+            double left_scale=-999, double right_scale=-999,
+            int left_deadzone=-999, int right_deadzone=-999
+        );
+
+    private:
+        motor_g *left_drive;
+        motor_g *right_drive;
+        motor *strafe_motor;
+        std::vector<motor*> drive_motors;
+        pros::Controller *drive_controller;
+
+        void tank();
+        void hdrive();
+        void holonomic_drive();
+        void xdrive();
+        void custom_drive();
+
+        // Drive mode methods
+        void tank_drive();
+        void single_stick_arcade_right();
+        void single_stick_arcade_left();
+        void split_arcade_right();
+        void split_arcade_left();
+        void custom_drive_mode();
+
+        // Drive config methods
+        void tank();
+        void hdrive();
+        void holonomic_drive();
+        void xdrive();
+        void custom_drive();
+
+        // All scaling factors and other variables
+        void square_scale(double input);
+        void sin_scale(double input, double sin_scale_factor);
+};
+
 class drive_builder {
-    using motor = pros::Motor;
-    using motor_g = pros::Motor_Group;
-    
     public:
         typedef enum drive_mode_e {
             TANK,
@@ -35,11 +95,13 @@ class drive_builder {
         
         drive_builder &set_default_drive_mode(drive_mode_e mode);
         drive_builder &add_ctrl_deadzone(int left_deadzone, int right_deadzone);
+        drive_builder &add_straight_drive_scale(double left_scale, double right_scale);
+        drive_builder &use_square_scaling();
+        drive_builder &use_sin_scaling(double sin_scale_factor);
+        drive_builder &use_acceleration_scaling(double accel_scale_factor);
         drive_builder &init();
 
         // TBD Scaling factors
-        // drive_builder &use_square_scaling();
-        // drive_builder &use_sin_scaling(double sin_scale_factor);
 
         void start_drive();
         void pause_drive();
@@ -99,30 +161,13 @@ class drive_builder {
         std::vector<motor*> drive_motors;
         motor *strafe_motor;
 
+        bool isSquareScaling, isSinScaling, isAccelScaling;
+        double sin_scale_factor, accel_scale_factor;
+        double left_scale, right_scale;
         int left_deadzone, right_deadzone;
         int checksum;
 
         // Drive configurations
         drive_config_e drive_config;
         drive_mode_e drive_mode;
-
-        // All scaling factors and other variables
-        void square_scale(double input);
-        void sin_scale(double input, double sin_scale_factor);
-
-        // Drive config methods
-        void tank();
-        void hdrive();
-        void holonomic_drive();
-        void xdrive();
-        void custom_drive();
-
-        // Drive mode methods
-        void tank_drive();
-        void single_stick_arcade_right();
-        void single_stick_arcade_left();
-        void split_arcade_right();
-        void split_arcade_left();
-        void custom_drive_mode();
-
 };
