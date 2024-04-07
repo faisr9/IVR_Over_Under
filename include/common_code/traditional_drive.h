@@ -17,7 +17,7 @@ class traditional_drive : public DriveParent
     private:
         double scalingFactor=12000; // scalar factor for voltage
         double left=scalingFactor, right=scalingFactor; // voltage to send to motors (scalar factor of 12000)
-        double fwd, turn; //helper variables
+        double fwd, turn, drift; //helper variables
         Controller *master; // controller to get input from
         Imu *imu; // inertial sensor to get angle from
         std::string drive_mode[3] = {"arcade", "tank", "hybrid"}; // drive mode names
@@ -29,6 +29,7 @@ class traditional_drive : public DriveParent
         void arcade_drive();
         void tank_drive();
         void hybrid_drive();
+        void custom_arcade();
 
         void stop(); // turn off motors
 

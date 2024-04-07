@@ -63,6 +63,9 @@ void traditional_drive::toggle_drive_mode()
     // 0 = arcade, 1 = tank, 2 = hybrid
     switch (mode)
     {
+    case -1:
+        custom_arcade();
+        break;
     case 0:
         arcade_drive(); // call arcade drive
         break;
@@ -130,6 +133,22 @@ void traditional_drive::arcade_drive()
 
     setV(); // set voltage to motors
 };
+
+double drift_factor = 0.4;
+void traditional_drive::custom_arcade()
+{
+    // get joystick values and apply square scaling
+    fwd = square_scale(normalize_joystick(master->get_analog(E_CONTROLLER_ANALOG_LEFT_Y)));   // vertical input from left joystick
+    turn = square_scale(normalize_joystick(master->get_analog(E_CONTROLLER_ANALOG_RIGHT_X))) / 1.8; // horizontal input from right joystick
+    drift = square_scale(normalize_joystick(master->get_analog(E_CONTROLLER_ANALOG_RIGHT_Y))); // vertical input from right joystick
+
+    fwd = fwd + (drift * drift_factor);
+    // use fwd and turn to calculate voltage to send to motors
+    left *= fwd + turn;
+    right *= fwd - turn;
+
+    setV(); // set voltage to motors
+}
 
 
 /**
