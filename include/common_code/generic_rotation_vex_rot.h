@@ -5,7 +5,7 @@
 
 class Generic_Rotation_VEX_Rot : public Generic_Rotation {
     public:
-        Generic_Rotation_VEX_Rot(pros::Rotation& rot_sensor, double wheel_radius);
+        Generic_Rotation_VEX_Rot(pros::Rotation& rot_sensor, double wheel_radius, double offset_from_rot_axis_meters = 0.0);
         double get_meters_travelled();
         double get_raw_data();
         void initialize_sensor();
