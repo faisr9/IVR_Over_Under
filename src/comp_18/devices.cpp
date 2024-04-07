@@ -33,11 +33,11 @@ Intake* intake_instance = Intake::createInstance(intake);
 // V5 Sensors //
 pros::IMU imu(21);
 pros::Distance distance_sensor(3);
-pros::Rotation radial_rot_sensor(10);
-pros::Rotation transverse_rot_sensor(9, true); // reversed so that going right is positive
+pros::ADIEncoder radial_rot_sensor(5, 6);
+pros::ADIEncoder transverse_rot_sensor(7, 8);
 
-Generic_Rotation* radial_tracker = new Generic_Rotation_VEX_Rot(radial_rot_sensor, 1.96 * 0.0254 / 2, 0.013);
-Generic_Rotation* horizontal_tracker = new Generic_Rotation_VEX_Rot(transverse_rot_sensor, 1.96 * 0.0254 / 2, -0.168);
+Generic_Rotation* radial_tracker = new Generic_Rotation_Digikey(radial_rot_sensor, 1.96 * 0.0254 / 2, 0);
+Generic_Rotation* horizontal_tracker = new Generic_Rotation_Digikey(transverse_rot_sensor, 1.96 * 0.0254 / 2, 0);
 
 Odom odometry_18(imu, horizontal_tracker, radial_tracker);
 
