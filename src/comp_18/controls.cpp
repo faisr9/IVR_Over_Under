@@ -70,7 +70,7 @@ void controls() {
                     +tank_drive_18.get_motor_group(0).get_positions()[3]+tank_drive_18.get_motor_group(1).get_positions()[3])/8;
             if(!count){ oldAvg = avg; count++; }
             if(std::abs(avg-oldAvg)*(3/1)<angle)
-                tank_drive_18.move_with_power(-0.5);
+                tank_drive_18.move_with_power(0.5);
             else{
                 tank_drive_18.get_motor_group(0).set_brake_modes(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_HOLD);
                 tank_drive_18.get_motor_group(1).set_brake_modes(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_HOLD);
@@ -90,7 +90,7 @@ void controls() {
                     +tank_drive_18.get_motor_group(0).get_positions()[3]+tank_drive_18.get_motor_group(1).get_positions()[3])/8;
             if(!count){ oldAvg = avg; count++; }
             if(std::abs(avg-oldAvg)*(3/1)<angle)
-                tank_drive_18.move_with_power(0.3);
+                tank_drive_18.move_with_power(-0.3);
             else{
                 tank_drive_18.get_motor_group(0).set_brake_modes(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_HOLD);
                 tank_drive_18.get_motor_group(1).set_brake_modes(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_HOLD);
