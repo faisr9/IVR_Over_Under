@@ -16,12 +16,12 @@ void controls() {
     pros::lcd::set_text(1, "Running Controls");
 
     //climbing vars
-    int count=0;
+    int count = 0;
     double oldAvg = 0;
     double avg = 0;
     bool climbFlagUp= 0;
     bool climbFlagDown= 0;
-    int angle;
+    int climbAngle = 50;
 
     while(1) {
         if(Pneumatics::getInstance()->getPTO()->getStatus()){
@@ -67,9 +67,8 @@ void controls() {
         }   
 
         //Climbing
-        while(ctrl_master.get_digital_new_press(BUTTON_UP) || climbFlagUp) {
+        if(ctrl_master.get_digital_new_press(BUTTON_UP) || (climbFlagUp && !climbFlagDown)) {
             climbFlagUp = 1;
-            angle = 50;
             Pneumatics::getInstance()->getPTO()->on();
             pros::delay(50);
             avg = (tank_drive_18.get_motor_group(0).get_positions()[0]+tank_drive_18.get_motor_group(1).get_positions()[0]
@@ -77,7 +76,7 @@ void controls() {
                     +tank_drive_18.get_motor_group(0).get_positions()[2]+tank_drive_18.get_motor_group(1).get_positions()[2]
                     +tank_drive_18.get_motor_group(0).get_positions()[3]+tank_drive_18.get_motor_group(1).get_positions()[3])/8;
             if(!count){ oldAvg = avg; count++; }
-            if(std::abs(avg-oldAvg)*(3/1)<angle)
+            if(std::abs(avg-oldAvg)*(3/1)<climbAngle)
                 tank_drive_18.move_with_power(0.5);
             else{
                 tank_drive_18.move_with_power(0);
@@ -86,20 +85,21 @@ void controls() {
         }
 
         //GET DOWN MDM. PREZ
-        while(ctrl_master.get_digital_new_press(BUTTON_DOWN) || climbFlagDown) {
+        if(ctrl_master.get_digital_new_press(BUTTON_DOWN) || (climbFlagDown && !climbFlagUp)) {
             climbFlagDown = 1;
-            angle = 50;
             pros::delay(50);
             avg = (tank_drive_18.get_motor_group(0).get_positions()[0]+tank_drive_18.get_motor_group(1).get_positions()[0]
                     +tank_drive_18.get_motor_group(0).get_positions()[1]+tank_drive_18.get_motor_group(1).get_positions()[1]
                     +tank_drive_18.get_motor_group(0).get_positions()[2]+tank_drive_18.get_motor_group(1).get_positions()[2]
                     +tank_drive_18.get_motor_group(0).get_positions()[3]+tank_drive_18.get_motor_group(1).get_positions()[3])/8;
             if(!count){ oldAvg = avg; count++; }
-            if(std::abs(avg-oldAvg)*(3/1)<angle)
+            if(std::abs(avg-oldAvg)*(3/1)<climbAngle)
                 tank_drive_18.move_with_power(-0.3);
             else{
                 tank_drive_18.move_with_power(0);
                 Pneumatics::getInstance()->getPTO()->off();
+                count = 0;
+                climbFlagDown = 0;
             }
             oldAvg = avg;
         }
