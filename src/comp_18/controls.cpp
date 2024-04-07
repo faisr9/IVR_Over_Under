@@ -24,6 +24,14 @@ void controls() {
     int angle;
 
     while(1) {
+        if(Pneumatics::getInstance()->getPTO()->getStatus()){
+            tank_drive_18.get_motor_group(0).set_brake_modes(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_HOLD);
+            tank_drive_18.get_motor_group(1).set_brake_modes(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_HOLD);
+        } else {
+            tank_drive_18.get_motor_group(0).set_brake_modes(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_COAST);
+            tank_drive_18.get_motor_group(1).set_brake_modes(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_COAST);
+        }
+
         //ACTIVATE DRIVE
         if(pros::competition::is_connected())
             tank_drive_18.change_drive_mode(0);
@@ -59,9 +67,9 @@ void controls() {
         }   
 
         //Climbing
-        if(ctrl_master.get_digital_new_press(BUTTON_UP) || climbFlagUp) {
+        while(ctrl_master.get_digital_new_press(BUTTON_UP) || climbFlagUp) {
             climbFlagUp = 1;
-            angle = 45;
+            angle = 50;
             Pneumatics::getInstance()->getPTO()->on();
             pros::delay(50);
             avg = (tank_drive_18.get_motor_group(0).get_positions()[0]+tank_drive_18.get_motor_group(1).get_positions()[0]
@@ -72,15 +80,13 @@ void controls() {
             if(std::abs(avg-oldAvg)*(3/1)<angle)
                 tank_drive_18.move_with_power(0.5);
             else{
-                tank_drive_18.get_motor_group(0).set_brake_modes(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_HOLD);
-                tank_drive_18.get_motor_group(1).set_brake_modes(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_HOLD);
                 tank_drive_18.move_with_power(0);
             }
             oldAvg = avg;
         }
 
         //GET DOWN MDM. PREZ
-        if(ctrl_master.get_digital_new_press(BUTTON_DOWN) || climbFlagDown) {
+        while(ctrl_master.get_digital_new_press(BUTTON_DOWN) || climbFlagDown) {
             climbFlagDown = 1;
             angle = 50;
             pros::delay(50);
@@ -92,12 +98,8 @@ void controls() {
             if(std::abs(avg-oldAvg)*(3/1)<angle)
                 tank_drive_18.move_with_power(-0.3);
             else{
-                tank_drive_18.get_motor_group(0).set_brake_modes(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_HOLD);
-                tank_drive_18.get_motor_group(1).set_brake_modes(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_HOLD);
                 tank_drive_18.move_with_power(0);
                 Pneumatics::getInstance()->getPTO()->off();
-                tank_drive_18.get_motor_group(0).set_brake_modes(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_COAST);
-                tank_drive_18.get_motor_group(1).set_brake_modes(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_COAST);
             }
             oldAvg = avg;
         }
