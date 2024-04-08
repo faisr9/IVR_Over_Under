@@ -22,16 +22,9 @@ void controls() {
     bool climbFlagUp= 0;
     bool climbFlagDown= 0;
     int climbAngle = 50;
+    int gearRatio = 1/36;
 
     while(1) {
-        if(Pneumatics::getInstance()->getPTO()->getStatus()){
-            tank_drive_18.get_motor_group(0).set_brake_modes(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_HOLD);
-            tank_drive_18.get_motor_group(1).set_brake_modes(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_HOLD);
-        } else {
-            tank_drive_18.get_motor_group(0).set_brake_modes(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_COAST);
-            tank_drive_18.get_motor_group(1).set_brake_modes(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_COAST);
-        }
-
         //ACTIVATE DRIVE
         if(pros::competition::is_connected())
             tank_drive_18.change_drive_mode(0);
@@ -66,6 +59,9 @@ void controls() {
             Pneumatics::getInstance()->getIntake()->toggle();
         }   
 
+        /*****************************************************************************************************************/
+        /********************************************CLIMBING CONTROLS****************************************************/
+        /*****************************************************************************************************************/
         //Climbing
         if(ctrl_master.get_digital_new_press(BUTTON_UP) || (climbFlagUp && !climbFlagDown)) {
             climbFlagUp = 1;
@@ -76,7 +72,7 @@ void controls() {
                     +tank_drive_18.get_motor_group(0).get_positions()[2]+tank_drive_18.get_motor_group(1).get_positions()[2]
                     +tank_drive_18.get_motor_group(0).get_positions()[3]+tank_drive_18.get_motor_group(1).get_positions()[3])/8;
             if(!count){ oldAvg = avg; count++; }
-            if(std::abs(avg-oldAvg)*(3/1)<climbAngle)
+            if(std::abs(avg-oldAvg)*(gearRatio)<climbAngle)
                 tank_drive_18.move_with_power(0.5);
             else{
                 tank_drive_18.move_with_power(0);
@@ -93,17 +89,25 @@ void controls() {
                     +tank_drive_18.get_motor_group(0).get_positions()[2]+tank_drive_18.get_motor_group(1).get_positions()[2]
                     +tank_drive_18.get_motor_group(0).get_positions()[3]+tank_drive_18.get_motor_group(1).get_positions()[3])/8;
             if(!count){ oldAvg = avg; count++; }
-            if(std::abs(avg-oldAvg)*(3/1)<climbAngle)
+            if(std::abs(avg-oldAvg)*(gearRatio)<climbAngle)
                 tank_drive_18.move_with_power(-0.3);
             else{
-                tank_drive_18.move_with_power(0);
                 Pneumatics::getInstance()->getPTO()->off();
+                tank_drive_18.move_with_power(0);
                 count = 0;
                 climbFlagDown = 0;
             }
             oldAvg = avg;
         }
-        
+
+        if(Pneumatics::getInstance()->getPTO()->getStatus()){
+            tank_drive_18.get_motor_group(0).set_brake_modes(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_HOLD);
+            tank_drive_18.get_motor_group(1).set_brake_modes(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_HOLD);
+        } else {
+            tank_drive_18.get_motor_group(0).set_brake_modes(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_COAST);
+            tank_drive_18.get_motor_group(1).set_brake_modes(pros::motor_brake_mode_e_t::E_MOTOR_BRAKE_COAST);
+        }
+        /*****************************************************************************************************************/
         pros::delay(15);
     }
 }
