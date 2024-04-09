@@ -182,70 +182,70 @@ drive_builder &drive_builder::init() {
     return *this;
 }
 
-void drive_builder::tank() {
+void driveClass::tank() {
 
 }
 
-void drive_builder::hdrive() {
+void driveClass::hdrive() {
 
 }
 
-void drive_builder::holonomic_drive() {
+void driveClass::holonomic_drive() {
 
 }
 
-void drive_builder::xdrive() {
+void driveClass::xdrive() {
 
 }
 
-void drive_builder::custom_drive() {
+void driveClass::custom_drive() {
 
 }
 
-void drive_builder::tank_drive() {
+void driveClass::tank_drive() {
 
 }
 
-void drive_builder::single_stick_arcade_right() {
+void driveClass::single_stick_arcade_right() {
 
 }
 
-void drive_builder::single_stick_arcade_left() {
+void driveClass::single_stick_arcade_left() {
 
 }
 
-void drive_builder::split_arcade_right() {
+void driveClass::split_arcade_right() {
 
 }
 
-void drive_builder::split_arcade_left() {
+void driveClass::split_arcade_left() {
 
 }
 
-void drive_builder::custom_drive_mode() {
+void driveClass::custom_drive_mode() {
 
 }
 
-void drive_builder::square_scale(double input) {
+void driveClass::square_scale(double input) {
 
 }
 
-void drive_builder::sin_scale(double input, double sin_scale_factor) {
+void driveClass::sin_scale(double input, double sin_scale_factor) {
 
 }
 
-void drive_builder::start_drive() {
+void driveClass::start_drive() {
 
 }
 
-void drive_builder::pause_drive() {
+void driveClass::pause_drive() {
 
 }
 
-void drive_builder::stop_drive() {
+void driveClass::stop_drive() {
 
 }
 
-void drive_builder::test_drive() {
+void driveClass::test_drive() {
 
 }

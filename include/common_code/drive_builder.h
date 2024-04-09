@@ -13,7 +13,7 @@
 using motor = pros::Motor;
 using motor_g = pros::Motor_Group;
 
-class driveClass {
+class driveClass : protected drive_builder {
     public:
         driveClass (
             motor_g *left, motor_g *right, pros::Controller *controller,
@@ -32,12 +32,13 @@ class driveClass {
         );
 
     private:
-        motor_g *left_drive;
-        motor_g *right_drive;
-        motor *strafe_motor;
-        std::vector<motor*> drive_motors;
-        pros::Controller *drive_controller;
+        // motor_g *left_drive;
+        // motor_g *right_drive;
+        // motor *strafe_motor;
+        // std::vector<motor*> drive_motors;
+        // pros::Controller *drive_controller;
 
+        // Drive config methods
         void tank();
         void hdrive();
         void holonomic_drive();
@@ -52,16 +53,19 @@ class driveClass {
         void split_arcade_left();
         void custom_drive_mode();
 
-        // Drive config methods
-        void tank();
-        void hdrive();
-        void holonomic_drive();
-        void xdrive();
-        void custom_drive();
-
         // All scaling factors and other variables
         void square_scale(double input);
         void sin_scale(double input, double sin_scale_factor);
+        void accel_scale(double input, double accel_scale_factor);
+
+        // Drive control methods
+        void start_drive();
+        void pause_drive();
+        void stop_drive();
+
+        void test_drive();
+
+        void set_drive_mode(drive_mode_e mode);
 };
 
 class drive_builder {
@@ -103,16 +107,16 @@ class drive_builder {
 
         // TBD Scaling factors
 
-        void start_drive();
-        void pause_drive();
-        void stop_drive();
+        // void start_drive();
+        // void pause_drive();
+        // void stop_drive();
 
-        void test_drive();
+        // void test_drive();
 
-        void set_drive_mode(drive_mode_e mode);
+        // void set_drive_mode(drive_mode_e mode);
         // void set_(/* all scaling factors */);
         // void set_other_variables(/* all other variables */);
-    private:        
+    protected:        
         /**
          * Tank Drive Motor Order:
          * - 4 motor tank drive will use motors 1 and 2
