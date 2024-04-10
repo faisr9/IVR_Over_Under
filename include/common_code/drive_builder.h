@@ -1,42 +1,66 @@
-/**
- * Things to do:
- * - Finish driveClass to run all code
- * - Drive builder to build driveClass only
- * - move methods from drive builder to driveClass
- * - double check pointers and references
-*/
-
-
 #pragma once
 #include "main.h"
 
 using motor = pros::Motor;
 using motor_g = pros::Motor_Group;
 
-class driveClass : protected drive_builder {
-    public:
-        driveClass (
-            motor_g *left, motor_g *right, pros::Controller *controller,
-            bool isSquareScaling=false, bool isSinScaling=false, bool isAccelScaling=false,
-            double sin_scale_factor=-999, double accel_scale_factor=-999,
-            double left_scale=-999, double right_scale=-999,
-            int left_deadzone=-999, int right_deadzone=-999
-        );
-
-        driveClass (
-            std::vector<motor*> *drive_motors, pros::Controller *controller,
-            bool isSquareScaling=false, bool isSinScaling=false, bool isAccelScaling=false,
-            double sin_scale_factor=-999, double accel_scale_factor=-999,
-            double left_scale=-999, double right_scale=-999,
-            int left_deadzone=-999, int right_deadzone=-999
-        );
-
+class driveClass {
     private:
-        // motor_g *left_drive;
-        // motor_g *right_drive;
-        // motor *strafe_motor;
-        // std::vector<motor*> drive_motors;
-        // pros::Controller *drive_controller;
+    public:
+        class driveBuilder;
+        enum drive_mode_e{
+            TANK_m,
+            SINGLE_STICK_ARCADE_R,
+            SINGLE_STICK_ARCADE_L,
+            SPLIT_ARCADE_PR,
+            SPLIT_ARCADE_PL,
+            HDRIVE_TANK,
+            HOLONOMIC_SR,
+            HOLONOMIC_SL,
+            CUSTOM_m
+        };
+
+        enum drive_config_e{
+            TANK_c,
+            HDRIVE,
+            HOLONOMIC,
+            XDRIVE=HOLONOMIC,
+            CUSTOM_c
+        };
+
+        static driveBuilder buildDrive (drive_config_e config, pros::Controller *controller);
+
+        // Drive control methods
+        void start_drive();
+        void pause_drive();
+        void stop_drive();
+
+        void test_drive();
+
+        void set_drive_mode(drive_mode_e mode);
+
+    private:        
+        pros::Controller *drive_ctrler;
+
+        motor_g *left_drive;
+        motor_g *right_drive;
+
+        std::vector<motor*> drive_motors;
+        motor *strafe_motor;
+
+        bool isSquareScaling, isSinScaling, isAccelScaling;
+        double sin_scale_factor, accel_scale_factor;
+        double left_scale, right_scale;
+        int left_deadzone, right_deadzone;
+        int checksum;
+        
+        // Drive control variables
+        int left_stick, right_stick;
+        int right, left, strafe, turn, fwd;
+
+        // Drive configurations
+        drive_config_e drive_config;
+        drive_mode_e drive_mode;
 
         // Drive config methods
         void tank();
@@ -54,69 +78,36 @@ class driveClass : protected drive_builder {
         void custom_drive_mode();
 
         // All scaling factors and other variables
-        void square_scale(double input);
-        void sin_scale(double input, double sin_scale_factor);
-        void accel_scale(double input, double accel_scale_factor);
+        double square_scale(double input);
+        double sin_scale(double input);
+        double accel_scale(double input);
+        double normalize_joystick(double input);
 
-        // Drive control methods
-        void start_drive();
-        void pause_drive();
-        void stop_drive();
+        // Movement methods
+        void setMotors();
 
-        void test_drive();
-
-        void set_drive_mode(drive_mode_e mode);
+        friend class driveBuilder;
 };
 
-class drive_builder {
+class driveClass::driveBuilder {
     public:
-        typedef enum drive_mode_e {
-            TANK,
-            SINGLE_STICK_ARCADE_R,
-            SINGLE_STICK_ARCADE_L,
-            SPLIT_ARCADE_PR,
-            SPLIT_ARCADE_PL,
-            HDRIVE_TANK,
-            HOLONOMIC_SR,
-            HOLONOMIC_SL,
-            CUSTOM
-        };
-
-        typedef enum drive_config_e {
-            TANK,
-            HDRIVE,
-            HOLONOMIC,
-            XDRIVE=HOLONOMIC,
-            CUSTOM
-        };
-
-        drive_builder(drive_config_e config, pros::Controller *controller);
-
-        drive_builder &with_motors(motor_g *left, motor_g *right);
-        drive_builder &with_motors(motor *left_1, motor *left_2, motor *right_1, motor *right_2, motor *strafe=nullptr);
-        drive_builder &with_motors(motor *left_1, motor *left_2, motor *left_3, motor *right_1, motor *right_2, motor *right_3, motor *strafe=nullptr);
-        drive_builder &with_motors(motor *left_1, motor *left_2, motor *left_3, motor *left_4, motor *right_1, motor *right_2, motor *right_3, motor *right_4, motor *strafe=nullptr);
+        driveBuilder(drive_config_e config, pros::Controller *controller);
+        driveBuilder &with_motors(motor_g *left, motor_g *right);
+        driveBuilder &with_motors(motor *left_1, motor *left_2, motor *right_1, motor *right_2, motor *strafe=nullptr);
+        driveBuilder &with_motors(motor *left_1, motor *left_2, motor *left_3, motor *right_1, motor *right_2, motor *right_3, motor *strafe=nullptr);
+        driveBuilder &with_motors(motor *left_1, motor *left_2, motor *left_3, motor *left_4, motor *right_1, motor *right_2, motor *right_3, motor *right_4, motor *strafe=nullptr);
         
-        drive_builder &set_default_drive_mode(drive_mode_e mode);
-        drive_builder &add_ctrl_deadzone(int left_deadzone, int right_deadzone);
-        drive_builder &add_straight_drive_scale(double left_scale, double right_scale);
-        drive_builder &use_square_scaling();
-        drive_builder &use_sin_scaling(double sin_scale_factor);
-        drive_builder &use_acceleration_scaling(double accel_scale_factor);
-        drive_builder &init();
+        driveBuilder &set_default_drive_mode(drive_mode_e mode);
+        driveBuilder &add_ctrl_deadzone(int left_deadzone, int right_deadzone);
+        driveBuilder &add_straight_drive_scale(double left_scale, double right_scale);
+        driveBuilder &use_square_scaling();
+        driveBuilder &use_sin_scaling(double sin_scale_factor);
+        driveBuilder &use_acceleration_scaling(double accel_scale_factor);
+        driveClass init();
+    private:
+        driveClass builder_obj;
+};
 
-        // TBD Scaling factors
-
-        // void start_drive();
-        // void pause_drive();
-        // void stop_drive();
-
-        // void test_drive();
-
-        // void set_drive_mode(drive_mode_e mode);
-        // void set_(/* all scaling factors */);
-        // void set_other_variables(/* all other variables */);
-    protected:        
         /**
          * Tank Drive Motor Order:
          * - 4 motor tank drive will use motors 1 and 2
@@ -156,22 +147,3 @@ class drive_builder {
          *       \\        \ 
          *  
         */
-
-        pros::Controller *drive_controller;
-
-        motor_g *left_drive;
-        motor_g *right_drive;
-
-        std::vector<motor*> drive_motors;
-        motor *strafe_motor;
-
-        bool isSquareScaling, isSinScaling, isAccelScaling;
-        double sin_scale_factor, accel_scale_factor;
-        double left_scale, right_scale;
-        int left_deadzone, right_deadzone;
-        int checksum;
-
-        // Drive configurations
-        drive_config_e drive_config;
-        drive_mode_e drive_mode;
-};
