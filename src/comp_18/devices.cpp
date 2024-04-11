@@ -42,8 +42,8 @@ Generic_Rotation* horizontal_tracker = new Generic_Rotation_VEX_Rot(transverse_r
 Odom odometry_18(imu, horizontal_tracker, radial_tracker);
 
 const char LEFT_WING = 'B';
-const char RIGHT_WING = 'D';
-const char INTAKE = 'C';
+const char RIGHT_WING = 'C';
+const char INTAKE = 'D';
 const char PTO = 'A';
 Pneumatics* pneumatics_instance = Pneumatics::createInstance(LEFT_WING, RIGHT_WING, PTO, INTAKE);
 
