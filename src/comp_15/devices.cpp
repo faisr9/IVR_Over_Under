@@ -41,10 +41,10 @@ Generic_Rotation* horizontal_tracker = new Generic_Rotation_VEX_Rot(transverse_r
 
 Odom odometry_15(imu, horizontal_tracker, radial_tracker);
 
-const char LEFT_WING = 'B';
-const char RIGHT_WING = 'C';
+const char WINGS = 'B';
+const char SIDEHANG = 'C';
 const char INTAKE = 'D';
-const char PTO = 'A';
+const char TOPHANG = 'A';
 Pneumatics* pneumatics_instance = Pneumatics::createInstance(WINGS, SIDEHANG, TOPHANG, INTAKE);
 
 // Other //

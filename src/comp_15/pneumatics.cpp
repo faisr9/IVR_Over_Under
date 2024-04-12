@@ -24,7 +24,7 @@ Pneumatics* Pneumatics::getInstance() {
     return instance_;
 }
 
-Pneumatics::Pneumatics(char piston_w, char piston_t, char piston_s, char piston_i) : SubsystemParent("Pneumatics"), wings(piston_w), sidehang(piston_s), tophang(piston_t), intake(piston_i){
+Pneumatics::Pneumatics(char piston_w, char piston_s, char piston_t, char piston_i) : SubsystemParent("Pneumatics"), wings(piston_w), sidehang(piston_s), tophang(piston_t), intake(piston_i){
     wings_status = false;
 }
 
