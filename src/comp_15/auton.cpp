@@ -46,7 +46,7 @@ void move_comp(vector<vector<double>> moveVec, int angle, bool isReversed, bool 
 
 //COMP AUTON
 
-void auton18(double auton_duration_time_millis, bool skills){
+void auton15(double auton_duration_time_millis, bool skills){
 
 }
 
@@ -57,7 +57,7 @@ void auton18(double auton_duration_time_millis, bool skills){
 vector<double> skills_start = {1.2 * 0.61, 5.4 * 0.61};
  // Start position
 
-void skills18(bool driver){
+void skills15(bool driver){
 
 }
 
