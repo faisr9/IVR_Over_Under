@@ -1,7 +1,7 @@
 #include "common_code/generic_rotation_digikey.h"
 
 
-Generic_Rotation_Digikey::Generic_Rotation_Digikey(pros::ADIEncoder& rot_sensor, double wheel_radius_meters): Generic_Rotation(wheel_radius_meters), rotation_sensor(rot_sensor) {}
+Generic_Rotation_Digikey::Generic_Rotation_Digikey(pros::ADIEncoder& rot_sensor, double wheel_radius_meters, double offset_from_rot_axis_meters): Generic_Rotation(wheel_radius_meters, offset_from_rot_axis_meters), rotation_sensor(rot_sensor) {}
 
 void Generic_Rotation_Digikey::initialize_sensor() {
     last_value = rotation_sensor.get_value();

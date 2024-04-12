@@ -1,13 +1,12 @@
-#include "controls.h"
-#include "pros/misc.h"
-#include "robot.h"
-#include "drive.h"
-#include "intake.h"
+#include "skills_18/controls.h"
 
-void controls() {
-    while (true) {
-        // do cool stuff
+void controls()
+{
+  while (1)
+  {
+    pros::lcd::print(1, "Hello!");
 
-        pros::delay(50);
-    }
+    pros::delay(20);
+
+  }
 }

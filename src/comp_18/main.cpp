@@ -47,7 +47,4 @@ void opcontrol() {
 	else {
 		controls();
 	}
-
-	// Driver Skills
-	// does not exist yet
 }
