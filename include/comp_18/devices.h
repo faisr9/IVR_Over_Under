@@ -32,8 +32,9 @@ extern traditional_drive tank_drive_18;
 // Legacy Sensors //
 
 extern pros::ADIButton cata_limit;
-extern const char LEFTWING;
-extern const char RIGHTWING;
-extern const char FLOOR_BRAKE;
+extern const char WINGS;
+extern const char TOPHANG;
+extern const char INTAKE;
+extern const char SIDEHANG;
 
 bool triBall();

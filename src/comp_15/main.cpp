@@ -14,17 +14,14 @@ void initialize() {
 	// pros::lcd::initialize(); // Temp until custom GUI
 	comp15link->init();
 	imu.reset(); // Very important!!!
-	horizontal_track_adi.reset();
-	vertical_track_adi.reset();
+    transverse_rot_sensor.reset();
+	radial_rot_sensor.reset();
+	Pneumatics::getInstance()->getWings()->off();
+	Pneumatics::getInstance()->getIntake()->off();
+	Pneumatics::getInstance()->getSideHang()->off();
+	Pneumatics::getInstance()->getTopHang()->off();
 	gui::gui_init();
-	pros::delay(4000);
-}
-
-/* Runs when robot is disabled from competition controller after driver/auton */
-void disabled() 
-{
-	if(CompetitionCatapult::getInstance()->get_switch_state())
-		CompetitionCatapult::getInstance()->set_cata_mode("R");
+    pros::delay(3000);
 }
 
 /* If connected to competition controller, this runs after initialize */

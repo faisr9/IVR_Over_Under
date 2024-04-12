@@ -15,15 +15,6 @@ void controls() {
 
     pros::lcd::set_text(1, "Running Controls");
 
-    //climbing vars
-    int count = 0;
-    double oldAvg = 0;
-    double avg = 0;
-    bool climbFlagUp= 0;
-    bool climbFlagDown= 0;
-    int climbAngle = 50;
-    int gearRatio = 1/36;
-
     while(1) {
         //ACTIVATE DRIVE
         if(pros::competition::is_connected())
@@ -39,10 +30,10 @@ void controls() {
         tank_drive_18.toggle_drive_mode();
 
         //INTAKE CONTROLS
-        if (ctrl_master.get_digital(BUTTON_R2)){
+        if (ctrl_master.get_digital(BUTTON_R1)){
             Intake::getInstance()->set_power(-12000);
         }
-        else if (ctrl_master.get_digital(BUTTON_R1)){
+        else if (ctrl_master.get_digital(BUTTON_R2)){
             Intake::getInstance()->set_power(12000);
         } else {
             Intake::getInstance()->set_power(0);
@@ -50,17 +41,19 @@ void controls() {
 
         //PNEUMATICS CONTROLS
         if(ctrl_master.get_digital_new_press(BUTTON_L2)) {
-            Pneumatics::getInstance()->toggleWings();
+            Pneumatics::getInstance()->getWings()->toggle();
         }
-        // if(ctrl_master.get_digital_new_press(BUTTON_R1)) {
-        //     Pneumatics::getInstance()->toggleRight();
-        // }
+
         if(ctrl_master.get_digital_new_press(BUTTON_L1)) {
             Pneumatics::getInstance()->getIntake()->toggle();
         }   
 
         if(ctrl_master.get_digital_new_press(BUTTON_UP)) {
-            Pneumatics::getInstance()->getPTO()->on();
+            Pneumatics::getInstance()->getSideHang()->on();
+        }
+
+        if(ctrl_master.get_digital_new_press(BUTTON_LEFT) || ctrl_master.get_digital_new_press(BUTTON_RIGHT)) {
+            Pneumatics::getInstance()->getSideHang()->on();
         }
         
         pros::delay(15);
