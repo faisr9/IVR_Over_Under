@@ -1,66 +1,61 @@
 #include "x-drive.h"
+#include <iostream>
 
 // constructor with no foward wheels
 x_drive::x_drive(Controller &master, Motor &front_left, Motor &front_right, Motor &back_left, Motor &back_right, Imu &imu) : master_(master), front_left_(front_left), front_right_(front_right), back_left_(back_left), back_right_(back_right), DriveParent(imu, "x_drive") {}
 
-// astrisk drive constructor (x-drive modified to include foward wheels for pushing force)
-x_drive::x_drive(Controller &master, Motor &front_left, Motor &front_right, Motor &back_left, Motor &back_right, Motor &straight_left_A, Motor &straight_right_A, Motor &straight_left_B, Motor &straight_right_B, Imu &imu) : master_(master), front_left_(front_left), front_right_(front_right), back_left_(back_left), back_right_(back_right), straight_left_A_(straight_left_A), straight_right_A_(straight_right_A), straight_left_B_(straight_left_B), straight_right_B_(straight_right_B), DriveParent(imu, "x_drive") {}
-
 void x_drive::robot_centric_move(pair<double, double> movement_vector, double turn)
 {
-    auto k = front_left_.get_gearing();
-    auto maxspeed = 0.0;
+    auto k = front_left_.get_gearing(); // assume all motors have the same gearing
+    auto maxspeed = 0.0; // max speed of motors based on gearing
 
-    if (k == 0)
-        maxspeed = 100.0;
-    else if (k == 1)
+    // set max speed based on gear
+    if (k == 0) // 36:1
+        maxspeed = 100.0; // max rpm
+    else if (k == 1) // 18:1
+        maxspeed = 200.0; // max rpm
+    else if (k == 2) // 6:1
+        maxspeed = 600.0; // max rpm
+    else
         maxspeed = 200.0;
-    else if (k == 2)
-        maxspeed = 600.0;
 
     auto speed = 0.0;
-    if (movement_vector.first)
-        speed = 127.0 * movement_vector.first; // normalized speed of movement times max speed
-    else if (turn)
-        speed = 127.0;                 // if only turning, set speed to max
     auto dir = movement_vector.second; // direction in radians
 
-    dir -= M_PI / 4;             // adjust direction by 45˚ to get the diagonal components of movement
-    auto move_1 = -1 * cos(dir); // first diagonal component of movement
-    auto move_2 = sin(dir);      // second diagonal component of movement
-
-    auto scaling = speed / max(abs(move_1), abs(move_2)); // speed divided by max of x and y
-    auto turn_factor = 1 - abs(turn);                     // turn factor
-
-    auto fl_move = (move_1 * scaling * turn_factor - speed * turn); // fl and br use the first diagonal component
-    auto fr_move = (move_2 * scaling * turn_factor - speed * turn); // front motors subtract turn
-    auto bl_move = (move_2 * scaling * turn_factor + speed * turn); // bl and fr use the second diagonal component
-    // direction probably needs to be flipped depending on the orientation of the motors
-    auto br_move = -(move_1 * scaling * turn_factor + speed * turn); // back motors add turn
-
-    // move the four primary motors        
-    front_left_.move(fl_move);
-    front_right_.move(fr_move);
-    back_left_.move(bl_move);
-    back_right_.move(br_move);
-
-    // if there are forward wheels, then perform asterisk drive
-    if (straight_left_A_.get_port() != -1 && straight_right_A_.get_port() != -1 && straight_left_B_.get_port() != -1 && straight_right_B_.get_port() != -1)
+    auto move_1 = 0.0; // first diagonal component of movement
+    auto move_2 = 0.0; // second diagonal component of movement
+    auto scaling = 0.0; // scale factor for movement
+    if (movement_vector.first > 0.2)
     {
-        // left separate from calculations to make
-        // debugging easier if the wheels are misaligned
-        auto theta = M_PI / 4; // assuming perfect 45˚ angle
-
-        // will need to make negative if the wheels are facing the opposite way
-        auto sl_move = fl_move * cos(theta); // should be equivalent to dividing by √2
-        auto sr_move = fr_move * cos(theta); // should be equivalent to dividing by √2
-
-        // move forward/straight wheels
-        straight_left_A_.move(sl_move);
-        straight_right_A_.move(sr_move);
-        straight_left_B_.move(sl_move);
-        straight_right_B_.move(sr_move);
+        speed = maxspeed * movement_vector.first; // normalized speed of movement times max speed
+        dir -= M_PI / 4;                                 // adjust direction by 45˚ to get the diagonal components of movement
+        move_1 = -1 * cos(dir);                          // opposite of cosine of direction
+        move_2 = sin(dir);                               // sine of direction
+        scaling = speed / max(abs(move_1), abs(move_2)); // speed divided by max of x and y
     }
+    
+    auto move_1_scaled = move_1 * scaling; // move speed
+    auto move_2_scaled = move_2 * scaling; // move speed
+    auto turn_scaled = maxspeed * turn; // turn speed
+    auto priority = 0.5; // priority of movement over turning
+
+    // if the sum of the speeds is greater than the max speed, scale them down
+    if (max(abs(move_1_scaled),abs(move_2_scaled)) + abs(turn_scaled) > maxspeed) 
+    {
+        move_1_scaled = move_1_scaled / (max(abs(move_1_scaled),abs(move_2_scaled)) + abs(turn_scaled)) * maxspeed;
+        move_2_scaled = move_2_scaled / (max(abs(move_1_scaled), abs(move_2_scaled)) + abs(turn_scaled)) * maxspeed;
+        turn_scaled = turn_scaled / (max(abs(move_1_scaled), abs(move_2_scaled)) + abs(turn_scaled)) * maxspeed;
+    }
+    auto fl_move = move_1_scaled - turn_scaled; // fl and br use the first diagonal component
+    auto fr_move = move_2_scaled - turn_scaled; // front motors subtract turn
+    auto bl_move = move_2_scaled + turn_scaled; // bl and fr use the second diagonal component
+    auto br_move = move_1_scaled + turn_scaled; // back motors add turn
+
+    // move the four primary motors
+    front_left_.move_velocity(fl_move);
+    front_right_.move_velocity(fr_move);
+    back_left_.move_velocity(bl_move);
+    back_right_.move_velocity(br_move);
 }
 
 void x_drive::field_centric_move(pair<double, double> movement_vector, double turn_right_x)
@@ -89,7 +84,7 @@ void x_drive::run()
 
     if (x || y) // if there is any movement
     {
-        target.first = min(1.0, sqrt(pow(x, 2) + pow(y, 2)) / 127.0); /// sqrt(2)); // normalized speed to move
+        target.first = min(1.0, sqrt(pow(x, 2) + pow(y, 2)) / 127.0); // sqrt(2)); // normalized speed to move
         target.second = atan2(y, x);                                  // direction to move in radians
     }
 

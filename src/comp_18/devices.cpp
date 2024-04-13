@@ -51,7 +51,7 @@ traditional_drive tank_drive_18(imu, ctrl_master, left_drive_motors, right_drive
 Motor front_left(19);
 Motor front_right(13, true);
 Motor back_left(17);
-Motor back_right(16, true);
+Motor back_right(16);
 Imu testimu(18);
 x_drive drive(ctrl_master, front_left, front_right, back_left, back_right, testimu);
 
