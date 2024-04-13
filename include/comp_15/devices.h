@@ -1,5 +1,5 @@
 #pragma once
-#include "main.h"
+#include "common_code/include_list.h"
 
 // Forward declare all devices here so that all of the robot files and subsystem classes can access them //
 
@@ -7,26 +7,40 @@
 extern pros::Controller ctrl_master;
 
 // Motors //
-extern pros::Motor FrontTopRight;
-extern pros::Motor FrontBottomRight;
-extern pros::Motor BackRight;
-extern pros::Motor FrontTopLeft;
-extern pros::Motor FrontBottomLeft;
-extern pros::Motor BackLeft;
+extern pros::Motor front_top_right;
+extern pros::Motor front_bottom_right;
+extern pros::Motor back_right;
+extern pros::Motor front_top_left;
+extern pros::Motor front_bottom_left;
+extern pros::Motor back_left;
 
-extern pros::MotorGroup RightDrive;
-extern pros::MotorGroup LeftDrive;
+extern pros::MotorGroup right_drive;
+extern pros::MotorGroup left_drive;
 
 extern pros::Motor cata_right;
 extern pros::Motor cata_left;
+extern pros::MotorGroup cata;
 
-extern pros::MotorGroup Cata;
+extern pros::Motor intake_motor;
 
-extern pros::Motor Intake;
+extern pros::Motor doinker_motor;
 
 // V5 Sensors //
+extern pros::Imu imu;
+extern pros::ADIEncoder vertical_track_adi;
+extern pros::ADIEncoder horizontal_track_adi;
+extern pros::ADIPotentiometer doinker_pot;
 
 // Legacy Sensors //
-extern pros::ADIButton Cata_limit;
-extern pros::ADIDigitalOut Floor_brake;
-extern pros::ADIDigitalOut Wings;
+
+// Legacy Sensors //
+extern pros::ADIButton cata_limit;
+extern pros::ADIPotentiometer doinker_pot;
+
+// extern pros::ADIDigitalOut Floor_brake;
+// extern pros::ADIDigitalOut Wings;
+// extern const char WINGS;
+// extern const char FLOOR_BRAKE;
+
+// Traditional Drive
+extern traditional_drive drive;

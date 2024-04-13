@@ -1,5 +1,6 @@
 #pragma once
 #include "main.h"
+#include "common_code/subsystem_parent.h"
 
 class ExampleSubsystem : public SubsystemParent {
     public:

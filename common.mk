@@ -140,6 +140,10 @@ INCLUDE=$(foreach dir,$(INCDIR) $(EXTRA_INCDIR),-iquote"$(dir)")
 ASMSRC=$(foreach asmext,$(ASMEXTS),$(call rwildcard, $(SRCDIR),*.$(asmext), $1))
 ASMOBJ=$(addprefix $(BINDIR)/,$(patsubst $(SRCDIR)/%,%.o,$(call ASMSRC,$1)))
 
+# Remove all other robot directories
+$(info Removing all other robot bin directories)
+$(shell rm -rf $(EXCLUDED_BIN))
+
 # Add all files to compile list, then filter out excluded files
 CSRC := $(foreach cext,$(CEXTS),$(call rwildcard, $(SRCDIR),*.$(cext), $1))
 $(foreach dir,$(EXCLUDED_DIR),$(eval CSRC := $(filter-out $(wildcard $(dir)/*),$(CSRC)))) # Remove the excluded directories from the compile list
