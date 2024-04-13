@@ -23,10 +23,10 @@ extern const char LEFT_WING;
 extern const char RIGHT_WING;
 
 /* IMU */
-IMU imu;
+extern IMU imu;
 
 /* Distance Sensors */
-Distance distance_sensor_1;
-Distance distance_sensor_2;
-Rotation radial_rot_sensor;
-Rotation transverse_rot_sensor;
+extern Distance distance_sensor_1;
+extern Distance distance_sensor_2;
+extern Rotation radial_rot_sensor;
+extern Rotation transverse_rot_sensor;
