@@ -25,8 +25,14 @@ CompetitionCatapult::~CompetitionCatapult(){
     }
 }
 void CompetitionCatapult::stop(){
+
+}
+void CompetitionCatapult::prime(){
+
+}
+void CompetitionCatapult::cycle(){
+
+}
+void CompetitionCatapult::release(){
     
 }
-void CompetitionCatapult::prime();
-void CompetitionCatapult::cycle();
-void CompetitionCatapult::release();
