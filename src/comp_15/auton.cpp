@@ -2,6 +2,7 @@
 
 LinkHelper* comp15link = LinkHelper::createInstance(16, E_LINK_TX);
 
+//COMP 15 AUTON
 void auton_15() {
 
     pros::lcd::set_text(1, "Hiiiiii running auton");
@@ -31,7 +32,7 @@ void auton_15() {
     odom_task.suspend();
 }
 
-/// COMP METHODS
+// COMP METHODS
 
 /** Converts inputted tile coordinates, x and y, into meters.
  * usage example:
