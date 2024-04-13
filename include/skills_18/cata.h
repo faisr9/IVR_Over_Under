@@ -15,14 +15,14 @@ class CompetitionCatapult : public SubsystemParent {
 
     private:
         // reference to passed in motor so it doesn't create a new motor object 
-        CompetitionCatapult(pros::MotorGroup& motorgroup, pros::ADIButton& limit_switch);
+        CompetitionCatapult(pros::MotorGroup& motorgroup, pros::Rotation& rotation_sensor);
 
         //instance_ is set to nullptr in cpp file
         inline static CompetitionCatapult* instance_ = nullptr;
 
         pros::MotorGroup& motors;
         pros::Rotation& rotation_sensor;
-        
+
         const int cata_voltage = 100;
         // const int launch_voltage = 50;
 };
