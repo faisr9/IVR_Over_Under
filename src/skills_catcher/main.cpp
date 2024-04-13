@@ -1,5 +1,5 @@
-#include "skills_18/skills.h"
-#include "skills_18/controls.h"
+#include "skills_catcher/skills.h"
+#include "skills_catcher/controls.h"
 
 /* First method to run when program starts */
 void initialize() {

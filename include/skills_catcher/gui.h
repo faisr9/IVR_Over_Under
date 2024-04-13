@@ -1,6 +1,6 @@
 #pragma once
-#include "skills_15/devices.h"
-#include "skills_15/include_list.h"
+#include "skills_catcher/devices.h"
+#include "skills_catcher/include_list.h"
 
 #define SCREEN_WIDTH_MAX 480
 #define SCREEN_HEIGHT_MAX 240

@@ -1,4 +1,4 @@
-#include "skills_15/skills.h"
+#include "skills_thrower/skills.h"
 
 void skills() {
 

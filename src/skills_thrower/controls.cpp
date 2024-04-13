@@ -1,4 +1,4 @@
-#include "skills_15/controls.h"
+#include "skills_thrower/controls.h"
 
 void controls()
 {
