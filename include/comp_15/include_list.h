@@ -1,5 +1,3 @@
-#pragma once    
-#include "comp_15/cata.h"
-#include "comp_15/doinker.h"
+#pragma once
 #include "comp_15/intake.h"
 #include "comp_15/pneumatics.h"
