@@ -1,22 +1,32 @@
 #pragma once
 #include "common_code/include_list.h"
 
-// Forward declare all devices here so that all of the robot files and subsystem classes can access them //
+using namespace pros;
 
-// Controllers //
-extern pros::Controller ctrl_master;
+/* Controllers */
+extern Controller ctrl_master;
 
-// Motors //
-extern pros::Motor front_left;
-extern pros::Motor front_right;
-extern pros::Motor back_left;
-extern pros::Motor back_right;
+/* Asterisk Drive */
+// Diagonal Motors
+extern Motor front_left;
+extern Motor front_right;
+extern Motor back_left;
+extern Motor back_right;
 
-extern pros::Motor intake_motor;
+/* Catapult */
+extern Motor cata_1;
+extern Motor cata_2;
+extern Rotation cata_rot_sensor;
 
-// V5 Sensors //
-extern pros::Imu imu;
-extern pros::ADIEncoder vertical_track_adi;
-extern pros::ADIEncoder horizontal_track_adi;
+/* Pnuematics */
+extern const char LEFT_WING;
+extern const char RIGHT_WING;
 
-// Legacy Sensors //
+/* IMU */
+extern IMU imu;
+
+/* Distance Sensors */
+extern Distance distance_sensor_1;
+extern Distance distance_sensor_2;
+extern Rotation radial_rot_sensor;
+extern Rotation transverse_rot_sensor;
