@@ -23,24 +23,12 @@ extern pros::MotorGroup cata;
 
 extern pros::Motor intake_motor;
 
-extern pros::Motor doinker_motor;
-
 // V5 Sensors //
 extern pros::Imu imu;
 extern pros::ADIEncoder vertical_track_adi;
 extern pros::ADIEncoder horizontal_track_adi;
-extern pros::ADIPotentiometer doinker_pot;
 
 // Legacy Sensors //
-
-// Legacy Sensors //
-extern pros::ADIButton cata_limit;
-extern pros::ADIPotentiometer doinker_pot;
-
-// extern pros::ADIDigitalOut Floor_brake;
-// extern pros::ADIDigitalOut Wings;
-// extern const char WINGS;
-// extern const char FLOOR_BRAKE;
 
 // Traditional Drive
 extern traditional_drive drive;
