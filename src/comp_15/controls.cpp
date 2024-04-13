@@ -2,45 +2,57 @@
 
 // Will add driver profiles later
 void controls() {
+    // for debugging
+	pros::Task odom_task{[=] {
+		while (1) {
+			tank_drive_15.getOdom().updatePosition();
+			pros::delay(50);
+		}
+	}};
+
     pros::lcd::set_text(1, "Running Controls");
 
     while(1) {
         //ACTIVATE DRIVE
         if(pros::competition::is_connected())
-            drive.change_drive_mode(0);
+            tank_drive_15.change_drive_mode(0);
         else
         {
             if(gui::tank_drive)
-                drive.change_drive_mode(1);
+                tank_drive_15.change_drive_mode(1);
             else
-                drive.change_drive_mode(0);
+                tank_drive_15.change_drive_mode(0);
         }
         
-        drive.toggle_drive_mode();
-
-        // // TESTING CODE for drive pid tuning
-        // if (ctrl_master.get_digital_new_press(E_CONTROLLER_DIGITAL_UP)) {
-        //     turnToAngle(drive, 0, 5.0, false, 1.9, wait_time);
-        // }
+        tank_drive_15.toggle_drive_mode();
 
         //INTAKE CONTROLS
-        if (ctrl_master.get_digital(BUTTON_R2)){
-            Intake::getInstance()->set_power(12000);
-        }
-        else if (ctrl_master.get_digital(BUTTON_R1)){
+        if (ctrl_master.get_digital(BUTTON_R1)){
             Intake::getInstance()->set_power(-12000);
+        }
+        else if (ctrl_master.get_digital(BUTTON_R2)){
+            Intake::getInstance()->set_power(12000);
         } else {
             Intake::getInstance()->set_power(0);
         }
 
         //PNEUMATICS CONTROLS
-        if(ctrl_master.get_digital_new_press(E_CONTROLLER_DIGITAL_L1)) {
+        if(ctrl_master.get_digital_new_press(BUTTON_L2)) {
             Pneumatics::getInstance()->getWings()->toggle();
         }
-        else if(ctrl_master.get_digital_new_press(E_CONTROLLER_DIGITAL_Y)) {
-            Pneumatics::getInstance()->getFloorBrake()->toggle();
+        
+        if(ctrl_master.get_digital_new_press(BUTTON_L1)) {
+            Pneumatics::getInstance()->getIntake()->toggle();
+        }   
+
+        if(ctrl_master.get_digital_new_press(BUTTON_UP)) {
+            Pneumatics::getInstance()->getSideHang()->on();
         }
 
+        if(ctrl_master.get_digital_new_press(BUTTON_LEFT) || ctrl_master.get_digital_new_press(BUTTON_RIGHT)) {
+            Pneumatics::getInstance()->getSideHang()->on();
+        }
+        
         pros::delay(15);
     }
 }

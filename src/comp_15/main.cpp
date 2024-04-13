@@ -9,8 +9,12 @@ void initialize() {
 	// pros::lcd::initialize(); // Temp until custom GUI
 	comp15link->init();
 	imu.reset(); // Very important!!!
-	horizontal_track_adi.reset();
-	vertical_track_adi.reset();
+    transverse_rot_sensor.reset();
+	radial_rot_sensor.reset();
+	Pneumatics::getInstance()->getWings()->off();
+	Pneumatics::getInstance()->getIntake()->off();
+	Pneumatics::getInstance()->getSideHang()->off();
+	Pneumatics::getInstance()->getTopHang()->off();
 	gui::gui_init();
 	pros::delay(4000);
 }
@@ -27,7 +31,7 @@ void competition_initialize() {}
 /* Autonomous method */
 void autonomous() {
 	if(gui::selected_auton == gui::AUTON_COMP) {
-		auton_15(false);
+		auton_15();
 		// ctrl_master.rumble("---");
 	}
 	// else do nothing. make sure to select the auton!

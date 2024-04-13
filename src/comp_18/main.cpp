@@ -10,8 +10,10 @@ void initialize() {
 	imu.reset(); // Very important!!!
     transverse_rot_sensor.reset();
 	radial_rot_sensor.reset();
-	Pneumatics::getInstance()->setRight(0);
-	Pneumatics::getInstance()->setLeft(0);
+	Pneumatics::getInstance()->getWings()->off();
+	Pneumatics::getInstance()->getIntake()->off();
+	Pneumatics::getInstance()->getSideHang()->off();
+	Pneumatics::getInstance()->getTopHang()->off();
 	gui::gui_init();
     pros::delay(3000);
 }
@@ -25,7 +27,7 @@ void competition_initialize() {}
 /* Autonomous method */
 void autonomous() {
 	if(gui::selected_auton == gui::AUTON_COMP) {
-		auton18(45000, false);
+		auton18();
 	}
 	// else do nothing. make sure to select the auton!
 }

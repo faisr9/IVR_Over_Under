@@ -125,10 +125,11 @@ lv_res_t manualTrigger(lv_obj_t *btn)
     {
         case 1:
             Pneumatics::getInstance()->getIntake()->off();
+            Pneumatics::getInstance()->getWings()->on();
             break;
         case 2:
-            Pneumatics::getInstance()->setLeft(0);
-            Pneumatics::getInstance()->setRight(0);
+            Pneumatics::getInstance()->getIntake()->on();
+            Pneumatics::getInstance()->getWings()->off();
             break;
     }
 
