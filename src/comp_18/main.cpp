@@ -27,7 +27,7 @@ void competition_initialize() {}
 /* Autonomous method */
 void autonomous() {
 	if(gui::selected_auton == gui::AUTON_COMP) {
-		auton18(45000, false);
+		auton18();
 	}
 	// else do nothing. make sure to select the auton!
 }
