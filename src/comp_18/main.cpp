@@ -29,24 +29,10 @@ void autonomous() {
 	if(gui::selected_auton == gui::AUTON_COMP) {
 		auton18(45000, false);
 	}
-	else if(gui::selected_auton == gui::AUTON_SKILLS) {
-		skills18(false);
-	}
-	else {
-		auton18(45000, false);
-	}
+	// else do nothing. make sure to select the auton!
 }
 
 /* Opcontrol method runs by default (unless connected to comp controller )*/
 void opcontrol() {
-	if(gui::selected_auton == gui::AUTON_COMP) {
-		controls();
-	}
-	else if(gui::selected_auton == gui::AUTON_SKILLS) {
-		skills18(true);
-		controls();
-	}
-	else {
-		controls();
-	}
+	controls();
 }

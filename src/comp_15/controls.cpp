@@ -2,8 +2,6 @@
 
 // Will add driver profiles later
 void controls() {
-
-
     // for debugging
 	pros::Task odom_task{[=] {
 		while (1) {
@@ -11,7 +9,6 @@ void controls() {
 			pros::delay(50);
 		}
 	}};
-
 
     pros::lcd::set_text(1, "Running Controls");
 
