@@ -3,7 +3,7 @@
 
 class CompetitionCatapult : public SubsystemParent {
     public:
-        static CompetitionCatapult* createInstance(pros::MotorGroup& motorgroup, pros::ADIButton& limit_switch);
+        static CompetitionCatapult* createInstance(pros::MotorGroup& motorgroup, pros::Rotation& rotation_sensor);
         static CompetitionCatapult* getInstance(); // static because need to be able to access without ExampleSubsystem objecct
         ~CompetitionCatapult();
         CompetitionCatapult(const CompetitionCatapult& other) = delete;
@@ -21,7 +21,8 @@ class CompetitionCatapult : public SubsystemParent {
         inline static CompetitionCatapult* instance_ = nullptr;
 
         pros::MotorGroup& motors;
-        pros::ADIButton& kill_switch;
+        pros::Rotation& rotation_sensor;
+        
         const int cata_voltage = 100;
         // const int launch_voltage = 50;
 };
