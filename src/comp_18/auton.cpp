@@ -15,8 +15,7 @@ using namespace std;
 
 //COMP AUTON
 
-void auton18(double auton_duration_time_millis, bool skills)
-{
+void auton18(){
 	pros::lcd::set_text(1, "Hiiiiii running auton");
     // (0, 0) corner is where positive x is going to other side of field and positive y is same side of field
     vector<double> start = {0.5, 0.3}; // Start position
