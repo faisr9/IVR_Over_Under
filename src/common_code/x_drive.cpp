@@ -8,6 +8,16 @@ x_drive::x_drive(Controller &master, Motor &front_left, Motor &front_right, Moto
 
 void x_drive::robot_centric_move(pair<double, double> movement_vector, double turn)
 {
+    auto k = front_left_.get_gearing();
+    auto maxspeed = 0.0;
+
+    if (k == 0)
+        maxspeed = 100.0;
+    else if (k == 1)
+        maxspeed = 200.0;
+    else if (k == 2)
+        maxspeed = 600.0;
+
     auto speed = 0.0;
     if (movement_vector.first)
         speed = 127.0 * movement_vector.first; // normalized speed of movement times max speed
@@ -28,7 +38,7 @@ void x_drive::robot_centric_move(pair<double, double> movement_vector, double tu
     // direction probably needs to be flipped depending on the orientation of the motors
     auto br_move = -(move_1 * scaling * turn_factor + speed * turn); // back motors add turn
 
-    // move the four primary motors
+    // move the four primary motors        
     front_left_.move(fl_move);
     front_right_.move(fr_move);
     back_left_.move(bl_move);
