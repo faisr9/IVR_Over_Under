@@ -124,11 +124,12 @@ lv_res_t manualTrigger(lv_obj_t *btn)
     switch (id)
     {
         case 1:
-            CompetitionCatapult::getInstance()->release();
+            Pneumatics::getInstance()->getIntake()->off();
+            Pneumatics::getInstance()->getWings()->on();
             break;
         case 2:
+            Pneumatics::getInstance()->getIntake()->on();
             Pneumatics::getInstance()->getWings()->off();
-            Pneumatics::getInstance()->getFloorBrake()->off();
             break;
     }
 
