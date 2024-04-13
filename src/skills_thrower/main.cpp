@@ -1,5 +1,5 @@
-#include "skills_15/skills.h"
-#include "skills_15/controls.h"
+#include "skills_thrower/skills.h"
+#include "skills_thrower/controls.h"
 
 /* First method to run when program starts */
 void initialize() {
@@ -17,7 +17,7 @@ void autonomous() {}
 
 /* Opcontrol method runs by default (unless connected to comp controller )*/
 void opcontrol() {
-	lcd::print(2,"15 Skills");
+	lcd::print(2,"Thrower Skills");
 
 	while(1)
 		Task::delay(1000);
