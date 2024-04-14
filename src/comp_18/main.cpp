@@ -5,7 +5,7 @@ extern LinkHelper* comp18link;
 
 /* First method to run when program starts */
 void initialize() {
-	// pros::lcd::initialize(); // Temp until custom GUI
+	pros::lcd::initialize(); // Temp until custom GUI
 	comp18link->init();
 	imu.reset(); // Very important!!!
     transverse_rot_sensor.reset();
@@ -14,7 +14,7 @@ void initialize() {
 	Pneumatics::getInstance()->getIntake()->off();
 	Pneumatics::getInstance()->getSideHang()->off();
 	Pneumatics::getInstance()->getTopHang()->off();
-	gui::gui_init();
+	// gui::gui_init();
     pros::delay(3000);
 }
 

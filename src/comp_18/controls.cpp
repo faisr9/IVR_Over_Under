@@ -3,6 +3,8 @@
 // Will add driver profiles later
 void controls() {
 
+    tank_drive_18.getOdom().initTracker(0, 0, 0);
+    pros::delay(100);
 
     // for debugging
 	pros::Task odom_task{[=] {
