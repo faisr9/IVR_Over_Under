@@ -1,8 +1,15 @@
+/*
+ * Description: implementations for asterisk drive system
+ * Path: src/common_code/asterisk-drive.cpp
+ * Header: include/common_code/asterisk-drive.h
+ * Last Modified: 04/14/24 by Zach Martin
+ */
 #include "common_code/asterisk-drive.h"
+#include "asterisk-drive.h"
 
-asterisk_drive::asterisk_drive(Controller &master, Motor &front_left, Motor &front_right, Motor &back_left, Motor &back_right, MotorGroup &straight_right_, MotorGroup &straight_left_, Imu &imu) : straight_left_A_(straight_left_A_), straight_right_A_(straight_right_A_), straight_left_B_(straight_left_B_), straight_right_B_(straight_right_B_), x_drive(master, front_left, front_right, back_left, back_right, imu)
+asterisk_drive::asterisk_drive(Controller &master, Motor &front_left, Motor &front_right, Motor &back_left, Motor &back_right, Motor_Group &straight_right, Motor_Group &straight_left, Imu &imu) : straight_left_(&straight_left), straight_right_(&straight_right), x_drive(master, front_left, front_right, back_left, back_right, imu)
 {
-    auto gearing = front_left_.get_gearing(); // assume all motors have the same gearing
+    auto gearing = front_left_->get_gearing(); // assume all motors have the same gearing
 
     // set max speed based on gear
     if (gearing == 0)      // 36:1
@@ -13,6 +20,23 @@ asterisk_drive::asterisk_drive(Controller &master, Motor &front_left, Motor &fro
         maxspeed = 600.0;  // max rpm
     else
         maxspeed = 200.0; // default max rpm
+}
+
+asterisk_drive::~asterisk_drive()
+{
+    stop();
+    straight_left_=nullptr;
+    straight_right_=nullptr;
+}
+
+void asterisk_drive::stop()
+{
+    front_left_->brake();
+    front_right_->brake();
+    back_left_->brake();
+    back_right_->brake();
+    straight_left_->brake();
+    straight_right_->brake();
 }
 
 void asterisk_drive::robot_centric_move(pair<double, double> movement_vector, double turn)
@@ -51,10 +75,10 @@ void asterisk_drive::robot_centric_move(pair<double, double> movement_vector, do
     auto br_move = move_1_scaled + turn_scaled; // back motors add turn
 
     // move the four primary motors
-    front_left_.move_velocity(fl_move);
-    front_right_.move_velocity(fr_move);
-    back_left_.move_velocity(bl_move);
-    back_right_.move_velocity(br_move);
+    front_left_->move_velocity(fl_move);
+    front_right_->move_velocity(fr_move);
+    back_left_->move_velocity(bl_move);
+    back_right_->move_velocity(br_move);
     /************************************************************************
      * everything above is the same as x_drive::robot_centric_move
      * below is the new code for the asterisk drive
@@ -82,8 +106,7 @@ void asterisk_drive::robot_centric_move(pair<double, double> movement_vector, do
     auto sr_move = fr_move * cos(theta); // should be equivalent to dividing by √2
 
     // move forward/straight wheels
-    straight_left_A_.move_velocity(sl_move);
-    straight_right_A_.move_velocity(sr_move);
-    straight_left_B_.move_velocity(sl_move);
-    straight_right_B_.move_velocity(sr_move);
+    straight_left_->move_velocity(sl_move);
+    straight_right_->move_velocity(sr_move);
 }
+
