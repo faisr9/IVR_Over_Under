@@ -5,6 +5,7 @@
  * Implementation: src/common_code/asterisk-drive.cpp
  * Last Modified: 04/14/24 by Zach Martin
  */
+#pragma once
 #include "x-drive.h"
 
 class asterisk_drive : protected x_drive
