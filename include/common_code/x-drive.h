@@ -73,4 +73,5 @@ protected:
     Motor front_right_; // front right motor
     Motor back_left_;   // back left motor
     Motor back_right_;  // back right motor
+    double maxspeed = 200.0; // max speed of motors
 };
