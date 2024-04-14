@@ -1,21 +1,22 @@
 #include "common_code/asterisk-drive.h"
 
-asterisk_drive::asterisk_drive(Controller &master, Motor &front_left, Motor &front_right, Motor &back_left, Motor &back_right, Motor &straight_left_A_, Motor &straight_right_A, Motor &straight_left_B, Motor &straight_right_B, Imu &imu) : straight_left_A_(straight_left_A_), straight_right_A_(straight_right_A_), straight_left_B_(straight_left_B_), straight_right_B_(straight_right_B_), x_drive(master, front_left, front_right, back_left, back_right, imu){}
+asterisk_drive::asterisk_drive(Controller &master, Motor &front_left, Motor &front_right, Motor &back_left, Motor &back_right, MotorGroup &straight_right_, MotorGroup &straight_left_, Imu &imu) : straight_left_A_(straight_left_A_), straight_right_A_(straight_right_A_), straight_left_B_(straight_left_B_), straight_right_B_(straight_right_B_), x_drive(master, front_left, front_right, back_left, back_right, imu)
+{
+    auto gearing = front_left_.get_gearing(); // assume all motors have the same gearing
+
+    // set max speed based on gear
+    if (gearing == 0)      // 36:1
+        maxspeed = 100.0;  // max rpm
+    else if (gearing == 1) // 18:1
+        maxspeed = 200.0;  // max rpm
+    else if (gearing == 2) // 6:1
+        maxspeed = 600.0;  // max rpm
+    else
+        maxspeed = 200.0; // default max rpm
+}
 
 void asterisk_drive::robot_centric_move(pair<double, double> movement_vector, double turn)
 {
-    auto k = front_left_.get_gearing(); // assume all motors have the same gearing
-    auto maxspeed = 0.0;                // max speed of motors based on gearing
-
-    // set max speed based on gear
-    if (k == 0)           // 36:1
-        maxspeed = 100.0; // max rpm
-    else if (k == 1)      // 18:1
-        maxspeed = 200.0; // max rpm
-    else if (k == 2)      // 6:1
-        maxspeed = 600.0; // max rpm
-    else
-        maxspeed = 200.0;
 
     auto speed = 0.0;
     auto dir = movement_vector.second; // direction in radians

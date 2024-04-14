@@ -18,7 +18,7 @@ public:
      * @param straight_right_B second motor for right straight wheel (exclusive to asterisk drive)
      * @param imu inertial sensor to get angle from
      */
-    asterisk_drive(Controller &master, Motor &front_left, Motor &front_right, Motor &back_left, Motor &back_right, Motor &straight_left_A_, Motor &straight_right_A, Motor &straight_left_B, Motor &straight_right_B, Imu &imu);
+    asterisk_drive(Controller &master, Motor &front_left, Motor &front_right, Motor &back_left, Motor &back_right, MotorGroup &straight_right_, MotorGroup &straight_left_, Imu &imu);
 
 private:
     // forward wheels for asterisk drive
@@ -26,4 +26,5 @@ private:
     Motor straight_right_A_; // first right straight motor
     Motor straight_left_B_;  // second left straight motor
     Motor straight_right_B_; // second right straight motor
+    double maxspeed = 200.0; // max speed of motors
 };

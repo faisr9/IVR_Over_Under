@@ -2,23 +2,23 @@
 #include <iostream>
 
 // constructor with no foward wheels
-x_drive::x_drive(Controller &master, Motor &front_left, Motor &front_right, Motor &back_left, Motor &back_right, Imu &imu) : master_(master), front_left_(front_left), front_right_(front_right), back_left_(back_left), back_right_(back_right), DriveParent(imu, "x_drive") {}
+x_drive::x_drive(Controller &master, Motor &front_left, Motor &front_right, Motor &back_left, Motor &back_right, Imu &imu) : master_(master), front_left_(front_left), front_right_(front_right), back_left_(back_left), back_right_(back_right), DriveParent(imu, "x_drive") 
+{
+    auto gearing = front_left_.get_gearing(); // assume all motors have the same gearing
+
+    // set max speed based on gear
+    if (gearing == 0)      // 36:1
+        maxspeed = 100.0;  // max rpm
+    else if (gearing == 1) // 18:1
+        maxspeed = 200.0;  // max rpm
+    else if (gearing == 2) // 6:1
+        maxspeed = 600.0;  // max rpm
+    else
+        maxspeed = 200.0; // default max rpm
+}
 
 void x_drive::robot_centric_move(pair<double, double> movement_vector, double turn)
 {
-    auto k = front_left_.get_gearing(); // assume all motors have the same gearing
-    auto maxspeed = 0.0; // max speed of motors based on gearing
-
-    // set max speed based on gear
-    if (k == 0) // 36:1
-        maxspeed = 100.0; // max rpm
-    else if (k == 1) // 18:1
-        maxspeed = 200.0; // max rpm
-    else if (k == 2) // 6:1
-        maxspeed = 600.0; // max rpm
-    else
-        maxspeed = 200.0;
-
     auto speed = 0.0;
     auto dir = movement_vector.second; // direction in radians
 
