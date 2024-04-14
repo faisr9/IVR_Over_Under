@@ -19,7 +19,7 @@ pros::Motor right_front_middle(13,pros::motor_gearset_e::E_MOTOR_GEAR_BLUE, true
 pros::Motor right_back_middle(14,pros::motor_gearset_e::E_MOTOR_GEAR_BLUE, false);
 pros::Motor right_back(15,pros::motor_gearset_e::E_MOTOR_GEAR_BLUE, true);
 
-pros::Motor left_front(2,pros::motor_gearset_e::E_MOTOR_GEAR_BLUE,true);
+pros::Motor left_front(1,pros::motor_gearset_e::E_MOTOR_GEAR_BLUE,true);
 pros::Motor left_front_middle(3,pros::motor_gearset_e::E_MOTOR_GEAR_BLUE, false);
 pros::Motor left_back_middle(4,pros::motor_gearset_e::E_MOTOR_GEAR_BLUE, true);
 pros::Motor left_back(5,pros::motor_gearset_e::E_MOTOR_GEAR_BLUE, false);

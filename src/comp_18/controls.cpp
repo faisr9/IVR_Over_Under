@@ -49,7 +49,7 @@ void controls() {
         }   
 
         if(ctrl_master.get_digital_new_press(BUTTON_UP)) {
-            Pneumatics::getInstance()->getSideHang()->toggle();
+            Pneumatics::getInstance()->getTopHang()->toggle();
             pros::delay(25);
         }
 

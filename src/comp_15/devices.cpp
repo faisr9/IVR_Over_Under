@@ -14,6 +14,7 @@ pros::Controller ctrl_master(E_CONTROLLER_MASTER);
 
 // Motors //
 // front is where intake is
+//12 13 15 ports are cooked 
 pros::Motor right_front(11, pros::motor_gearset_e::E_MOTOR_GEAR_BLUE, false);
 pros::Motor right_front_middle(13,pros::motor_gearset_e::E_MOTOR_GEAR_BLUE, true);
 pros::Motor right_back_middle(14,pros::motor_gearset_e::E_MOTOR_GEAR_BLUE, false);
