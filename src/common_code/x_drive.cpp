@@ -1,10 +1,17 @@
+/*
+ * Description: implementations for x-drive system
+ * Path: src/common_code/x_drive.cpp
+ * Header: include/common_code/x_drive.h
+ * Last Modified: 04/14/24 by Zach Martin
+ */
+
 #include "x-drive.h"
 #include <iostream>
 
 // constructor with no foward wheels
-x_drive::x_drive(Controller &master, Motor &front_left, Motor &front_right, Motor &back_left, Motor &back_right, Imu &imu) : master_(master), front_left_(front_left), front_right_(front_right), back_left_(back_left), back_right_(back_right), DriveParent(imu, "x_drive") 
+x_drive::x_drive(Controller &master, Motor &front_left, Motor &front_right, Motor &back_left, Motor &back_right, Imu &imu) : master_(&master), front_left_(&front_left), front_right_(&front_right), back_left_(&back_left), back_right_(&back_right), DriveParent(imu, "x_drive") 
 {
-    auto gearing = front_left_.get_gearing(); // assume all motors have the same gearing
+    auto gearing = front_left_->get_gearing(); // assume all motors have the same gearing
 
     // set max speed based on gear
     if (gearing == 0)      // 36:1
@@ -17,6 +24,16 @@ x_drive::x_drive(Controller &master, Motor &front_left, Motor &front_right, Moto
         maxspeed = 200.0; // default max rpm
 }
 
+x_drive::~x_drive()
+{
+    stop();
+    front_left_ = nullptr;
+    front_right_ = nullptr;
+    back_left_ = nullptr;
+    back_right_ = nullptr;
+    master_ = nullptr;
+}
+
 void x_drive::robot_centric_move(pair<double, double> movement_vector, double turn)
 {
     auto speed = 0.0;
@@ -25,7 +42,7 @@ void x_drive::robot_centric_move(pair<double, double> movement_vector, double tu
     auto move_1 = 0.0; // first diagonal component of movement
     auto move_2 = 0.0; // second diagonal component of movement
     auto scaling = 0.0; // scale factor for movement
-    if (movement_vector.first > 0.2)
+    if (movement_vector.first > 0.2) // consider joystick deadzone
     {
         speed = maxspeed * movement_vector.first; // normalized speed of movement times max speed
         dir -= M_PI / 4;                                 // adjust direction by 45˚ to get the diagonal components of movement
@@ -52,10 +69,10 @@ void x_drive::robot_centric_move(pair<double, double> movement_vector, double tu
     auto br_move = move_1_scaled + turn_scaled; // back motors add turn
 
     // move the four primary motors
-    front_left_.move_velocity(fl_move);
-    front_right_.move_velocity(fr_move);
-    back_left_.move_velocity(bl_move);
-    back_right_.move_velocity(br_move);
+    front_left_->move_velocity(fl_move);
+    front_right_->move_velocity(fr_move);
+    back_left_->move_velocity(bl_move);
+    back_right_->move_velocity(br_move);
 }
 
 void x_drive::field_centric_move(pair<double, double> movement_vector, double turn_right_x)
@@ -70,6 +87,14 @@ void x_drive::field_centric_move(pair<double, double> movement_vector, double tu
     robot_centric_move(new_movement_vector, turn_right_x);
 }
 
+void x_drive::stop()
+{
+    front_left_->brake();
+    front_right_->brake();
+    back_left_->brake();
+    back_right_->brake();
+}
+
 void x_drive::turn_with_power(double power)
 {
     pair<double, double> new_movement_vector(0.0, 0.0); // no movement
@@ -79,8 +104,8 @@ void x_drive::turn_with_power(double power)
 void x_drive::run()
 {
     pair<double, double> target(0.0, 0.0);                   // initialize target (magnitude, direction)
-    auto x = master_.get_analog(E_CONTROLLER_ANALOG_LEFT_X); // target x-coordinate
-    auto y = master_.get_analog(E_CONTROLLER_ANALOG_LEFT_Y); // target y-coordinate
+    auto x = master_->get_analog(E_CONTROLLER_ANALOG_LEFT_X); // target x-coordinate
+    auto y = master_->get_analog(E_CONTROLLER_ANALOG_LEFT_Y); // target y-coordinate
 
     if (x || y) // if there is any movement
     {
@@ -88,6 +113,6 @@ void x_drive::run()
         target.second = atan2(y, x);                                  // direction to move in radians
     }
 
-    auto turn = master_.get_analog(E_CONTROLLER_ANALOG_RIGHT_X) / 127.0; // normalized turn amount
+    auto turn = master_->get_analog(E_CONTROLLER_ANALOG_RIGHT_X) / 127.0; // normalized turn amount
     field_centric_move(target, turn);                                    // move the robot
 }

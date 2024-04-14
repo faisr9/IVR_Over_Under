@@ -1,3 +1,10 @@
+/*
+ * Description: x-drive system
+ * Dependencies: drive_parent.h, cmath
+ * Path: include/common_code/x-drive.h
+ * Implementation: src/common_code/x_drive.cpp
+ * Last Modified: 04/14/24 by Zach Martin
+ */
 #pragma once
 #include "drive_parent.h"
 #include "main.h"
@@ -26,7 +33,11 @@ public:
      * @param imu inertial sensor to get angle from
      */
     x_drive(Controller &master, Motor &front_left, Motor &front_right, Motor &back_left, Motor &back_right, Imu &imu);
-
+    /*
+     * destructor for x-drive
+     * stops motors and eliminates memory leaks
+     */
+    ~x_drive();
     /*
      * turn in place (movement_vector = 0)
      * calls robot_centric_move with movement_vector = {0.0,0.0}
@@ -64,14 +75,19 @@ public:
      * @return void
      */
     void field_centric_move(pair<double, double> movement_vector) { field_centric_move(movement_vector, 0); }
+    /*
+     * stop the robot
+     * brake all motors
+     */
+    void stop();
 
 protected:
-    Controller master_; // controller to get input from
+    Controller *master_; // controller to get input from
 
     // motors
-    Motor front_left_;  // front left motor
-    Motor front_right_; // front right motor
-    Motor back_left_;   // back left motor
-    Motor back_right_;  // back right motor
+    Motor *front_left_;  // front left motor
+    Motor *front_right_; // front right motor
+    Motor *back_left_;   // back left motor
+    Motor *back_right_;  // back right motor
     double maxspeed = 200.0; // max speed of motors
 };
