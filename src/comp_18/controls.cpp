@@ -40,11 +40,11 @@ void controls() {
         }
 
         //PNEUMATICS CONTROLS
-        if(ctrl_master.get_digital_new_press(BUTTON_L1)) {
+        if(ctrl_master.get_digital_new_press(BUTTON_L2)) {
             Pneumatics::getInstance()->getWings()->toggle();
         }
 
-        if(ctrl_master.get_digital_new_press(BUTTON_L2)) {
+        if(ctrl_master.get_digital_new_press(BUTTON_L1)) {
             Pneumatics::getInstance()->getIntake()->toggle();
         }   
 

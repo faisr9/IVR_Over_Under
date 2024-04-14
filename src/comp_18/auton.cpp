@@ -39,7 +39,10 @@ void auton18(){
 
 	odom_task.suspend();
 }
-
+void move_comp(vector<vector<double>> moveVec, int angle, bool isReversed, bool isSpinAtEnd){
+	double speedfactor = 2.7;
+	followPath(moveVec, tank_drive_18, angle, isReversed, isSpinAtEnd, false, 0.5, 3.0, 200.0 / speedfactor, 450.0 / speedfactor, 40.0 / speedfactor, false, 1.12);
+}
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
