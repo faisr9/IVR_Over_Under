@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "Sigma Prog",
+    "project_name": "Prog Test",
     "target": "v5",
     "templates": {
       "kernel": {
@@ -311,7 +311,7 @@
     "upload_options": {
       "slot": 3,
       "description": "Master Code",
-      "icon": "ufo",
+      "icon": "clawbot",
       "after": "screen"
     }
   }
