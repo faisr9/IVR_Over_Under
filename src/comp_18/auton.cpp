@@ -38,7 +38,7 @@ void auton18(){
 	
 	move({vect(0,0), vect(48, 0)}, 90, false, false);
 	pros::delay(50);
-	move({vect(48, 0), vect(0, 48)}, 90, true, false);
+	move({vect(48, 0), vect(0, 0)}, 90, true, false);
 	pros::delay(2000);
 	odom_task.suspend();
 }
