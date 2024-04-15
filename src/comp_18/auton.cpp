@@ -18,8 +18,8 @@ using namespace std;
 void auton18(){
 	pros::lcd::set_text(1, "Hiiiiii running auton");
     // (0, 0) corner is where positive x is going to other side of field and positive y is same side of field
-    vector<double> start = {0.5, 0.3}; // Start position
-    const double kSTARTING_ANGLE = 60.0;
+    vector<double> start = {0,0}; // Start position
+    const double kSTARTING_ANGLE = 90.0;
     const double kAUTON_START_TIME = pros::millis();
     const double kAUTON_DURATION = 45000;
 
@@ -35,14 +35,24 @@ void auton18(){
 		}
 	}};
 
+	
+	move({vect(0,0), vect(48, 0)}, 90, false, false);
 	pros::delay(50);
-
+	move({vect(48, 0), vect(0, 48)}, 90, true, false);
+	pros::delay(2000);
 	odom_task.suspend();
 }
-void move_comp(vector<vector<double>> moveVec, int angle, bool isReversed, bool isSpinAtEnd){
-	double speedfactor = 2.7;
-	followPath(moveVec, tank_drive_18, angle, isReversed, isSpinAtEnd, false, 0.5, 3.0, 200.0 / speedfactor, 450.0 / speedfactor, 40.0 / speedfactor, false, 1.12);
-}
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void move(vector<vector<double>> vec, int angle, bool isReversed, bool isSpinAtEnd, double speedfactor){
+	followPath(vec, tank_drive_18, angle, isReversed, isSpinAtEnd, false, 0.5, 3.0, 200.0 / speedfactor, 600 / speedfactor, 40.0 / speedfactor, false, 1.12);
+}
 
+void turn(double angle){
+	turnToAngle(tank_drive_18, angle, 0.5, false, 1.9);
+}
+
+//Converts from inches to meters
+vector<double> vect(double x, double y){
+	return {x * 0.0254, y * 0.0254};
+}
 
