@@ -1,4 +1,5 @@
 #include "common_code/movement_tank.h"
+#include "common_code/PID.h"
 
 void moveMotors(traditional_drive& drive, double leftRPM, double rightRPM) {
     drive.get_motor_group(0).move_velocity(leftRPM);
@@ -15,6 +16,21 @@ void stopMotors(traditional_drive& drive) {
     delay(15);
     drive.get_motor_group(0).set_brake_modes(BRAKETYPE_COAST);
     drive.get_motor_group(1).set_brake_modes(BRAKETYPE_COAST);
+}
+//PID version of turn to angle
+void turnToAngle(traditional_drive& drive, double desiredAngleDeg, double toleranceDeg, double p, double i, double d) {
+    PID turnPID = PID(p, i, d);
+    double degFromFinalAngle = desiredAngleDeg - drive.get_imu().get_heading();
+    double output=0;
+    degFromFinalAngle = optimizeAngle(degFromFinalAngle);
+    while(!turnPID.getState().targetReached){
+        degFromFinalAngle = optimizeAngle(desiredAngleDeg - drive.get_imu().get_heading());
+        output = turnPID.updatePID(desiredAngleDeg, degFromFinalAngle, toleranceDeg);
+        moveMotors(drive, output, -output);
+        delay(50);
+    }
+    // need to stop motors in case of break statement
+    stopMotors(drive);
 }
 
 // to be used exclusively when only turning (no translation)
