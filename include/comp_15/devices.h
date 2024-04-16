@@ -3,44 +3,38 @@
 
 // Forward declare all devices here so that all of the robot files and subsystem classes can access them //
 
-// Controllers //
 extern pros::Controller ctrl_master;
 
 // Motors //
-extern pros::Motor front_top_right;
-extern pros::Motor front_bottom_right;
-extern pros::Motor back_right;
-extern pros::Motor front_top_left;
-extern pros::Motor front_bottom_left;
-extern pros::Motor back_left;
+extern pros::Motor right_front_top;
+extern pros::Motor right_front_bottom;
+extern pros::Motor right_middle;
+extern pros::Motor right_back;
 
-extern pros::MotorGroup right_drive;
-extern pros::MotorGroup left_drive;
+extern pros::Motor left_front_top;
+extern pros::Motor left_front_bottom;
+extern pros::Motor left_middle;
+extern pros::Motor left_back;
 
-extern pros::Motor cata_right;
-extern pros::Motor cata_left;
-extern pros::MotorGroup cata;
+extern pros::Motor_Group left_drive_motors;
+extern pros::Motor_Group right_drive_motors;
 
-extern pros::Motor intake_motor;
-
-extern pros::Motor doinker_motor;
+extern pros::Motor intake;
 
 // V5 Sensors //
-extern pros::Imu imu;
-extern pros::ADIEncoder vertical_track_adi;
-extern pros::ADIEncoder horizontal_track_adi;
-extern pros::ADIPotentiometer doinker_pot;
+extern pros::IMU imu;
+extern pros::Distance distance_sensor; // inside the intake/catching funnel; detects if we have a triball
+extern pros::Rotation radial_rot_sensor; // parallel to the normal wheels
+extern pros::Rotation transverse_rot_sensor; // perpendicular to the normal wheels
 
+
+extern traditional_drive tank_drive_15;
 // Legacy Sensors //
 
-// Legacy Sensors //
 extern pros::ADIButton cata_limit;
-extern pros::ADIPotentiometer doinker_pot;
+extern const char WINGS;
+extern const char TOPHANG;
+extern const char INTAKE;
+extern const char SIDEHANG;
 
-// extern pros::ADIDigitalOut Floor_brake;
-// extern pros::ADIDigitalOut Wings;
-// extern const char WINGS;
-// extern const char FLOOR_BRAKE;
-
-// Traditional Drive
-extern traditional_drive drive;
+bool triBall();

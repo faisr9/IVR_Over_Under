@@ -3,7 +3,7 @@
 
 class Pneumatics : public SubsystemParent {
     public:
-        static Pneumatics* createInstance(char left_piston, char right_piston, char piston_climber);
+        static Pneumatics* createInstance(char wings_piston, char sidehang_piston, char tophang_piston, char intake_piston);
 
         static Pneumatics* getInstance(); // static because need to be able to access without ExampleSubsystem objecct
         ~Pneumatics();
@@ -11,22 +11,17 @@ class Pneumatics : public SubsystemParent {
 
         void stop();
 
-        void setLeft(bool OnOff);
-        void setRight(bool OnOff);
-        bool toggleLeft();
-        bool toggleRight();
-        bool toggleWings();
-
-        Piston* getClimber();
-
+        Piston* getWings();
+        Piston* getIntake();
+        Piston* getSideHang();
+        Piston* getTopHang();
 
     private:
-        Pneumatics(char left_piston, char right_piston, char piston_climber);
+        Pneumatics(char wings_piston, char sidehang_piston, char tophang_piston, char intake_piston);
 
         //instance_ is set to nullptr in cpp file
         static Pneumatics* instance_;
 
-        Piston leftWing, rightWing;
         bool wings_status;
-        Piston climber;
+        Piston wings, intake, tophang, sidehang;
 };
