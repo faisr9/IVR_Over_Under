@@ -53,6 +53,7 @@ void opcontrol() {
 
 		if(ctrl_master.get_digital_new_press(BUTTON_A)) {
 			controlsTask.suspend();
+			control_enable = false;
 			for (int i = 0; i < 3; i++) {
 				ctrl_master.rumble(".");
 				delay(1000);
