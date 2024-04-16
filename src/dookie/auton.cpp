@@ -1,58 +1,118 @@
 #include "comp_18/auton.h"
 
-LinkHelper *comp18link = LinkHelper::createInstance(8, E_LINK_RX);
+// Auton Methods 
 
-using namespace pros;
-using namespace std;
+// // Converts inputted tile coordinates, x and y, into meters
+// vector<double> vect(double x, double y)
+// {
+// 	return {(x * .61), (y * .61)};
+// }
 
-/// COMP AUTON
+void turn_comp(double angle)
+{
+	turnToAngle(tank_drive_18, angle, 2.0, false, 1); // p=1.12 // turndegtolerance=3 //time 150
+}
 
+void move_slw_comp(vector<vector<double>> moveVec, int angle, bool isReversed, bool isSpinAtEnd)
+{
+	double speedfactor = 3.87;
+	followPath(moveVec, tank_drive_18, angle, isReversed, isSpinAtEnd, false, 0.5, 3.0, 200.0 / speedfactor, 450.0 / speedfactor, 40.0 / speedfactor, false, 1.12);
+}
 
-// A lot of helper functions were removed. Feel free to go back through old commits and re-add them as needed.
+// vector<double> vectOff_comp(double x, double y)
+// {
+// 	return {(.61 * 2.2) + (x * .61), (.61 * .5) + (y * .61)};
+// }
 
+void move_comp(vector<vector<double>> moveVec, int angle, bool isReversed, bool isSpinAtEnd)
+{
+	double speedfactor = 2.7;
+	followPath(moveVec, tank_drive_18, angle, isReversed, isSpinAtEnd, false, 0.5, 3.0, 200.0 / speedfactor, 450.0 / speedfactor, 40.0 / speedfactor, false, 1.12);
+}
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// BEGIN AUTON METHODS //
 
-//COMP AUTON
+const double AUTON_DURATION = 45000 - 600; // 45 seconds minus 500 milliseconds for safety of threads exiting
+void win_point_auton() {
 
-void auton18(){
-	pros::lcd::set_text(1, "Hiiiiii running auton");
-    // (0, 0) corner is where positive x is going to other side of field and positive y is same side of field
-    vector<double> start = {0,0}; // Start position
-    const double kSTARTING_ANGLE = 90.0;
-    const double kAUTON_START_TIME = pros::millis();
-    const double kAUTON_DURATION = 45000;
+    const double STARTING_X = 18.0;
+    const double STARTING_Y = 18.0;
+    const double STARTING_ANGLE = 315.0; // 45 degrees south of east
+    const double AUTON_START_TIME = pros::millis();
+    double AUTON_RUN_TIME = 0;
+    bool end_auton = false;
 
-    // const double kAUTON_CODE_DURATION = kAUTON_DURATION - 500;
-
-	tank_drive_18.getOdom().initTracker(start[0], start[1], kSTARTING_ANGLE);
+    tank_drive_18.getOdom().initTracker(STARTING_X, STARTING_Y, STARTING_ANGLE);
     pros::delay(50);
 
-    pros::Task odom_task{[=] {
-		while (1) {
-			tank_drive_18.getOdom().updatePosition();
-			pros::delay(50);
-		}
-	}};
+    pros::Task odom_task{[&] {
+        while (!end_auton) {
+            tank_drive_18.getOdom().updatePosition();
+            AUTON_RUN_TIME = pros::millis() - AUTON_START_TIME;
+            if (AUTON_RUN_TIME >= AUTON_DURATION) {
+                end_auton = true;
+            }
+            pros::delay(20);
+        }
+    }};
+    odom_task.set_priority(TASK_PRIORITY_MEDIUM_HIGH);
 
-	
-	move({vect(0,0), vect(48, 0)}, 90, false, false);
-	pros::delay(50);
-	move({vect(48, 0), vect(0, 0)}, 90, true, false);
-	pros::delay(2000);
-	odom_task.suspend();
-}
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void move(vector<vector<double>> vec, int angle, bool isReversed, bool isSpinAtEnd, double speedfactor){
-	followPath(vec, tank_drive_18, angle, isReversed, isSpinAtEnd, false, 0.5, 3.0, 200.0 / speedfactor, 600 / speedfactor, 40.0 / speedfactor, false, 1.12);
+    // Auton code here
+    pros::Task auton_task {[=] {
+
+    }};
+    auton_task.set_priority(TASK_PRIORITY_MEDIUM_HIGH);
+
+    // End of auton
+    while(!end_auton) {
+        pros::delay(20);
+    }
+    odom_task.remove(); // Delete the odom task
+    auton_task.remove(); // Delete the auton task
+    // Stop everything
+    // Drive Stop
+    // Intake Stop
+    // Wings Close
 }
 
-void turn(double angle){
-	turnToAngle(tank_drive_18, angle, 0.5, false, 1.9);
-}
+void non_win_point_auton() {
 
-//Converts from inches to meters
-vector<double> vect(double x, double y){
-	return {x * 0.0254, y * 0.0254};
-}
+    const double STARTING_X = 18.0;
+    const double STARTING_Y = 18.0;
+    const double STARTING_ANGLE = 315.0; // 45 degrees south of east
+    const double AUTON_START_TIME = pros::millis();
+    double AUTON_RUN_TIME = 0;
+    bool end_auton = false;
 
+    tank_drive_18.getOdom().initTracker(STARTING_X, STARTING_Y, STARTING_ANGLE);
+    pros::delay(50);
+
+    pros::Task odom_task{[&] {
+        while (!end_auton) {
+            tank_drive_18.getOdom().updatePosition();
+            AUTON_RUN_TIME = pros::millis() - AUTON_START_TIME;
+            if (AUTON_RUN_TIME >= AUTON_DURATION) {
+                end_auton = true;
+            }
+            pros::delay(20);
+        }
+    }};
+    odom_task.set_priority(TASK_PRIORITY_MEDIUM_HIGH);
+
+    // Auton code here
+    pros::Task auton_task {[=] {
+
+    }};
+    auton_task.set_priority(TASK_PRIORITY_MEDIUM_HIGH);
+
+    // End of auton
+    while(!end_auton) {
+        pros::delay(20);
+    }
+    odom_task.remove(); // Delete the odom task
+    auton_task.remove(); // Delete the auton task
+    // Stop everything
+    // Drive Stop
+    // Intake Stop
+    // Wings Close
+}
