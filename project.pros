@@ -312,7 +312,7 @@
       "slot": 1,
       "description": "Master Code",
       "icon": "planet",
-      "after": "screen"
+      "after": "run"
     }
   }
 }

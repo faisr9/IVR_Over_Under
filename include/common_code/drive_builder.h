@@ -1,3 +1,11 @@
+/**
+ * Things to do:
+ * Allow custom drive mode regardless of drive configuration
+ * Force custom drive mode to be used if drive configuration is set to custom
+ * allow use of only 1 scale factor type
+ * use binary checksum
+*/
+
 #pragma once
 #include "main.h"
 
@@ -8,8 +16,8 @@ class driveClass {
     private:
     public:
         class driveBuilder;
-        enum drive_mode_e{
-            TANK_m,
+        typedef enum {
+            TANK_m = 1,
             SINGLE_STICK_ARCADE_R,
             SINGLE_STICK_ARCADE_L,
             SPLIT_ARCADE_PR,
@@ -18,15 +26,15 @@ class driveClass {
             HOLONOMIC_SR,
             HOLONOMIC_SL,
             CUSTOM_m
-        };
+        } drive_mode_e;
 
-        enum drive_config_e{
-            TANK_c,
+        typedef enum {
+            TANK_c = 1,
             HDRIVE,
             HOLONOMIC,
             XDRIVE=HOLONOMIC,
             CUSTOM_c
-        };
+        } drive_config_e;
 
         static driveBuilder buildDrive (drive_config_e config, pros::Controller *controller);
 
@@ -37,9 +45,10 @@ class driveClass {
 
         void test_drive();
 
-        void set_drive_mode(drive_mode_e mode);
+        void set_drive_mode(drive_mode_e mode, bool resume=true);
 
-    private:        
+    private:
+        static driveClass *drive_instance_;
         pros::Controller *drive_ctrler;
 
         motor_g *left_drive;
@@ -48,43 +57,54 @@ class driveClass {
         std::vector<motor*> drive_motors;
         motor *strafe_motor;
 
-        bool isSquareScaling, isSinScaling, isAccelScaling;
-        double sin_scale_factor, accel_scale_factor;
+        bool isSquareScaling, isSinScaling;
+        double sin_scale_factor;
         double left_scale, right_scale;
         int left_deadzone, right_deadzone;
-        int checksum;
+        uint8_t checksum;
+        bool runDriveLoop;
         
         // Drive control variables
-        int left_stick, right_stick;
+        struct ctrler_axis_s {
+            int l_x, l_y, r_x, r_y;
+        };
+        ctrler_axis_s raw_axis;
+        ctrler_axis_s calc_axis;
         int right, left, strafe, turn, fwd;
+        const int motorPower = 12000; // Scalar: current scale is in millivolts
 
         // Drive configurations
         drive_config_e drive_config;
         drive_mode_e drive_mode;
 
         // Drive config methods
+        pros::Task *tank_task;
         void tank();
+        pros::Task *hDrive_task;
         void hdrive();
+        pros::Task *holonomic_task;
         void holonomic_drive();
-        void xdrive();
-        void custom_drive();
+        pros::Task *custom_driveConf_task;
+        void custom_config();
+        // pros::Task *xdrive_task;
+        // void xdrive();
 
         // Drive mode methods
-        void tank_drive();
-        void single_stick_arcade_right();
-        void single_stick_arcade_left();
-        void split_arcade_right();
-        void split_arcade_left();
-        void custom_drive_mode();
+        void updateAxis();
+        ctrler_axis_s tank_drive();
+        ctrler_axis_s single_stick_arcade_right();
+        ctrler_axis_s single_stick_arcade_left();
+        ctrler_axis_s split_arcade_right();
+        ctrler_axis_s split_arcade_left();
+        ctrler_axis_s custom_mode();
 
         // All scaling factors and other variables
         double square_scale(double input);
         double sin_scale(double input);
-        double accel_scale(double input);
         double normalize_joystick(double input);
 
         // Movement methods
-        void setMotors();
+        // void setMotors();
 
         friend class driveBuilder;
 };
@@ -102,8 +122,7 @@ class driveClass::driveBuilder {
         driveBuilder &add_straight_drive_scale(double left_scale, double right_scale);
         driveBuilder &use_square_scaling();
         driveBuilder &use_sin_scaling(double sin_scale_factor);
-        driveBuilder &use_acceleration_scaling(double accel_scale_factor);
-        driveClass init();
+        driveClass* init();
     private:
         driveClass builder_obj;
 };
@@ -147,3 +166,38 @@ class driveClass::driveBuilder {
          *       \\        \ 
          *  
         */
+
+
+
+/*
+Use different music for clips at purdue???
+Music Stops abruptly
+Angled focus, someone walks into twlight
+Places both the purdue awards
+Gets email of worlds qual
+Cuts to both robots being chucked out the window
+and doinker
+Sits down at computer
+Opens fusion 360
+Creates new cad files
+~1 eternity later
+grin?
+~clips to pressing enter on keyboard
+~some transition
+Start building montage
+
+
+Start with cornfield fails
+Wisco failure
+Zoom out from screen watching video of clips
+we all leave sad
+last person gets an email from vex about worlds qual
+sits down at computer
+opens fusion 360
+creates new cad files
+~1 eternity later
+grin?
+~clips to pressing enter on keyboard
+~some transition
+Start building montage
+*/
