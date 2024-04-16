@@ -14,6 +14,7 @@ class Intake : public SubsystemParent{
 
     public:
         Intake(pros::Motor &motor);
+        ~Intake();
 
         // Sets power in rpm which will call set_power using a conversion to mV
         void set_rpm(int rpm);

@@ -1,12 +1,12 @@
 #include "comp_18/controls.h"
 #include "comp_18/auton.h"
 
-extern LinkHelper* comp18link;
+// extern LinkHelper* comp18link;
 
 /* First method to run when program starts */
 void initialize() {
 	pros::lcd::initialize(); // Temp until custom GUI
-	comp18link->init();
+	// comp18link->init();
 	imu.reset(); // Very important!!!
     transverse_rot_sensor.reset();
 	radial_rot_sensor.reset();
@@ -26,13 +26,40 @@ void competition_initialize() {}
 
 /* Autonomous method */
 void autonomous() {
+	win_point_auton();
 	// if(gui::selected_auton == gui::AUTON_COMP) {
-		win_point_auton();
+		// win_point_auton();
 	// }
 	// else do nothing. make sure to select the auton!
 }
 
 /* Opcontrol method runs by default (unless connected to comp controller )*/
 void opcontrol() {
-	controls();
+	bool control_enable = true;
+
+	pros::Task controlsTask {[=] {controls();}};
+
+	while(1) {
+		if(ctrl_master.get_digital_new_press(BUTTON_Y)) {
+			control_enable = !control_enable;
+			if (control_enable) {
+				controlsTask.resume();
+			} else {
+				controlsTask.suspend();
+			}
+			ctrl_master.rumble(".");
+			delay(1000);
+		}
+
+		if(ctrl_master.get_digital_new_press(BUTTON_A)) {
+			controlsTask.suspend();
+			for (int i = 0; i < 3; i++) {
+				ctrl_master.rumble(".");
+				delay(1000);
+			}
+			autonomous();
+		}
+
+		delay(100);
+	}
 }

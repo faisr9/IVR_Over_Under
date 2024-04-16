@@ -31,7 +31,7 @@ void competition_initialize() {}
 /* Autonomous method */
 void autonomous() {
 	if(gui::selected_auton == gui::AUTON_COMP) {
-		auton_15();
+		win_point_auton();
 		// ctrl_master.rumble("---");
 	}
 	// else do nothing. make sure to select the auton!
