@@ -21,11 +21,11 @@ void stopMotors(traditional_drive& drive) {
 void turnToAngle(traditional_drive& drive, double desiredAngleDeg, double toleranceDeg, double p, double i, double d) {
     PID turnPID = PID(p, i, d);
     double degFromFinalAngle = desiredAngleDeg - drive.get_imu().get_heading();
-    double output=0;
     degFromFinalAngle = optimizeAngle(degFromFinalAngle);
+    double output=0;
     while(!turnPID.getState().targetReached){
         degFromFinalAngle = optimizeAngle(desiredAngleDeg - drive.get_imu().get_heading());
-        output = turnPID.updatePID(desiredAngleDeg, degFromFinalAngle, toleranceDeg);
+        output = turnPID.updatePID(0, degFromFinalAngle, toleranceDeg);
         moveMotors(drive, output, -output);
         delay(50);
     }
