@@ -17,21 +17,6 @@ void stopMotors(traditional_drive& drive) {
     drive.get_motor_group(0).set_brake_modes(BRAKETYPE_COAST);
     drive.get_motor_group(1).set_brake_modes(BRAKETYPE_COAST);
 }
-//PID version of turn to angle
-void turnToAngle(traditional_drive& drive, double desiredAngleDeg, double toleranceDeg, double p, double i, double d) {
-    PID turnPID = PID(p, i, d);
-    double degFromFinalAngle = desiredAngleDeg - drive.get_imu().get_heading();
-    degFromFinalAngle = optimizeAngle(degFromFinalAngle);
-    double output=0;
-    while(!turnPID.getState().targetReached){
-        degFromFinalAngle = optimizeAngle(desiredAngleDeg - drive.get_imu().get_heading());
-        output = turnPID.updatePID(0, degFromFinalAngle, toleranceDeg);
-        moveMotors(drive, output, -output);
-        delay(50);
-    }
-    // need to stop motors in case of break statement
-    stopMotors(drive);
-}
 
 // to be used exclusively when only turning (no translation)
 void turnToAngle(traditional_drive& drive, double desiredAngleDeg, double toleranceDeg, bool debug, double p, int time_in_range) {
@@ -56,6 +41,22 @@ void turnToAngle(traditional_drive& drive, double desiredAngleDeg, double tolera
             break;
         } 
         pros::delay(delay_time);
+    }
+    // need to stop motors in case of break statement
+    stopMotors(drive);
+}
+
+//PID version of turn to angle
+void turnPID(traditional_drive& drive, double desiredAngleDeg, double toleranceDeg, double p, double i, double d) {
+    PID t_PID = PID(p, i, d);
+    double degFromFinalAngle = desiredAngleDeg - drive.get_imu().get_heading();
+    degFromFinalAngle = optimizeAngle(degFromFinalAngle);
+    double output=0;
+    while(!t_PID.getState().targetReached){
+        degFromFinalAngle = optimizeAngle(desiredAngleDeg - drive.get_imu().get_heading());
+        output = t_PID.updatePID(0, degFromFinalAngle, toleranceDeg);
+        moveMotors(drive, output, -output);
+        delay(20);
     }
     // need to stop motors in case of break statement
     stopMotors(drive);

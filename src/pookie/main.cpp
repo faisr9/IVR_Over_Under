@@ -2,12 +2,12 @@
 #include "comp_15/auton.h"
 #include "comp_15/controls.h"
 
-extern LinkHelper* comp15link;
+// extern LinkHelper* comp15link;
 
 /* First method to run when program starts */
 void initialize() {
 	// pros::lcd::initialize(); // Temp until custom GUI
-	comp15link->init();
+	// comp15link->init();
 	imu.reset(); // Very important!!!
     transverse_rot_sensor.reset();
 	radial_rot_sensor.reset();
