@@ -36,9 +36,10 @@ pros::Distance distance_sensor(3);
 
 pros::ADIEncoder radial_rot_sensor(7, 8, false);
 pros::ADIEncoder transverse_rot_sensor(5, 6, false);
-
-Generic_Rotation* radial_tracker = new Generic_Rotation_Digikey(radial_rot_sensor, 1.96 * 0.0254 / 2, 0.0); // as far as I can tell the offset is basically 0
-Generic_Rotation* horizontal_tracker = new Generic_Rotation_Digikey(transverse_rot_sensor, 1.96 * 0.0254 / 2, -0.068);
+//9 -> wheel base length ; 11 11/16 -> wheel base width
+//(4 1/2,5 27/32) -> tracking center
+Generic_Rotation* radial_tracker = new Generic_Rotation_Digikey(radial_rot_sensor, 1.96 * 0.0254 / 2, convert::inToM(.34375)); // as far as I can tell the offset is basically 0
+Generic_Rotation* horizontal_tracker = new Generic_Rotation_Digikey(transverse_rot_sensor, 1.96 * 0.0254 / 2, convert::inToM(-1.937));
 
 
 Odom odometry_18(imu, horizontal_tracker, radial_tracker);

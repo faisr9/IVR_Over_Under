@@ -8,15 +8,11 @@
 // 	return {(x * .61), (y * .61)};
 // }
 
-
-void move(vector<vector<double>> moveVec, int angle, bool isReversed, bool isSpinAtEnd, double speedfactor)
-{
+void move(vector<vector<double>> moveVec, int angle, bool isReversed, bool isSpinAtEnd, double speedfactor){
+	for (auto& vec : moveVec) {
+		for (auto& val : vec) { convert::inToM(val); }
+	}
 	followPath(moveVec, tank_drive_18, angle, isReversed, isSpinAtEnd, false, 0.5, 3.0, 200.0 / speedfactor, 600.0 / speedfactor, 40.0 / speedfactor, false, 1.12);
-}
-//return a vector that converts inputted inches into meters
-vector<double> vect(double x, double y)
-{
-	return {(x * .0254), (y * .0254)};
 }
 
 // BEGIN AUTON METHODS //
