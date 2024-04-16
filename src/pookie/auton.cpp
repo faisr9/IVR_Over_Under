@@ -61,6 +61,7 @@ void win_point_auton() {
     pros::Task auton_task {[=] {
 
     }};
+    auton_task.set_priority(TASK_PRIORITY_MEDIUM_HIGH);
 
     // End of auton
     while(!end_auton) {
@@ -102,6 +103,7 @@ void non_win_point_auton() {
     pros::Task auton_task {[=] {
 
     }};
+    auton_task.set_priority(TASK_PRIORITY_MEDIUM_HIGH);
 
     // End of auton
     while(!end_auton) {
