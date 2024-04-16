@@ -1,49 +1,12 @@
 #include "comp_15/auton.h"
 
-LinkHelper* comp15link = LinkHelper::createInstance(16, E_LINK_TX);
+// Auton Methods 
 
-//COMP 15 AUTON
-void auton_15() {
-
-    pros::lcd::set_text(1, "Hiiiiii running auton");
-    // (0, 0) corner is where positive x is going to other side of field and positive y is same side of field
-    const double kSTARTING_X = 0.5;
-    const double kSTARTING_Y = 0.3;
-    const double kSTARTING_ANGLE = 60.0;
-    const double kAUTON_START_TIME = pros::millis();
-    const double kAUTON_DURATION = 45000;
-
-    // const double kAUTON_CODE_DURATION = kAUTON_DURATION - 500;
-
-    tank_drive_15.getOdom().initTracker(kSTARTING_X, kSTARTING_Y, kSTARTING_ANGLE);
-    pros::delay(50);
-
-    pros::Task odom_task{[=] {
-		while (1) {
-			tank_drive_15.getOdom().updatePosition();
-			pros::delay(50);
-		}
-	}};
-
-    // All the old auton stuff has been removed because we'll have brand new robots. 
-    // Remember you can look back at old versions of master on our github (like the Release
-    // for Purdue) to see the auton structures that were once here!
-
-    odom_task.suspend();
-}
-
-// COMP METHODS
-
-/** Converts inputted tile coordinates, x and y, into meters.
- * usage example:
- *
- *     vect(1, 2);
- *
- */
-vector<double> vect(double x, double y)
-{
-	return {(x * .61), (y * .61)};
-}
+// // Converts inputted tile coordinates, x and y, into meters
+// vector<double> vect(double x, double y)
+// {
+// 	return {(x * .61), (y * .61)};
+// }
 
 void turn_comp(double angle)
 {
@@ -56,13 +19,98 @@ void move_slw_comp(vector<vector<double>> moveVec, int angle, bool isReversed, b
 	followPath(moveVec, tank_drive_15, angle, isReversed, isSpinAtEnd, false, 0.5, 3.0, 200.0 / speedfactor, 450.0 / speedfactor, 40.0 / speedfactor, false, 1.12);
 }
 
-vector<double> vectOff_comp(double x, double y)
-{
-	return {(.61 * 2.2) + (x * .61), (.61 * .5) + (y * .61)};
-}
+// vector<double> vectOff_comp(double x, double y)
+// {
+// 	return {(.61 * 2.2) + (x * .61), (.61 * .5) + (y * .61)};
+// }
 
 void move_comp(vector<vector<double>> moveVec, int angle, bool isReversed, bool isSpinAtEnd)
 {
 	double speedfactor = 2.7;
 	followPath(moveVec, tank_drive_15, angle, isReversed, isSpinAtEnd, false, 0.5, 3.0, 200.0 / speedfactor, 450.0 / speedfactor, 40.0 / speedfactor, false, 1.12);
+}
+
+// BEGIN AUTON METHODS //
+
+const double AUTON_DURATION = 45000 - 600; // 45 seconds minus 500 milliseconds for safety of threads exiting
+void win_point_auton() {
+
+    const double STARTING_X = 18.0;
+    const double STARTING_Y = 18.0;
+    const double STARTING_ANGLE = 315.0; // 45 degrees south of east
+    const double AUTON_START_TIME = pros::millis();
+    double AUTON_RUN_TIME = 0;
+    bool end_auton = false;
+
+    tank_drive_15.getOdom().initTracker(STARTING_X, STARTING_Y, STARTING_ANGLE);
+    pros::delay(50);
+
+    pros::Task odom_task{[&] {
+        while (!end_auton) {
+            tank_drive_15.getOdom().updatePosition();
+            AUTON_RUN_TIME = pros::millis() - AUTON_START_TIME;
+            if (AUTON_RUN_TIME >= AUTON_DURATION) {
+                end_auton = true;
+            }
+            pros::delay(20);
+        }
+    }};
+    odom_task.set_priority(TASK_PRIORITY_MEDIUM_HIGH);
+
+    // Auton code here
+    pros::Task auton_task {[=] {
+
+    }};
+
+    // End of auton
+    while(!end_auton) {
+        pros::delay(20);
+    }
+    odom_task.remove(); // Delete the odom task
+    auton_task.remove(); // Delete the auton task
+    // Stop everything
+    // Drive Stop
+    // Intake Stop
+    // Wings Close
+}
+
+void non_win_point_auton() {
+
+    const double STARTING_X = 18.0;
+    const double STARTING_Y = 18.0;
+    const double STARTING_ANGLE = 315.0; // 45 degrees south of east
+    const double AUTON_START_TIME = pros::millis();
+    double AUTON_RUN_TIME = 0;
+    bool end_auton = false;
+
+    tank_drive_15.getOdom().initTracker(STARTING_X, STARTING_Y, STARTING_ANGLE);
+    pros::delay(50);
+
+    pros::Task odom_task{[&] {
+        while (!end_auton) {
+            tank_drive_15.getOdom().updatePosition();
+            AUTON_RUN_TIME = pros::millis() - AUTON_START_TIME;
+            if (AUTON_RUN_TIME >= AUTON_DURATION) {
+                end_auton = true;
+            }
+            pros::delay(20);
+        }
+    }};
+    odom_task.set_priority(TASK_PRIORITY_MEDIUM_HIGH);
+
+    // Auton code here
+    pros::Task auton_task {[=] {
+
+    }};
+
+    // End of auton
+    while(!end_auton) {
+        pros::delay(20);
+    }
+    odom_task.remove(); // Delete the odom task
+    auton_task.remove(); // Delete the auton task
+    // Stop everything
+    // Drive Stop
+    // Intake Stop
+    // Wings Close
 }

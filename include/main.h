@@ -120,6 +120,26 @@ namespace convert {
   static double mToFt(double meters) {
     return meters * 3.28084;
   }
+
+  // Convert tile coordinates to meters
+  static double tileToM(double tiles) {
+    return tiles * 0.61538;
+  }
+
+  // Convert meters to tile coordinates
+  static double mToTile(double meters) {
+    return meters * 1.625;
+  }
+
+  // Convert tile coordinates to inches
+  static double tileToIn(double tiles) {
+    return tiles * 24;
+  }
+
+  // Convert inches to tile coordinates
+  static double inToTile(double inches) {
+    return inches * 0.0416667;
+  }
 } // namespace convert
 #endif
 
