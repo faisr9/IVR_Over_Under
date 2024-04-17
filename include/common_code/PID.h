@@ -8,8 +8,8 @@ class PID {
             double kP;
             double kI;
             double kD;
-            double OUT_MIN = -127;
-            double OUT_MAX = 127;
+            const double OUT_MIN = -127;
+            const double OUT_MAX = 127;
         } pid_consts;
 
         // PID state variables like error, lastError, derivative, integral, etc
