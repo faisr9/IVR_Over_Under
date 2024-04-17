@@ -88,7 +88,7 @@ void movePID(traditional_drive& drive, double target, double angle, double latTo
     double initVal = drive.getOdom().getRadialValue();
     double deltaVal = 0;
     while(!l_PID.getState().targetReached){
-        deltaVal -= drive.getOdom().getRadialValue();
+        deltaVal = drive.getOdom().getRadialValue()-initVal;
         lateral = l_PID.updatePID(target, deltaVal, latTolerance);
         turn = t_PID.updatePID(angle, drive.get_imu().get_heading(), turnTolerance);
         drive.tank_with_power(lateral, turn);
