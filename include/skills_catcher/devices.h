@@ -19,11 +19,6 @@ extern Motor left_middle_2;
 extern Motor right_middle_2;
 extern Motor right_middle_2;
 
-/* Pnuematics */
-const char LEFT_WING;
-const char RIGHT_WING; 
-const char NET; 
-
 /* IMU */
 extern IMU imu;
 
