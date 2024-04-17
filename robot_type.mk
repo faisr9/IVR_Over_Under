@@ -4,8 +4,8 @@
 # Author; Anissh G
 
 # This variable is the only thing to modify in this file!!!
-# Comp 15in Robot = 0
-# Comp 18in Robot = 1
+# Pookie Robot = 0
+# Dookie Robot = 1
 # Skills Thrower Robot = 2
 # Skills Catcher Robot = 3
 ### NOTE: Once you change the robot type perform a clean build!

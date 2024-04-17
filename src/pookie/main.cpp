@@ -1,5 +1,5 @@
-#include "comp_15/controls.h"
-#include "comp_15/auton.h"
+#include "pookie/controls.h"
+#include "pookie/auton.h"
 
 // extern LinkHelper* comp15link;
 

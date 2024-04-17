@@ -1,5 +1,5 @@
 #pragma once
-#include "common_code/include_list.h" //Fix this include path later when we start to make skills code
+#include "pookie/devices.h" //Fix this include path later when we start to make skills code
 
 
 
@@ -14,6 +14,7 @@ class Intake : public SubsystemParent{
 
     public:
         Intake(pros::Motor &motor);
+        ~Intake();
 
         // Sets power in rpm which will call set_power using a conversion to mV
         void set_rpm(int rpm);

@@ -1,5 +1,5 @@
-#include "comp_18/devices.h"
-#include "comp_18/include_list.h"
+#include "dookie/devices.h"
+#include "dookie/include_list.h"
 
 using namespace pros;
 

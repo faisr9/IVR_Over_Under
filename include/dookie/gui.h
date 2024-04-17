@@ -1,6 +1,6 @@
 #pragma once
-#include "comp_18/devices.h"
-#include "comp_18/include_list.h"
+#include "dookie/devices.h"
+#include "dookie/include_list.h"
 
 #define SCREEN_WIDTH_MAX 480
 #define SCREEN_HEIGHT_MAX 240

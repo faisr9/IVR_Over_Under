@@ -1,6 +1,6 @@
 #pragma once
-#include "comp_15/include_list.h"
-#include "comp_15/devices.h"
+#include "pookie/include_list.h"
+#include "pookie/devices.h"
 
 // void auton15();
 std::vector<double> vect(double x, double y);
