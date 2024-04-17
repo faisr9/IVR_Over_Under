@@ -57,8 +57,8 @@ void turnPID(traditional_drive& drive, double desiredAngleDeg, double toleranceD
         turn = t_PID.updatePID(desiredAngleDeg, drive.get_imu().get_rotation(), toleranceDeg);
         // output = t_PID.updatePID(desiredAngleDeg, drive.get_imu().get_heading(), toleranceDeg);
         drive.turn_with_power(turn);
-        delay(20);
         if(std::abs(turn)<=1){ break; }
+        delay(20);
     }
     // need to stop motors in case of break statement
     stopMotors(drive);
@@ -73,8 +73,8 @@ void latPID(traditional_drive& drive, double target, double tolerance, double p,
         deltaVal = drive.getOdom().getRadialValue()-initVal;
         lateral = m_PID.updatePID(target, deltaVal, tolerance);
         drive.move_with_power(lateral);
-        delay(20);
         if(std::abs(lateral)<=1){ break; }
+        delay(20);
     }
     // need to stop motors in case of break statement
     stopMotors(drive);
@@ -92,8 +92,8 @@ void movePID(traditional_drive& drive, double target, double angle, double latTo
         lateral = l_PID.updatePID(target, deltaVal, latTolerance);
         turn = t_PID.updatePID(angle, drive.get_imu().get_heading(), turnTolerance);
         drive.tank_with_power(lateral, turn);
-        delay(20);
         if(std::abs(lateral)<=1){ break; }
+        delay(20);
     }
     // need to stop motors in case of break statement
     stopMotors(drive);
