@@ -5,6 +5,14 @@
  * Implementation: src/common_code/asterisk-drive.cpp
  * Last Modified: 04/14/24 by Zach Martin
  */
+/**************************************
+ * CAUTION: THIS FILE HAS NOT BEEN TESTED
+ * USE AT YOUR OWN RISK
+ * MAY CONTAIN BUGS
+ * MAY MODIFY YOUR SSN
+ * MAY DELTE YOUR FAMILY
+ * MAY RESET THE SIMULATION
+ **************************************/
 #pragma once
 #include "x-drive.h"
 
