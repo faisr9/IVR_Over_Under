@@ -62,6 +62,35 @@ void turnPID(traditional_drive& drive, double desiredAngleDeg, double toleranceD
     stopMotors(drive);
 }
 
+void latPID(traditional_drive& drive, double target, double tolerance, double p, double i, double d) {
+    PID m_PID = PID(p, i, d);
+    double output=0;
+    double deltaVal = drive.getOdom().getRadialValue();
+    while(!m_PID.getState().targetReached){
+        deltaVal -= drive.getOdom().getRadialValue();
+        output = m_PID.updatePID(target, deltaVal, tolerance);
+        moveMotors(drive, output, output);
+    }
+    // need to stop motors in case of break statement
+    stopMotors(drive);
+}
+
+void movePID(traditional_drive& drive, double target, double angle, double latTolerance, double turnTolerance, double lP, double lI, double lD,double tP, double tI, double tD) {
+    PID m_PID = PID(lP, lI, lD);
+    PID t_PID = PID(tP, tI, tD);
+    double lateral=0;
+    double turn=0;
+    double deltaVal = drive.getOdom().getRadialValue();
+    while(!m_PID.getState().targetReached){
+        deltaVal -= drive.getOdom().getRadialValue();
+        lateral = m_PID.updatePID(target, deltaVal, latTolerance);
+        turn = t_PID.updatePID(angle, drive.get_imu().get_heading(), turnTolerance);
+        drive.tank_with_power(lateral, turn);
+    }
+    // need to stop motors in case of break statement
+    stopMotors(drive);
+}
+
 void followPath(std::vector<std::vector<double>>& path, traditional_drive& drive, double finalAngleDeg, bool reversed, bool spinAtEnd, bool goal_at_end, double lookForwardRadius, double final_angle_tolerance_deg, double MAX_TRANSLATIONAL_RPM, double maxRPM, double minTransRPM, bool printMessages, double turnP) {    
     double firstX = path[0][0];
     double firstY = path[0][1];
