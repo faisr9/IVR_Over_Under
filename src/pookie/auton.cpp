@@ -43,7 +43,15 @@ void win_point_auton() {
 
     // Auton code here
     pros::Task auton_task {[=] {
-        
+        turnPID(tank_drive_15, 180, 0.2, 10,0,0);
+        pros::delay(2000);
+        // turnToAngle(tank_drive_15, 180, 0.2, false);
+        // Intake::getInstance()->set_rpm(100);
+		// move({{0,0},{0,0.61}}, 0, false, false, .8);
+		// pros::delay(50);
+		// turnPID(tank_drive_18, 180, 0.5,false);
+		// pros::delay(50);
+		// move({{0,.61},{0,0}}, 0, false, false);
 		// pros::delay(2000);
     }};
     // auton_task.set_priority(TASK_PRIORITY_MEDIUM_HIGH);
