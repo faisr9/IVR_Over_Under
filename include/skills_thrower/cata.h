@@ -9,14 +9,19 @@ class SkillsCata : public SubsystemParent {
         ~SkillsCata();
         SkillsCata(const SkillsCata& other) = delete;
 
+        enum CataMode {
+            Stopped,
+            Cycle
+        };
+
         void stop();
         void cycle();
 
         void move_forward_manual();
-        std::string get_cata_mode();   
+        CataMode get_cata_mode();   
 
-        void set_cata_mode(std::string new_cata_mode);
-        void set_cata_mode_internal(std::string new_cata_mode);
+        void set_cata_mode(CataMode mode);
+        void set_cata_mode_internal(CataMode mode);
 
     private:
         // reference to passed in motor so it doesn't create a new motor object 
@@ -34,7 +39,7 @@ class SkillsCata : public SubsystemParent {
         int last_rot;
 
         pros::Task cata_task;
-        std::string cata_mode = "X";
+        CataMode cata_mode = CataMode::Stopped;
 };
 
 void cata_task_funct();

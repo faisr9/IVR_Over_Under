@@ -16,6 +16,7 @@ extern Motor back_right;
 /* Catapult */
 extern Motor cata_1;
 extern Motor cata_2;
+extern MotorGroup cata_motors;
 extern Rotation cata_rot_sensor;
 
 /* Pnuematics */

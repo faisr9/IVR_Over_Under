@@ -21,7 +21,7 @@ SkillsCata* SkillsCata::getInstance(){
 
 
 SkillsCata::SkillsCata(pros::MotorGroup& motorgroup, pros::Rotation& rotation_sensor) : SubsystemParent("Skills_Cata"), motors(motorgroup), rotation_sensor(rotation_sensor), cata_task(cata_task_funct) {
-    cata_mode = "X";
+    cata_mode = CataMode::Stopped;
     motors.set_brake_modes(pros::E_MOTOR_BRAKE_BRAKE);
 }
 
@@ -58,13 +58,13 @@ void SkillsCata::cycle(){
 }
 
 
-std::string SkillsCata::get_cata_mode() {
+SkillsCata::CataMode SkillsCata::get_cata_mode() {
     return cata_mode;
 }
 
 
 // for use by everything but the actual catapult task
-void SkillsCata::set_cata_mode(std::string new_cata_mode) {
+void SkillsCata::set_cata_mode(CataMode new_cata_mode) {
     cata_task.suspend();
     cata_mode = new_cata_mode;
     cata_task.resume();
@@ -72,7 +72,7 @@ void SkillsCata::set_cata_mode(std::string new_cata_mode) {
 
 
 // for use by cata_task_funct so it does not suspend itself
-void SkillsCata::set_cata_mode_internal(std::string new_cata_mode) {
+void SkillsCata::set_cata_mode_internal(CataMode new_cata_mode) {
     cata_mode = new_cata_mode;
 }
 
@@ -87,13 +87,13 @@ void cata_task_funct() {
     }
 
     while (1) {
-        std::string cata_mode = cata_inst->get_cata_mode();
+        SkillsCata::CataMode cata_mode = cata_inst->get_cata_mode();
 
-        if (cata_mode == "X") {
+        if (cata_mode == SkillsCata::CataMode::Stopped) {
             cata_inst->stop();
-        } else if (cata_mode == "C") {
+        } else if (cata_mode == SkillsCata::CataMode::Cycle) {
             cata_inst->cycle();
-            cata_inst->set_cata_mode_internal("X");
+            cata_inst->set_cata_mode_internal(SkillsCata::CataMode::Stopped);
         } else {
             pros::lcd::set_text(6, "Invalid cata_mode string!");
             cata_inst->stop();

@@ -19,6 +19,5 @@ void autonomous() {}
 void opcontrol() {
 	lcd::print(2,"Thrower Skills");
 
-	while(1)
-		Task::delay(1000);
+	controls();
 }
