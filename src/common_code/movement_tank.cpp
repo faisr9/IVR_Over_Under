@@ -51,12 +51,14 @@ void turnPID(traditional_drive& drive, double desiredAngleDeg, double toleranceD
     PID t_PID = PID(p, i, d);
     // double degFromFinalAngle = desiredAngleDeg - drive.get_imu().get_heading();
     // degFromFinalAngle = optimizeAngle(degFromFinalAngle);
-    double output=0;
+    double turn=0;
     while(!t_PID.getState().targetReached){
-        // degFromFinalAngle = optimizeAngle(desiredAngleDeg - drive.get_imu().get_heading());
-        // output = t_PID.updatePID(0, degFromFinalAngle, toleranceDeg);
-        output = t_PID.updatePID(desiredAngleDeg, drive.get_imu().get_heading(), toleranceDeg);
-        moveMotors(drive, output, -output);
+        // degFromFinalAngle = ;
+        turn = t_PID.updatePID(desiredAngleDeg, drive.get_imu().get_rotation(), toleranceDeg);
+        // output = t_PID.updatePID(desiredAngleDeg, drive.get_imu().get_heading(), toleranceDeg);
+        drive.turn_with_power(turn);
+        delay(20);
+        if(std::abs(turn)<=1){ break; }
     }
     // need to stop motors in case of break statement
     stopMotors(drive);
@@ -64,28 +66,34 @@ void turnPID(traditional_drive& drive, double desiredAngleDeg, double toleranceD
 
 void latPID(traditional_drive& drive, double target, double tolerance, double p, double i, double d) {
     PID m_PID = PID(p, i, d);
-    double output=0;
-    double deltaVal = drive.getOdom().getRadialValue();
+    double lateral=0;
+    double initVal = drive.getOdom().getRadialValue();
+    double deltaVal = 0;
     while(!m_PID.getState().targetReached){
-        deltaVal -= drive.getOdom().getRadialValue();
-        output = m_PID.updatePID(target, deltaVal, tolerance);
-        moveMotors(drive, output, output);
+        deltaVal = drive.getOdom().getRadialValue()-initVal;
+        lateral = m_PID.updatePID(target, deltaVal, tolerance);
+        drive.move_with_power(lateral);
+        delay(20);
+        if(std::abs(lateral)<=1){ break; }
     }
     // need to stop motors in case of break statement
     stopMotors(drive);
 }
 
 void movePID(traditional_drive& drive, double target, double angle, double latTolerance, double turnTolerance, double lP, double lI, double lD,double tP, double tI, double tD) {
-    PID m_PID = PID(lP, lI, lD);
+    PID l_PID = PID(lP, lI, lD);
     PID t_PID = PID(tP, tI, tD);
     double lateral=0;
     double turn=0;
-    double deltaVal = drive.getOdom().getRadialValue();
-    while(!m_PID.getState().targetReached){
+    double initVal = drive.getOdom().getRadialValue();
+    double deltaVal = 0;
+    while(!l_PID.getState().targetReached){
         deltaVal -= drive.getOdom().getRadialValue();
-        lateral = m_PID.updatePID(target, deltaVal, latTolerance);
+        lateral = l_PID.updatePID(target, deltaVal, latTolerance);
         turn = t_PID.updatePID(angle, drive.get_imu().get_heading(), turnTolerance);
         drive.tank_with_power(lateral, turn);
+        delay(20);
+        if(std::abs(lateral)<=1){ break; }
     }
     // need to stop motors in case of break statement
     stopMotors(drive);
