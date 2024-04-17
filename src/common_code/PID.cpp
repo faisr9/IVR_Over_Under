@@ -72,13 +72,18 @@ double PID::updatePID(double target, double current, double tolerance){
             pid_state.saturated = false;
         }
         pid_state.lastOutput = pid_state.output;
-        if(std::abs(pid_state.output-pid_state.lastOutput) >= .3){
+        delay(50);
+        if(std::abs(pid_state.output-pid_state.lastOutput) >= tolerance*1.5){
             pid_state.targetReached = false;
             return pid_state.output;
-        }  
+        } else {
+            pid_state.targetReached = true;
+            return 0;
+        }
+    } else {
+        pid_state.targetReached = true;
+        return 0;
     }
-    pid_state.targetReached = true;
-    return 0;
 }
 
 //Reset PID loop
