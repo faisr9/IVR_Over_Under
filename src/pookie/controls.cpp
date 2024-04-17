@@ -40,17 +40,19 @@ void controls() {
         if(ctrl_master.get_digital_new_press(BUTTON_L2)) {
             Pneumatics::getInstance()->getWings()->toggle();
         }
-        
+
         if(ctrl_master.get_digital_new_press(BUTTON_L1)) {
             Pneumatics::getInstance()->getIntake()->toggle();
         }   
 
         if(ctrl_master.get_digital_new_press(BUTTON_UP)) {
-            Pneumatics::getInstance()->getSideHang()->on();
+            Pneumatics::getInstance()->getTopHang()->toggle();
+            pros::delay(25);
         }
 
-        if(ctrl_master.get_digital_new_press(BUTTON_LEFT) || ctrl_master.get_digital_new_press(BUTTON_RIGHT)) {
-            Pneumatics::getInstance()->getSideHang()->on();
+        if(ctrl_master.get_digital_new_press(BUTTON_DOWN)) {
+            Pneumatics::getInstance()->getSideHang()->toggle();
+            pros::delay(25);
         }
         
         pros::delay(15);

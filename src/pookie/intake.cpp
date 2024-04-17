@@ -58,6 +58,6 @@ void Intake::set_power(int power){
 }
 
 // Uses the default power, the power set by set_power, or the power passed in
-void Intake::toggle_on(int rpm = default_rpm_){
+void Intake::toggle_on(int rpm){
     set_rpm(rpm);
 }
