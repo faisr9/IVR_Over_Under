@@ -26,12 +26,7 @@ extern pros::IMU imu;
 extern pros::Distance distance_sensor; // inside the intake/catching funnel; detects if we have a triball
 extern pros::Rotation radial_rot_sensor; // parallel to the normal wheels
 extern pros::Rotation transverse_rot_sensor; // perpendicular to the normal wheels
-extern pros::IMU testimu;
-extern pros::Motor front_left;
-extern pros::Motor front_right;
-extern pros::Motor back_left;
-extern pros::Motor back_right;
-extern x_drive drive;
+
 
 extern traditional_drive tank_drive_18;
 // Legacy Sensors //

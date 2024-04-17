@@ -8,9 +8,13 @@ extern LinkHelper* comp15link;
 void initialize() {
 	// pros::lcd::initialize(); // Temp until custom GUI
 	comp15link->init();
-	testimu.reset(); // Very important!!!
-	horizontal_track_adi.reset();
-	vertical_track_adi.reset();
+	imu.reset(); // Very important!!!
+    transverse_rot_sensor.reset();
+	radial_rot_sensor.reset();
+	Pneumatics::getInstance()->getWings()->off();
+	Pneumatics::getInstance()->getIntake()->off();
+	Pneumatics::getInstance()->getSideHang()->off();
+	Pneumatics::getInstance()->getTopHang()->off();
 	gui::gui_init();
 	pros::delay(4000);
 }

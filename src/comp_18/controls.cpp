@@ -1,6 +1,5 @@
 #include "comp_18/controls.h"
 
-
 // Will add driver profiles later
 void controls() {
 
