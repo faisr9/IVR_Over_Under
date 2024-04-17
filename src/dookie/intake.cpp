@@ -61,3 +61,7 @@ void Intake::set_power(int power){
 void Intake::toggle_on(int rpm){
     set_rpm(rpm);
 }
+
+void Intake::toggle_reverse(int rpm){
+    set_rpm(-rpm);
+}

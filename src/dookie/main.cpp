@@ -5,7 +5,7 @@
 
 /* First method to run when program starts */
 void initialize() {
-	// pros::lcd::initialize(); // Temp until custom GUI
+	pros::lcd::initialize(); // Temp until custom GUI
 	// comp18link->init();
 	imu.reset(); // Very important!!!
     transverse_rot_sensor.reset();
@@ -14,7 +14,7 @@ void initialize() {
 	Pneumatics::getInstance()->getIntake()->off();
 	Pneumatics::getInstance()->getSideHang()->off();
 	Pneumatics::getInstance()->getTopHang()->off();
-	gui::gui_init();
+	// gui::gui_init();
     pros::delay(3000);
 }
 
@@ -32,10 +32,14 @@ void autonomous() {
 	// }
 	// else do nothing. make sure to select the auton!
 }
-
+bool lcd_trig = false;
+void lcd_callback() {
+	lcd_trig = true;
+}
 /* Opcontrol method runs by default (unless connected to comp controller )*/
 void opcontrol() {
 	bool control_enable = true;
+	lcd::register_btn2_cb(lcd_callback);
 
 	pros::Task controlsTask {[=] {controls();}};
 
@@ -51,8 +55,9 @@ void opcontrol() {
 			delay(1000);
 		}
 
-		if(ctrl_master.get_digital_new_press(BUTTON_A)) {
+		if(ctrl_master.get_digital_new_press(BUTTON_A) || lcd_trig) {
 			controlsTask.suspend();
+			lcd_trig = false;
 			control_enable = false;
 			for (int i = 0; i < 3; i++) {
 				ctrl_master.rumble(".");

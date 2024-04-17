@@ -27,7 +27,7 @@ pros::Motor left_back(5,pros::motor_gearset_e::E_MOTOR_GEAR_BLUE, false);
 pros::Motor_Group left_drive_motors = {left_front, left_front_middle, left_back_middle, left_back};
 pros::Motor_Group right_drive_motors = {right_front, right_front_middle, right_back_middle, right_back};
 
-pros::Motor intake(10); // in = negative, out = positive
+pros::Motor intake(10, true); // in = negative, out = positive
 Intake* intake_instance = Intake::createInstance(intake);
 
 // V5 Sensors //
