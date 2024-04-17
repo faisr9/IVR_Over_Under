@@ -53,7 +53,7 @@ void controls() {
             pros::delay(25);
         }
 
-        if(ctrl_master.get_digital_new_press(BUTTON_LEFT) || ctrl_master.get_digital_new_press(BUTTON_RIGHT)) {
+        if(ctrl_master.get_digital_new_press(BUTTON_DOWN)) {
             Pneumatics::getInstance()->getSideHang()->toggle();
             pros::delay(25);
         }
