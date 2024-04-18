@@ -47,12 +47,13 @@ void turnToAngle(traditional_drive& drive, double desiredAngleDeg, double tolera
 }
 
 //PID version of turn to angle
-void turnPID(traditional_drive& drive, double desiredAngleDeg, double toleranceDeg, double p, double i, double d) {
+void turnPID(traditional_drive& drive, double desiredAngleDeg, double toleranceDeg, double p, double i, double d, int maxTime) {
     PID t_PID = PID(p, i, d);
     // double degFromFinalAngle = desiredAngleDeg - drive.get_imu().get_heading();
     // degFromFinalAngle = optimizeAngle(degFromFinalAngle);
     double turn=0;
-    while(!t_PID.getState().targetReached){
+    double start_time = pros::millis();
+    while(!t_PID.getState().targetReached && pros::millis()-start_time < maxTime) {
         // degFromFinalAngle = ;
         turn = t_PID.updatePID(desiredAngleDeg, drive.get_imu().get_rotation(), toleranceDeg);
         // output = t_PID.updatePID(desiredAngleDeg, drive.get_imu().get_heading(), toleranceDeg);

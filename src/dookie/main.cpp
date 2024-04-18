@@ -24,9 +24,53 @@ void disabled() {}
 /* If connected to competition controller, this runs after initialize */
 void competition_initialize() {}
 
+void test_auton() {
+	double test_kP = 0.5;
+	while(1) {
+		if (ctrl_master.get_digital_new_press(BUTTON_LEFT)) {
+			test_kP -= 0.01;
+			printf("kP: %f\n", test_kP);
+		}
+		else if (ctrl_master.get_digital_new_press(BUTTON_RIGHT)) {
+			test_kP += 0.01;
+			printf("kP: %f\n", test_kP);
+		}
+		else if (ctrl_master.get_digital_new_press(BUTTON_UP)) {
+			test_kP -= 0.1;
+			printf("kP: %f\n", test_kP);
+		} 
+		else if (ctrl_master.get_digital_new_press(BUTTON_DOWN)) {
+			test_kP += 0.1;
+			printf("kP: %f\n", test_kP);
+		}
+
+		if (ctrl_master.get_digital_new_press(BUTTON_B)) {
+			printf("Breaking\n");
+			break;
+		}
+		else if (ctrl_master.get_digital_new_press(BUTTON_X)) {
+			printf("Current Heading: %f\n", imu.get_heading());
+			double startTime = pros::millis();
+			turnPID(tank_drive_18, 180, 0.2, test_kP, 0, 0, 2500);
+			printf("Time taken: %f\n", pros::millis() - startTime);
+			delay(750);
+			printf("After heading: %f\n", imu.get_heading());
+		}
+		else if (ctrl_master.get_digital_new_press(BUTTON_Y)) {
+			printf("Resetting IMU\n");
+			imu.reset(true);
+			printf("Done\n");
+		}
+
+		tank_drive_18.toggle_drive_mode();
+		delay(20);
+	}
+}
+
 /* Autonomous method */
 void autonomous() {
 	win_point_auton();
+	// test_auton();
 	// if(gui::selected_auton == gui::AUTON_COMP) {
 		// win_point_auton();
 	// }
@@ -40,6 +84,8 @@ void lcd_callback() {
 void opcontrol() {
 	bool control_enable = true;
 	lcd::register_btn2_cb(lcd_callback);
+
+	// test_auton();
 
 	pros::Task controlsTask {[=] {controls();}};
 
@@ -64,6 +110,8 @@ void opcontrol() {
 				delay(1000);
 			}
 			autonomous();
+			controlsTask.resume();
+			control_enable = true;
 		}
 
 		delay(100);
