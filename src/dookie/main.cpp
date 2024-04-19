@@ -7,7 +7,7 @@
 void initialize() {
 	pros::lcd::initialize(); // Temp until custom GUI
 	// comp18link->init();
-	imu.reset(); // Very important!!!
+	imu.reset(true); // Very important!!!
     transverse_rot_sensor.reset();
 	radial_rot_sensor.reset();
 	Pneumatics::getInstance()->getWings()->off();
@@ -15,7 +15,6 @@ void initialize() {
 	Pneumatics::getInstance()->getSideHang()->off();
 	Pneumatics::getInstance()->getTopHang()->off();
 	// gui::gui_init();
-    pros::delay(3000);
 }
 
 /* Runs when robot is disabled from competition controller after driver/auton */
@@ -69,6 +68,7 @@ void test_auton() {
 
 /* Autonomous method */
 void autonomous() {
+	lcd::clear();
 	win_point_auton();
 	// test_auton();
 	// if(gui::selected_auton == gui::AUTON_COMP) {
@@ -84,6 +84,7 @@ void lcd_callback() {
 void opcontrol() {
 	bool control_enable = true;
 	lcd::register_btn2_cb(lcd_callback);
+	lcd::print(0, "Ready");
 
 	// test_auton();
 
