@@ -124,6 +124,9 @@ class traditional_drive : public DriveParent
          * @return Turns the robot with a rotational speed relative to power
          */
         void turn_with_power(double power);
+        
+        void move_with_power(double power);
+        void tank_with_power(double latPower, double turnPower);
         /**
          * Runs the drive system
          * mode 0 = arcade, 1 = tank, 2 = hybrid

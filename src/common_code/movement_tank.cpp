@@ -1,4 +1,5 @@
 #include "common_code/movement_tank.h"
+#include "common_code/PID.h"
 
 void moveMotors(traditional_drive& drive, double leftRPM, double rightRPM) {
     drive.get_motor_group(0).move_velocity(leftRPM);
@@ -40,6 +41,65 @@ void turnToAngle(traditional_drive& drive, double desiredAngleDeg, double tolera
             break;
         } 
         pros::delay(delay_time);
+    }
+    // need to stop motors in case of break statement
+    stopMotors(drive);
+}
+
+//PID version of turn to angle
+void turnPID(traditional_drive& drive, double desiredAngleDeg, double toleranceDeg, double p, double i, double d, int maxTime) {
+    PID t_PID = PID(p, i, d);
+    double degFromFinalAngle = 0;
+    double turn=0;
+    double start_time = pros::millis();
+    while(!t_PID.getState().targetReached && pros::millis()-start_time < maxTime) {
+        degFromFinalAngle = optimizeAngle(desiredAngleDeg - drive.get_imu().get_heading());
+        turn = t_PID.updatePID(desiredAngleDeg, drive.get_imu().get_heading(), toleranceDeg, degFromFinalAngle);
+        // output = t_PID.updatePID(desiredAngleDeg, drive.get_imu().get_heading(), toleranceDeg);
+        drive.turn_with_power(turn);
+        // if(std::abs(turn)<=1){ break; }
+        if(std::abs(degFromFinalAngle) <= toleranceDeg) { break; }
+        delay(50);
+    }
+    // need to stop motors in case of break statement
+    stopMotors(drive);
+}
+
+void latPID(traditional_drive& drive, double target, double tolerance, double p, double i, double d, int maxTime) {
+    PID l_PID = PID(p, i, d);
+    double lateral=0;
+    double initVal = 2 * M_PI * (1.96 * 0.0254 / 2) * (drive.getOdom().getRadialValue() / 5000);
+    double deltaVal = 0;
+    double start_time = pros::millis();
+    while(!l_PID.getState().targetReached && pros::millis()-start_time < maxTime){
+        deltaVal = convert::mToIn((2 * M_PI * (1.96 * 0.0254 / 2) * (drive.getOdom().getRadialValue() / 5000))-initVal);
+        lcd::set_text(7, "deltaVal: " + std::to_string(deltaVal));
+        lateral = l_PID.updatePID(target, deltaVal, tolerance);
+        drive.move_with_power(lateral);
+        if(std::abs(l_PID.getState().error) <= tolerance) { break; }
+        delay(50);
+    }
+    // need to stop motors in case of break statement
+    stopMotors(drive);
+}
+
+void movePID(traditional_drive& drive, double target, double desiredAngleDeg, double latTolerance, double turnTolerance, double lP, double lI, double lD,double tP, double tI, double tD, int maxTime) {
+    PID l_PID = PID(lP, lI, lD);
+    PID t_PID = PID(tP, tI, tD);
+    double lateral=0;
+    double turn=0;
+    double initVal = 2 * M_PI * (1.96 * 0.0254 / 2) * (drive.getOdom().getRadialValue() / 5000);
+    double deltaVal = 0;
+    double degFromFinalAngle = 0;
+    double start_time = pros::millis();
+    while(!l_PID.getState().targetReached && pros::millis()-start_time < maxTime){
+        degFromFinalAngle = optimizeAngle(desiredAngleDeg - drive.get_imu().get_heading());
+        deltaVal = convert::mToIn((2 * M_PI * (1.96 * 0.0254 / 2) * (drive.getOdom().getRadialValue() / 5000))-initVal);
+        lateral = l_PID.updatePID(target, deltaVal, latTolerance);
+        turn = t_PID.updatePID(desiredAngleDeg, drive.get_imu().get_heading(), turnTolerance, degFromFinalAngle);
+        drive.tank_with_power(lateral, turn);
+        if(std::abs(l_PID.getState().error) <= latTolerance) { break; }
+        delay(20);
     }
     // need to stop motors in case of break statement
     stopMotors(drive);
