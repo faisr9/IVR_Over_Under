@@ -41,7 +41,7 @@ class PID {
         PID_consts_s getConstants();
         PID_state_s getState();
 
-        double updatePID(double target, double current, double tolerance);
+        double updatePID(double target, double current, double tolerance, double error=0);
         void resetPID();
         // double runPID(double target, pros::ADIEncoder &sensor);
         // double runPID(double target, pros::IMU &sensor);
