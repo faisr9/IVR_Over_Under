@@ -49,10 +49,14 @@ PID::PID_consts_s PID::getConstants(){
 }
 
 //Update PID loop
-double PID::updatePID(double target, double current, double tolerance){
-    pid_state.error = target-current;
-    if(std::abs(pid_state.error) > tolerance && !pid_state.targetReached){
-        // pid_state.targetReached = false;
+double PID::updatePID(double target, double current, double tolerance, double error){
+    if(error != 0)
+        pid_state.error = error;
+    else
+        pid_state.error = target-current;
+    
+    // if(std::abs(pid_state.error) > tolerance && !pid_state.targetReached){
+        pid_state.targetReached = false;
         pid_state.integral += pid_state.error;
         //Ensures integral doesn't get too large
         if((pid_state.error > 0 && pid_state.lastError < 0) || (pid_state.error < 0 && pid_state.lastError > 0))
@@ -72,16 +76,17 @@ double PID::updatePID(double target, double current, double tolerance){
             pid_state.saturated = false;
         }
         pid_state.lastOutput = pid_state.output;
-        // if(std::abs(pid_state.output-pid_state.lastOutput) < .3){
-        //     pid_state.targetReached = true;
-        //     return 0;
-        // }
-        pid_state.targetReached = false;
+        // delay(20);
+        if(std::abs(pid_state.error) < tolerance){
+            pid_state.targetReached = true;
+        } else {
+            pid_state.targetReached = false;
+        }
         return pid_state.output;
-    } else {
-        pid_state.targetReached = true;
-        return 0;
-    }
+    // } else {
+    //     pid_state.targetReached = true;
+    //     return 0;
+    // }
 }
 
 //Reset PID loop
