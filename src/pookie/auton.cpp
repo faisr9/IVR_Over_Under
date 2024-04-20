@@ -49,32 +49,33 @@ void win_point_auton() {
         Pneumatics::getInstance()->getWings()->on();
         movePID(tank_drive_15, 9.5, 135,1000);
         delay(50);
-        turnToAngle(tank_drive_15, 126.5, 2);
+        turnToAngle(tank_drive_15, 127, 2);
         Intake::getInstance()->toggle_on(-600);
         Pneumatics::getInstance()->getWings()->off();
         delay(50);
         movePID(tank_drive_15, 9, 140, 1500);
         delay(50);
         turnToAngle(tank_drive_15, 130, 2);
-        vector<vector<double>> toOtherDepot = {{convert::mToIn(tank_drive_15.getOdom().getX()), convert::mToIn(tank_drive_15.getOdom().getX())}, {2.5*24, 7.8}, {108, 7.5}}; //pickup 1st WP triball along path 
+        vector<vector<double>> toOtherDepot = {{convert::mToIn(tank_drive_15.getOdom().getX()), convert::mToIn(tank_drive_15.getOdom().getX())}, {2.5*24, 7.8}, {71, 7.5}, {108, 7.5}}; //pickup 1st WP triball along path 
         move(toOtherDepot, 50, false, true, 1.5);
         turnToAngle(tank_drive_15, 50, 2);
         ////////
 
         // Score WP Triballs
-        vector<vector<double>> toGoal = {{convert::mToIn(tank_drive_15.getOdom().getX()), convert::mToIn(tank_drive_15.getOdom().getX())}, {117,13}, {126,16}, {129, 25}, {130, 27}}; //pickup 2nd WP triball along path
+        vector<vector<double>> toGoal = {{convert::mToIn(tank_drive_15.getOdom().getX()), convert::mToIn(tank_drive_15.getOdom().getX())}, {117,13}, {126,16}, {129, 25}, {131, 27}}; //pickup 2nd WP triball along path
         move(toGoal, 15, false, false, 2,.5);
         turnToAngle(tank_drive_15, 15, 2);
         delay(50);
         Intake::getInstance()->toggle_on();
-        delay(50);
+        delay(50);        
         Pneumatics::getInstance()->getIntake()->on();
-        for(int i=0; i<4; i++){
+        movePID(tank_drive_15, -5, 355, 1000);
+        for(int i=0; i<3; i++){
             delay(50);
             tank_drive_15.move_with_power(85);
-            waitUntil(tank_drive_15.getOdom().getY() >= convert::inToM(32));
+            waitUntil(tank_drive_15.getOdom().getY() >= convert::inToM(31));
             tank_drive_15.move_with_power(0);
-            movePID(tank_drive_15, -10, 20-i*5,1000);
+            movePID(tank_drive_15, -9.5, -10-i*7,1000);
         }
         Pneumatics::getInstance()->getIntake()->off();
         ///////
@@ -85,10 +86,10 @@ void win_point_auton() {
 
         // vector<vector<double>> goBack = {{tank_drive_15.getOdom().getX(), tank_drive_15.getOdom().getY()}, {4.7*24, 24}}; 
         // move(goBack, 315, true, false, 2, .35);
-        movePID(tank_drive_15, 5, 0, 1000);
+        movePID(tank_drive_15, 4, 0, 1000);
         Intake::getInstance()->stop();
         delay(50);
-        turnToAngle(tank_drive_15, 270, 2);
+        turnToAngle(tank_drive_15, 250, 2);
         // tank_drive_15.move_with_power(-55);
         // delay(500);
         // tank_drive_15.move_with_power(0);
@@ -96,7 +97,7 @@ void win_point_auton() {
         Intake::getInstance()->toggle_on(-600);
         Pneumatics::getInstance()->getWings()->on();
         vector<vector<double>> sweep = {{convert::mToIn(tank_drive_15.getOdom().getX()), convert::mToIn(tank_drive_15.getOdom().getY())},
-                                            {108,22.5}, {85, 40}, {87, 67}, {90, 64}, {115, 64}}; //pickup 2nd WP triball along path
+                                            {100,28}, {86, 40}, {89, 72}, {96, 66}, {115, 69}}; //pickup 2nd WP triball along path
         move(sweep, 90, false, true, 2, .35);
         delay(50);
         Intake::getInstance()->toggle_on();
@@ -106,7 +107,7 @@ void win_point_auton() {
             tank_drive_15.move_with_power(85);
             waitUntil(tank_drive_15.getOdom().getX() >= convert::inToM(122));
             tank_drive_15.move_with_power(0);
-            movePID(tank_drive_15, -10, 90,1000);   
+            movePID(tank_drive_15, -10, 90, 1100);
         }
         /////
 
@@ -114,7 +115,8 @@ void win_point_auton() {
         Intake::getInstance()->toggle_on(-600);
         delay(50);
         turnToAngle(tank_drive_15, 180, 2);
-        vector<vector<double>> toClimb = {{convert::mToIn(tank_drive_15.getOdom().getX()), convert::mToIn(tank_drive_15.getOdom().getY())}, {108,30}, {80, 31}}; //pickup 2nd WP triball along path
+        vector<vector<double>> toClimb = {{convert::mToIn(tank_drive_15.getOdom().getX()), convert::mToIn(tank_drive_15.getOdom().getY())}, 
+                                            {100, 34}, {108,30.7}, {81, 31.5}}; //pickup 2nd WP triball along path
         move(toClimb, 280, false, false, 2, .35);
         turnToAngle(tank_drive_15, 280, 2);
         // tank_drive_15.move_with_power(55);
@@ -122,7 +124,7 @@ void win_point_auton() {
         // tank_drive_15.move_with_power(0);
         // movePID(tank_drive_15, 4, 290, 1000);
         tank_drive_15.split_tank_with_power(28,0);
-        delay(500);
+        delay(800);
         tank_drive_15.move_with_power(0);
         ctrl_master.rumble(".");
         // delay(100000);
