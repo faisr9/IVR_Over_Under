@@ -96,7 +96,7 @@ void win_point_auton() {
         Intake::getInstance()->toggle_on(-600);
         Pneumatics::getInstance()->getWings()->on();
         vector<vector<double>> sweep = {{convert::mToIn(tank_drive_15.getOdom().getX()), convert::mToIn(tank_drive_15.getOdom().getY())},
-                                            {108,30}, {87, 50}, {87, 64}, {115, 67}}; //pickup 2nd WP triball along path
+                                            {108,22.5}, {85, 40}, {87, 67}, {90, 64}, {115, 64}}; //pickup 2nd WP triball along path
         move(sweep, 90, false, true, 2, .35);
         delay(50);
         Intake::getInstance()->toggle_on();
@@ -111,8 +111,19 @@ void win_point_auton() {
         /////
 
         // To Climb Bar (WP END)
-
+        Intake::getInstance()->toggle_on(-600);
         delay(50);
+        turnToAngle(tank_drive_15, 180, 2);
+        vector<vector<double>> toClimb = {{convert::mToIn(tank_drive_15.getOdom().getX()), convert::mToIn(tank_drive_15.getOdom().getY())}, {108,30}, {80, 31}}; //pickup 2nd WP triball along path
+        move(toClimb, 280, false, false, 2, .35);
+        turnToAngle(tank_drive_15, 280, 2);
+        // tank_drive_15.move_with_power(55);
+        // delay(400);
+        // tank_drive_15.move_with_power(0);
+        // movePID(tank_drive_15, 4, 290, 1000);
+        tank_drive_15.split_tank_with_power(28,0);
+        delay(500);
+        tank_drive_15.move_with_power(0);
         ctrl_master.rumble(".");
         // delay(100000);
     }};
@@ -152,7 +163,7 @@ void win_point_auton() {
     // Intake Stop
     Intake::getInstance()->stop();
     // Wings Close
-    Pneumatics::getInstance()->getWings()->off();
+    // Pneumatics::getInstance()->getWings()->off();
 }
 
 void non_win_point_auton() {

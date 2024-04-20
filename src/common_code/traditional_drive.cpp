@@ -222,6 +222,12 @@ void traditional_drive::tank_with_power(double latPower, double turnPower)
     right_side->move(latPower-turnPower);
 }
 
+void traditional_drive::split_tank_with_power(double leftPow, double rightPow)
+{
+    left_side->move(leftPow);
+    right_side->move(rightPow);
+}
+
 Motor_Group& traditional_drive::get_motor_group(bool side)
 {
     if (side == 0)
