@@ -208,7 +208,16 @@ void followPathX(std::vector<std::vector<double>>& path, x_drive& x_drive, Odom&
         double angle_diff = optimizeAngle(finalAngleDeg - odom.getHeading());
         double degrees_per_sec = angle_diff / est_time_remaining;
         double rots_per_sec = degrees_per_sec / 360.0;
-        double needed_rot_rpm = std::min(rots_per_sec * kROT_SEC_TO_RPM, kMAX_ROT_RPM);
+        double needed_rot_rpm = rots_per_sec * kROT_SEC_TO_RPM;
+        // avoid severe jerky motions at the end of the path
+        if (est_time_remaining < 0.4) { // arbitrary number
+            if (std::abs(angle_diff) < (final_angle_tolerance_deg / 2)) {
+                needed_rot_rpm = 0; // if already in range well enough just don't turn anymore
+            } else {
+                needed_rot_rpm = std::min(20.0, needed_rot_rpm); // if room for improvement use it but cap to avoid big jerky motions
+            } 
+        }
+         // std::min(rots_per_sec * kROT_SEC_TO_RPM, kMAX_ROT_RPM);
 
         x_drive.app_move({translationalRPM, desiredAngleX_Driv}, needed_rot_rpm, MAX_TRANSLATIONAL_RPM, false);
 
