@@ -27,5 +27,8 @@ void opcontrol() {
 	lcd::print(2,"Thrower Skills");
 	skills();
 
-	controls();
+	// controls();
 }
+
+// 4 rot, 9.35
+// 3, 7.13

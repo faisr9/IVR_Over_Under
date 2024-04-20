@@ -31,7 +31,10 @@ void controls()
     //   p += 0.1;
     // }
 
-    xdriveThrower.run();
+    xdriveThrower.field_centric_move({1.0, M_PI_2}, 0);
+
+    // [0, 1]
+    // xdriveThrower.turn_with_power(0.5);
 
     pros::delay(20);
   }
