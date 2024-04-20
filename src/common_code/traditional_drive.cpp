@@ -182,6 +182,37 @@ void traditional_drive::field_centric_move(pair<double, double> movement_vector)
     robot_centric_move(movement_vector);
 }
 
+// copy/pasted
+void traditional_drive::app_move(std::pair<double, double> mag_angle_vector, double maxRPM, bool reversed) {
+    // Prioritize turning by maintaining rotationalRPM difference (rotationalRPM * 2)
+    double leftRPM;
+    double rightRPM;
+    double translationalRPM = mag_angle_vector.first;
+    double rotationalRPM = mag_angle_vector.second;
+    if (translationalRPM + std::abs(rotationalRPM) > maxRPM) {
+        // Limit translational velocity when left or rightRPM would be > maxRPM by
+        // maintaining the difference between left and rightRPM by replacing 
+        // translationalRPM with maxRPM - abs(rotationalRPM)
+
+        // this also means that if the robot is not within 
+        // (maxRPM / p) degrees of its desired angle the robot
+        // will only rotate until it gets within that range.
+        leftRPM = maxRPM - std::abs(rotationalRPM) + rotationalRPM;
+        rightRPM = maxRPM - std::abs(rotationalRPM) - rotationalRPM;
+    } else {
+        leftRPM = translationalRPM + rotationalRPM;
+        rightRPM = translationalRPM - rotationalRPM;
+    }
+    // if (printMessages) pros::lcd::set_text(7, std::to_string(leftRPM));
+    if (reversed) {
+        get_motor_group(0).move_velocity(-rightRPM);
+        get_motor_group(1).move_velocity(-leftRPM);
+    } else {
+        get_motor_group(0).move_velocity(leftRPM);
+        get_motor_group(1).move_velocity(rightRPM);
+    }
+}
+
 void traditional_drive::turn_with_power(double power)
 {
     // multiply voltage by power factor

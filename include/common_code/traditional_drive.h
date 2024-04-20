@@ -127,6 +127,8 @@ class traditional_drive : public DriveParent
         
         void move_with_power(double power);
         void tank_with_power(double latPower, double turnPower);
+
+        void app_move(std::pair<double, double> mag_angle_vector, double max_rpm, bool reversed);
         /**
          * Runs the drive system
          * mode 0 = arcade, 1 = tank, 2 = hybrid

@@ -44,11 +44,11 @@ double lineAndAngleAngularDiff(double dx, double dy, double angleDegrees) {
     return optimizeAngle(angularDiff);
 }
 
-double getRotationalRPM(traditional_drive& drive, double desiredAngleDeg, bool reversed, double p) {
+double getRotationalRPM(double curr_heading, double desiredAngleDeg, bool reversed, double p) {
     if (reversed) {
-        return optimizeAngle(desiredAngleDeg - (reverseAngle(drive.get_imu().get_heading()))) * p;
+        return optimizeAngle(desiredAngleDeg - (reverseAngle(curr_heading))) * p;
     } else {
-        return optimizeAngle(desiredAngleDeg - drive.get_imu().get_heading()) * p;
+        return optimizeAngle(desiredAngleDeg - curr_heading) * p;
     }
 }
 
