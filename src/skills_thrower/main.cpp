@@ -4,6 +4,12 @@
 /* First method to run when program starts */
 void initialize() {
 	pros::lcd::initialize(); // Temp until custom GUI
+	imu.reset(); // Very important!!!
+    transverse_rot_sensor.reset();
+	radial_rot_sensor.reset();
+	pros::delay(3000);
+	x_drive_odom.initTracker(0, 0, 0);
+	pros::delay(50);
 }
 
 /* Runs when robot is disabled from competition controller after driver/auton */
