@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "Worlds_Auton",
+    "project_name": "WP_AUTO",
     "target": "v5",
     "templates": {
       "kernel": {
