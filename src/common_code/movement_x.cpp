@@ -2,7 +2,7 @@
 #include "common_code/odom.h"
 
 
-void followPath(std::vector<std::vector<double>>& path, x_drive& x_drive, Odom odom, double finalAngleDeg, bool spinAtEnd, bool goal_at_end, double lookForwardRadius, double final_angle_tolerance_deg, double MAX_TRANSLATIONAL_RPM, double maxRPM, double minTransRPM, bool printMessages, double turnP) {    
+void followPathX(std::vector<std::vector<double>>& path, x_drive& x_drive, Odom odom, double finalAngleDeg, bool spinAtEnd, bool goal_at_end, double lookForwardRadius, double final_angle_tolerance_deg, double MAX_TRANSLATIONAL_RPM, double maxRPM, double minTransRPM, bool printMessages, double turnP) {    
     double firstX = path[0][0];
     double firstY = path[0][1];
     double currentIndex = 0;
@@ -207,7 +207,7 @@ void followPath(std::vector<std::vector<double>>& path, x_drive& x_drive, Odom o
 
     // Turn to face final angle. This runs regardless of spinOnSpot to guarantee we're facing
     // the desired final angle
-    turnToAngleX(x_drive, finalAngleDeg, final_angle_tolerance_deg, false, turnP);
+    turnToAngleX(x_drive, odom, finalAngleDeg, final_angle_tolerance_deg, false, turnP);
     // moveMotors(drive, 0.0, 0.0);
     x_drive.stop();
 
@@ -218,4 +218,33 @@ void followPath(std::vector<std::vector<double>>& path, x_drive& x_drive, Odom o
         pros::lcd::set_text(5, "Dist from end: " + std::to_string(sqrt(pow(odom.getX() - ORIGINAL_PATH_FINAL[0], 2) + pow(odom.getY() - ORIGINAL_PATH_FINAL[1], 2))));
         pros::lcd::set_text(6, "DONE");
     }
+}
+
+
+// to be used exclusively when only turning (no translation)
+void turnToAngleX(x_drive& x_drive, Odom odom, double desiredAngleDeg, double toleranceDeg, bool debug, double p, int time_in_range_millis) {
+    double degFromFinalAngle = desiredAngleDeg - odom.getHeading();
+    degFromFinalAngle = optimizeAngle(degFromFinalAngle);
+    double start_time = pros::millis();
+    double in_range_time = 0;
+    const int required_time = time_in_range_millis;
+    const int delay_time = 20;
+    while (in_range_time < required_time) {
+        if (std::abs(degFromFinalAngle) <= toleranceDeg) {
+            in_range_time += (delay_time);
+        } else {
+            in_range_time = 0;
+        }
+        degFromFinalAngle = optimizeAngle(desiredAngleDeg - odom.getHeading());
+        double rotRPM = degFromFinalAngle * p;
+        x_drive.turn_with_power(rotRPM / x_drive.get_max_rpm());
+        if (debug) pros::lcd::set_text(4, "Robot angle: " + std::to_string(odom.getHeading()));
+        if (pros::millis() - start_time > 5000) {
+            if (debug) pros::lcd::set_text(6, "Turn to angle timeout reached!!!");
+            break;
+        } 
+        pros::delay(delay_time);
+    }
+    // need to stop motors in case of break statement
+    x_drive.stop();
 }

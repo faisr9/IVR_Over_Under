@@ -96,6 +96,11 @@ void x_drive::stop()
     back_right_->brake();
 }
 
+double x_drive::get_max_rpm() const {
+    return maxspeed;
+}
+
+
 void x_drive::turn_with_power(double power)
 {
     pair<double, double> new_movement_vector(0.0, 0.0); // no movement
