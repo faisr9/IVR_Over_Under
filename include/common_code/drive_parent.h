@@ -52,7 +52,7 @@ class DriveParent {
          * of the robot's drive train :)
          * 
         */
-        virtual void app_move(std::pair<double, double> mag_angle_vector, double max_rpm, bool reversed) = 0;
+        virtual void app_move(std::pair<double, double> mag_angle_vector, double turn_rpm, double max_rpm, bool reversed) = 0;
 
         std::string get_drive_type() const;
 

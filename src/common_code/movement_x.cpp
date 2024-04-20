@@ -2,7 +2,7 @@
 #include "common_code/odom.h"
 
 
-void followPathX(std::vector<std::vector<double>>& path, x_drive& x_drive, Odom odom, double finalAngleDeg, bool spinAtEnd, bool goal_at_end, double lookForwardRadius, double final_angle_tolerance_deg, double MAX_TRANSLATIONAL_RPM, double maxRPM, double minTransRPM, bool printMessages, double turnP) {    
+void followPathX(std::vector<std::vector<double>>& path, x_drive& x_drive, Odom& odom, double finalAngleDeg, bool spinAtEnd, bool goal_at_end, double lookForwardRadius, double final_angle_tolerance_deg, double MAX_TRANSLATIONAL_RPM, double maxRPM, double minTransRPM, bool printMessages, double turnP) {    
     double firstX = path[0][0];
     double firstY = path[0][1];
     double currentIndex = 0;
@@ -193,10 +193,11 @@ void followPathX(std::vector<std::vector<double>>& path, x_drive& x_drive, Odom 
 
         if (printMessages) pros::lcd::set_text(2, "remaining dist: " + std::to_string(remaining_dist));
         // pros::lcd::set_text(2, "dist_to_end: " + std::to_string(distances_to_end[currentIndex]));
-        double translationalRPM = getTranslationalRPM(remaining_dist, MAX_TRANSLATIONAL_RPM, distances_to_end[0], minTransRPM);
+        double translationalRPM = getTranslationalRPM(remaining_dist, MAX_TRANSLATIONAL_RPM, distances_to_end[0], minTransRPM, 400);
         // pros::lcd::set_text(3, "trans RPM: " + std::to_string(translationalRPM));
-
-        x_drive.app_move({translationalRPM, desiredAngleX_Driv}, MAX_TRANSLATIONAL_RPM, false);
+        double rot_rpm = getRotationalRPM(odom.getHeading(), finalAngleDeg, false, turnP);
+        // need trans rpm beteween 0 and 1 !
+        x_drive.app_move({translationalRPM, desiredAngleX_Driv}, rot_rpm, MAX_TRANSLATIONAL_RPM, false);
 
         pros::delay(50);
     }
@@ -213,7 +214,7 @@ void followPathX(std::vector<std::vector<double>>& path, x_drive& x_drive, Odom 
 
 
     // Delay and reprint final dist from target location to see how inaccurate this is because this isn't using a trapezoidal profile
-    // pros::delay(1500); imagine there being a random 1.5 second delay left lying around from testing
+    pros::delay(1500); // imagine there being a random 1.5 second delay left lying around from testing
     if (printMessages) {
         pros::lcd::set_text(5, "Dist from end: " + std::to_string(sqrt(pow(odom.getX() - ORIGINAL_PATH_FINAL[0], 2) + pow(odom.getY() - ORIGINAL_PATH_FINAL[1], 2))));
         pros::lcd::set_text(6, "DONE");
@@ -222,7 +223,7 @@ void followPathX(std::vector<std::vector<double>>& path, x_drive& x_drive, Odom 
 
 
 // to be used exclusively when only turning (no translation)
-void turnToAngleX(x_drive& x_drive, Odom odom, double desiredAngleDeg, double toleranceDeg, bool debug, double p, int time_in_range_millis) {
+void turnToAngleX(x_drive& x_drive, Odom& odom, double desiredAngleDeg, double toleranceDeg, bool debug, double p, int time_in_range_millis) {
     double degFromFinalAngle = desiredAngleDeg - odom.getHeading();
     degFromFinalAngle = optimizeAngle(degFromFinalAngle);
     double start_time = pros::millis();

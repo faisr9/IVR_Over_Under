@@ -307,7 +307,7 @@ void followPath(std::vector<std::vector<double>>& path, traditional_drive& drive
 
         // ideally in the future pure pursuit is oblivious of the robot's drive train. First step is to
         // use this app_move function from DriveParent
-        drive.app_move({translationalRPM, rotationalRPM}, maxRPM, reversed);
+        drive.app_move({translationalRPM, rotationalRPM}, 0, maxRPM, reversed);
 
         pros::delay(50);
     }

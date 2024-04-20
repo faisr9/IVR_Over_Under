@@ -53,14 +53,14 @@ double getRotationalRPM(double curr_heading, double desiredAngleDeg, bool revers
 }
 
 double getTranslationalRPM(double dist_to_goal_meters, double max_translational_rpm, double total_path_distance, double minimum_rpm, double rpm_per_meter) { // 540
-    double MIN_RPM = minimum_rpm;
-    if ((total_path_distance / 3) < std::abs(dist_to_goal_meters)) {
-        // less than 2 thirds through path
-        MIN_RPM = 125.0;
-        // pros::lcd::set_text(5, "First 2/3");
-    } else {
-        // pros::lcd::set_text(5, "Last 1/3");
-    }
+    // idk why I put this block here bc one can just set a minimum rpm that's slightly higher
+    // if ((total_path_distance / 3) < std::abs(dist_to_goal_meters)) {
+    //     // less than 2 thirds through path
+    //     MIN_RPM = 125.0;
+    //     // pros::lcd::set_text(5, "First 2/3");
+    // } else {
+    //     // pros::lcd::set_text(5, "Last 1/3");
+    // }
     // pros::lcd::set_text(6, "dist left: " + std::to_string(dist_to_goal_meters));
     // pros::lcd::set_text(7, "total dist: " + std::to_string(total_path_distance));
     // double NOT_TURNING_CONST = 20.0;
@@ -73,7 +73,7 @@ double getTranslationalRPM(double dist_to_goal_meters, double max_translational_
     //     // so we should give it a boost
     //     // percent error calculation 
     // }
-    return std::min(std::max(std::abs(dist_to_goal_meters) * rpm_per_meter, MIN_RPM), max_translational_rpm);
+    return std::min(std::max(std::abs(dist_to_goal_meters) * rpm_per_meter, minimum_rpm), max_translational_rpm);
 }
 
 double calculate_distance_two_points(std::vector<double> point_one, std::vector<double> point_two) {

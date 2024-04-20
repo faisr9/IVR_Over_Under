@@ -20,12 +20,12 @@ void competition_initialize() {}
 
 /* Autonomous method */
 void autonomous() {
-	skills();
 }
 
 /* Opcontrol method runs by default (unless connected to comp controller )*/
 void opcontrol() {
 	lcd::print(2,"Thrower Skills");
+	skills();
 
 	controls();
 }

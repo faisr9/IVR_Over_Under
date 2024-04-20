@@ -183,7 +183,7 @@ void traditional_drive::field_centric_move(pair<double, double> movement_vector)
 }
 
 // copy/pasted
-void traditional_drive::app_move(std::pair<double, double> mag_angle_vector, double maxRPM, bool reversed) {
+void traditional_drive::app_move(std::pair<double, double> mag_angle_vector, double turn_rpm, double maxRPM, bool reversed) {
     // Prioritize turning by maintaining rotationalRPM difference (rotationalRPM * 2)
     double leftRPM;
     double rightRPM;

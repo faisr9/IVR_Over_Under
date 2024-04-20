@@ -44,7 +44,7 @@ void x_drive::robot_centric_move(pair<double, double> movement_vector, double tu
     auto move_1 = 0.0; // first diagonal component of movement
     auto move_2 = 0.0; // second diagonal component of movement
     auto scaling = 0.0; // scale factor for movement
-    if (movement_vector.first > 0.2) // consider joystick deadzone
+    if (movement_vector.first > 0.01) // consider joystick deadzone
     {
         speed = max_rpm * movement_vector.first; // normalized speed of movement times max speed
         dir -= M_PI / 4;                                 // adjust direction by 45˚ to get the diagonal components of movement
@@ -89,6 +89,11 @@ void x_drive::field_centric_move(pair<double, double> movement_vector, double tu
     robot_centric_move(new_movement_vector, turn_right_x, max_rpm);
 }
 
+void x_drive::app_move(std::pair<double, double> mag_angle_vector, double turn_rpm, double max_rpm, bool reversed) {
+    field_centric_move({mag_angle_vector.first / max_rpm, mag_angle_vector.second}, turn_rpm / max_rpm, max_rpm); 
+}
+
+
 void x_drive::stop()
 {
     front_left_->brake();
@@ -120,6 +125,7 @@ void x_drive::run()
         target.second = atan2(y, x);                                  // direction to move in radians
     }
 
-    auto turn = master_->get_analog(E_CONTROLLER_ANALOG_RIGHT_X) / 127.0; // normalized turn amount
+    double turn_driver_scale = 0.5;
+    auto turn = master_->get_analog(E_CONTROLLER_ANALOG_RIGHT_X) / 127.0 * turn_driver_scale; // normalized turn amount scaled to driver preference
     field_centric_move(target, turn);                                    // move the robot
 }

@@ -80,7 +80,7 @@ public:
      * brake all motors
      */
     void stop();
-    void app_move(std::pair<double, double> mag_angle_vector, double max_rpm, bool reversed) {field_centric_move(mag_angle_vector, 0, max_rpm); }
+    void app_move(std::pair<double, double> mag_angle_vector, double turn_rpm, double max_rpm, bool reversed);
     double get_max_rpm() const;
 
 protected:
