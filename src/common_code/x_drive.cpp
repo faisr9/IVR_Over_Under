@@ -37,6 +37,7 @@ x_drive::~x_drive()
 void x_drive::robot_centric_move(pair<double, double> movement_vector, double turn, double max_rpm)
 {
     if (max_rpm == -1) max_rpm = maxspeed;
+    else max_rpm = std::min(max_rpm, maxspeed);
     auto speed = 0.0;
     auto dir = movement_vector.second; // direction in radians
 

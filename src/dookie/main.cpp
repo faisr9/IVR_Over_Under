@@ -68,8 +68,14 @@ void test_auton() {
 
 /* Autonomous method */
 void autonomous() {
-	lcd::clear();
-	win_point_auton();
+	std::vector<std::vector<double, double>> test_path = {{0, 0}, {0, 1}, {1, 1}, {1, 0}, {0, 0}};
+	tank_drive_18.getOdom().initTracker(0, 0, 0);
+	pros::delay(50);
+	followPath(test_path, tank_drive_18, 270, false);
+
+
+	// lcd::clear();
+	// win_point_auton();
 	// test_auton();
 	// if(gui::selected_auton == gui::AUTON_COMP) {
 		// win_point_auton();

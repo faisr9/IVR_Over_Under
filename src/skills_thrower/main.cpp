@@ -19,7 +19,9 @@ void disabled() {}
 void competition_initialize() {}
 
 /* Autonomous method */
-void autonomous() {}
+void autonomous() {
+	skills();
+}
 
 /* Opcontrol method runs by default (unless connected to comp controller )*/
 void opcontrol() {
