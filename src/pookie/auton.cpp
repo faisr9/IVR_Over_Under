@@ -15,7 +15,7 @@ const double AUTON_DURATION = 45000 - 500; // 45 seconds minus 500 milliseconds 
 void win_point_auton() {
 
     const double STARTING_X = convert::inToM(13);
-    const double STARTING_Y = convert::inToM(22.5);
+    const double STARTING_Y = convert::inToM(21.5);
     const double STARTING_ANGLE = 135;
     const double AUTON_START_TIME = pros::millis();
     double AUTON_RUN_TIME = 0;
@@ -53,7 +53,7 @@ void win_point_auton() {
         Intake::getInstance()->toggle_on(-600);
         Pneumatics::getInstance()->getWings()->off();
         delay(50);
-        movePID(tank_drive_15, 9, 140, 1500);
+        movePID(tank_drive_15, 9, 145, 1000);
         delay(50);
         turnToAngle(tank_drive_15, 130, 2);
         vector<vector<double>> toOtherDepot = {{convert::mToIn(tank_drive_15.getOdom().getX()), convert::mToIn(tank_drive_15.getOdom().getX())}, {2.5*24, 7.8}, {71, 7.5}, {108, 7.5}}; //pickup 1st WP triball along path 
@@ -62,20 +62,20 @@ void win_point_auton() {
         ////////
 
         // Score WP Triballs
-        vector<vector<double>> toGoal = {{convert::mToIn(tank_drive_15.getOdom().getX()), convert::mToIn(tank_drive_15.getOdom().getX())}, {117,13}, {126,16}, {129, 25}, {131, 27}}; //pickup 2nd WP triball along path
+        vector<vector<double>> toGoal = {{convert::mToIn(tank_drive_15.getOdom().getX()), convert::mToIn(tank_drive_15.getOdom().getX())}, {108,9}, {115, 11}, {126,13}, {128, 20}, {129, 27}}; //pickup 2nd WP triball along path
         move(toGoal, 15, false, false, 2,.5);
         turnToAngle(tank_drive_15, 15, 2);
         delay(50);
         Intake::getInstance()->toggle_on();
         delay(50);        
         Pneumatics::getInstance()->getIntake()->on();
-        movePID(tank_drive_15, -5, 355, 1000);
-        for(int i=0; i<3; i++){
+        movePID(tank_drive_15, -5, 5, 1000);
+        for(int i=0; i<4; i++){
             delay(50);
             tank_drive_15.move_with_power(85);
             waitUntil(tank_drive_15.getOdom().getY() >= convert::inToM(31));
             tank_drive_15.move_with_power(0);
-            movePID(tank_drive_15, -9.5, -10-i*7,1000);
+            movePID(tank_drive_15, -10, 30-i*10,1000);
         }
         Pneumatics::getInstance()->getIntake()->off();
         ///////
@@ -97,10 +97,11 @@ void win_point_auton() {
         Intake::getInstance()->toggle_on(-600);
         Pneumatics::getInstance()->getWings()->on();
         vector<vector<double>> sweep = {{convert::mToIn(tank_drive_15.getOdom().getX()), convert::mToIn(tank_drive_15.getOdom().getY())},
-                                            {100,28}, {86, 40}, {89, 72}, {96, 66}, {115, 69}}; //pickup 2nd WP triball along path
-        move(sweep, 90, false, true, 2, .35);
-        delay(50);
+                                            {96,30.5}, {84, 40}, {86, 70}, {94, 61}, {115, 69}}; //pickup 2nd WP triball along path
+        move(sweep, 90, false, false, 2, .35);
         Intake::getInstance()->toggle_on();
+        turnToAngle(tank_drive_15, 90, 2);
+        delay(50);
         // ram in front of goal
         for(int i=0; i<3; i++){
             delay(50);
@@ -116,7 +117,7 @@ void win_point_auton() {
         delay(50);
         turnToAngle(tank_drive_15, 180, 2);
         vector<vector<double>> toClimb = {{convert::mToIn(tank_drive_15.getOdom().getX()), convert::mToIn(tank_drive_15.getOdom().getY())}, 
-                                            {100, 34}, {108,30.7}, {81, 31.5}}; //pickup 2nd WP triball along path
+                                            {100, 34}, {108,30.7}, {80, 31.5}}; //pickup 2nd WP triball along path
         move(toClimb, 280, false, false, 2, .35);
         turnToAngle(tank_drive_15, 280, 2);
         // tank_drive_15.move_with_power(55);
@@ -124,7 +125,7 @@ void win_point_auton() {
         // tank_drive_15.move_with_power(0);
         // movePID(tank_drive_15, 4, 290, 1000);
         tank_drive_15.split_tank_with_power(28,0);
-        delay(800);
+        delay(1000);
         tank_drive_15.move_with_power(0);
         ctrl_master.rumble(".");
         // delay(100000);
