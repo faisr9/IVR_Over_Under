@@ -21,3 +21,9 @@ Generic_Rotation_VEX_Rot radial_tracker(radial_rot_sensor, 1.96 * 0.0254 / 2.0, 
 Generic_Rotation_VEX_Rot transverse_tracker(transverse_rot_sensor, 1.96 * 0.0254 / 2.0, 5.33 * 0.0254);
 
 Odom x_drive_odom(imu, &transverse_tracker, &radial_tracker);
+
+// pros::Motor cata_left(X, false); // spin forward to 
+// pros::Motor cata_right(X, true); // spin forward to cycle cata
+// pros::Motor_Group cata_motors = {cata_left, cata_right};
+// pros::Rotation cata_rot_sensor(X);
+// SkillsCata* cata_inst = SkillsCata::createInstance(cata_motors, cata_rot_sensor);

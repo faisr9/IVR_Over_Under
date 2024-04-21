@@ -40,7 +40,7 @@ void SkillsCata::stop(){
 
 
 // blocking function. Assumes the rotation value increases as the catapult goes towards firing
-void SkillsCata::cycle(){
+void SkillsCata::cycle(bool stop_at_end){
     motors.move_velocity(cata_rpm);
     current_rot = 0; // set to 0 so we have a defined initial value for last_rot
 
@@ -54,7 +54,9 @@ void SkillsCata::cycle(){
     }
     // want to stop when jump from 36000 -> 0
 
-    stop();
+    if (!stop_at_end) {
+        stop();
+    }
 }
 
 
@@ -76,6 +78,10 @@ void SkillsCata::set_cata_mode_internal(CataMode new_cata_mode) {
     cata_mode = new_cata_mode;
 }
 
+void SkillsCata::move_forward_manual() {
+    cata_motors.move_velocity(cata_rpm);
+}
+
 
 // Function for the catapult class' task. Don't call this unless you're passing it to a task
 void cata_task_funct() {
@@ -92,7 +98,7 @@ void cata_task_funct() {
         if (cata_mode == SkillsCata::CataMode::Stopped) {
             cata_inst->stop();
         } else if (cata_mode == SkillsCata::CataMode::Cycle) {
-            cata_inst->cycle();
+            cata_inst->cycle(true);
             cata_inst->set_cata_mode_internal(SkillsCata::CataMode::Stopped);
         } else {
             pros::lcd::set_text(6, "Invalid cata_mode string!");
