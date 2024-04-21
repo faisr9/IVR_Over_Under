@@ -265,3 +265,10 @@ Odom& traditional_drive::getOdom() {
 
     return *odom_inst;
 }
+
+void traditional_drive::brake() {
+    left_side->set_brake_modes(BRAKETYPE_BRAKE);
+    right_side->set_brake_modes(BRAKETYPE_BRAKE);
+    left_side->brake();
+    right_side->brake();
+}

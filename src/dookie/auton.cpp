@@ -25,16 +25,16 @@ void ctrlerHold() {
     }
 }
 
-void move(vector<vector<double>> moveVec, int angle, bool isReversed, bool isSpinAtEnd, double speedfactor,  double lookAhead, double turnP){
+void move(vector<vector<double>> moveVec, int angle, bool isReversed, bool isSpinAtEnd, double speedfactor,  double lookAhead, double turnP, double turnTol){
 	for (auto& vec : moveVec) {
 		for (auto& val : vec) { val = convert::inToM(val); }
 	}
-	followPath(moveVec, tank_drive_18, angle, isReversed, isSpinAtEnd, false, lookAhead, 3.0, 200.0 / speedfactor, 600.0 / speedfactor, 40.0 / speedfactor, false, turnP);
+	followPath(moveVec, tank_drive_18, angle, isReversed, isSpinAtEnd, false, lookAhead, turnTol, 200.0 / speedfactor, 600.0 / speedfactor, 40.0 / speedfactor, false, turnP);
 }
 
 // BEGIN AUTON METHODS //
 
-const double AUTON_DURATION = 100000 - 600; // 45 seconds minus 600 milliseconds for safety of threads exiting
+const double AUTON_DURATION = 45000 - 600; // 45 seconds minus 600 milliseconds for safety of threads exiting
 void win_point_auton() {
 
     const double STARTING_X = convert::inToM(38.75);
@@ -63,61 +63,66 @@ void win_point_auton() {
 
     // Auton code here
     pros::Task auton_task {[=] {
-        double x_point = 0.0;   
+        int bowls = 6;
+        bool third_triball = true;
         // Drop intake
         Intake::getInstance()->toggle_on();
+        // Pneumatics::getInstance()->getWings()->on();
         delay(500); // Robot settle
+        // Pneumatics::getInstance()->getWings()->off();
 ///////////////////////////////////////////////////////////////////////////////////////////
         // Move to get first ball
         vector<vector<double>> path_triball_1 = {STARTING_POS, {57, 37.23}, {46.1, 52.65}};
-        move(path_triball_1, 344, false, false, 0.69);
+        move(path_triball_1, 339, false, false, 0.69, 0.5, 1.12, 45);
 
         // Back up to push first ball
         vector<vector<double>> path_triball_1_1 = {{path_triball_1[2][0], path_triball_1[2][1]}, {57, 46.5}};
-        move(path_triball_1_1, 273, true, false, 0.69, 0.33, 1.4);
+        move(path_triball_1_1, 279.5, true, false, 0.69, 0.33, 1.4, 45);
         
         // Turn to bar
         Intake::getInstance()->stop();
-        turnToAngle(tank_drive_18, 89.5, 1, false, 2.1);
+        turnToAngle(tank_drive_18, 89, 3, false, 2.1);
         // Pneumatics::getInstance()->getIntake()->on();
         Intake::getInstance()->toggle_reverse();
         delay(500); // Time for ball to outtake
 
         // Push first ball over long bar and return
-        x_point = tank_drive_18.getOdom().getX();
+        // x_point = tank_drive_18.getOdom().getX();
         tank_drive_18.move_with_power((5000.0/12000.0) * 127);
-        delay(230);
+        delay(300);
         tank_drive_18.move_with_power((-5000.0/12000.0) * 127);
-        waitUntil(tank_drive_18.getOdom().getX() <= x_point - convert::inToM(5.85));
-        tank_drive_18.move_with_power(0);
+        waitUntil(convert::mToIn(tank_drive_18.getOdom().getX()) <= 50+5.2);
+        tank_drive_18.brake();
         Intake::getInstance()->stop();
         // Pneumatics::getInstance()->getIntake()->off();
-        turnToAngle(tank_drive_18, 0, 0.8, false, 2.2);
+        turnToAngle(tank_drive_18, 0, 1, false, 2.2);
 ///////////////////////////////////////////////////////////////////////////////////////////
 
         // Move to get second ball
         Intake::getInstance()->toggle_on();
         vector<vector<double>> path_triball_2 = {{convert::mToIn(tank_drive_18.getOdom().getX()), convert::mToIn(tank_drive_18.getOdom().getY())},
-                                                    {convert::mToIn(tank_drive_18.getOdom().getX()), 62.5}};
-        move(path_triball_2, 0, false, false, 0.83);
+                                                    {convert::mToIn(tank_drive_18.getOdom().getX()), 61}};
+        move(path_triball_2, 0, false, false, 0.87, 0.5, 1.12, 45);
 
         // Move to push second ball over bar
         vector<vector<double>> path_triball_2_1 = {path_triball_2[1], {60, 44}};
-        move(path_triball_2_1, 313, true, false, 1);
+        move(path_triball_2_1, 310, true, false, 1, 0.5, 1.12, 45);
         Intake::getInstance()->stop();
-        turnToAngle(tank_drive_18, 90, 0.8, false, 2.1);
+        turnToAngle(tank_drive_18, 90, 3, false, 2.1);
 
         // Push second ball over bar and return
+        Pneumatics::getInstance()->getIntake()->on();
         Intake::getInstance()->toggle_reverse();
-        delay(500);
-        x_point = tank_drive_18.getOdom().getX();
+        delay(450);
+        // x_point = tank_drive_18.getOdom().getX();
         tank_drive_18.move_with_power((5000.0/12000.0) * 127);
-        delay(230);
+        delay(300);
         tank_drive_18.move_with_power((-5000.0/12000.0) * 127);
-        waitUntil(tank_drive_18.getOdom().getX() <= x_point - convert::inToM(3.7));
-        tank_drive_18.move_with_power(0);
+        waitUntil(convert::mToIn(tank_drive_18.getOdom().getX()) <= 50+5.2);
+        tank_drive_18.brake();
         delay(50);
         Intake::getInstance()->stop();
+        // Pneumatics::getInstance()->getIntake()->off();
 
 //         // // Return from pushing second ball
 //         // vector<vector<double>> path_triball_3_2 = {{convert::mToIn(tank_drive_18.getOdom().getX()), 
@@ -127,31 +132,118 @@ void win_point_auton() {
 //         // delay(50);
 ///////////////////////////////////////////////////////////////////////////////////////////
 /** NOTE: Robot thinks it is at X:~45.41 Y:~41.46 H:~ 87.361 */
-        // Move to get third ball at angle
-        turnToAngle(tank_drive_18, 0, 0.8, false, 2.1); // 59.45 51.25
-        Intake::getInstance()->toggle_on();
-        vector<vector<double>> path_triball_4 = {{convert::mToIn(tank_drive_18.getOdom().getX()), convert::mToIn(tank_drive_18.getOdom().getY())},
-                                                 {55.5, 56.5}};
-        move(path_triball_4, 90, false, false, 1.1, 1.4);
-//         delay(50);
-//         Intake::getInstance()->stop();
-//         delay(50);
-//         // Push third ball over bar
-//         Intake::getInstance()->toggle_reverse();
-//         x_point = tank_drive_18.getOdom().getX();
-//         tank_drive_18.move_with_power((3000.0/12000.0) * 127);
-//         delay(400);
-//         tank_drive_18.move_with_power((-3500.0/12000.0) * 127);
-//         waitUntil(tank_drive_18.getOdom().getX() <= x_point - convert::inToM(7));
-//         tank_drive_18.move_with_power(0);
-//         delay(250);
-//         Intake::getInstance()->stop();
+        if(third_triball) {
+            // Move to push third ball
+            turnToAngle(tank_drive_18, 0, 1, false, 2.1); // 59.45 51.25
+            // Intake::getInstance()->toggle_on();
+            vector<vector<double>> path_triball_3 = {{convert::mToIn(tank_drive_18.getOdom().getX()), convert::mToIn(tank_drive_18.getOdom().getY())},
+                                                    {58, 50.5}}; // 58, 50.55
+            move(path_triball_3, 90, false, false, 0.95, 0.4, 1.44, 5);
+
+            // Push third ball over bar
+            // Pneumatics::getInstance()->getIntake()->on();
+            Intake::getInstance()->toggle_reverse();
+            // x_point = tank_drive_18.getOdom().getX();
+            tank_drive_18.move_with_power((5000.0/12000.0) * 127);
+            delay(400);
+            tank_drive_18.move_with_power((-5000.0/12000.0) * 127);
+            delay(100);
+            tank_drive_18.brake();
+            Intake::getInstance()->stop();
+            Pneumatics::getInstance()->getIntake()->off();
+        }
+// ctrlerHold();
+        // Go to load bar to bowl
+        turnToAngle(tank_drive_18, 45, 2, false, 2.1);
+
+        // Move to bowl
+        vector<vector<double>> toBowl = {{convert::mToIn(tank_drive_18.getOdom().getX()), convert::mToIn(tank_drive_18.getOdom().getY())},
+                                            {24, 24}};
+        move(toBowl, 45, true, false, 0.8, 0.5, 1.44, 45);
+        tank_drive_18.move_with_power((-5000.0/12000.0) * 127);
+        // double curr_x, curr_y, prev_x, prev_y, timeOut = 5;
+        delay(700);
+        // timeOut = pros::millis();
+        // waitUntil(pros::millis() - timeOut >= 3500);
+        // while (pros::millis() - timeOut < 5000)
+        // {
+        //     curr_x = convert::mToIn(tank_drive_18.getOdom().getX());
+        //     curr_y = convert::mToIn(tank_drive_18.getOdom().getY());
+        //     if (curr_x - prev_x < 0.2 && curr_y - prev_y < 0.2) {
+        //         break;
+        //     } else {
+        //         prev_x = curr_x;
+        //         prev_y = curr_y;
+        //     }
+        //     delay(300);
+        // }
+        tank_drive_18.brake();
+        // tap forward
+        tank_drive_18.move_with_power((4500.0/12000.0) * 127);
+        delay(80);
+        tank_drive_18.brake();
+        // bowl
+        turnToAngle(tank_drive_18, 315, 1, false, 2.1);
+
+        // vector<vector<double>> path_triball_3_1 = {{convert::mToIn(tank_drive_18.getOdom().getX()), convert::mToIn(tank_drive_18.getOdom().getY())},
+        //                                          {47, 30}, {25, 17}};
+        // move(path_triball_3_1, 61, true, false, 0.95, 0.38, 1.44, 45);
+        // turnToAngle(tank_drive_18, 315, 1, false, 2.1);
+
+///////////////////////////////////////////////////////////////////////////////////////////
+        // Begin Match loading
+        Pneumatics::getInstance()->getWings()->on();
+        tank_drive_18.move_with_power((-5000.0/12000.0) * 127);
+        delay(450);
+        tank_drive_18.brake();
+        // Oscillate to bowl 
+        /** TODO: Add logic to determine number of bowls */
+        for (int i=0; i<bowls; i++) {
+            delay(600); /** NOTE: Limiting factor, time to match load */
+            // if (i != 5) {
+                turnToAngle(tank_drive_18, 265, 5, false, 2.55);
+                delay(325);
+                turnToAngle(tank_drive_18, 315, 3, false, 2.1);
+            // } else
+        }
+                turnToAngle(tank_drive_18, 315, 3, false, 2.3);
+
+        // Push triballs away from robot
+        double x_point = convert::mToIn(tank_drive_18.getOdom().getX());
+        tank_drive_18.move_with_power((5000.0/12000.0) * 127);
+        delay(500);
+        // tank_drive_18.move_with_power((5000.0/12000.0) * 127);
+        // waitUntil(convert::mToIn(tank_drive_18.getOdom().getX()) >= x_point);
+        tank_drive_18.brake();
+        // turnToAngle(tank_drive_18, 300, 10, false, 2.1);
+        turnToAngle(tank_drive_18, 135, 1, false, 2.1);
+///////////////////////////////////////////////////////////////////////////////////////////
+        // Bowl
+        /** POSITION: X:~24.4 Y:~19 H:~135.8 */
+        vector<vector<double>> bowl_path = {{convert::mToIn(tank_drive_18.getOdom().getX()), convert::mToIn(tank_drive_18.getOdom().getY())},
+                                                {34, 15}, {60, 10.5}, {70, 10.5}};
+        move(bowl_path, 50, false, false, 0.857, 0.43, 1.44, 45);
+        
+        Intake::getInstance()->toggle_reverse();
+        tank_drive_18.get_motor_group(1).move_velocity(150);
+        delay(500);
+        tank_drive_18.get_motor_group(1).move_velocity(-150);
+        delay(500);
+        tank_drive_18.get_motor_group(1).brake();
+        tank_drive_18.get_motor_group(0).move_velocity(200);
+        delay(380);
+        tank_drive_18.brake();
+        Intake::getInstance()->stop();
+        
 
 
 
 
-
-
+        // tank_drive_18.move_with_power((-5000.0/12000.0) * 127);
+        // waitUntil(convert::mToIn(tank_drive_18.getOdom().getX()) <= 50+5.2);
+        // Pneumatics::getInstance()->getIntake()->off();
+        // Intake::getInstance()->stop();
+        // turnToAngle(tank_drive_18, 180, 0.8, false, 2.1);
         // // Return from pushing third ball
         // vector<vector<double>> path_triball_4_1 = {{convert::mToIn(tank_drive_18.getOdom().getX()), 
         //                                             convert::mToIn(tank_drive_18.getOdom().getY())}, 
@@ -203,8 +295,6 @@ void win_point_auton() {
     tank_drive_18.move_with_power(0);
     // Intake Stop
     Intake::getInstance()->stop();
-    // Wings Close
-    Pneumatics::getInstance()->getWings()->off();
 }
 
 void non_win_point_auton() {
@@ -499,3 +589,34 @@ pros::Task auton_task {[=] {
 //         // turnToAngle(tank_drive_18, 200, 1);
 
 //     }};
+
+// Bowling 
+
+    //    double x_point = convert::mToIn(tank_drive_18.getOdom().getX());
+    //     double y_point = convert::mToIn(tank_drive_18.getOdom().getY());
+    //     for (int i=0; i<bowls; i++) {
+    //         // turnToAngle(tank_drive_18, 110, 5, false, 2.6);
+    //         // if (i != 5) {
+    //         //     delay(200);
+    //         //     turnToAngle(tank_drive_18, 150, 1.5, false, 2.1);
+    //         //     delay(1000); /** NOTE: Limiting factor, time to match load */
+    //         // }
+         
+         
+    //         // tank_drive_18.move_with_power((5000.0/12000.0) * 127);
+    //         // waitUntil(convert::mToIn(tank_drive_18.getOdom().getX()) >= x_point + 2);
+    //         // tank_drive_18.brake();
+    //         // delay(100);
+    //         // tank_drive_18.move_with_power((-5000.0/12000.0) * 127);
+    //         // waitUntil(convert::mToIn(tank_drive_18.getOdom().getX()) <= x_point - 4);
+    //         // tank_drive_18.brake();
+    //         // delay(1000);
+
+    //         delay(1000); /** NOTE: Limiting factor, time to match load */
+    //         if (i != 5) {
+    //             turnToAngle(tank_drive_18, 265, 3, false, 2.3);
+    //             delay(325);
+    //             turnToAngle(tank_drive_18, 315, 1.5, false, 2.1);
+    //         } else
+    //             turnToAngle(tank_drive_18, 275, 3, false, 2.3);
+    //     }

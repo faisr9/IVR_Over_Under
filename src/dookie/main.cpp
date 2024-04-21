@@ -80,6 +80,12 @@ bool lcd_trig = false;
 void lcd_callback() {
 	lcd_trig = true;
 }
+
+/**
+ * IMPORTANT: Make a thing so while we wait for auton to start, we press and hold a button until auton
+ * is ready to start. When letting go of the button, IMU recalibrates, and rumble to let us know it's ready.
+*/
+
 /* Opcontrol method runs by default (unless connected to comp controller )*/
 void opcontrol() {
 	bool control_enable = true;

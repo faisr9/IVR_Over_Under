@@ -56,4 +56,5 @@ class traditional_drive : public DriveParent
         double getX();
         double getY();
         Odom& getOdom();
+        void brake();
 };
