@@ -28,14 +28,14 @@ pros::Motor left_back(4,pros::motor_gearset_e::E_MOTOR_GEAR_BLUE, true);
 pros::Motor_Group left_drive_motors = {left_front, left_front_middle, left_back_middle, left_back};
 pros::Motor_Group right_drive_motors = {right_front, right_front_middle, right_back_middle, right_back};
 
-pros::Motor intake(10); // in = negative, out = positive
+pros::Motor intake(10, pros::motor_gearset_e::E_MOTOR_GEAR_BLUE); // in = neg, out = pos
 Intake* intake_instance = Intake::createInstance(intake);
 
 // V5 Sensors //
 pros::IMU imu(21);
 pros::Distance distance_sensor(3);
 pros::ADIEncoder radial_rot_sensor(7, 8, false);
-pros::ADIEncoder transverse_rot_sensor(5, 6, false); // reversed so that going right is positive
+pros::ADIEncoder transverse_rot_sensor(5, 6, true); // reversed so that going right is positive
 
 Generic_Rotation* radial_tracker = new Generic_Rotation_Digikey(radial_rot_sensor, 1.96 * 0.0254 / 2, convert::inToM(.34375));
 Generic_Rotation* horizontal_tracker = new Generic_Rotation_Digikey(transverse_rot_sensor, 1.96 * 0.0254 / 2, convert::inToM(-1.937));

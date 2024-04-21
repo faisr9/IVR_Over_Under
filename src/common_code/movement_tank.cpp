@@ -47,7 +47,7 @@ void turnToAngle(traditional_drive& drive, double desiredAngleDeg, double tolera
 }
 
 //PID version of turn to angle
-void turnPID(traditional_drive& drive, double desiredAngleDeg, double toleranceDeg, double p, double i, double d, int maxTime) {
+void turnPID(traditional_drive& drive, double desiredAngleDeg, int maxTime, double toleranceDeg, double p, double i, double d) {
     PID t_PID = PID(p, i, d);
     double degFromFinalAngle = 0;
     double turn=0;
@@ -65,7 +65,7 @@ void turnPID(traditional_drive& drive, double desiredAngleDeg, double toleranceD
     stopMotors(drive);
 }
 
-void latPID(traditional_drive& drive, double target, double tolerance, double p, double i, double d, int maxTime) {
+void latPID(traditional_drive& drive, double target, int maxTime, double tolerance, double p, double i, double d) {
     PID l_PID = PID(p, i, d);
     double lateral=0;
     double initVal = 2 * M_PI * (1.96 * 0.0254 / 2) * (drive.getOdom().getRadialValue() / 5000);
@@ -83,7 +83,7 @@ void latPID(traditional_drive& drive, double target, double tolerance, double p,
     stopMotors(drive);
 }
 
-void movePID(traditional_drive& drive, double target, double desiredAngleDeg, double latTolerance, double turnTolerance, double lP, double lI, double lD,double tP, double tI, double tD, int maxTime) {
+void movePID(traditional_drive& drive, double target, double desiredAngleDeg, int maxTime, double latTolerance, double turnTolerance, double lP, double lI, double lD,double tP, double tI, double tD) {
     PID l_PID = PID(lP, lI, lD);
     PID t_PID = PID(tP, tI, tD);
     double lateral=0;

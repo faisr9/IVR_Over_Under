@@ -18,7 +18,7 @@ traditional_drive::traditional_drive(Imu &imu, Motor_Group &l, Motor_Group &r, i
 traditional_drive::traditional_drive(Imu &imu, Controller &mstr, Motor_Group &l, Motor_Group &r, int mode) 
     : DriveParent(imu, drive_mode[mode])
 {
-    master_ = &mstr;
+    master = &mstr;
     init(imu, l, r, mode);
 }
 
@@ -34,7 +34,7 @@ traditional_drive::traditional_drive(Imu &imu, Motor_Group &l, Motor_Group &r, O
 traditional_drive::traditional_drive(Imu&imu, Controller &mstr, Motor_Group &l, Motor_Group &r, Odom& odometry) 
     : DriveParent(imu, drive_mode[0]) 
 {
-    master_ = &mstr;
+    master = &mstr;
     odom_inst_ = &odometry; 
     init(imu, l, r, 0);
 }
@@ -44,8 +44,8 @@ void traditional_drive::init(Imu &imu, Motor_Group &l, Motor_Group &r, int mode)
 {
     // set controller and motor groups
     imu_=&imu;
-    left_side_ = &l;
-    right_side_ = &r;
+    left_side = &l;
+    right_side = &r;
     mode_ = mode;
 
     auto gearing = l[0].get_gearing(); // assume all motors have the same gearing
@@ -73,9 +73,9 @@ traditional_drive::~traditional_drive()
 
     // set pointers to null to avoid dangling pointers
     imu_ = nullptr;
-    master_ = nullptr;
-    left_side_ = nullptr;
-    right_side_ = nullptr;
+    master = nullptr;
+    left_side = nullptr;
+    right_side = nullptr;
 };
 
 void traditional_drive::change_drive_mode(int mode) 
@@ -108,8 +108,8 @@ void traditional_drive::toggle_drive_mode()
 void traditional_drive::tank_drive()
 {
     // get joystick values and apply square scaling
-    left *= square_scale(normalize_joystick(master_->get_analog(E_CONTROLLER_ANALOG_LEFT_Y)));   // vertical input from left joystick
-    right *= square_scale(normalize_joystick(master_->get_analog(E_CONTROLLER_ANALOG_RIGHT_Y))); // vertical input from right joystick
+    left *= square_scale(normalize_joystick(master->get_analog(E_CONTROLLER_ANALOG_LEFT_Y)));   // vertical input from left joystick
+    right *= square_scale(normalize_joystick(master->get_analog(E_CONTROLLER_ANALOG_RIGHT_Y))); // vertical input from right joystick
 
     setV(); // set voltage to motors
 };
@@ -118,8 +118,8 @@ void traditional_drive::tank_drive()
 void traditional_drive::hybrid_drive()
 {
     // get joystick values and apply square scaling
-    fwd = square_scale(normalize_joystick(master_->get_analog(E_CONTROLLER_ANALOG_LEFT_Y)));   // vertical input from left joystick
-    turn = square_scale(normalize_joystick(master_->get_analog(E_CONTROLLER_ANALOG_RIGHT_Y))); // vertical input from right joystick
+    fwd = square_scale(normalize_joystick(master->get_analog(E_CONTROLLER_ANALOG_LEFT_Y)));   // vertical input from left joystick
+    turn = square_scale(normalize_joystick(master->get_analog(E_CONTROLLER_ANALOG_RIGHT_Y))); // vertical input from right joystick
     // use fwd and turn to calculate voltage to send to motors
     left *= fwd - turn;
     right *= fwd + turn;
@@ -131,15 +131,15 @@ void traditional_drive::hybrid_drive()
 void traditional_drive::stop()
 {
     // brake for both groups
-    left_side_->brake();
-    right_side_->brake();
+    left_side->brake();
+    right_side->brake();
 };
 
 // set velocity to motors
 void traditional_drive::setV()
 {
-    left_side_->move_velocity(left);
-    right_side_->move_velocity(right);
+    left_side->move_velocity(left);
+    right_side->move_velocity(right);
     left = right = maxspeed; // reset rpm to be multiplied by scalar
 };
 
@@ -147,8 +147,8 @@ void traditional_drive::setV()
 void traditional_drive::arcade_drive()
 {
     // get joystick values and apply square scaling
-    fwd = square_scale(normalize_joystick(master_->get_analog(E_CONTROLLER_ANALOG_LEFT_Y)));   // vertical input from left joystick
-    turn = square_scale(normalize_joystick(master_->get_analog(E_CONTROLLER_ANALOG_RIGHT_X))) / 1.7; // horizontal input from right joystick
+    fwd = square_scale(normalize_joystick(master->get_analog(E_CONTROLLER_ANALOG_LEFT_Y)));   // vertical input from left joystick
+    turn = square_scale(normalize_joystick(master->get_analog(E_CONTROLLER_ANALOG_RIGHT_X))) / 1.7; // horizontal input from right joystick
     // use fwd and turn to calculate voltage to send to motors
     left *= fwd + turn;
     right *= fwd - turn;
@@ -219,8 +219,8 @@ void traditional_drive::turn_with_power(double power)
     // left*=power;
     // right=-(std::abs(right)*power);
 
-    left_side_->move(power);
-    right_side_->move(-power);
+    left_side->move(power);
+    right_side->move(-power);
 
     // send voltage to motors
     // setV();
@@ -240,8 +240,8 @@ void traditional_drive::move_with_power(double power)
     // left*=power;
     // right=-(std::abs(right)*power);
 
-    left_side_->move(power);
-    right_side_->move(power);
+    left_side->move(power);
+    right_side->move(power);
 
     // send voltage to motors
     // setV();
@@ -249,16 +249,22 @@ void traditional_drive::move_with_power(double power)
 
 void traditional_drive::tank_with_power(double latPower, double turnPower)
 {
-    left_side_->move(latPower+turnPower);
-    right_side_->move(latPower-turnPower);
+    left_side->move(latPower+turnPower);
+    right_side->move(latPower-turnPower);
+}
+
+void traditional_drive::split_tank_with_power(double leftPow, double rightPow)
+{
+    left_side->move(leftPow);
+    right_side->move(rightPow);
 }
 
 Motor_Group& traditional_drive::get_motor_group(bool side)
 {
     if (side == 0)// left
-        return *left_side_;
+        return *left_side;
     else // right
-        return *right_side_;
+        return *right_side;
 }
 
 Imu& traditional_drive::get_imu() 
@@ -268,7 +274,7 @@ Imu& traditional_drive::get_imu()
 
 Controller& traditional_drive::get_controller() 
 {
-    return *master_;
+    return *master;
 }
 
 double traditional_drive::getX() 

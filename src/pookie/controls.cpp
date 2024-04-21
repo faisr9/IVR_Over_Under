@@ -3,14 +3,14 @@
 // Will add driver profiles later
 void controls() {
     // for debugging
-	pros::Task odom_task{[=] {
-		while (1) {
-			tank_drive_15.getOdom().updatePosition();
-			pros::delay(50);
-		}
-	}};
+	// pros::Task odom_task{[=] {
+	// 	while (1) {
+	// 		tank_drive_15.getOdom().updatePosition();
+	// 		pros::delay(50);
+	// 	}
+	// }};
 
-    pros::lcd::set_text(1, "Running Controls");
+    // pros::lcd::set_text(1, "Running Controls");
 
     while(1) {
         //ACTIVATE DRIVE
