@@ -5,7 +5,7 @@
 
 /* First method to run when program starts */
 void initialize() {
-	pros::lcd::initialize(); // Temp until custom GUI
+	// pros::lcd::initialize(); // Temp until custom GUI
 	// comp18link->init();
 	imu.reset(true); // Very important!!!
     transverse_rot_sensor.reset();
@@ -14,7 +14,7 @@ void initialize() {
 	Pneumatics::getInstance()->getIntake()->off();
 	Pneumatics::getInstance()->getSideHang()->off();
 	Pneumatics::getInstance()->getTopHang()->off();
-	// gui::gui_init();
+	gui::gui_init();
 }
 
 /* Runs when robot is disabled from competition controller after driver/auton */
@@ -81,6 +81,13 @@ void lcd_callback() {
 	lcd_trig = true;
 }
 
+void switch_to_gui() {
+	lcd::clear();
+	lcd::shutdown();
+	pros::delay(1000);
+	gui::gui_init();
+}
+
 /**
  * IMPORTANT: Make a thing so while we wait for auton to start, we press and hold a button until auton
  * is ready to start. When letting go of the button, IMU recalibrates, and rumble to let us know it's ready.
@@ -89,7 +96,8 @@ void lcd_callback() {
 /* Opcontrol method runs by default (unless connected to comp controller )*/
 void opcontrol() {
 	bool control_enable = true;
-	lcd::register_btn2_cb(lcd_callback);
+	lcd::register_btn1_cb(lcd_callback);
+	lcd::register_btn2_cb(switch_to_gui);
 	lcd::print(0, "Ready");
 
 	// test_auton();
