@@ -15,7 +15,7 @@
 #include "common_code/asterisk-drive.h"
 #include "asterisk-drive.h"
 
-asterisk_drive::asterisk_drive(Controller &master, Motor &front_left, Motor &front_right, Motor &back_left, Motor &back_right, Motor_Group &straight_right, Motor_Group &straight_left, Imu &imu) : straight_left_(&straight_left), straight_right_(&straight_right), x_drive(master, front_left, front_right, back_left, back_right, imu)
+asterisk_drive::asterisk_drive(Controller &master, Motor &front_left, Motor &front_right, Motor &back_left, Motor &back_right, Motor_Group &straight_right, Motor_Group &straight_left, Imu &imu) : straight_left_(straight_left), straight_right_(straight_right), x_drive(master, front_left, front_right, back_left, back_right, imu)
 {
     auto gearing = front_left_->get_gearing(); // assume all motors have the same gearing
 
@@ -30,11 +30,27 @@ asterisk_drive::asterisk_drive(Controller &master, Motor &front_left, Motor &fro
         maxspeed = 200.0; // default max rpm
 }
 
+// asterisk_drive::asterisk_drive(Controller &master, Motor &front_left, Motor &front_right, Motor &back_left, Motor &back_right, Motor &right_middle_1, Motor &right_middle_2, Motor &left_middle_1, Motor &left_middle_2, Imu &imu)
+//     : straight_left_(Motor_Group({left_middle_1,left_middle_2})), straight_right_(Motor_Group({right_middle_1,right_middle_2})), x_drive(master, front_left, front_right, back_left, back_right, imu)
+// {
+//     auto gearing = front_left_->get_gearing(); // assume all motors have the same gearing
+
+//     // set max speed based on gear
+//     if (gearing == 0)      // 36:1
+//         maxspeed = 100.0;  // max rpm
+//     else if (gearing == 1) // 18:1
+//         maxspeed = 200.0;  // max rpm
+//     else if (gearing == 2) // 6:1
+//         maxspeed = 600.0;  // max rpm
+//     else
+//         maxspeed = 200.0; // default max rpm
+// }
+
 asterisk_drive::~asterisk_drive()
 {
     stop();
-    straight_left_=nullptr;
-    straight_right_=nullptr;
+    // straight_left_=nullptr;
+    // straight_right_=nullptr;
 }
 
 void asterisk_drive::stop()
@@ -43,13 +59,12 @@ void asterisk_drive::stop()
     front_right_->brake();
     back_left_->brake();
     back_right_->brake();
-    straight_left_->brake();
-    straight_right_->brake();
+    straight_left_.brake();
+    straight_right_.brake();
 }
 
 void asterisk_drive::robot_centric_move(pair<double, double> movement_vector, double turn)
 {
-
     auto speed = 0.0;
     auto dir = movement_vector.second; // direction in radians
 
@@ -110,11 +125,14 @@ void asterisk_drive::robot_centric_move(pair<double, double> movement_vector, do
     auto theta = M_PI / 4; // assuming perfect 45˚ angle
 
     // will need to make negative if the wheels are facing the opposite way
-    auto sl_move = fl_move * cos(theta); // should be equivalent to dividing by √2
-    auto sr_move = fr_move * cos(theta); // should be equivalent to dividing by √2
+    auto sl_move = (fl_move-fr_move)/2 * cos(theta); // should be equivalent to dividing by √2
+    auto sr_move = (bl_move-br_move)/2 * cos(theta); // should be equivalent to dividing by √2
 
     // move forward/straight wheels
-    straight_left_->move_velocity(sl_move);
-    straight_right_->move_velocity(sr_move);
+    if(abs(turn)<0.2)
+    {
+        straight_left_.move_velocity(min(sl_move, maxspeed*cos(theta)));
+        straight_right_.move_velocity(min(sr_move, maxspeed*cos(theta)));
+    }
 }
 

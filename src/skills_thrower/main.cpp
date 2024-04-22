@@ -16,9 +16,13 @@ void competition_initialize() {}
 void autonomous() {}
 
 /* Opcontrol method runs by default (unless connected to comp controller )*/
-void opcontrol() {
+void opcontrol() 
+{
 	lcd::print(2,"Thrower Skills");
 
 	while(1)
-		Task::delay(1000);
+	{
+		xdriveThrower.run();
+		Task::delay(10);
+	}
 }

@@ -16,7 +16,7 @@
 #pragma once
 #include "x-drive.h"
 
-class asterisk_drive : protected x_drive
+class asterisk_drive : public x_drive
 {
 public:
     /*
@@ -39,6 +39,8 @@ public:
      * @param imu inertial sensor to get angle from
      */
     asterisk_drive(Controller &master, Motor &front_left, Motor &front_right, Motor &back_left, Motor &back_right, Motor_Group &straight_right_, Motor_Group &straight_left_, Imu &imu);
+
+    //asterisk_drive(Controller &master, Motor &front_left, Motor &front_right, Motor &back_left, Motor &back_right, Motor& right_middle_1,Motor& right_middle_2, Motor& left_middle_1, Motor& left_middle_2, Imu &imu);
     /*
      * destructor for asterisk drive
      * stops motor and eliminates memory leaks
@@ -51,7 +53,7 @@ public:
 
 private:
     // forward wheels for asterisk drive
-    Motor_Group* straight_left_;  // group of left straight motors
-    Motor_Group* straight_right_; // group of right straight motors
+    Motor_Group &straight_left_;  // group of left straight motors
+    Motor_Group &straight_right_; // group of right straight motors
     double maxspeed = 200.0; // max speed of motors based on gearing
 };

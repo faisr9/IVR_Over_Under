@@ -51,7 +51,7 @@ public:
      * @param turn_right_x turn right x
      * @return void
      */
-    void robot_centric_move(pair<double, double> movement_vector, double turn_right_x);
+    virtual void robot_centric_move(pair<double, double> movement_vector, double turn_right_x);
     /*
      * move in field centric coordinates
      * calculated offset based on imu angle and modifies

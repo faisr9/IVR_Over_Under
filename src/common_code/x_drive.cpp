@@ -72,7 +72,7 @@ void x_drive::robot_centric_move(pair<double, double> movement_vector, double tu
     front_left_->move_velocity(fl_move);
     front_right_->move_velocity(fr_move);
     back_left_->move_velocity(bl_move);
-    back_right_->move_velocity(-br_move); // reversing this specific motor does not seem to have a noticable effect on the robot, which is why the velocity is negative here
+    back_right_->move_velocity(br_move); // reversing this specific motor does not seem to have a noticable effect on the robot, which is why the velocity is negative here
 }
 
 void x_drive::field_centric_move(pair<double, double> movement_vector, double turn_right_x)

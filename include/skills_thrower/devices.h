@@ -30,3 +30,6 @@ extern Distance distance_sensor_1;
 extern Distance distance_sensor_2;
 extern Rotation radial_rot_sensor;
 extern Rotation transverse_rot_sensor;
+
+/* X-Drive */
+extern x_drive xdriveThrower;
