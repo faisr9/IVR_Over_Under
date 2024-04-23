@@ -1,5 +1,7 @@
 #include "dookie/gui.h"
 
+pros::Task *raze_ss;
+
 /** Method to create buttons, and simplify code lengths for repeated commands.
  * @param parent lv object parent
  * @param x x-pos of button where x <= SCREEN_WIDTH_MAX
@@ -116,6 +118,7 @@ lv_res_t driveTypeUpdate(lv_obj_t *btn_inp)
     return LV_RES_OK;   
 }
 
+extern void switch_to_gui();
 lv_res_t manualTrigger(lv_obj_t *btn)
 {
     short int id = lv_obj_get_free_num(btn);
@@ -138,7 +141,10 @@ lv_res_t manualTrigger(lv_obj_t *btn)
             lv_obj_del(manual_trigger_btn1);
             lv_obj_del(manual_trigger_btn2);
 
+            raze_ss->remove();
+
             pros::lcd::initialize();
+            lcd::register_btn2_cb(switch_to_gui);
             break;
         case 2:
             Pneumatics::getInstance()->getWings()->off();
@@ -175,7 +181,7 @@ void raze_ss_runner()
             lv_obj_del(auton_select_label);
             lv_obj_del(comp_auton_btn);
             lv_obj_del(skills_auton_btn);
-            lv_obj_del(no_auton_btn);
+            // lv_obj_del(no_auton_btn);
             lv_obj_del(tank_drive_btn);
             lv_obj_del(tank_drive_switch);
             lv_obj_del(arcade_drive_btn);
@@ -285,14 +291,14 @@ void gui::gui_init()
     label_style.text.color = LV_COLOR_WHITE;
 
     lv_style_copy(&comp_auton_style, &lv_style_plain);
-    comp_auton_style.body.main_color = LV_COLOR_MAKE(205-80, 0, 0);
-    comp_auton_style.body.grad_color = LV_COLOR_MAKE(205-80, 0, 0);
+    comp_auton_style.body.main_color = LV_COLOR_MAKE(255-150, 0, 0);
+    comp_auton_style.body.grad_color = LV_COLOR_MAKE(255-150, 0, 0);
     comp_auton_style.body.radius = 1;
     comp_auton_style.text.color = LV_COLOR_MAKE(205-80, 205-80, 205-80);
 
     lv_style_copy(&skills_auton_style, &comp_auton_style);
-    skills_auton_style.body.main_color = LV_COLOR_MAKE(0, 0, 205-80);
-    skills_auton_style.body.grad_color = LV_COLOR_MAKE(0, 0, 205-80);
+    skills_auton_style.body.main_color = LV_COLOR_MAKE(0, 0, 255-150);
+    skills_auton_style.body.grad_color = LV_COLOR_MAKE(0, 0, 255-150);
 
     lv_style_copy(&no_auton_style, &comp_auton_style);
     no_auton_style.body.main_color = LV_COLOR_MAKE(205-80, 0, 0);
@@ -300,13 +306,13 @@ void gui::gui_init()
 
     lv_style_copy(&comp_auton_style_sel, &lv_style_plain);
     comp_auton_style_sel.body.main_color = LV_COLOR_MAKE(255, 0, 0);
-    comp_auton_style_sel.body.grad_color = LV_COLOR_MAKE(0, 0, 255);
+    comp_auton_style_sel.body.grad_color = LV_COLOR_MAKE(255, 0, 0);
     comp_auton_style_sel.body.radius = 1;
     comp_auton_style_sel.text.color = LV_COLOR_WHITE;
 
     lv_style_copy(&skills_auton_style_sel, &comp_auton_style_sel);
-    skills_auton_style_sel.body.main_color = LV_COLOR_MAKE(0, 255, 0);
-    skills_auton_style_sel.body.grad_color = LV_COLOR_MAKE(0, 255, 0);
+    skills_auton_style_sel.body.main_color = LV_COLOR_MAKE(0, 0, 255);
+    skills_auton_style_sel.body.grad_color = LV_COLOR_MAKE(0, 0, 255);
 
     lv_style_copy(&no_auton_style_sel, &comp_auton_style_sel);
     no_auton_style_sel.body.main_color = LV_COLOR_MAKE(255, 0, 0);
@@ -427,6 +433,6 @@ void gui::gui_init()
         &manualPressed, &manualReleased, LV_BTN_ACTION_CLICK, manualTrigger, 2, "Wings Close");
     lv_obj_align(manual_trigger_btn2, NULL, LV_ALIGN_IN_RIGHT_MID, -10, 35);
 
-    Task raze_ss(raze_ss_runner);
-    raze_ss.set_priority(TASK_PRIORITY_LOW);
+    raze_ss = new pros::Task([=] { raze_ss_runner(); });
+    raze_ss->set_priority(TASK_PRIORITY_LOW);
 }

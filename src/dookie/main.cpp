@@ -82,7 +82,9 @@ void lcd_callback() {
 }
 
 void switch_to_gui() {
-	lcd::clear();
+	// lcd::clear();
+	lcd::print(0, "Switching to GUI");
+	delay(1000);
 	lcd::shutdown();
 	pros::delay(1000);
 	gui::gui_init();
