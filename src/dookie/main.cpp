@@ -5,7 +5,7 @@
 
 /* First method to run when program starts */
 void initialize() {
-	// pros::lcd::initialize(); // Temp until custom GUI
+	pros::lcd::initialize(); // Temp until custom GUI
 	// comp18link->init();
 	imu.reset(true); // Very important!!!
     transverse_rot_sensor.reset();
@@ -14,7 +14,7 @@ void initialize() {
 	Pneumatics::getInstance()->getIntake()->off();
 	Pneumatics::getInstance()->getSideHang()->off();
 	Pneumatics::getInstance()->getTopHang()->off();
-	gui::gui_init();
+	// gui::gui_init();
 }
 
 /* Runs when robot is disabled from competition controller after driver/auton */
@@ -70,6 +70,7 @@ void test_auton() {
 void autonomous() {
 	lcd::clear();
 	win_point_auton();
+	ctrl_master.rumble("..-..");
 	// test_auton();
 	// if(gui::selected_auton == gui::AUTON_COMP) {
 		// win_point_auton();
@@ -82,7 +83,7 @@ void lcd_callback() {
 }
 
 void switch_to_gui() {
-	// lcd::clear();
+	lcd::clear();
 	lcd::print(0, "Switching to GUI");
 	delay(1000);
 	lcd::shutdown();
