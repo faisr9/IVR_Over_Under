@@ -25,6 +25,8 @@ class Intake : public SubsystemParent{
         // Uses the default power, the power set by set_power, or the power passed in
         void toggle_on(int power = default_rpm_);
 
+        void toggle_reverse(int power = -default_rpm_);
+
         //Subsystem parent specific
         static Intake* createInstance(pros::Motor& motor);
         static Intake* getInstance();
