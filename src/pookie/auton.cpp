@@ -82,9 +82,9 @@ void win_point_auton() {
         // Pneumatics::getInstance()->getIntake()->on();
         turnToAngle(tank_drive_15, 10, 2);
         movePID(tank_drive_15, 17, 10, 1200);
-        Intake::getInstance()->toggle_on(-300);
         movePID(tank_drive_15, -11, 340, 1100);
         Pneumatics::getInstance()->getWings()->off();
+        Intake::getInstance()->toggle_on(-300);
         delay(200);
         turnToAngle(tank_drive_15, 220, 2);
         movePID(tank_drive_15, -9, 220, 1000);
@@ -94,22 +94,22 @@ void win_point_auton() {
             delay(50);
             tank_drive_15.move_with_power(-100);
             // waitUntil(tank_drive_15.getOdom().getY() >= convert::inToM(25.5));
-            delay(600);
+            delay(350);
             tank_drive_15.move_with_power(0);
-            movePID(tank_drive_15, 10, 185,1200);
+            movePID(tank_drive_15, 11, 185,1200);
         }
         // Pneumatics::getInstance()->getIntake()->off();
         ///////
 
         // Sweep Dookie Sauce
 
-        movePID(tank_drive_15, 4, 180, 800);
+        movePID(tank_drive_15, 4, 180, 500);
         // Intake::getInstance()->toggle_on(-150);
         turnToAngle(tank_drive_15, 250, 2);
         delay(50);
         Pneumatics::getInstance()->getWings()->on();
         vector<vector<double>> sweep = {{convert::mToIn(tank_drive_15.getOdom().getX()), convert::mToIn(tank_drive_15.getOdom().getY())},
-                                            {96,35}, {84.5, 40}, {84, 61}, {91, 62}, {96, 63}, {110, 63}}; //pickup 2nd WP triball along path
+                                            {100,33}, {84.5, 40}, {84, 61}, {91, 62}, {96, 63}, {113, 63}}; //pickup 2nd WP triball along path
         move(sweep, 90, false, false, 2, .35);
         Intake::getInstance()->toggle_on();
         turnToAngle(tank_drive_15, 90, 2);
@@ -120,7 +120,7 @@ void win_point_auton() {
             // waitUntil(tank_drive_15.getOdom().getX() >= convert::inToM(125));
             delay(600);
             tank_drive_15.move_with_power(0);
-            movePID(tank_drive_15, -10, 90, 1200);  
+            movePID(tank_drive_15, -12, 90, 1200);  
         }
         /////
 
@@ -142,16 +142,18 @@ void win_point_auton() {
         // turnToAngle(tank_drive_15, 270, 2);
         Intake::getInstance()->toggle_on();
         vector<vector<double>> toClimb = {{convert::mToIn(tank_drive_15.getOdom().getX()), convert::mToIn(tank_drive_15.getOdom().getY())}, 
-                                            {85.5, 30.5}};
-        move(toClimb, 220, false, false, 2, .35);
-        turnToAngle(tank_drive_15, 270, 2);
-        tank_drive_15.move_with_power(40);
-        delay(1000);
-        tank_drive_15.move_with_power(0);
+                                            {86, 26.5}};
+        move(toClimb, 180, false, false, 1.65, .35);
+        turnToAngle(tank_drive_15, 180, 2);
 
+        // tank_drive_15.move_with_power(30);
+        // delay(1000);
+        // tank_drive_15.move_with_power(0);
 
+        // movePID(tank_drive_15, -2, 180, 600, 0.1);
+        movePID(tank_drive_15, 5, 180, 1000);
 
-        tank_drive_15.split_tank_with_power(10,-20);
+        tank_drive_15.split_tank_with_power(-20,10);
         delay(1200);
         tank_drive_15.move_with_power(0);
     }};
