@@ -1,5 +1,8 @@
 #include "skills_thrower/skills.h"
 
+// LinkHelper* catcher_link = LinkHelper::createInstance(16, E_LINK_RX);
+
+
 void cata_shoot_task() {
     // SkillsCata* cata_inst = SkillsCata::getInstance();
     // const int kNUM_FIRE = 21;
@@ -10,6 +13,7 @@ void cata_shoot_task() {
     // cata_inst->stop();
     pros::delay(3000);
 }
+
 
 void skills() {
 
