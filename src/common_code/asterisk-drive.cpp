@@ -89,9 +89,10 @@ void asterisk_drive::robot_centric_move(pair<double, double> movement_vector, do
     // if the sum of the speeds is greater than the max speed, scale them down
     if (max(abs(move_1_scaled),abs(move_2_scaled)) + abs(turn_scaled) > maxspeed) 
     {
-        move_1_scaled = move_1_scaled / (max(abs(move_1_scaled),abs(move_2_scaled)) + abs(turn_scaled)) * maxspeed;
-        move_2_scaled = move_2_scaled / (max(abs(move_1_scaled), abs(move_2_scaled)) + abs(turn_scaled)) * maxspeed;
-        turn_scaled = turn_scaled / (max(abs(move_1_scaled), abs(move_2_scaled)) + abs(turn_scaled)) * maxspeed;
+        auto scale_factor = 1/(max(abs(move_1_scaled),abs(move_2_scaled)) + abs(turn_scaled)) * maxspeed;
+        move_1_scaled *= scale_factor;
+        move_2_scaled *= scale_factor;
+        turn_scaled *= scale_factor;
     }
     auto fl_move = move_1_scaled - turn_scaled; // fl and br use the first diagonal component
     auto fr_move = move_2_scaled - turn_scaled; // front motors subtract turn
@@ -113,8 +114,8 @@ void asterisk_drive::robot_centric_move(pair<double, double> movement_vector, do
 
     // take the average velocity in the forward direction
     // of the front and back wheels on each side
-    auto sl_move = (fl_move-bl_move)/2; // subtracting back from front eliminates horizontal component
-    auto sr_move = (fr_move-br_move)/2; // giving only the vertical component
+    auto sl_move = (bl_move-fl_move)/2; // subtracting back from front eliminates horizontal component
+    auto sr_move = (br_move-fr_move)/2; // giving only the vertical component
 
     // scale the straight wheel speeds so they don't overpower the primary wheels
     sl_move*=1/cos(M_PI); // cos(45˚)=1/√2 

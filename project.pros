@@ -309,7 +309,7 @@
       }
     },
     "upload_options": {
-      "slot": 3,
+      "slot": 4,
       "description": "Master Code",
       "icon": "ufo",
       "after": "screen"
