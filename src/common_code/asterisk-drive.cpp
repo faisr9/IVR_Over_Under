@@ -28,6 +28,7 @@ asterisk_drive::asterisk_drive(Controller &master, Motor &front_left, Motor &fro
         maxspeed = 600.0;  // max rpm
     else
         maxspeed = 200.0; // default max rpm
+
 }
 
 // asterisk_drive::asterisk_drive(Controller &master, Motor &front_left, Motor &front_right, Motor &back_left, Motor &back_right, Motor &right_middle_1, Motor &right_middle_2, Motor &left_middle_1, Motor &left_middle_2, Imu &imu)
@@ -68,27 +69,27 @@ void asterisk_drive::robot_centric_move(pair<double, double> movement_vector, do
     auto speed = 0.0;
     auto dir = movement_vector.second; // direction in radians
 
-    auto move_1 = 0.0;  // first diagonal component of movement
-    auto move_2 = 0.0;  // second diagonal component of movement
+    auto move_1 = 0.0; // first diagonal component of movement
+    auto move_2 = 0.0; // second diagonal component of movement
     auto scaling = 0.0; // scale factor for movement
-    if (movement_vector.first > 0.2)
+    if (movement_vector.first > 0.2) // consider joystick deadzone
     {
-        speed = maxspeed * movement_vector.first;        // normalized speed of movement times max speed
+        speed = maxspeed * movement_vector.first; // normalized speed of movement times max speed
         dir -= M_PI / 4;                                 // adjust direction by 45˚ to get the diagonal components of movement
         move_1 = -1 * cos(dir);                          // opposite of cosine of direction
         move_2 = sin(dir);                               // sine of direction
         scaling = speed / max(abs(move_1), abs(move_2)); // speed divided by max of x and y
     }
-
+    
     auto move_1_scaled = move_1 * scaling; // move speed
     auto move_2_scaled = move_2 * scaling; // move speed
-    auto turn_scaled = maxspeed * turn;    // turn speed
-    auto priority = 0.5;                   // priority of movement over turning
+    auto turn_scaled = maxspeed * turn; // turn speed
+    auto priority = 0.5; // priority of movement over turning
 
     // if the sum of the speeds is greater than the max speed, scale them down
-    if (max(abs(move_1_scaled), abs(move_2_scaled)) + abs(turn_scaled) > maxspeed)
+    if (max(abs(move_1_scaled),abs(move_2_scaled)) + abs(turn_scaled) > maxspeed) 
     {
-        move_1_scaled = move_1_scaled / (max(abs(move_1_scaled), abs(move_2_scaled)) + abs(turn_scaled)) * maxspeed;
+        move_1_scaled = move_1_scaled / (max(abs(move_1_scaled),abs(move_2_scaled)) + abs(turn_scaled)) * maxspeed;
         move_2_scaled = move_2_scaled / (max(abs(move_1_scaled), abs(move_2_scaled)) + abs(turn_scaled)) * maxspeed;
         turn_scaled = turn_scaled / (max(abs(move_1_scaled), abs(move_2_scaled)) + abs(turn_scaled)) * maxspeed;
     }
@@ -108,31 +109,24 @@ void asterisk_drive::robot_centric_move(pair<double, double> movement_vector, do
      * move the four secondary motors (straight wheels)
      ************************************************************************/
 
-    // auto straightGear = straight_left_A_.get_gearing(); // assuming all motors have the same gearing
-    // auto straightMax = 0.0;
+    auto theta = M_PI / 4; // wheels are at 45˚ angle
 
-    // if (straightGear == 0)
-    //     straightMax = 100.0;
-    // else if (straightGear == 1)
-    //     straightMax = 200.0;
-    // else if (straightGear == 2)
-    //     straightMax = 600.0;
-    // // limit the max speed of the straight wheels so they don't overpower the drive wheels
-    // straightMax *= cos(theta); // equivalent to dividing by √2 if aligned correctly
+    // take the average velocity in the forward direction
+    // of the front and back wheels on each side
+    auto sl_move = (fl_move-bl_move)/2; // subtracting back from front eliminates horizontal component
+    auto sr_move = (fr_move-br_move)/2; // giving only the vertical component
 
-    // left angle separate from calculations to make
-    // debugging easier if the wheels are misaligned
-    auto theta = M_PI / 4; // assuming perfect 45˚ angle
+    // scale the straight wheel speeds so they don't overpower the primary wheels
+    sl_move*=1/cos(M_PI); // cos(45˚)=1/√2 
+    sr_move*=1/cos(M_PI); // cos(45˚)=1/√2
 
-    // will need to make negative if the wheels are facing the opposite way
-    auto sl_move = (fl_move-fr_move)/2 * cos(theta); // should be equivalent to dividing by √2
-    auto sr_move = (bl_move-br_move)/2 * cos(theta); // should be equivalent to dividing by √2
+    // The 5/3 is a scaling factor from the gear ratio of the physical robot
+    auto gear_ratio=5.0/3.0; // 5:3 gear ratio
+    sl_move*=gear_ratio; // scale left side by gear ratio
+    sr_move*=gear_ratio; // scale right side by gear ratio
 
     // move forward/straight wheels
-    if(abs(turn)<0.2)
-    {
-        straight_left_.move_velocity(min(sl_move, maxspeed*cos(theta)));
-        straight_right_.move_velocity(min(sr_move, maxspeed*cos(theta)));
-    }
+    straight_left_.move_velocity(sl_move); // move straight left Motor_Group
+    straight_right_.move_velocity(sr_move); // move straight right Motor_Group
 }
 
