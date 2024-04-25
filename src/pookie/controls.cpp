@@ -14,15 +14,7 @@ void controls() {
 
     while(1) {
         //ACTIVATE DRIVE
-        if(pros::competition::is_connected())
-            tank_drive_15.change_drive_mode(0);
-        else
-        {
-            if(gui::tank_drive)
-                tank_drive_15.change_drive_mode(1);
-            else
-                tank_drive_15.change_drive_mode(0);
-        }
+        tank_drive_15.change_drive_mode(0);
         
         tank_drive_15.toggle_drive_mode();
 

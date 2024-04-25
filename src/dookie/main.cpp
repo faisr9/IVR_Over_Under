@@ -4,6 +4,8 @@
 pros::Task *controlsTask;
 pros::Task *loadBarTask;
 
+const bool matchMode = false; // Set to true when in competition
+
 /* First method to run when program starts */
 void initialize() {
 	// pros::lcd::initialize(); // Temp until custom GUI
@@ -16,21 +18,22 @@ void initialize() {
 	lv_obj_t *loadBar = lv_btn_create(lv_scr_act(), NULL);
 	lv_btn_set_style(loadBar, LV_BTN_STYLE_REL, &bar_Style);
 	lv_btn_set_style(loadBar, LV_BTN_STYLE_PR, &bar_Style);
-	lv_obj_set_size(loadBar, 5, 180);
+	lv_obj_set_size(loadBar, 5, 150);
 	lv_obj_align(loadBar, NULL, LV_ALIGN_IN_LEFT_MID, 0, 0);
 
-	// Useful for if need hard reset during match
-	if(!pros::competition::is_connected()) {
+	// Prevents IMU calibration, if program recycled during competition
+	if(!pros::competition::is_connected() || !matchMode) {
 		loadBarTask = new pros::Task{[&] {
 			int i = 5;
 			int t = 0;
-			const int init_time = 5000;
+			const int init_time = 5000; /** WARNING: CHANGING THIS COULD RESULT IN DATA ABORT */
 			while(t < init_time) {
-				lv_obj_set_size(loadBar, i, 180);
+				lv_obj_set_size(loadBar, i, 150);
 				i += 4;
 				t += 20;
 				pros::delay(20);
 			}
+			waitUntil(!imu.is_calibrating());
 		}};
 
 		imu.reset(true); // Very important!!!
@@ -44,12 +47,14 @@ void initialize() {
 	Pneumatics::getInstance()->getTopHang()->off();
 
 	if(loadBarTask != nullptr) {
-		loadBarTask->remove();
+		if(loadBarTask->get_state() != pros::E_TASK_STATE_INVALID 
+		|| loadBarTask->get_state() != pros::E_TASK_STATE_DELETED)
+			loadBarTask->remove();
 		lv_obj_del(loadBar);
 	}
 
-	/** TODO: NEED TO FINISH!!! */
-	gui::gui_init();
+	// if(!pros::competition::is_connected() || !matchMode)
+		gui::gui_init();
 }
 
 /* Runs when robot is disabled from competition controller after driver/auton */
@@ -60,19 +65,24 @@ void competition_initialize() {
 	if(controlsTask != nullptr)
 		if(controlsTask->get_state() != pros::E_TASK_STATE_INVALID) {controlsTask->suspend();}
 
-	ctrl_master.rumble(".."); 
-	imu.reset(true);
-	ctrl_master.rumble("--");
+	if(matchMode) {
+		ctrl_master.rumble(".."); 
+		imu.reset(true);
+		ctrl_master.rumble("--");
+	}
 }
 
 /* Autonomous method */
 void autonomous() {
-	/** TODO: SETUP AUTON SELECTOR */
 	if(gui::selected_auton == gui::AUTON_WP) {
 		win_point_auton();
 	} else if(gui::selected_auton == gui::AUTON_ELIM) {
 		non_win_point_auton();
+	}  else {
+		win_point_auton(); // Default to win point auton
 	}
+
+	// ctrl_master.rumble("..--..");
 }
 
 /* Opcontrol method runs by default (unless connected to comp controller )*/

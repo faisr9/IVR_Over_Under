@@ -1,5 +1,7 @@
 #include "pookie/gui.h"
 
+pros::Task *raze_ss;
+
 /** Method to create buttons, and simplify code lengths for repeated commands.
  * @param parent lv object parent
  * @param x x-pos of button where x <= SCREEN_WIDTH_MAX
@@ -68,52 +70,18 @@ lv_res_t autonSelection(lv_obj_t *btn)
     switch(id)
     {
         case(1):
-            lv_btn_set_state(comp_auton_btn, LV_BTN_STATE_PR);
-            lv_btn_set_state(skills_auton_btn, LV_BTN_STATE_REL);
-            lv_btn_set_state(no_auton_btn, LV_BTN_STATE_REL);
-            gui::selected_auton = gui::autonomous_type::AUTON_COMP;
+            lv_btn_set_state(wp_auton_btn, LV_BTN_STATE_PR);
+            lv_btn_set_state(elim_auton_btn, LV_BTN_STATE_REL);
+            gui::selected_auton = gui::autonomous_type::AUTON_WP;
             break;
         case(2):
-            lv_btn_set_state(comp_auton_btn, LV_BTN_STATE_REL);
-            lv_btn_set_state(skills_auton_btn, LV_BTN_STATE_PR);
-            lv_btn_set_state(no_auton_btn, LV_BTN_STATE_REL);
-            gui::selected_auton = gui::autonomous_type::AUTON_SKILLS;
-            break;
-        case(3):
-            lv_btn_set_state(comp_auton_btn, LV_BTN_STATE_REL);
-            lv_btn_set_state(skills_auton_btn, LV_BTN_STATE_REL);
-            lv_btn_set_state(no_auton_btn, LV_BTN_STATE_PR);
-            gui::selected_auton = gui::autonomous_type::AUTON_NONE;
+            lv_btn_set_state(wp_auton_btn, LV_BTN_STATE_REL);
+            lv_btn_set_state(elim_auton_btn, LV_BTN_STATE_PR);
+            gui::selected_auton = gui::autonomous_type::AUTON_ELIM;
             break;
     }
 
     return LV_RES_OK;
-}
-
-lv_res_t driveTypeUpdate(lv_obj_t *btn_inp)
-{
-    short int id = lv_obj_get_free_num(btn_inp);
-    screenSave_delay = 0;
-
-    switch (id)
-    {
-        case 1:
-            lv_sw_on_anim(tank_drive_switch);
-            lv_sw_off_anim(arcade_drive_switch);
-            gui::tank_drive = true;
-            // drive.change_drive_mode(1);
-            break;
-        case 2:
-            lv_sw_on_anim(arcade_drive_switch);
-            lv_sw_off_anim(tank_drive_switch);
-            gui::tank_drive = false;
-            // drive.change_drive_mode(0);
-            break;
-    }
-
-    // printf("Tank Drive: %s\n", gui::tank_drive ? "True" : "False");
-
-    return LV_RES_OK;   
 }
 
 lv_res_t manualTrigger(lv_obj_t *btn)
@@ -124,12 +92,9 @@ lv_res_t manualTrigger(lv_obj_t *btn)
     switch (id)
     {
         case 1:
-            Pneumatics::getInstance()->getIntake()->off();
-            Pneumatics::getInstance()->getWings()->on();
-            break;
-        case 2:
-            Pneumatics::getInstance()->getIntake()->on();
-            Pneumatics::getInstance()->getWings()->off();
+            lv_btn_set_state(btn, LV_BTN_STATE_PR);
+            imu.reset(true);
+            lv_btn_set_state(btn, LV_BTN_STATE_REL);
             break;
     }
 
@@ -161,15 +126,7 @@ void raze_ss_runner()
             lv_obj_del(illini_label);
             lv_obj_del(robot_label);
             lv_obj_del(auton_select_label);
-            lv_obj_del(comp_auton_btn);
-            lv_obj_del(skills_auton_btn);
-            lv_obj_del(no_auton_btn);
-            lv_obj_del(tank_drive_btn);
-            lv_obj_del(tank_drive_switch);
-            lv_obj_del(arcade_drive_btn);
-            lv_obj_del(arcade_drive_switch);
             lv_obj_del(manual_trigger_btn1);
-            lv_obj_del(manual_trigger_btn2);
 
             frameObj->hidden = false;
             razeImg->hidden = false;
@@ -247,8 +204,6 @@ void gui::gui_init()
     if (pros::lcd::is_initialized())
         pros::lcd::shutdown();
 
-    gui::tank_drive = false;
-
     delay(200);
     lv_init();
 
@@ -272,33 +227,25 @@ void gui::gui_init()
     label_style.body.radius = 2;
     label_style.text.color = LV_COLOR_WHITE;
 
-    lv_style_copy(&comp_auton_style, &lv_style_plain);
-    comp_auton_style.body.main_color = LV_COLOR_MAKE(205-80, 0, 0);
-    comp_auton_style.body.grad_color = LV_COLOR_MAKE(0, 0, 205-80);
-    comp_auton_style.body.radius = 1;
-    comp_auton_style.text.color = LV_COLOR_MAKE(205-80, 205-80, 205-80);
+    lv_style_copy(&wp_auton_style, &lv_style_plain);
+    wp_auton_style.body.main_color = LV_COLOR_MAKE(255-150, 0, 0);
+    wp_auton_style.body.grad_color = LV_COLOR_MAKE(255-150, 0, 0);
+    wp_auton_style.body.radius = 1;
+    wp_auton_style.text.color = LV_COLOR_MAKE(205-80, 205-80, 205-80);
 
-    lv_style_copy(&skills_auton_style, &comp_auton_style);
-    skills_auton_style.body.main_color = LV_COLOR_MAKE(0, 205-80, 0);
-    skills_auton_style.body.grad_color = LV_COLOR_MAKE(0, 205-80, 0);
+    lv_style_copy(&elim_auton_style, &wp_auton_style);
+    elim_auton_style.body.main_color = LV_COLOR_MAKE(0, 0, 255-150);
+    elim_auton_style.body.grad_color = LV_COLOR_MAKE(0, 0, 255-150);
 
-    lv_style_copy(&no_auton_style, &comp_auton_style);
-    no_auton_style.body.main_color = LV_COLOR_MAKE(205-80, 0, 0);
-    no_auton_style.body.grad_color = LV_COLOR_MAKE(205-80, 0, 0);
+    lv_style_copy(&wp_auton_style_sel, &lv_style_plain);
+    wp_auton_style_sel.body.main_color = LV_COLOR_MAKE(255, 0, 0);
+    wp_auton_style_sel.body.grad_color = LV_COLOR_MAKE(255, 0, 0);
+    wp_auton_style_sel.body.radius = 1;
+    wp_auton_style_sel.text.color = LV_COLOR_WHITE;
 
-    lv_style_copy(&comp_auton_style_sel, &lv_style_plain);
-    comp_auton_style_sel.body.main_color = LV_COLOR_MAKE(255, 0, 0);
-    comp_auton_style_sel.body.grad_color = LV_COLOR_MAKE(0, 0, 255);
-    comp_auton_style_sel.body.radius = 1;
-    comp_auton_style_sel.text.color = LV_COLOR_WHITE;
-
-    lv_style_copy(&skills_auton_style_sel, &comp_auton_style_sel);
-    skills_auton_style_sel.body.main_color = LV_COLOR_MAKE(0, 255, 0);
-    skills_auton_style_sel.body.grad_color = LV_COLOR_MAKE(0, 255, 0);
-
-    lv_style_copy(&no_auton_style_sel, &comp_auton_style_sel);
-    no_auton_style_sel.body.main_color = LV_COLOR_MAKE(255, 0, 0);
-    no_auton_style_sel.body.grad_color = LV_COLOR_MAKE(255, 0, 0);
+    lv_style_copy(&elim_auton_style_sel, &wp_auton_style_sel);
+    elim_auton_style_sel.body.main_color = LV_COLOR_MAKE(0, 0, 255);
+    elim_auton_style_sel.body.grad_color = LV_COLOR_MAKE(0, 0, 255);
 
     lv_style_copy(&manualReleased, &lv_style_plain);
     manualReleased.body.main_color = LV_COLOR_MAKE(238, 238, 238);
@@ -315,30 +262,6 @@ void gui::gui_init()
     manualPressed.body.border.width = 2;
     manualPressed.body.radius = 8;
 
-    lv_style_copy(&switch_knob_off_style, &lv_style_plain);
-    switch_knob_off_style.body.main_color = LV_COLOR_MAKE(100, 0, 0);
-    switch_knob_off_style.body.grad_color = LV_COLOR_MAKE(100, 0, 0);
-    switch_knob_off_style.body.radius = 15;
-
-    lv_style_copy(&switch_knob_on_style, &lv_style_plain);
-    switch_knob_on_style.body.main_color = LV_COLOR_MAKE(0, 0, 255);
-    switch_knob_on_style.body.grad_color = LV_COLOR_MAKE(0, 0, 255);
-    switch_knob_on_style.body.radius = 15;
-
-    lv_style_copy(&switch_bg_style, &lv_style_plain);
-    switch_bg_style.body.main_color = LV_COLOR_MAKE(50, 50, 50);
-    switch_bg_style.body.grad_color = LV_COLOR_MAKE(50, 50, 50);
-    switch_bg_style.body.border.color = LV_COLOR_MAKE(50, 50, 50);
-    switch_bg_style.body.radius = 8;
-    switch_bg_style.body.border.width = 10; 
-
-    lv_style_copy(&switch_indic_style, &lv_style_plain);
-    switch_indic_style.body.main_color = LV_COLOR_MAKE(0, 255, 0);
-    switch_indic_style.body.grad_color = LV_COLOR_MAKE(0, 255, 0);
-    switch_indic_style.body.border.color = LV_COLOR_MAKE(0, 255, 0);
-    switch_indic_style.body.radius = 8;
-    switch_indic_style.body.border.width = 8;
-
     // Create Objects //
     backround = createBtn(lv_scr_act(), 0, 0, SCREEN_WIDTH_MAX, SCREEN_HEIGHT_MAX,
             &plain_black, &plain_black, LV_BTN_ACTION_LONG_PR_REPEAT, NULL, 0, "");
@@ -346,75 +269,39 @@ void gui::gui_init()
     illini_label = createLabel(lv_scr_act(), 0, 0, 0, 0, &label_style, "ILL-INI");
     lv_obj_align(illini_label, NULL, LV_ALIGN_IN_BOTTOM_LEFT, 0, 0);
 
-    robot_label = createLabel(lv_scr_act(), 0, 0, 0, 0, &label_style, "comp 15");
+    robot_label = createLabel(lv_scr_act(), 0, 0, 0, 0, &label_style, "POOKIE");
     lv_obj_align(robot_label, NULL, LV_ALIGN_IN_BOTTOM_RIGHT, 0, 0);
 
     auton_select_label = createLabel(lv_scr_act(), 30, 35, 0, 0, &label_style, "Choose Auton:");
+    lv_obj_align(auton_select_label, NULL, LV_ALIGN_IN_TOP_RIGHT, 0, 10);
 
-    comp_auton_btn = createBtn(lv_scr_act(), 45, 65, 100, 35, 
-        &comp_auton_style_sel, &comp_auton_style, LV_BTN_ACTION_CLICK, autonSelection, 1, "Comp");
-    lv_btn_set_state(comp_auton_btn, LV_BTN_STATE_REL);
+    wp_auton_btn = createBtn(lv_scr_act(), 45, 65, 100, 35, 
+        &wp_auton_style_sel, &wp_auton_style, LV_BTN_ACTION_CLICK, autonSelection, 1, "WinPoint");
+    lv_btn_set_state(wp_auton_btn, LV_BTN_STATE_REL);
+    lv_obj_align(wp_auton_btn, NULL, LV_ALIGN_IN_TOP_RIGHT, -10, 40);
 
-    skills_auton_btn = createBtn(lv_scr_act(), 45, 65+35+10, 100, 35, 
-        &skills_auton_style_sel, &skills_auton_style, LV_BTN_ACTION_CLICK, autonSelection, 2, "Skills");
-    lv_btn_set_state(skills_auton_btn, LV_BTN_STATE_REL);
-
-    no_auton_btn = createBtn(lv_scr_act(), 45, 110+35+10, 100, 35,
-        &no_auton_style_sel, &no_auton_style, LV_BTN_ACTION_CLICK, autonSelection, 3, "None");
-    lv_btn_set_state(no_auton_btn, LV_BTN_STATE_REL);
+    elim_auton_btn = createBtn(lv_scr_act(), 45, 65+35+10, 100, 35, 
+        &elim_auton_style_sel, &elim_auton_style, LV_BTN_ACTION_CLICK, autonSelection, 2, "Elims");
+    lv_btn_set_state(elim_auton_btn, LV_BTN_STATE_REL);
+    lv_obj_align(elim_auton_btn, NULL, LV_ALIGN_IN_TOP_RIGHT, -10, 40+35+10);
 
     if (gui::selected_auton != gui::autonomous_type::NO_SELECTION)
     {
         switch(gui::selected_auton)
         {
-            case(gui::autonomous_type::AUTON_COMP):
-                lv_btn_set_state(comp_auton_btn, LV_BTN_STATE_PR);
+            case(gui::autonomous_type::AUTON_WP):
+                lv_btn_set_state(wp_auton_btn, LV_BTN_STATE_PR);
                 break;
-            case(gui::autonomous_type::AUTON_SKILLS):
-                lv_btn_set_state(skills_auton_btn, LV_BTN_STATE_PR);
-                break;
-            case(gui::autonomous_type::AUTON_NONE):
-                lv_btn_set_state(no_auton_btn, LV_BTN_STATE_PR);
+            case(gui::autonomous_type::AUTON_ELIM):
+                lv_btn_set_state(elim_auton_btn, LV_BTN_STATE_PR);
                 break;
         }
     }
 
-    tank_drive_btn = createBtn(lv_scr_act(), 180, 40, 70, 35,
-        &modeBtnStyle, &modeBtnStyle, LV_BTN_ACTION_CLICK, NULL, 0, "Tank");
-    tank_drive_switch = lv_sw_create(lv_scr_act(), NULL);
-    lv_obj_set_pos(tank_drive_switch, 180+70+10, 40-2);
-    lv_obj_set_size(tank_drive_switch, 70, 40);
-    lv_sw_set_style(tank_drive_switch, LV_SW_STYLE_KNOB_OFF, &switch_knob_off_style);
-    lv_sw_set_style(tank_drive_switch, LV_SW_STYLE_KNOB_ON, &switch_knob_on_style);
-    lv_sw_set_style(tank_drive_switch, LV_SW_STYLE_BG, &switch_bg_style);
-    lv_sw_set_style(tank_drive_switch, LV_SW_STYLE_INDIC, &switch_indic_style);
-    lv_sw_off(tank_drive_switch);
-    lv_obj_set_free_num(tank_drive_switch, 1);
-    lv_sw_set_anim_time(tank_drive_switch, 300);
-    lv_sw_set_action(tank_drive_switch, driveTypeUpdate);
-
-    arcade_drive_btn = createBtn(lv_scr_act(), 180, 40+35+10, 70, 35,
-        &modeBtnStyle, &modeBtnStyle, LV_BTN_ACTION_CLICK, NULL, 0, "Arcade");
-    arcade_drive_switch = lv_sw_create(lv_scr_act(), NULL);
-    lv_obj_set_pos(arcade_drive_switch, 180+70+10, 40+45-2);
-    lv_obj_set_size(arcade_drive_switch, 70, 40);
-    lv_sw_set_style(arcade_drive_switch, LV_SW_STYLE_KNOB_OFF, &switch_knob_off_style);
-    lv_sw_set_style(arcade_drive_switch, LV_SW_STYLE_KNOB_ON, &switch_knob_on_style);
-    lv_sw_set_style(arcade_drive_switch, LV_SW_STYLE_BG, &switch_bg_style);
-    lv_sw_set_style(arcade_drive_switch, LV_SW_STYLE_INDIC, &switch_indic_style);
-    lv_sw_on(arcade_drive_switch);
-    lv_obj_set_free_num(arcade_drive_switch, 2);
-    lv_sw_set_anim_time(tank_drive_switch, 300);
-    lv_sw_set_action(arcade_drive_switch, driveTypeUpdate);
-
     manual_trigger_btn1 = createBtn(lv_scr_act(), 0, 0, 130, 35,
-        &manualPressed, &manualReleased, LV_BTN_ACTION_CLICK, manualTrigger, 1, "Cata Release");
-    lv_obj_align(manual_trigger_btn1, NULL, LV_ALIGN_IN_RIGHT_MID, -10, -35);
-    
-    manual_trigger_btn2 = createBtn(lv_scr_act(), 0, 0, 130, 35,
-        &manualPressed, &manualReleased, LV_BTN_ACTION_CLICK, manualTrigger, 2, "Wings Close");
-    lv_obj_align(manual_trigger_btn2, NULL, LV_ALIGN_IN_RIGHT_MID, -10, 35);
+        &manualPressed, &manualReleased, LV_BTN_ACTION_CLICK, manualTrigger, 1, "IMU Reset");
+    lv_obj_align(manual_trigger_btn1, NULL, LV_ALIGN_IN_TOP_RIGHT, 0, 160);
 
-    Task raze_ss(raze_ss_runner);
-    raze_ss.set_priority(TASK_PRIORITY_LOW);
+    raze_ss = new pros::Task([=] {raze_ss_runner();}, "Raze SS Task");
+    raze_ss->set_priority(6);
 }
