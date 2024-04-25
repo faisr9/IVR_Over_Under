@@ -57,6 +57,7 @@ void win_point_auton() {
         delay(1000);
         Intake::getInstance()->stop();
         Pneumatics::getInstance()->getWings()->on();
+        delay(150);
         movePID(tank_drive_15, 9, 135,1200);
 
         turnToAngle(tank_drive_15, 120, 2);
@@ -69,30 +70,26 @@ void win_point_auton() {
         // vector<vector<double>> toOtherDepot = {{convert::mToIn(tank_drive_15.getOdom().getX()), convert::mToIn(tank_drive_15.getOdom().getX())}, 
         //                                         {2.5*24, 7.5}, {71, 7.5}, {108, 7.5}}; //pickup 1st WP triball along path 
         vector<vector<double>> toOtherDepot = {{convert::mToIn(tank_drive_15.getOdom().getX()), convert::mToIn(tank_drive_15.getOdom().getX())}, 
-                                                {2.5*24, 7.5}, {106, 9.5}}; //pickup 1st WP triball along path 
+                                                {2.5*24, 7.5}, {105, 9.5}}; //pickup 1st WP triball along path 
         move(toOtherDepot, 50, false, true, 1);
         turnToAngle(tank_drive_15, 50, 2);
         ////////
         // Score WP Triballs
-        // vector<vector<double>> toGoal = {{convert::mToIn(tank_drive_15.getOdom().getX()), convert::mToIn(tank_drive_15.getOdom().getX())}, 
-        //                                     {110,9}, {115, 10}, {127,12}, {129, 18}, {131.5, 27}}; //pickup 2nd WP triball along path
         vector<vector<double>> toGoal = {toOtherDepot.back(), 
                                             {112, 12}, {124,16}, {125.5, 20}}; //pickup 2nd WP triball along path
         move(toGoal, 350, false, false, 2,.5);
-        // turnToAngle(tank_drive_15, 20, 2);
-        
-        // Pneumatics::getInstance()->getIntake()->on();
+
         turnToAngle(tank_drive_15, 10, 2);
-        movePID(tank_drive_15, 17, 10, 1200);
+        movePID(tank_drive_15, 16, 10, 1200);
         movePID(tank_drive_15, -11, 340, 1100);
+        Intake::getInstance()->toggle_on(-600);
         Pneumatics::getInstance()->getWings()->off();
-        Intake::getInstance()->toggle_on(-300);
         delay(200);
         turnToAngle(tank_drive_15, 220, 2);
         movePID(tank_drive_15, -9, 220, 1000);
         turnToAngle(tank_drive_15, 185, 2);
         
-        for(int i=0; i<2; i++){
+        for(int i=0; i<1; i++){
             delay(50);
             tank_drive_15.move_with_power(-100);
             // waitUntil(tank_drive_15.getOdom().getY() >= convert::inToM(25.5));
@@ -110,54 +107,39 @@ void win_point_auton() {
         turnToAngle(tank_drive_15, 250, 2);
         delay(50);
         Pneumatics::getInstance()->getWings()->on();
+        // vector<vector<double>> sweep = {{convert::mToIn(tank_drive_15.getOdom().getX()), convert::mToIn(tank_drive_15.getOdom().getY())},
+        //                                     {100,33}, {84.5, 40}, {84, 61}, {91, 64}, {96, 64}, {115, 64}}; //pickup 2nd WP triball along path
         vector<vector<double>> sweep = {{convert::mToIn(tank_drive_15.getOdom().getX()), convert::mToIn(tank_drive_15.getOdom().getY())},
-                                            {100,33}, {84.5, 40}, {84, 61}, {91, 62}, {96, 63}, {113, 63}}; //pickup 2nd WP triball along path
+                                            {100, 35}, {88, 36}, {84.5, 40}, {84, 61}, {91, 64}, {96, 64}, {115, 64}}; //pickup 2nd WP triball along path
         move(sweep, 90, false, false, 2, .35);
         Intake::getInstance()->toggle_on();
         turnToAngle(tank_drive_15, 90, 2);
         delay(50);
         // ram in front of goal
         for(int i=0; i<2; i++){
-            tank_drive_15.move_with_power(130);
-            // waitUntil(tank_drive_15.getOdom().getX() >= convert::inToM(125));
-            delay(600);
+            tank_drive_15.move_with_power(120);
+            delay(500);
             tank_drive_15.move_with_power(0);
-            movePID(tank_drive_15, -12, 90, 1200);  
+            movePID(tank_drive_15, -14, 90, 1200);  
         }
         /////
 
-        // To Climb Bar (WP END)
-        // Intake::getInstance()->toggle_on(-300);
-
-        // turnToAngle(tank_drive_15, 180, 2);
-        // vector<vector<double>> toClimb = {{convert::mToIn(tank_drive_15.getOdom().getX()), convert::mToIn(tank_drive_15.getOdom().getY())}, 
-        //                                     {100, 34}, {107.5,29}, {87+6, 23.5}};
-        // move(toClimb, 270, false, false, 2, .35);
+        // TO CLIMB
         turnToAngle(tank_drive_15, 220, 2);
-        // tank_drive_15.move_with_power(35);
-        // delay(4500);
-        // tank_drive_15.move_with_power(0);
-        // tank_drive_15.move_with_power(55);
-        // delay(400);
-        // tank_drive_15.move_with_power(0);
-        // movePID(tank_drive_15, 4, 290, 1000);
-        // turnToAngle(tank_drive_15, 270, 2);
-        Intake::getInstance()->toggle_on();
+        Intake::getInstance()->toggle_on(-600);
+        // vector<vector<double>> toClimb = {{convert::mToIn(tank_drive_15.getOdom().getX()), convert::mToIn(tank_drive_15.getOdom().getY())}, 
+        //                                     {86.5, 27.5}};
         vector<vector<double>> toClimb = {{convert::mToIn(tank_drive_15.getOdom().getX()), convert::mToIn(tank_drive_15.getOdom().getY())}, 
-                                            {86, 26.5}};
-        move(toClimb, 180, false, false, 1.65, .35);
-        turnToAngle(tank_drive_15, 180, 2);
+                                            {87, 30}};
+        // move(toClimb, 180, false, false, 1.65, .35);
+        move(toClimb, 270, false, false, 1.65, .35);
+        // turnToAngle(tank_drive_15, 270, 2);
 
-        // tank_drive_15.move_with_power(30);
-        // delay(1000);
-        // tank_drive_15.move_with_power(0);
+        movePID(tank_drive_15, 9, 270, 1100);
 
-        // movePID(tank_drive_15, -2, 180, 600, 0.1);
-        movePID(tank_drive_15, 5, 180, 1000);
-
-        tank_drive_15.split_tank_with_power(-20,10);
+        tank_drive_15.split_tank_with_power(10,-20);
         delay(1200);
-        tank_drive_15.move_with_power(0);
+        tank_drive_15.split_tank_with_power(10,0);
     }};
     // auton_task.set_priority(TASK_PRIORITY_MEDIUM_HIGH);
 	
