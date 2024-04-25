@@ -61,7 +61,7 @@ class DriveParent {
         // apply smooth sin scaling 
         static double sin_scale(double input, double sin_scale_factor);
         // apply square scaling
-        static double square_scale(double input);
+        static double square_scale(double input, double square_scale_factor=2.0);
         
     protected:
         // motors stored at child level

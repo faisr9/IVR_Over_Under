@@ -53,7 +53,9 @@ void win_point_auton() {
     // Auton code here
     pros::Task auton_task {[=] {
         // Get Alliance Triballs
+        Intake::getInstance()->toggle_on(600);
         delay(1000);
+        Intake::getInstance()->stop();
         Pneumatics::getInstance()->getWings()->on();
         movePID(tank_drive_15, 9, 135,1200);
 
