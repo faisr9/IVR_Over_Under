@@ -2,7 +2,7 @@
  * Description: implementations for x-drive system
  * Path: src/common_code/x_drive.cpp
  * Header: include/common_code/x_drive.h
- * Last Modified: 04/14/24 by Zach Martin
+ * Last Modified: 04/16/24 by Zach Martin
  */
 
 #include "x-drive.h"
@@ -58,13 +58,17 @@ void x_drive::robot_centric_move(pair<double, double> movement_vector, double tu
     auto turn_scaled = max_rpm * turn; // turn speed
     auto priority = 0.5; // priority of movement over turning
 
+    auto priority = 1.0; // priority of movement over turning (1.0=equal priority)
+
     // if the sum of the speeds is greater than the max speed, scale them down
     if (max(abs(move_1_scaled),abs(move_2_scaled)) + abs(turn_scaled) > max_rpm) 
     {
-        move_1_scaled = move_1_scaled / (max(abs(move_1_scaled),abs(move_2_scaled)) + abs(turn_scaled)) * max_rpm;
-        move_2_scaled = move_2_scaled / (max(abs(move_1_scaled), abs(move_2_scaled)) + abs(turn_scaled)) * max_rpm;
-        turn_scaled = turn_scaled / (max(abs(move_1_scaled), abs(move_2_scaled)) + abs(turn_scaled)) * max_rpm;
+        auto scale_factor = 1/(priority*max(abs(move_1_scaled),abs(move_2_scaled)) + abs(turn_scaled)) * max_rpm;
+        move_1_scaled *= priority*scale_factor;
+        move_2_scaled *= priority*scale_factor;
+        turn_scaled *= scale_factor;
     }
+    
     auto fl_move = move_1_scaled - turn_scaled; // fl and br use the first diagonal component
     auto fr_move = move_2_scaled - turn_scaled; // front motors subtract turn
     auto bl_move = move_2_scaled + turn_scaled; // bl and fr use the second diagonal component
@@ -74,7 +78,7 @@ void x_drive::robot_centric_move(pair<double, double> movement_vector, double tu
     front_left_->move_velocity(fl_move);
     front_right_->move_velocity(fr_move);
     back_left_->move_velocity(bl_move);
-    back_right_->move_velocity(-br_move); // reversing this specific motor does not seem to have a noticable effect on the robot, which is why the velocity is negative here
+    back_right_->move_velocity(br_move);
 }
 
 void x_drive::field_centric_move(pair<double, double> movement_vector, double turn_right_x, double max_rpm)
