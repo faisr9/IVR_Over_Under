@@ -16,17 +16,17 @@ void skills() {
 
     const double kP = 2.8;
 
-    std::vector<double> start_pos = {0.45, 0.45}; // wrong for now
-    const double kSTARTING_ANGLE = 60.0; // tenative, not used for now
+    std::vector<double> start_pos = {0.9, 3.3}; // wrong for now
+    const double kSTARTING_ANGLE = 90.0;
     const double kSTART_TIME = pros::millis();
     const double kRECIEVE_FIRST_TIME = 20000; // how long should get triballs at first pos for in millis
-    const double kSKILLS_TIME = 60000;
+    const double kSKILLS_TIME = 45000;
 
-    // x_drive_odom.initTracker(start_pos[0], start_pos[1], 0);
+    ast_odom.initTracker(start_pos[0], start_pos[1], 0);
     pros::delay(50);
     pros::Task odom_task{[=] {
         while (1) {
-            // x_drive_odom.updatePosition();
+            ast_odom.updatePosition();
             pros::delay(50);
         }
     }};
@@ -34,13 +34,12 @@ void skills() {
 
     pros::Task drive_to_goal_task {[=] {
         std::vector<std::vector<double>> to_goal_path = {start_pos, {2.7, 3.3}, {2.7, 2.3}};
-        // followPathX(to_goal_path, x_drive_odom, odom, 90);
+        followPathX(to_goal_path, astdriveCatcher, ast_odom, 90); // todo: update follow path to support diff constants for x drive vs ast drive (or diff robots in general)
     }};
 
     while (drive_to_goal_task.get_state() != pros::E_TASK_STATE_DELETED) {
         if (ctrl_master.get_digital_new_press(E_CONTROLLER_DIGITAL_B)) {
             drive_to_goal_task.suspend();
-            // SkillsCata::getInstance()->set_cata_mode(SkillsCata::CataMode::Cycle); // cycle once to get back to a known position
             break;
         }
 
@@ -48,10 +47,10 @@ void skills() {
     }
 
 
-    // while (pros::millis())
-
+    // signal to move over to next spot
     pros::Task wait_for_signal {[=] {
-        catcher_link->waitForNotify(30000);
+        const int kWAIT_TIME = 20000;
+        catcher_link->waitForNotify(kWAIT_TIME);
     }};
 
     double time_since_last_push = 0;
@@ -84,8 +83,8 @@ void skills() {
     }
 
     pros::Task drive_to_second_pos {[=] {
-        // std::vector<std::vector<double>> to_goal_path = {{odom.getX(), odom.getY()}, {2.7, 1.4}};
-        // followPathX(to_goal_path, x_drive_odom, odom, 90);
+        std::vector<std::vector<double>> to_goal_path = {{ast_odom.getX(), ast_odom.getY()}, {2.7, 1.4}};
+        followPathX(to_goal_path, astdriveCatcher, ast_odom, 90);
     }};
 
     // final thing is don't want to be in the goal when the match ends

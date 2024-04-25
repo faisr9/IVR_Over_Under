@@ -131,3 +131,6 @@ void asterisk_drive::robot_centric_move(pair<double, double> movement_vector, do
     straight_right_.move_velocity(sr_move); // move straight right Motor_Group
 }
 
+void asterisk_drive::app_move(std::pair<double, double> mag_angle_vector, double turn_rpm, double max_rpm, bool reversed) {
+    field_centric_move({mag_angle_vector.first / max_rpm, mag_angle_vector.second}, 0, max_rpm); // turn rpm 0 for now bc need to get constants for ast drive robot
+}

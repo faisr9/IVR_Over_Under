@@ -41,7 +41,10 @@ void SkillsCata::stop(){
 
 // blocking function. Assumes the rotation value increases as the catapult goes towards firing
 void SkillsCata::cycle(bool stop_at_end){
-    motors.move_velocity(cata_rpm);
+    // TODO: Update because the rot sensor loc is on the gear not motor, gear goes BACK AND FORTH not just one dir
+    // motors still only go one direction though
+
+    motors.move_velocity(abs(cata_rpm)); // abs just go avoid disaster
     current_rot = 0; // set to 0 so we have a defined initial value for last_rot
 
     // stop when the value jumps from 36000 to 0
@@ -79,7 +82,7 @@ void SkillsCata::set_cata_mode_internal(CataMode new_cata_mode) {
 }
 
 void SkillsCata::move_forward_manual() {
-    cata_motors.move_velocity(cata_rpm);
+    cata_motors.move_velocity(abs(cata_rpm));
 }
 
 

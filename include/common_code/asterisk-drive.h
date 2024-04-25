@@ -50,6 +50,7 @@ public:
      * stop motors using brake method
      */
     void stop();
+    void app_move(std::pair<double, double> mag_angle_vector, double turn_rpm, double max_rpm, bool reversed);
 
 private:
     // forward wheels for asterisk drive

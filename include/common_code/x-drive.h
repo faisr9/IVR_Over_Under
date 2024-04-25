@@ -80,7 +80,7 @@ public:
      * brake all motors
      */
     void stop();
-    void app_move(std::pair<double, double> mag_angle_vector, double turn_rpm, double max_rpm, bool reversed);
+    virtual void app_move(std::pair<double, double> mag_angle_vector, double turn_rpm, double max_rpm, bool reversed);
     double get_max_rpm() const;
 
 protected:
