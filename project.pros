@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "WP_Auton",
+    "project_name": "Catcher_Skills!",
     "target": "v5",
     "templates": {
       "kernel": {
