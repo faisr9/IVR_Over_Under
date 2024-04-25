@@ -25,7 +25,7 @@ public:
      * @param movement_vector pair of magnitude and angle
      * @param turn turn right x
      */
-    void robot_centric_move(pair<double, double> movement_vector, double turn);
+    void robot_centric_move(pair<double, double> movement_vector, double turn_right_x, double max_rpm = -1);
     /*
      * asterisk drive constructor
      * (holonomic x-drive modified to include foward wheels for pushing force)

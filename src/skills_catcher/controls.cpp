@@ -11,7 +11,21 @@ void controls()
 		}
 	}};
 
+  double p = 1.0;
+
   while (1) {
+
+    // if (ctrl_master.get_digital_new_press(E_CONTROLLER_DIGITAL_Y)) {
+    //   turnToAngleX(astdriveCatcher, ast_odom, 0, 2, false, p, 200);
+    // } else if (ctrl_master.get_digital_new_press(E_CONTROLLER_DIGITAL_X)) {
+    //   turnToAngleX(astdriveCatcher, ast_odom, 180, 2, false, p, 200);
+    // }
+
+    // if (ctrl_master.get_digital_new_press(E_CONTROLLER_DIGITAL_UP)) {
+    //   p -= 0.1;
+    // } else if (ctrl_master.get_digital_new_press(E_CONTROLLER_DIGITAL_DOWN)) {
+    //   p += 0.1;
+    // }
 
     // lcd::print(2,"Left middle: %i",(int)left_middle_2.get_actual_velocity());
 		// lcd::print(3,"Right middle: %i",(int)right_middle_2.get_actual_velocity());
@@ -20,7 +34,7 @@ void controls()
 		// lcd::print(6,"Back left: %i",(int)back_left.get_actual_velocity());
 		// lcd::print(7,"Back right: %i",(int)back_right.get_actual_velocity());
 
-    astdriveCatcher.run();
+    // astdriveCatcher.run();
 
     pros::delay(20);
   }

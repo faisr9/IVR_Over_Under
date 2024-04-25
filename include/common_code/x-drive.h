@@ -79,7 +79,7 @@ public:
      * stop the robot
      * brake all motors
      */
-    void stop();
+    virtual void stop();
     virtual void app_move(std::pair<double, double> mag_angle_vector, double turn_rpm, double max_rpm, bool reversed);
     double get_max_rpm() const;
 

@@ -64,8 +64,11 @@ void asterisk_drive::stop()
     straight_right_.brake();
 }
 
-void asterisk_drive::robot_centric_move(pair<double, double> movement_vector, double turn)
+void asterisk_drive::robot_centric_move(pair<double, double> movement_vector, double turn, double max_rpm)
 {
+    if (max_rpm == -1) max_rpm = maxspeed;
+    else max_rpm = std::min(max_rpm, maxspeed);
+
     auto speed = 0.0;
     auto dir = movement_vector.second; // direction in radians
 
@@ -74,7 +77,7 @@ void asterisk_drive::robot_centric_move(pair<double, double> movement_vector, do
     auto scaling = 0.0; // scale factor for movement
     if (movement_vector.first > 0.2) // consider joystick deadzone
     {
-        speed = maxspeed * movement_vector.first; // normalized speed of movement times max speed
+        speed = max_rpm * movement_vector.first; // normalized speed of movement times max speed
         dir -= M_PI / 4;                                 // adjust direction by 45˚ to get the diagonal components of movement
         move_1 = -1 * cos(dir);                          // opposite of cosine of direction
         move_2 = sin(dir);                               // sine of direction
@@ -83,13 +86,13 @@ void asterisk_drive::robot_centric_move(pair<double, double> movement_vector, do
     
     auto move_1_scaled = move_1 * scaling; // move speed
     auto move_2_scaled = move_2 * scaling; // move speed
-    auto turn_scaled = maxspeed * turn; // turn speed
+    auto turn_scaled = max_rpm * turn; // turn speed
     auto priority = 1.0; // priority of movement over turning (1.0=equal priority)
 
     // if the sum of the speeds is greater than the max speed, scale them down
-    if (max(abs(move_1_scaled),abs(move_2_scaled)) + abs(turn_scaled) > maxspeed) 
+    if (max(abs(move_1_scaled),abs(move_2_scaled)) + abs(turn_scaled) > max_rpm) 
     {
-        auto scale_factor = 1/(priority*max(abs(move_1_scaled),abs(move_2_scaled)) + abs(turn_scaled)) * maxspeed;
+        auto scale_factor = 1/(priority*max(abs(move_1_scaled),abs(move_2_scaled)) + abs(turn_scaled)) * max_rpm;
         move_1_scaled *= priority*scale_factor;
         move_2_scaled *= priority*scale_factor;
         turn_scaled *= scale_factor;

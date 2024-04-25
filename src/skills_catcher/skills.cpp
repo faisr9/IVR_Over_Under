@@ -10,11 +10,20 @@ void push_in() {
     // could use pure pursuit/pid later but only if needed
 }
 
-LinkHelper* catcher_link = LinkHelper::createInstance(16, E_LINK_TX);
+LinkHelper* catcher_link = LinkHelper::createInstance(99, E_LINK_TX);
 
 void skills() {
 
-    const double kP = 2.8;
+    /*
+    MANY X-DRIVE FUNCTIONS DO NOT HAVE PROPER ASTERISK DRIVE ACCOMODATIONS
+    EXAMPLES:
+        TurnToAngleX (final turn at end of path failing) 
+        turn_with_power()
+        some of the field/robot centric moves (and some of these are good bc they make .run work so be careful)
+    */
+
+
+    pros::lcd::set_text(1, "Skills Start");
 
     std::vector<double> start_pos = {0.9, 3.3}; // wrong for now
     const double kSTARTING_ANGLE = 90.0;
@@ -22,7 +31,7 @@ void skills() {
     const double kRECIEVE_FIRST_TIME = 20000; // how long should get triballs at first pos for in millis
     const double kSKILLS_TIME = 45000;
 
-    ast_odom.initTracker(start_pos[0], start_pos[1], 0);
+    ast_odom.initTracker(start_pos[0], start_pos[1], kSTARTING_ANGLE);
     pros::delay(50);
     pros::Task odom_task{[=] {
         while (1) {
@@ -33,7 +42,8 @@ void skills() {
 
 
     pros::Task drive_to_goal_task {[=] {
-        std::vector<std::vector<double>> to_goal_path = {start_pos, {2.7, 3.3}, {2.7, 2.3}};
+        pros::lcd::set_text(1, "Skills Drive to Goal");
+        std::vector<std::vector<double>> to_goal_path = {start_pos, {2.5, 3.3}, {2.5, 2.1}};
         followPathX(to_goal_path, astdriveCatcher, ast_odom, 90); // todo: update follow path to support diff constants for x drive vs ast drive (or diff robots in general)
     }};
 
@@ -49,8 +59,10 @@ void skills() {
 
     // signal to move over to next spot
     pros::Task wait_for_signal {[=] {
-        const int kWAIT_TIME = 20000;
-        catcher_link->waitForNotify(kWAIT_TIME);
+        pros::lcd::set_text(1, "Skills wait for signal");
+        const int kWAIT_TIME = 6000;
+        // catcher_link->waitForNotify(kWAIT_TIME);
+        pros::delay(kWAIT_TIME);
     }};
 
     double time_since_last_push = 0;
@@ -82,10 +94,12 @@ void skills() {
         push_in();
     }
 
-    pros::Task drive_to_second_pos {[=] {
-        std::vector<std::vector<double>> to_goal_path = {{ast_odom.getX(), ast_odom.getY()}, {2.7, 1.4}};
-        followPathX(to_goal_path, astdriveCatcher, ast_odom, 90);
-    }};
+
+    pros::lcd::set_text(1, "Skills move to second pos");
+    std::vector<std::vector<double>> to_goal_path = {{ast_odom.getX(), ast_odom.getY()}, {2.5, 1.5}};
+    followPathX(to_goal_path, astdriveCatcher, ast_odom, 90); // currently does not quite finish this path. Probably because rpm_per_meter const is bad
+    pros::lcd::set_text(1, "Skills second push in cycling");
+
 
     // final thing is don't want to be in the goal when the match ends
     const double kFINAL_PUSH_TIME = 2000; // do final push this many millis before auton end
@@ -102,6 +116,8 @@ void skills() {
     }
 
     push_in();
+
+    pros::lcd::set_text(1, "Skills DONE");
 
     odom_task.suspend();
 

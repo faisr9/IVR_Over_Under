@@ -23,8 +23,8 @@ pros::Imu imu(10);
 
 pros::Rotation radial_rot_sensor(15, true);
 pros::Rotation transverse_rot_sensor(11, false);
-Generic_Rotation_VEX_Rot* radial_tracker = new Generic_Rotation_VEX_Rot(radial_rot_sensor, 1.96 * 0.0254 / 2, 0);
-Generic_Rotation_VEX_Rot* transverse_tracker = new Generic_Rotation_VEX_Rot(transverse_rot_sensor, 1.96 * 0.0254 / 2, 0);
+Generic_Rotation_VEX_Rot* radial_tracker = new Generic_Rotation_VEX_Rot(radial_rot_sensor, 1.96 * 0.0254 / 2, convert::inToM(0.5));
+Generic_Rotation_VEX_Rot* transverse_tracker = new Generic_Rotation_VEX_Rot(transverse_rot_sensor, 1.96 * 0.0254 / 2, convert::inToM(5.125));
 Odom ast_odom(imu, transverse_tracker, radial_tracker);
 
 asterisk_drive astdriveCatcher(ctrl_master, front_left, front_right, back_left, back_right,straight_right, straight_left, imu);
