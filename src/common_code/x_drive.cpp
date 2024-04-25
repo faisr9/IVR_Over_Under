@@ -56,13 +56,17 @@ void x_drive::robot_centric_move(pair<double, double> movement_vector, double tu
     auto turn_scaled = maxspeed * turn; // turn speed
     auto priority = 0.5; // priority of movement over turning
 
+    auto priority = 1.0; // priority of movement over turning (1.0=equal priority)
+
     // if the sum of the speeds is greater than the max speed, scale them down
     if (max(abs(move_1_scaled),abs(move_2_scaled)) + abs(turn_scaled) > maxspeed) 
     {
-        move_1_scaled = move_1_scaled / (max(abs(move_1_scaled),abs(move_2_scaled)) + abs(turn_scaled)) * maxspeed;
-        move_2_scaled = move_2_scaled / (max(abs(move_1_scaled), abs(move_2_scaled)) + abs(turn_scaled)) * maxspeed;
-        turn_scaled = turn_scaled / (max(abs(move_1_scaled), abs(move_2_scaled)) + abs(turn_scaled)) * maxspeed;
+        auto scale_factor = 1/(priority*max(abs(move_1_scaled),abs(move_2_scaled)) + abs(turn_scaled)) * maxspeed;
+        move_1_scaled *= priority*scale_factor;
+        move_2_scaled *= priority*scale_factor;
+        turn_scaled *= scale_factor;
     }
+    
     auto fl_move = move_1_scaled - turn_scaled; // fl and br use the first diagonal component
     auto fr_move = move_2_scaled - turn_scaled; // front motors subtract turn
     auto bl_move = move_2_scaled + turn_scaled; // bl and fr use the second diagonal component
