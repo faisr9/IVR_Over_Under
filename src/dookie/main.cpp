@@ -1,137 +1,114 @@
 #include "dookie/controls.h"
 #include "dookie/auton.h"
 
-// extern LinkHelper* comp18link;
+pros::Task *controlsTask;
+pros::Task *loadBarTask;
 
 /* First method to run when program starts */
 void initialize() {
-	pros::lcd::initialize(); // Temp until custom GUI
-	// comp18link->init();
-	imu.reset(true); // Very important!!!
+	// pros::lcd::initialize(); // Temp until custom GUI
+	lv_style_t bar_Style;
+	lv_style_copy(&bar_Style, &lv_style_plain);
+	bar_Style.body.main_color = LV_COLOR_MAKE(255, 0, 0);
+	bar_Style.body.grad_color = LV_COLOR_MAKE(255, 0, 0);
+	bar_Style.body.radius = 1;
+
+	lv_obj_t *loadBar = lv_btn_create(lv_scr_act(), NULL);
+	lv_btn_set_style(loadBar, LV_BTN_STYLE_REL, &bar_Style);
+	lv_btn_set_style(loadBar, LV_BTN_STYLE_PR, &bar_Style);
+	lv_obj_set_size(loadBar, 5, 180);
+	lv_obj_align(loadBar, NULL, LV_ALIGN_IN_LEFT_MID, 0, 0);
+
+	// Useful for if need hard reset during match
+	if(!pros::competition::is_connected()) {
+		loadBarTask = new pros::Task{[&] {
+			int i = 5;
+			int t = 0;
+			const int init_time = 5000;
+			while(t < init_time) {
+				lv_obj_set_size(loadBar, i, 180);
+				i += 4;
+				t += 20;
+				pros::delay(20);
+			}
+		}};
+
+		imu.reset(true); // Very important!!!
+	}
+
     transverse_rot_sensor.reset();
 	radial_rot_sensor.reset();
 	Pneumatics::getInstance()->getWings()->off();
 	Pneumatics::getInstance()->getIntake()->off();
 	Pneumatics::getInstance()->getSideHang()->off();
 	Pneumatics::getInstance()->getTopHang()->off();
-	// gui::gui_init();
+
+	if(loadBarTask != nullptr) {
+		loadBarTask->remove();
+		lv_obj_del(loadBar);
+	}
+
+	/** TODO: NEED TO FINISH!!! */
+	gui::gui_init();
 }
 
 /* Runs when robot is disabled from competition controller after driver/auton */
 void disabled() {}
 
 /* If connected to competition controller, this runs after initialize */
-void competition_initialize() {}
+void competition_initialize() {
+	if(controlsTask != nullptr)
+		if(controlsTask->get_state() != pros::E_TASK_STATE_INVALID) {controlsTask->suspend();}
 
-void test_auton() {
-	double test_kP = 0.5;
-	while(1) {
-		if (ctrl_master.get_digital_new_press(BUTTON_LEFT)) {
-			test_kP -= 0.01;
-			printf("kP: %f\n", test_kP);
-		}
-		else if (ctrl_master.get_digital_new_press(BUTTON_RIGHT)) {
-			test_kP += 0.01;
-			printf("kP: %f\n", test_kP);
-		}
-		else if (ctrl_master.get_digital_new_press(BUTTON_UP)) {
-			test_kP -= 0.1;
-			printf("kP: %f\n", test_kP);
-		} 
-		else if (ctrl_master.get_digital_new_press(BUTTON_DOWN)) {
-			test_kP += 0.1;
-			printf("kP: %f\n", test_kP);
-		}
-
-		if (ctrl_master.get_digital_new_press(BUTTON_B)) {
-			printf("Breaking\n");
-			break;
-		}
-		else if (ctrl_master.get_digital_new_press(BUTTON_X)) {
-			printf("Current Heading: %f\n", imu.get_heading());
-			double startTime = pros::millis();
-			turnPID(tank_drive_18, 180, 0.2, test_kP, 0, 0, 2500);
-			printf("Time taken: %f\n", pros::millis() - startTime);
-			delay(750);
-			printf("After heading: %f\n", imu.get_heading());
-		}
-		else if (ctrl_master.get_digital_new_press(BUTTON_Y)) {
-			printf("Resetting IMU\n");
-			imu.reset(true);
-			printf("Done\n");
-		}
-
-		tank_drive_18.toggle_drive_mode();
-		delay(20);
-	}
+	ctrl_master.rumble(".."); 
+	imu.reset(true);
+	ctrl_master.rumble("--");
 }
 
 /* Autonomous method */
 void autonomous() {
-	lcd::clear();
-	win_point_auton();
-	ctrl_master.rumble("..-..");
-	// test_auton();
-	// if(gui::selected_auton == gui::AUTON_COMP) {
-		// win_point_auton();
-	// }
-	// else do nothing. make sure to select the auton!
+	/** TODO: SETUP AUTON SELECTOR */
+	if(gui::selected_auton == gui::AUTON_WP) {
+		win_point_auton();
+	} else if(gui::selected_auton == gui::AUTON_ELIM) {
+		non_win_point_auton();
+	}
 }
-bool lcd_trig = false;
-void lcd_callback() {
-	lcd_trig = true;
-}
-
-void switch_to_gui() {
-	lcd::clear();
-	lcd::print(0, "Switching to GUI");
-	delay(1000);
-	lcd::shutdown();
-	pros::delay(1000);
-	gui::gui_init();
-}
-
-/**
- * IMPORTANT: Make a thing so while we wait for auton to start, we press and hold a button until auton
- * is ready to start. When letting go of the button, IMU recalibrates, and rumble to let us know it's ready.
-*/
 
 /* Opcontrol method runs by default (unless connected to comp controller )*/
 void opcontrol() {
-	bool control_enable = true;
-	lcd::register_btn1_cb(lcd_callback);
-	lcd::register_btn2_cb(switch_to_gui);
 	lcd::print(0, "Ready");
 
-	// test_auton();
+	if(controlsTask == nullptr) 
+		controlsTask = new pros::Task{[=] {controls();}, "Controls Task"};
 
-	pros::Task controlsTask {[=] {controls();}};
-
-	while(1) {
-		if(ctrl_master.get_digital_new_press(BUTTON_Y)) {
-			control_enable = !control_enable;
-			if (control_enable) {
-				controlsTask.resume();
-			} else {
-				controlsTask.suspend();
-			}
-			ctrl_master.rumble(".");
-			delay(1000);
-		}
-
-		if(ctrl_master.get_digital_new_press(BUTTON_A) || lcd_trig) {
-			controlsTask.suspend();
-			lcd_trig = false;
-			control_enable = false;
-			for (int i = 0; i < 3; i++) {
-				ctrl_master.rumble(".");
-				delay(1000);
-			}
-			autonomous();
-			controlsTask.resume();
-			control_enable = true;
-		}
-
-		delay(100);
-	}
+	if(controlsTask->get_state() == pros::E_TASK_STATE_SUSPENDED) 
+		controlsTask->resume();
 }
+
+
+/** /// ROBOT MATCH CHECKLIST ////
+ * ROBOTSETUP:
+ * - Battery greater than 50%
+ * - Both climbs pistons set in shaft collars
+ * - Both air tanks are full
+ * - Pookie Intake bound up
+ * 
+ * FIELDSETUP:
+ * - Use jig to align robots
+ * - Bias load bars in direction of offense zone
+ * - Place alliance triballs point down in load
+ * 		zone corner
+ * - Double check accurate placement of triballs
+ * 		on starting side
+ * 
+ * PROGRAMSETUP:
+ * - Do NOT connect to field controller
+ * - Select Program (Slot 1 - IVR_Worlds)
+ * - Wait for IMU to calibrate
+ * - Select Auton (Win Point or Elim)
+ * - Wait for head ref to approach field
+ * - Connect to field controller
+ * 		- Wait for two long buzzes
+ * - IF DATA ABORT - Just restart program * 
+*/
