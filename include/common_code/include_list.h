@@ -6,7 +6,6 @@
 #include "common_code/generic_rotation_digikey.h"
 #include "common_code/generic_rotation_vex_rot.h"
 #include "common_code/generic_rotation.h"
-#include "common_code/link_helper.h"
 #include "common_code/movement_helper.h"
 #include "common_code/movement_tank.h"
 #include "common_code/odom.h"
