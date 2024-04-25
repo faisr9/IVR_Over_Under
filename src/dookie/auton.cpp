@@ -158,6 +158,7 @@ void win_point_auton() {
         delay(300);
         tank_drive_18.brake();
         turnToAngle(tank_drive_18, 135, 7, false, 2.1);
+        Intake::getInstance()->toggle_reverse();
 ///////////////////////////////////////////////////////////////////////////////////////////
         /** POSITION: X:~24.4 Y:~19 H:~135.8 */
         // Bowl to other side
@@ -165,7 +166,6 @@ void win_point_auton() {
                                                 {34, 20}, {57, 12}, {63, 12}};
         move(bowl_path, 50, false, false, 0.79, 0.43, 1.44, 45);
         
-        Intake::getInstance()->toggle_reverse();
         // tank_drive_18.split_tank_with_power((110/600.0)*127, (175/600.0)*127);
         // tank_drive_18.get_motor_group(1).move_velocity(150);
         tank_drive_18.get_motor_group(0).move_velocity(150);
