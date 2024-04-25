@@ -16,8 +16,8 @@ extern Motor back_right;
 extern x_drive xdriveThrower;
 
 /* Catapult */
-extern Motor cata_1;
-extern Motor cata_2;
+extern Motor cata_left;
+extern Motor cata_right;
 extern MotorGroup cata_motors;
 extern Rotation cata_rot_sensor;
 
