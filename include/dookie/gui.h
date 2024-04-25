@@ -59,6 +59,8 @@ class gui {
         inline static autonomous_type_t selected_auton = autonomous_type_t::NO_SELECTION;
         inline static bool tank_drive = false;
         static void gui_init();
+
+        // static pros::Task *raze_ss;
 };
 
 LV_IMG_DECLARE(Frame);

@@ -168,4 +168,5 @@ class traditional_drive : public DriveParent
          * @return odom
          */
         Odom& getOdom();
+        void brake();
 };

@@ -10,7 +10,7 @@
 # Skills Catcher Robot = 3
 ### NOTE: Once you change the robot type perform a clean build!
 ### NOTE: Changing the robot will auto delete the previous robot's binary files
-ROBOT_MODE := 2
+ROBOT_MODE := 1
 
 
 ###############################################################

@@ -70,6 +70,7 @@ void test_auton() {
 void autonomous() {
 	lcd::clear();
 	win_point_auton();
+	ctrl_master.rumble("..-..");
 	// test_auton();
 	// if(gui::selected_auton == gui::AUTON_COMP) {
 		// win_point_auton();
@@ -80,10 +81,26 @@ bool lcd_trig = false;
 void lcd_callback() {
 	lcd_trig = true;
 }
+
+void switch_to_gui() {
+	lcd::clear();
+	lcd::print(0, "Switching to GUI");
+	delay(1000);
+	lcd::shutdown();
+	pros::delay(1000);
+	gui::gui_init();
+}
+
+/**
+ * IMPORTANT: Make a thing so while we wait for auton to start, we press and hold a button until auton
+ * is ready to start. When letting go of the button, IMU recalibrates, and rumble to let us know it's ready.
+*/
+
 /* Opcontrol method runs by default (unless connected to comp controller )*/
 void opcontrol() {
 	bool control_enable = true;
-	lcd::register_btn2_cb(lcd_callback);
+	lcd::register_btn1_cb(lcd_callback);
+	lcd::register_btn2_cb(switch_to_gui);
 	lcd::print(0, "Ready");
 
 	// test_auton();

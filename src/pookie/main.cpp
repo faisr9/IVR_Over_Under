@@ -29,6 +29,7 @@ void competition_initialize() {}
 /* Autonomous method */
 void autonomous() {
 	win_point_auton();
+	ctrl_master.rumble("...__...");
 	// if(gui::selected_auton == gui::AUTON_COMP) {
 		// win_point_auton();
 	// }
@@ -42,15 +43,16 @@ void opcontrol() {
 	pros::Task controlsTask {[=] {controls();}};
 
 	while(1) {
-		if(ctrl_master.get_digital_new_press(BUTTON_Y)) {
-			control_enable = !control_enable;
-			if (control_enable) {
-				controlsTask.resume();
-			} else {
-				controlsTask.suspend();
-			}
-			ctrl_master.rumble(".");
-			delay(1000);
+		if(ctrl_master.get_digital_new_press(BUTTON_B)) {
+			// control_enable = !control_enable;
+			// if (control_enable) {
+			// 	controlsTask.resume();
+			// } else {
+			// 	controlsTask.suspend();
+			// }
+			// ctrl_master.rumble(".");
+			// delay(1000);
+			
 		}
 
 		if(ctrl_master.get_digital_new_press(BUTTON_A)) {
