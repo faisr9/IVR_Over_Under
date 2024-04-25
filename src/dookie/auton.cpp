@@ -147,30 +147,30 @@ void win_point_auton() {
 
         // Oscillate to bowl 
         for (int i=0; i<bowls; i++) {
-            delay(350);
-            turnToAngle(tank_drive_18, 265, 5, false, 2.55);
+            delay(325);
+            turnToAngle(tank_drive_18, 265, 5, false, 2.75);
             delay(230);
-            turnToAngle(tank_drive_18, 315, 3, false, 2.1);
+            turnToAngle(tank_drive_18, 315, 5, false, 2.1);
         }
 
         // Push triballs away from robot
         tank_drive_18.move_with_power((5000.0/12000.0) * 127);
-        delay(350);
+        delay(300);
         tank_drive_18.brake();
-        turnToAngle(tank_drive_18, 135, 1, false, 2.1);
+        turnToAngle(tank_drive_18, 135, 7, false, 2.1);
 ///////////////////////////////////////////////////////////////////////////////////////////
         /** POSITION: X:~24.4 Y:~19 H:~135.8 */
         // Bowl to other side
         vector<vector<double>> bowl_path = {{convert::mToIn(tank_drive_18.getOdom().getX()), convert::mToIn(tank_drive_18.getOdom().getY())},
-                                                {34, 18}, {57, 12}, {63, 12}};
-        move(bowl_path, 50, false, false, 0.857, 0.43, 1.44, 45);
+                                                {34, 20}, {57, 12}, {63, 12}};
+        move(bowl_path, 50, false, false, 0.79, 0.43, 1.44, 45);
         
         Intake::getInstance()->toggle_reverse();
         // tank_drive_18.split_tank_with_power((110/600.0)*127, (175/600.0)*127);
         // tank_drive_18.get_motor_group(1).move_velocity(150);
         tank_drive_18.get_motor_group(0).move_velocity(150);
+        tank_drive_18.get_motor_group(1).move_velocity(-50);
         delay(1000);
-        // // tank_drive_18.get_motor_group(1).move_velocity(-150);
         // // delay(500);
         // tank_drive_18.get_motor_group(1).brake();
         // tank_drive_18.get_motor_group(0).move_velocity(150);
