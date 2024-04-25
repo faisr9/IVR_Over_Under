@@ -46,7 +46,7 @@ void win_point_auton() {
 
     // Auton code here
     pros::Task auton_task {[=] {
-        int bowls = 5;
+        int bowls = 10;
 
         // Drop intake
         Intake::getInstance()->toggle_on();
@@ -66,15 +66,17 @@ void win_point_auton() {
         // Turn to bar
         Intake::getInstance()->stop();
         turnToAngle(tank_drive_18, 89, 3, false, 2.1);
+        Pneumatics::getInstance()->getIntake()->on();
         Intake::getInstance()->toggle_reverse();
         delay(400); // Time for ball to outtake
 
         // Push first ball over long bar and return
         tank_drive_18.move_with_power((5000.0/12000.0) * 127);
-        delay(430);
+        delay(370);
         tank_drive_18.move_with_power((-5000.0/12000.0) * 127);
-        waitUntil(convert::mToIn(tank_drive_18.getOdom().getX()) <= 50+2.2);
+        waitUntil(convert::mToIn(tank_drive_18.getOdom().getX()) <= 50+3);
         tank_drive_18.brake();
+        Pneumatics::getInstance()->getIntake()->off();
         Intake::getInstance()->stop();
         turnToAngle(tank_drive_18, 0, 1, false, 2.2);
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -98,7 +100,7 @@ void win_point_auton() {
         tank_drive_18.move_with_power((5000.0/12000.0) * 127);
         delay(430);
         tank_drive_18.move_with_power((-5000.0/12000.0) * 127);
-        waitUntil(convert::mToIn(tank_drive_18.getOdom().getX()) <= 50+2.2);
+        waitUntil(convert::mToIn(tank_drive_18.getOdom().getX()) <= 50+3);
         tank_drive_18.brake();
         delay(50);
         Intake::getInstance()->stop();
@@ -145,15 +147,15 @@ void win_point_auton() {
 
         // Oscillate to bowl 
         for (int i=0; i<bowls; i++) {
-            delay(600);
+            delay(350);
             turnToAngle(tank_drive_18, 265, 5, false, 2.55);
-            delay(275);
+            delay(230);
             turnToAngle(tank_drive_18, 315, 3, false, 2.1);
         }
 
         // Push triballs away from robot
         tank_drive_18.move_with_power((5000.0/12000.0) * 127);
-        delay(500);
+        delay(350);
         tank_drive_18.brake();
         turnToAngle(tank_drive_18, 135, 1, false, 2.1);
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -164,16 +166,19 @@ void win_point_auton() {
         move(bowl_path, 50, false, false, 0.857, 0.43, 1.44, 45);
         
         Intake::getInstance()->toggle_reverse();
-        tank_drive_18.split_tank_with_power((110/600.0)*127, (175/600.0)*127);
+        // tank_drive_18.split_tank_with_power((110/600.0)*127, (175/600.0)*127);
         // tank_drive_18.get_motor_group(1).move_velocity(150);
+        tank_drive_18.get_motor_group(0).move_velocity(150);
         delay(1000);
         // // tank_drive_18.get_motor_group(1).move_velocity(-150);
         // // delay(500);
         // tank_drive_18.get_motor_group(1).brake();
         // tank_drive_18.get_motor_group(0).move_velocity(150);
         // delay(500);
-        tank_drive_18.brake();
-        Intake::getInstance()->stop();        
+        // tank_drive_18.brake();
+
+        Intake::getInstance()->stop();     
+        // turnToAngle(tank_drive_18, 100, 2, false, 2.1);   
     }};
 	
     // End of auton
@@ -193,6 +198,7 @@ void win_point_auton() {
     tank_drive_18.move_with_power(0);
     // Intake Stop
     Intake::getInstance()->stop();
+    ctrl_master.rumble("..-..");
 }
 
 void non_win_point_auton() {
