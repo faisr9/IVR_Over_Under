@@ -15,7 +15,7 @@ class SkillsCata : public SubsystemParent {
         };
 
         void stop();
-        void cycle();
+        void cycle(bool stop_at_end);
 
         void move_forward_manual();
         CataMode get_cata_mode();   
