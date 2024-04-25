@@ -56,8 +56,6 @@ void x_drive::robot_centric_move(pair<double, double> movement_vector, double tu
     auto move_1_scaled = move_1 * scaling; // move speed
     auto move_2_scaled = move_2 * scaling; // move speed
     auto turn_scaled = max_rpm * turn; // turn speed
-    auto priority = 0.5; // priority of movement over turning
-
     auto priority = 1.0; // priority of movement over turning (1.0=equal priority)
 
     // if the sum of the speeds is greater than the max speed, scale them down

@@ -16,7 +16,7 @@ void skills() {
 
     const double kP = 2.8;
 
-    std::vector<double> start_pos = {0.45, 0.45};
+    std::vector<double> start_pos = {0.45, 0.45}; // wrong for now
     const double kSTARTING_ANGLE = 60.0; // tenative, not used for now
     const double kSTART_TIME = pros::millis();
     const double kRECIEVE_FIRST_TIME = 20000; // how long should get triballs at first pos for in millis
