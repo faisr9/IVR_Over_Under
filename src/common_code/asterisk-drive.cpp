@@ -28,7 +28,8 @@ asterisk_drive::asterisk_drive(Controller &master, Motor &front_left, Motor &fro
         maxspeed = 600.0;  // max rpm
     else
         maxspeed = 200.0; // default max rpm
-
+    
+    rpm_per_meter = 500;
 }
 
 // asterisk_drive::asterisk_drive(Controller &master, Motor &front_left, Motor &front_right, Motor &back_left, Motor &back_right, Motor &right_middle_1, Motor &right_middle_2, Motor &left_middle_1, Motor &left_middle_2, Imu &imu)

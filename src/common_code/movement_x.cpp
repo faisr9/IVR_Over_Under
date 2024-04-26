@@ -196,7 +196,7 @@ void followPathX(std::vector<std::vector<double>>& path, x_drive& x_drive, Odom&
 
         if (printMessages) pros::lcd::set_text(2, "remaining dist: " + std::to_string(remaining_dist));
         // pros::lcd::set_text(2, "dist_to_end: " + std::to_string(distances_to_end[currentIndex]));
-        double translationalRPM = getTranslationalRPM(remaining_dist, MAX_TRANSLATIONAL_RPM, distances_to_end[0], minTransRPM, 400);
+        double translationalRPM = getTranslationalRPM(remaining_dist, MAX_TRANSLATIONAL_RPM, distances_to_end[0], minTransRPM, x_drive.get_rpm_per_meter());
         // pros::lcd::set_text(3, "trans RPM: " + std::to_string(translationalRPM));
         double rot_rpm = getRotationalRPM(odom.getHeading(), finalAngleDeg, false, turnP);
         // need trans rpm beteween 0 and 1 !
