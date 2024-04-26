@@ -213,7 +213,7 @@ void followPathX(std::vector<std::vector<double>>& path, x_drive& x_drive, Odom&
         double needed_rot_rpm = rots_per_sec * kROT_SEC_TO_RPM;
         // avoid severe jerky motions at the end of the path
         if (est_time_remaining < 0.4) { // arbitrary number
-            if (std::abs(angle_diff) < (final_angle_tolerance_deg / 2)) {
+            if (std::abs(angle_diff) < (final_angle_tolerance_deg)) {
                 needed_rot_rpm = 0; // if already in range well enough just don't turn anymore
             } else {
                 needed_rot_rpm = std::min(20.0, needed_rot_rpm); // if room for improvement use it but cap to avoid big jerky motions

@@ -26,9 +26,9 @@ void autonomous() {
 void opcontrol() 
 {
 	lcd::print(2,"Thrower Skills");
-	// skills();
-	lcd::print(3,"LeftCata Velocity: %i", (int)cata_left.get_actual_velocity());
-	lcd::print(4,"RightCata Velocity: %i", (int)cata_right.get_actual_velocity());
+	skills();
+	// lcd::print(3,"LeftCata Velocity: %i", (int)cata_left.get_actual_velocity());
+	// lcd::print(4,"RightCata Velocity: %i", (int)cata_right.get_actual_velocity());
 	
 	controls();
 }

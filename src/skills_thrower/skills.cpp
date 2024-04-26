@@ -4,14 +4,16 @@ LinkHelper* catcher_link = LinkHelper::createInstance(16, E_LINK_RX);
 
 
 void cata_shoot_task() {
-    // SkillsCata* cata_inst = SkillsCata::getInstance();
-    // const int kNUM_FIRE = 21;
+    SkillsCata* cata_inst = SkillsCata::getInstance();
+    const int kNUM_FIRE = 2;
 
-    // for (int cycle_num = 0; cycle_num < kNUM_FIRE; cycle_num++) {
-    //     cata_inst->cycle(false);
-    // }
-    // cata_inst->stop();
-    pros::delay(3000);
+    for (int cycle_num = 0; cycle_num < kNUM_FIRE; cycle_num++) {
+        cata_inst->cycle(false);
+        cata_inst->cycle(true);
+        pros::delay(3000);
+    }
+    cata_inst->stop();
+    
 }
 
 
@@ -22,9 +24,9 @@ void skills() {
     const double kP = 2.8;
 
     std::vector<double> start_pos = {0.45, 0.45};
-    const double kSTARTING_ANGLE = 60.0; // tenative, not used for now
+    const double kSTARTING_ANGLE = 45.0; // 45˚ chosen for ease of setup, 60˚ is the actual angle
 
-    x_drive_odom.initTracker(start_pos[0], start_pos[1], 0);
+    x_drive_odom.initTracker(start_pos[0], start_pos[1], kSTARTING_ANGLE);
     pros::delay(50);
     pros::Task odom_task{[=] {
         while (1) {
