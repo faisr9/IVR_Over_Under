@@ -21,7 +21,7 @@ SkillsCata* SkillsCata::getInstance(){
 
 
 SkillsCata::SkillsCata(pros::MotorGroup& motorgroup, pros::Rotation& rotation_sensor) : SubsystemParent("Skills_Cata"), motors(motorgroup), rotation_sensor(rotation_sensor), cata_task(cata_task_funct) {
-    cata_mode = CataMode::Stopped;
+    cata_mode = CataMode::Idle;
     motors.set_brake_modes(pros::E_MOTOR_BRAKE_BRAKE);
 }
 
@@ -46,14 +46,14 @@ void SkillsCata::cycle(bool stop_at_end){
 
     motors.move_velocity(abs(cata_rpm)); // abs just to avoid disaster
     double current_rot = rotation_sensor.get_angle(); // set to 0 so we have a defined initial value for last_rot
-    double last_rot = current_rot;
+    double last_rot = current_rot - 1;
     int cycles_backwards = 0;
 
     // stop when we go backwards for 2 cycles in a row
     while (cycles_backwards < 2) {
         current_rot = rotation_sensor.get_angle();
 
-        if (current_rot >= last_rot) {
+        if (current_rot > last_rot) { // not = bc if told to stop externally we want it to exit from here
             cycles_backwards++;
         } else {
             cycles_backwards = 0;
@@ -106,16 +106,13 @@ void cata_task_funct() {
     while (1) {
         SkillsCata::CataMode cata_mode = cata_inst->get_cata_mode();
 
-        if (cata_mode == SkillsCata::CataMode::Stopped) {
-            cata_inst->stop();
+        if (cata_mode == SkillsCata::CataMode::Idle) {
+            // do nothing
         } else if (cata_mode == SkillsCata::CataMode::Cycle) {
             cata_inst->cycle(true);
-            cata_inst->set_cata_mode_internal(SkillsCata::CataMode::Stopped);
-        } else if (cata_mode == SkillsCata::CataMode::Forward_Manual) {
-            cata_inst->move_forward_manual();
+            cata_inst->set_cata_mode_internal(SkillsCata::CataMode::Idle);
         } else {
             pros::lcd::set_text(6, "Invalid cata_mode string!");
-            cata_inst->stop();
         }
 
         pros::delay(30);
