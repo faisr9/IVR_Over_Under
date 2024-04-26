@@ -14,7 +14,7 @@ void followPathX(std::vector<std::vector<double>>& path, x_drive& x_drive, Odom&
     bool readyForSpin = false;
 
     const double kMETERS_SEC_MAX_SPEED = (1.05 / 200.0) * std::min(200.0, MAX_TRANSLATIONAL_RPM); // 1.05 meters/sec at 200 rpm
-    const double kROT_SEC_TO_RPM = 100.0 / 0.42; // 100rpm / 0.444 (rots/sec)
+    const double kROT_SEC_TO_RPM = 100.0 / 0.43; // 100rpm / 0.444 (rots/sec)
 
     double lastSegDX = path[path.size() - 1][0] - path[path.size() - 2][0];
     double lastSegDY = path[path.size() - 1][1] - path[path.size() - 2][1];
@@ -194,11 +194,15 @@ void followPathX(std::vector<std::vector<double>>& path, x_drive& x_drive, Odom&
         last_calculated_distance = distance_to_index;
         // if current index increments start adding calc_dist_two_points instead of subtracting until calculate_distance_two_points starts increasing again
 
-        if (printMessages) pros::lcd::set_text(2, "remaining dist: " + std::to_string(remaining_dist));
+        //if (printMessages) 
+        pros::lcd::set_text(6, "remaining dist: " + std::to_string(remaining_dist));
         // pros::lcd::set_text(2, "dist_to_end: " + std::to_string(distances_to_end[currentIndex]));
         double translationalRPM = getTranslationalRPM(remaining_dist, MAX_TRANSLATIONAL_RPM, distances_to_end[0], minTransRPM, x_drive.get_rpm_per_meter());
+        pros::lcd::set_text(7, "trans rpm: " + std::to_string(translationalRPM));
+
+        
         // pros::lcd::set_text(3, "trans RPM: " + std::to_string(translationalRPM));
-        double rot_rpm = getRotationalRPM(odom.getHeading(), finalAngleDeg, false, turnP);
+        // double rot_rpm = getRotationalRPM(odom.getHeading(), finalAngleDeg, false, turnP);
         // need trans rpm beteween 0 and 1 !
 
         // have max rot!

@@ -10,7 +10,27 @@ void push_in() {
     // could use pure pursuit/pid later but only if needed
 }
 
-LinkHelper* catcher_link = LinkHelper::createInstance(99, E_LINK_TX);
+// LinkHelper* catcher_link = LinkHelper::createInstance(99, E_LINK_TX);
+const double kTURN_P = 2.7;
+
+void catcher_follow_path(std::vector<std::vector<double>>& path, double final_angle) {
+    followPathX(path, astdriveCatcher, ast_odom, final_angle, true, false, 0.2, 3.0, 200.0, 200.0, 20.0, false, kTURN_P);
+}
+
+
+void test_path_funct() {
+    ast_odom.initTracker(0, 0, 0);
+    pros::delay(50);
+    pros::Task odom_task{[=] {
+        while (1) {
+            ast_odom.updatePosition();
+            pros::delay(50);
+        }
+    }};
+
+    std::vector<std::vector<double>> to_goal_path = {{0.0, 0.0}, {0.0, 1.2}};
+    catcher_follow_path(to_goal_path, 0);
+}
 
 void skills() {
 
@@ -21,7 +41,6 @@ void skills() {
         turn_with_power()
         some of the field/robot centric moves (and some of these are good bc they make .run work so be careful)
     */
-
 
     pros::lcd::set_text(1, "Skills Start");
 
@@ -43,8 +62,9 @@ void skills() {
 
     pros::Task drive_to_goal_task {[=] {
         pros::lcd::set_text(1, "Skills Drive to Goal");
-        std::vector<std::vector<double>> to_goal_path = {start_pos, {2.5, 3.3}, {2.5, 2.1}};
-        followPathX(to_goal_path, astdriveCatcher, ast_odom, 90); // todo: update follow path to support diff constants for x drive vs ast drive (or diff robots in general)
+        std::vector<std::vector<double>> to_goal_path = {start_pos, {2.7, 3.3}, {2.5, 2.1}};
+        catcher_follow_path(to_goal_path, 90);
+        pros::lcd::set_text(1, "At Goal");
     }};
 
     while (drive_to_goal_task.get_state() != pros::E_TASK_STATE_DELETED) {
@@ -60,7 +80,7 @@ void skills() {
     // signal to move over to next spot
     pros::Task wait_for_signal {[=] {
         pros::lcd::set_text(1, "Skills wait for signal");
-        const int kWAIT_TIME = 6000;
+        const int kWAIT_TIME = 3000;
         // catcher_link->waitForNotify(kWAIT_TIME);
         pros::delay(kWAIT_TIME);
     }};
@@ -73,6 +93,8 @@ void skills() {
 
     // while we are still waiting push in every kPUSH_IN_AFTER seconds
     while (wait_for_signal.get_state() != E_TASK_STATE_DELETED) {
+        pros::lcd::set_text(1, "Skills push in");
+
         time_since_last_push += pros::millis() - last_time;
         last_time = pros::millis();
 
@@ -97,7 +119,7 @@ void skills() {
 
     pros::lcd::set_text(1, "Skills move to second pos");
     std::vector<std::vector<double>> to_goal_path = {{ast_odom.getX(), ast_odom.getY()}, {2.5, 1.5}};
-    followPathX(to_goal_path, astdriveCatcher, ast_odom, 90); // currently does not quite finish this path. Probably because rpm_per_meter const is bad
+    catcher_follow_path(to_goal_path, 90);
     pros::lcd::set_text(1, "Skills second push in cycling");
 
 

@@ -29,7 +29,7 @@ asterisk_drive::asterisk_drive(Controller &master, Motor &front_left, Motor &fro
     else
         maxspeed = 200.0; // default max rpm
     
-    rpm_per_meter = 500;
+    rpm_per_meter = 450; // good value
 }
 
 // asterisk_drive::asterisk_drive(Controller &master, Motor &front_left, Motor &front_right, Motor &back_left, Motor &back_right, Motor &right_middle_1, Motor &right_middle_2, Motor &left_middle_1, Motor &left_middle_2, Imu &imu)
@@ -76,7 +76,7 @@ void asterisk_drive::robot_centric_move(pair<double, double> movement_vector, do
     auto move_1 = 0.0; // first diagonal component of movement
     auto move_2 = 0.0; // second diagonal component of movement
     auto scaling = 0.0; // scale factor for movement
-    if (movement_vector.first > 0.2) // consider joystick deadzone
+    if (movement_vector.first > 0.01) // consider joystick deadzone
     {
         speed = max_rpm * movement_vector.first; // normalized speed of movement times max speed
         dir -= M_PI / 4;                                 // adjust direction by 45˚ to get the diagonal components of movement
