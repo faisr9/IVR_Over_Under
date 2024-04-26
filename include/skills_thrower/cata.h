@@ -35,7 +35,7 @@ class SkillsCata : public SubsystemParent {
         pros::MotorGroup& motors;
         pros::Rotation& rotation_sensor;
         const int upright_position = 12000; //centidegrees, not sure if should be position or angle, temp value
-        const int cata_rpm = 100; // temp value
+        const int cata_rpm = 200; // temp value
 
         pros::Task cata_task;
         CataMode cata_mode = CataMode::Idle;

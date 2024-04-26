@@ -65,7 +65,7 @@ void SkillsCata::cycle(bool stop_at_end){
     }
     // want to stop when jump from 36000 -> 0
 
-    if (!stop_at_end) {
+    if (stop_at_end) {
         stop();
     }
 }
