@@ -1,6 +1,6 @@
 #include "skills_thrower/skills.h"
 
-// LinkHelper* catcher_link = LinkHelper::createInstance(16, E_LINK_RX);
+LinkHelper* catcher_link = LinkHelper::createInstance(16, E_LINK_RX);
 
 
 void cata_shoot_task() {
@@ -84,6 +84,7 @@ void skills() {
     target_pos = {0.5, 3.1};
 
     pros::Task to_other_goal_task {[=] {
+        // catcher_link->notify();
         std::vector<std::vector<double>> path_to_other_load = {start_pos, {0.9, 0.9}, {0.9, 2.7}, target_pos};
         const double kNEXT_SHOT_ANGLE = 120.0;
         followPathX(path_to_other_load, xdriveThrower, x_drive_odom, kNEXT_SHOT_ANGLE, true, false, 0.2);
@@ -117,8 +118,6 @@ void skills() {
             pros::delay(500);
         }
     }};
-
-    // asterisk wheels no spin faster than 282 rpm !
 
     while (cata_shoot_task_2.get_state() != pros::E_TASK_STATE_DELETED) {
         pros::delay(100);
