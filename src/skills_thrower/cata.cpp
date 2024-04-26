@@ -111,6 +111,8 @@ void cata_task_funct() {
         } else if (cata_mode == SkillsCata::CataMode::Cycle) {
             cata_inst->cycle(true);
             cata_inst->set_cata_mode_internal(SkillsCata::CataMode::Stopped);
+        } else if (cata_mode == SkillsCata::CataMode::Forward_Manual) {
+            cata_inst->move_forward_manual();
         } else {
             pros::lcd::set_text(6, "Invalid cata_mode string!");
             cata_inst->stop();

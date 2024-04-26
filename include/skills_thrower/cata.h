@@ -10,8 +10,9 @@ class SkillsCata : public SubsystemParent {
         SkillsCata(const SkillsCata& other) = delete;
 
         enum CataMode {
-            Stopped,
-            Cycle
+            Stopped, // call stop repeatedly
+            Cycle, // cycle once
+            Forward_Manual // move forward repeatedly
         };
 
         void stop();
