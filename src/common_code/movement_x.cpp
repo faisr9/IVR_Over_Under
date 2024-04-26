@@ -14,9 +14,7 @@ void followPathX(std::vector<std::vector<double>>& path, x_drive& x_drive, Odom&
     bool readyForSpin = false;
 
     const double kMETERS_SEC_MAX_SPEED = (1.05 / 200.0) * std::min(200.0, MAX_TRANSLATIONAL_RPM); // 1.05 meters/sec at 200 rpm
-    // const double DEGREES_SEC_MAX_ROT = (320 / 200.0) * std::min(200.0, MAX_TRANSLATIONAL_RPM); // 320 degrees/sec at 200 rpm
-    const double kROT_SEC_TO_RPM = 100.0 / 0.4444; // 100rpm / 0.444 (rots/sec)
-    const double kMAX_ROT_RPM = 30;
+    const double kROT_SEC_TO_RPM = 100.0 / 0.42; // 100rpm / 0.444 (rots/sec)
 
     double lastSegDX = path[path.size() - 1][0] - path[path.size() - 2][0];
     double lastSegDY = path[path.size() - 1][1] - path[path.size() - 2][1];
@@ -217,7 +215,6 @@ void followPathX(std::vector<std::vector<double>>& path, x_drive& x_drive, Odom&
                 needed_rot_rpm = std::min(20.0, needed_rot_rpm); // if room for improvement use it but cap to avoid big jerky motions
             } 
         }
-         // std::min(rots_per_sec * kROT_SEC_TO_RPM, kMAX_ROT_RPM);
 
         x_drive.app_move({translationalRPM, desiredAngleX_Driv}, needed_rot_rpm, MAX_TRANSLATIONAL_RPM, false);
 

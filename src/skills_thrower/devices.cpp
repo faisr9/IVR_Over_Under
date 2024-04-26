@@ -17,7 +17,7 @@ x_drive xdriveThrower(ctrl_master, front_left, front_right, back_left, back_righ
 Rotation radial_rot_sensor(4, false); // increasing angle going forward = don't reverse
 Rotation transverse_rot_sensor(18, true);
 
-Generic_Rotation_VEX_Rot radial_tracker(radial_rot_sensor, 1.96 * 0.0254 / 2.0, 0); // need to do offset measure
+Generic_Rotation_VEX_Rot radial_tracker(radial_rot_sensor, 1.96 * 0.0254 / 2.0, convert::inToM(-4.875)); // need to do offset measure
 Generic_Rotation_VEX_Rot transverse_tracker(transverse_rot_sensor, 1.96 * 0.0254 / 2.0, 0.0); // need to do offset measure
 
 Odom x_drive_odom(imu, &transverse_tracker, &radial_tracker);
