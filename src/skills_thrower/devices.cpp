@@ -14,16 +14,16 @@ pros::Imu imu(18);
 
 x_drive xdriveThrower(ctrl_master, front_left, front_right, back_left, back_right, imu);
 
-Rotation radial_rot_sensor(8, true); // increasing angle going forward = don't reverse
-Rotation transverse_rot_sensor(14, false);
+Rotation radial_rot_sensor(3, false); // increasing angle going forward = don't reverse
+Rotation transverse_rot_sensor(18, true);
 
-Generic_Rotation_VEX_Rot radial_tracker(radial_rot_sensor, 1.96 * 0.0254 / 2.0, 0);
-Generic_Rotation_VEX_Rot transverse_tracker(transverse_rot_sensor, 1.96 * 0.0254 / 2.0, 5.33 * 0.0254);
+Generic_Rotation_VEX_Rot radial_tracker(radial_rot_sensor, 1.96 * 0.0254 / 2.0, 0); // need to do offset measure
+Generic_Rotation_VEX_Rot transverse_tracker(transverse_rot_sensor, 1.96 * 0.0254 / 2.0, 0.0); // need to do offset measure
 
 Odom x_drive_odom(imu, &transverse_tracker, &radial_tracker);
 
-// pros::Motor cata_left(X, false); // spin forward to 
-// pros::Motor cata_right(X, true); // spin forward to cycle cata
-// pros::Motor_Group cata_motors = {cata_left, cata_right};
-// pros::Rotation cata_rot_sensor(X);
-// SkillsCata* cata_inst = SkillsCata::createInstance(cata_motors, cata_rot_sensor);
+pros::Motor cata_left(12, false); // spin forward to 
+pros::Motor cata_right(14, true); // spin forward to cycle cata
+pros::Motor_Group cata_motors = {cata_left, cata_right};
+pros::Rotation cata_rot_sensor(15, true);
+SkillsCata* cata_inst = SkillsCata::createInstance(cata_motors, cata_rot_sensor);

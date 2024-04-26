@@ -19,6 +19,12 @@ void controls()
     //   SkillsCata::getInstance()->set_cata_mode(SkillsCata::CataMode::Cycle);
     // }
 
+    if (ctrl_master.get_digital(E_CONTROLLER_DIGITAL_RIGHT)) {
+      SkillsCata::getInstance()->move_forward_manual();
+    } else {
+      SkillsCata::getInstance()->stop();
+    }
+
     // if (ctrl_master.get_digital_new_press(E_CONTROLLER_DIGITAL_Y)) {
     //   turnToAngleX(xdriveThrower, x_drive_odom, 0, 2, false, p, 200);
     // } else if (ctrl_master.get_digital_new_press(E_CONTROLLER_DIGITAL_X)) {
