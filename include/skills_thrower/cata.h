@@ -35,9 +35,6 @@ class SkillsCata : public SubsystemParent {
         const int upright_position = 12000; //centidegrees, not sure if should be position or angle, temp value
         const int cata_rpm = 100; // temp value
 
-        int current_rot;
-        int last_rot;
-
         pros::Task cata_task;
         CataMode cata_mode = CataMode::Stopped;
 };

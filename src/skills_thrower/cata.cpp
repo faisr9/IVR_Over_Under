@@ -44,16 +44,24 @@ void SkillsCata::cycle(bool stop_at_end){
     // TODO: Update because the rot sensor loc is on the gear not motor, gear goes BACK AND FORTH not just one dir
     // motors still only go one direction though
 
-    motors.move_velocity(abs(cata_rpm)); // abs just go avoid disaster
-    current_rot = 0; // set to 0 so we have a defined initial value for last_rot
+    motors.move_velocity(abs(cata_rpm)); // abs just to avoid disaster
+    double current_rot = rotation_sensor.get_angle(); // set to 0 so we have a defined initial value for last_rot
+    double last_rot = current_rot;
+    int cycles_backwards = 0;
 
-    // stop when the value jumps from 36000 to 0
-    while (current_rot >= last_rot) {
+    // stop when we go backwards for 2 cycles in a row
+    while (cycles_backwards < 2) {
+        current_rot = rotation_sensor.get_angle();
+
+        if (current_rot >= last_rot) {
+            cycles_backwards++;
+        } else {
+            cycles_backwards = 0;
+        }
+
         last_rot = current_rot;
-        current_rot = rotation_sensor.get_angle() - upright_position;
-        if (current_rot < 0) current_rot += 36000; // centidegrees
 
-        pros::delay(50);
+        pros::delay(20);
     }
     // want to stop when jump from 36000 -> 0
 
