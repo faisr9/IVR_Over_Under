@@ -1,13 +1,13 @@
 #include "pookie/controls.h"
 #include "pookie/auton.h"
 
-pros::Task *controlsTask;
-pros::Task *loadBarTask;
+// pros::Task *controlsTask;
 
 const bool matchMode = false; // Set to true when in competition
 
 /* First method to run when program starts */
 void initialize() {
+	pros::Task *loadBarTask;
 	// pros::lcd::initialize(); // Temp until custom GUI
 	lv_style_t bar_Style;
 	lv_style_copy(&bar_Style, &lv_style_plain);
@@ -62,9 +62,6 @@ void disabled() {}
 
 /* If connected to competition controller, this runs after initialize */
 void competition_initialize() {
-	if(controlsTask != nullptr)
-		if(controlsTask->get_state() != pros::E_TASK_STATE_INVALID) {controlsTask->suspend();}
-
 	if(matchMode) {
 		ctrl_master.rumble(".."); 
 		imu.reset(true);
@@ -75,11 +72,11 @@ void competition_initialize() {
 /* Autonomous method */
 void autonomous() {
 	if(gui::selected_auton == gui::AUTON_WP) {
-		win_point_auton();
+		main_auton(true);
 	} else if(gui::selected_auton == gui::AUTON_ELIM) {
-		non_win_point_auton();
+		main_auton(false);
 	} else {
-		win_point_auton(); // Default to win point auton
+		main_auton(true); // Default to win point auton
 	}
 }
 
@@ -87,11 +84,13 @@ void autonomous() {
 void opcontrol() {
 	lcd::print(0, "Ready");
 
-	if(controlsTask == nullptr) 
-		controlsTask = new pros::Task{[=] {controls();}, "Controls Task"};
+	controls();
 
-	if(controlsTask->get_state() == pros::E_TASK_STATE_SUSPENDED) 
-		controlsTask->resume();
+	// if(controlsTask == nullptr) 
+	// 	controlsTask = new pros::Task{[=] {controls();}, "Controls Task"};
+
+	// if(controlsTask->get_state() == pros::E_TASK_STATE_SUSPENDED) 
+	// 	controlsTask->resume();
 }
 
 
@@ -101,6 +100,7 @@ void opcontrol() {
  * - Both climbs pistons set in shaft collars
  * - Both air tanks are full
  * - Pookie Intake bound up
+ * - Make sure zip ties in correct direction
  * 
  * FIELDSETUP:
  * - Use jig to align robots

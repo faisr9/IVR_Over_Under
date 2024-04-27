@@ -75,11 +75,11 @@ void competition_initialize() {
 /* Autonomous method */
 void autonomous() {
 	if(gui::selected_auton == gui::AUTON_WP) {
-		win_point_auton();
+		main_auton(true);
 	} else if(gui::selected_auton == gui::AUTON_ELIM) {
-		non_win_point_auton();
+		main_auton(false);
 	}  else {
-		win_point_auton(); // Default to win point auton
+		main_auton(false); // Default to win point auton
 	}
 
 	// ctrl_master.rumble("..--..");
