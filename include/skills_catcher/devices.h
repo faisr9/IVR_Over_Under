@@ -35,3 +35,5 @@ extern Rotation transverse_rot_sensor;
 /* asterisk drive */
 extern asterisk_drive astdriveCatcher;
 extern Odom ast_odom;
+
+extern Piston catcher_wings;

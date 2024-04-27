@@ -13,7 +13,13 @@ void controls()
 
   double p = 2.7;
 
-  while (1) {
+  while (1) 
+  {
+    astdriveCatcher.run();
+
+    if(ctrl_master.get_digital_new_press(E_CONTROLLER_DIGITAL_A))
+      catcher_wings.toggle();
+
 
     // if (ctrl_master.get_digital_new_press(E_CONTROLLER_DIGITAL_Y)) {
     //   turnToAngleX(astdriveCatcher, ast_odom, 0, 2, false, p, 200);
