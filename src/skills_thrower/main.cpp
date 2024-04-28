@@ -8,7 +8,8 @@ void initialize() {
     transverse_rot_sensor.reset();
 	radial_rot_sensor.reset();
 	pros::delay(3000);
-	pros::delay(50);
+	//x_drive_odom.initTracker(0, 0, 0);
+	//pros::delay(50);
 }
 
 /* Runs when robot is disabled from competition controller after driver/auton */
