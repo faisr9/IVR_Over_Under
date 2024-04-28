@@ -47,19 +47,18 @@ void skills() {
     // Setup
 
     const double kP = 2.8;
-    std::vector<double>  init= {meters(20), meters(20)};
+    std::vector<double>  init= {meters(19), meters(19)};
     
     std::vector<double> start_pos = {meters(26.5), 0.165};
-    std::vector<double> launch_pos={.35,.35};//{meters(16.5),meters(19)};//{.45,.45};
+    std::vector<double> launch_pos={.42,.37};//{meters(16.5),meters(19)};//{.45,.45};
     const double kSTARTING_ANGLE = 90.0; // 45˚ chosen for ease of setup, 60˚ is the actual angle
     const double kSHOOT_ANGLE = 60.0;
 
     x_drive_odom.initTracker(start_pos[0], start_pos[1], kSTARTING_ANGLE);
-    pros::delay(50);
     pros::Task odom_task{[=] {
         while (1) {
             x_drive_odom.updatePosition();
-            pros::delay(50);
+            pros::delay(10);
         }
     }};
 
@@ -69,7 +68,7 @@ void skills() {
         
         //followPathX(path_to_load, xdriveThrower, x_drive_odom, kSHOOT_ANGLE, true, false, 0.2);
         follow_path_thrower(path1, kSHOOT_ANGLE, 100);
-        follow_path_thrower_timeout(path2, kSHOOT_ANGLE, 80, 5000);
+        follow_path_thrower_timeout(path2, kSHOOT_ANGLE, 150, 5000);
         // followPathX(path1, xdriveThrower, x_drive_odom, kSHOOT_ANGLE, true, false, 0.2,5.0,200,200,100);
         // followPathX(path2, xdriveThrower, x_drive_odom, kSHOOT_ANGLE, true, false, 0.2,3,200,200,80);
 
