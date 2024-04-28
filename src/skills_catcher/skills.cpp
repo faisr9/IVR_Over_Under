@@ -1,5 +1,12 @@
 #include "skills_catcher/skills.h"
 
+// LinkHelper* catcher_link = LinkHelper::createInstance(99, E_LINK_TX);
+const double kTURN_P = 2.7;
+
+void catcher_follow_path(std::vector<std::vector<double>>& path, double final_angle) {
+    followPathX(path, astdriveCatcher, ast_odom, final_angle, true, false, 0.21, 3.0, 200.0, 200.0, 20.0, false, kTURN_P);
+}
+
 
 void push_in() {
     catcher_wings.off();
@@ -11,6 +18,7 @@ void push_in() {
     std::vector<std::vector<double>> back_path = {{ast_odom.getX(), ast_odom.getY()}, {2.5, 2.1}};
     catcher_follow_path(back_path, 180);
     catcher_wings.on();
+
     // field centric move hopefully ({1, pi/2}, 0)
     // delay for like 1 sec
     // field centric move opp dir for like 2/3 sec or some tuned amount of time
@@ -20,11 +28,19 @@ void push_in() {
     pros::delay(100);
 }
 
-// LinkHelper* catcher_link = LinkHelper::createInstance(99, E_LINK_TX);
-const double kTURN_P = 2.7;
+void push_in_v2() {
+    catcher_wings.on();
 
-void catcher_follow_path(std::vector<std::vector<double>>& path, double final_angle) {
-    followPathX(path, astdriveCatcher, ast_odom, final_angle, true, false, 0.2, 3.0, 200.0, 200.0, 20.0, false, kTURN_P);
+    // positioned at (2.2 x, 2.1 y) facing 90
+    // drive diagonal to push in
+
+    // std::vector<std::vector<double>> push_in_path {{ast_odom.getX(), ast_odom.getY()}, {}}
+    // astdriveCatcher.field_centric_move({1.0, 325.0 * M_PI / 180.0}, 0); // 0 seems to be towards goal ???
+    astdriveCatcher.field_centric_move({1.0, 0}, 0); // 0 seems to be towards goal ???
+    pros::delay(1500);
+    
+    std::vector<std::vector<double>> back2_path = {{ast_odom.getX(), ast_odom.getY()}, {2.2, 2.1}};
+    catcher_follow_path(back2_path, 90);
 }
 
 
@@ -40,11 +56,11 @@ void skills() {
 
     pros::lcd::set_text(1, "Skills Start");
 
-    std::vector<double> start_pos = {0.9, 3.3}; // wrong for now
-    const double kSTARTING_ANGLE = 180.0;
+    std::vector<double> start_pos = {0.76, 3.3}; // x is with back against back part of first tile (close to wall part)
+    const double kSTARTING_ANGLE = 90.0;
     const double kSTART_TIME = pros::millis();
     const double kRECIEVE_FIRST_TIME = 20000; // how long should get triballs at first pos for in millis
-    const double kSKILLS_TIME = 25000;
+    const double kSKILLS_TIME = 55000;
 
     ast_odom.initTracker(start_pos[0], start_pos[1], kSTARTING_ANGLE);
     pros::delay(50);
@@ -56,7 +72,7 @@ void skills() {
     }};
 
     pros::lcd::set_text(1, "Skills Drive to Goal");
-    std::vector<std::vector<double>> to_goal_path = {start_pos, {2.7, 3.3}, {2.5, 2.1}};
+    std::vector<std::vector<double>> to_goal_path = {start_pos, {2.7, 3.3}, {2.7, 2.8}, {2.3, 2.1}};
     catcher_follow_path(to_goal_path, kSTARTING_ANGLE);
     pros::lcd::set_text(1, "At Goal");
     catcher_wings.on(); // turn wings on
@@ -82,14 +98,14 @@ void skills() {
     pros::Task wait_for_signal {[=] {
         pros::delay(100);
         pros::lcd::set_text(1, "Skills wait for signal");
-        const int kWAIT_TIME = 5000;
+        const int kWAIT_TIME = 30000;
         // catcher_link->waitForNotify(kWAIT_TIME);
         pros::delay(kWAIT_TIME);
     }};
 
     double time_since_last_push = 0;
     double last_time = pros::millis();
-    const double kPUSH_IN_AFTER = 5000;
+    const double kPUSH_IN_AFTER = 8000;
 
     const double kSTART_REC_TIME = pros::millis();
 
@@ -101,7 +117,7 @@ void skills() {
         last_time = pros::millis();
 
         if (time_since_last_push > kPUSH_IN_AFTER) {
-            push_in();
+            push_in_v2();
             time_since_last_push = 0;
         }
 
@@ -115,7 +131,7 @@ void skills() {
     const double kLENIENT_PUSH_IN_AFTER = 2000; // something less than kPUSH_IN_AFTER to round up an extra triball
     // time should matter too much maybe bc other robot driving full field?
     if (time_since_last_push > 2000) {
-        push_in();
+        push_in_v2();
     }
 
 
@@ -134,12 +150,12 @@ void skills() {
         last_time = pros::millis();
 
         if (time_since_last_push > kPUSH_IN_AFTER) {
-            push_in();
+            push_in_v2();
             time_since_last_push = 0;
         }
     }
 
-    push_in();
+    push_in_v2();
 
     pros::lcd::set_text(1, "Skills DONE");
 
@@ -162,8 +178,8 @@ void test_path_funct() {
     // std::vector<std::vector<double>> to_goal_path = {{0.0, 0.0}, {0.0, 1.2}};
     // catcher_follow_path(to_goal_path, 0);
 
-    std::vector<double> start_pos = {0.9, 3.3}; // wrong for now
-    const double kSTARTING_ANGLE = 90.0;
+    std::vector<double> start_pos = {0.0, 0.0}; // wrong for now
+    const double kSTARTING_ANGLE = 0.0;
     const double kSTART_TIME = pros::millis();
     const double kRECIEVE_FIRST_TIME = 20000; // how long should get triballs at first pos for in millis
     const double kSKILLS_TIME = 45000;

@@ -34,5 +34,5 @@ void autonomous() {
 void opcontrol() {
 	skills();
 	// test_path_funct();
-	controls();
+	// controls();
 }
