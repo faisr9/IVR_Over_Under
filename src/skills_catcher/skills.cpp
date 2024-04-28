@@ -18,7 +18,8 @@ void catcher_follow_path(std::vector<std::vector<double>>& path, double final_an
 }
 
 
-void test_path_funct() {
+void test_path_funct() 
+{
     ast_odom.initTracker(0, 0, 0);
     pros::delay(50);
     pros::Task odom_task{[=] {
