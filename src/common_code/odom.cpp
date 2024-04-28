@@ -65,21 +65,6 @@ void Odom::updatePosition() {
 
     double currentHeading = headingCorrection(imu.get_rotation());
 
-    double cosine = cos(currentHeading * M_PI / 180.0);
-    double sine = sin(currentHeading* M_PI / 180.0);
-
-    double radialDeltaY = (deltaRadial) * cosine;
-    double transverseDeltaY = -(deltaTransverse) * sine; // note the - sign
-    double deltaY = radialDeltaY + transverseDeltaY;
-
-    double radialDeltaX = (deltaRadial) * sine;
-    double transverseDeltaX = (deltaTransverse) * cosine;
-    double deltaX = radialDeltaX + transverseDeltaX;
-
-    positionX += isnan(deltaX) ? 0 : deltaX;
-    positionY += isnan(deltaY) ? 0 : deltaY;
-
-
     // Rotation correction code for odom wheels off its axis of rotation such that the wheel will
     // rotate when the robot spins on a point (which would cause error in the robot's position awareness,
     // if not for this code).
@@ -93,15 +78,48 @@ void Odom::updatePosition() {
         delta_theta += 360;
     }
 
-    // Use the arc length of a circle
-    double transverse_circumference = 2 * M_PI * TRANSVERSE_WHEEL_RAD_OFFSET * (delta_theta / 360.0);
-    double radial_circumference = 2 * M_PI * RADIAL_WHEEL_TRANS_OFFSET * (delta_theta / 360.0);
+    double local_delt_x;
+    double local_delt_y;
+    if (delta_theta == 0) {
+        local_delt_x = deltaTransverse;
+        local_delt_y = deltaRadial;
+    } else {
+        local_delt_x = 2 * sin(delta_theta * (M_PI / 180.0) / 2.0) * ((deltaTransverse / delta_theta) + TRANSVERSE_WHEEL_RAD_OFFSET);
+        local_delt_y = 2 * sin(delta_theta * (M_PI / 180.0) / 2.0) * ((deltaRadial / delta_theta) + RADIAL_WHEEL_TRANS_OFFSET);
+    }
+    double cosine = cos((currentHeading + delta_theta / 2) * M_PI / 180.0);
+    double sine = sin((currentHeading + delta_theta / 2) * M_PI / 180.0);
 
-    double rot_delta_Y = transverse_circumference * sine + radial_circumference * cosine;
-    double rot_delta_X = -transverse_circumference * cosine + radial_circumference * sine;
+    double average_arc_angle = currentHeading + (delta_theta / 2);
+    double global_delt_x = local_delt_y * sine + local_delt_x * cosine;
+    double global_delt_y = local_delt_y * cosine + -1*(local_delt_x * sine);
 
-    positionX += isnan(rot_delta_X) ? 0 : rot_delta_X;
-    positionY += isnan(rot_delta_Y) ? 0 : rot_delta_Y;
+    positionX += isnan(global_delt_x) ? 0 : global_delt_x;
+    positionY += isnan(global_delt_y) ? 0 : global_delt_y;
+
+
+
+    // double radialDeltaY = (deltaRadial) * cosine;
+    // double transverseDeltaY = -(deltaTransverse) * sine; // note the - sign
+    // double deltaY = radialDeltaY + transverseDeltaY;
+
+    // double radialDeltaX = (deltaRadial) * sine;
+    // double transverseDeltaX = (deltaTransverse) * cosine;
+    // double deltaX = radialDeltaX + transverseDeltaX;
+
+
+
+
+
+    // // Use the arc length of a circle
+    // double transverse_circumference = 2 * M_PI * TRANSVERSE_WHEEL_RAD_OFFSET * (delta_theta / 360.0);
+    // double radial_circumference = 2 * M_PI * RADIAL_WHEEL_TRANS_OFFSET * (delta_theta / 360.0);
+
+    // double rot_delta_Y = transverse_circumference * sine + radial_circumference * cosine;
+    // double rot_delta_X = -transverse_circumference * cosine + radial_circumference * sine;
+
+    // positionX += isnan(rot_delta_X) ? 0 : rot_delta_X;
+    // positionY += isnan(rot_delta_Y) ? 0 : rot_delta_Y;
 
     last_heading = currentHeading;
 
