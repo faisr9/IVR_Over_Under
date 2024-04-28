@@ -1,7 +1,6 @@
 #include "dookie/controls.h"
 #include "dookie/auton.h"
 
-pros::Task *controlsTask;
 pros::Task *loadBarTask;
 
 const bool matchMode = false; // Set to true when in competition
@@ -62,10 +61,7 @@ void disabled() {}
 
 /* If connected to competition controller, this runs after initialize */
 void competition_initialize() {
-	if(controlsTask != nullptr)
-		if(controlsTask->get_state() != pros::E_TASK_STATE_INVALID) {controlsTask->suspend();}
-
-	if(matchMode) {
+	if (matchMode) {
 		ctrl_master.rumble(".."); 
 		imu.reset(true);
 		ctrl_master.rumble("--");
@@ -89,11 +85,7 @@ void autonomous() {
 void opcontrol() {
 	lcd::print(0, "Ready");
 
-	if(controlsTask == nullptr) 
-		controlsTask = new pros::Task{[=] {controls();}, "Controls Task"};
-
-	if(controlsTask->get_state() == pros::E_TASK_STATE_SUSPENDED) 
-		controlsTask->resume();
+	controls();
 }
 
 

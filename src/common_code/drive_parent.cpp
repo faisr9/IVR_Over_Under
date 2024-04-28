@@ -17,8 +17,5 @@ double DriveParent::sin_scale(double input, double sin_scale_factor) {
 }
 // apply square scaling
 double DriveParent::square_scale(double input, double square_scale_factor) {
-  if(square_scale_factor == 2.0)
-    return copysign(pow(input, square_scale_factor), input);
-  else
-    return pow(input, square_scale_factor);
+  return copysign(pow(fabs(input), square_scale_factor), input);
 }

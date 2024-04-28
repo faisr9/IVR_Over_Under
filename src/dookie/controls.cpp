@@ -11,12 +11,12 @@ void controls() {
 
         //INTAKE CONTROLS
         if (ctrl_master.get_digital(BUTTON_R1)){
-            Intake::getInstance()->set_power(-12000);
+            Intake::getInstance()->toggle_on();
         }
         else if (ctrl_master.get_digital(BUTTON_R2)){
-            Intake::getInstance()->set_power(12000);
+            Intake::getInstance()->toggle_reverse();
         } else {
-            Intake::getInstance()->set_power(0);
+            Intake::getInstance()->stop();
         }
 
         //PNEUMATICS CONTROLS
