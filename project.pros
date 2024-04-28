@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "Catcher_Skills!",
+    "project_name": "Thrower_Skills!",
     "target": "v5",
     "templates": {
       "kernel": {
