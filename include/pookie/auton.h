@@ -8,5 +8,5 @@ void move(std::vector<std::vector<double>> moveVec, int angle, bool isReversed, 
 void turn(double angle);
 
 void main_auton(bool wp);
-void win_point_auton();
-void non_win_point_auton();
+// void win_point_auton();
+// void non_win_point_auton();

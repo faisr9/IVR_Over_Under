@@ -112,8 +112,8 @@ void Odom::updatePosition() {
     //     pros::lcd::set_text(6, "Radial Raw: " + std::to_string(radialWheel->get_raw_data()));
     // }
     pros::lcd::set_text(4, "IMU degrees: " + std::to_string(getHeading()));
-    pros::lcd::set_text(2, "Position X: " + std::to_string(positionX));
-    pros::lcd::set_text(3, "Position Y: " + std::to_string(positionY));
+    pros::lcd::set_text(2, "Position X: " + std::to_string(convert::mToIn(positionX)));
+    pros::lcd::set_text(3, "Position Y: " + std::to_string(convert::mToIn(positionY)));
 }
 
 double Odom::getX() { return positionX; }

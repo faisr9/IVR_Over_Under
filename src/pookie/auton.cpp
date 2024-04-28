@@ -104,7 +104,7 @@ void main_auton(bool wp) {
         // Score WP Triballs
         if(wp) {
             vector<vector<double>> toGoal = {toOtherDepot.back(), 
-                                                {116, 12}, {127,16}, {128, 22}}; //pickup 2nd WP triball along path
+                                                {116, 12}, {125,16}, {126, 22}}; //pickup 2nd WP triball along path
             move(toGoal, 350, false, false, 2,.5);
 
             turnToAngle(tank_drive_15, 10, 2);

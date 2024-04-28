@@ -75,7 +75,7 @@ void autonomous() {
 	} else if(gui::selected_auton == gui::AUTON_ELIM) {
 		main_auton(false);
 	}  else {
-		main_auton(false); // Default to win point auton
+		main_auton(true); // Default to win point auton
 	}
 
 	// ctrl_master.rumble("..--..");
