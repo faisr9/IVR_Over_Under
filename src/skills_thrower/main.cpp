@@ -8,7 +8,6 @@ void initialize() {
     transverse_rot_sensor.reset();
 	radial_rot_sensor.reset();
 	pros::delay(3000);
-	x_drive_odom.initTracker(0, 0, 0);
 	pros::delay(50);
 }
 
@@ -26,7 +25,7 @@ void autonomous() {
 void opcontrol() 
 {
 	lcd::print(2,"Thrower Skills");
-	//skills();
+	skills();
 	// lcd::print(3,"LeftCata Velocity: %i", (int)cata_left.get_actual_velocity());
 	// lcd::print(4,"RightCata Velocity: %i", (int)cata_right.get_actual_velocity());
 	

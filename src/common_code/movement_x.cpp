@@ -150,7 +150,13 @@ void followPathX(std::vector<std::vector<double>>& path, x_drive& x_drive, Odom&
             }
 
             // If statement should be true once end of path is reached
-            if ((i == currentIndex) && (currentIndex == path.size() - 2) && (sqrt(pow(positionX - ORIGINAL_PATH_FINAL[0], 2) + pow(positionY - ORIGINAL_PATH_FINAL[1], 2)) < FINAL_LOCATION_TOLERANCE)) {
+            bool condition_1 = (i == currentIndex);
+            bool condition_2 = (currentIndex == path.size() - 2);
+            bool condition_3 = (sqrt(pow(positionX - ORIGINAL_PATH_FINAL[0], 2) + pow(positionY - ORIGINAL_PATH_FINAL[1], 2)) < FINAL_LOCATION_TOLERANCE);
+            pros::lcd::set_text(5, std::to_string(condition_1));
+            pros::lcd::set_text(6, std::to_string(condition_2));
+            pros::lcd::set_text(7, std::to_string(condition_3));
+            if (condition_1 && condition_2 && condition_3) {
                 // look ahead point has (most likely) gone off the edge of the extension on the final point, so the 
                 // robot is at the final point and should spin on spot (if applicable) or the program should terminate
                 readyForSpin = true;

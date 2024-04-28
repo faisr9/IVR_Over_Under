@@ -92,7 +92,7 @@ void x_drive::field_centric_move(pair<double, double> movement_vector, double tu
 }
 
 void x_drive::app_move(std::pair<double, double> mag_angle_vector, double turn_rpm, double max_rpm, bool reversed) {
-    field_centric_move({mag_angle_vector.first / max_rpm, mag_angle_vector.second}, 0 / max_rpm, max_rpm); 
+    field_centric_move({mag_angle_vector.first / max_rpm, mag_angle_vector.second}, turn_rpm / max_rpm, max_rpm); 
 }
 
 

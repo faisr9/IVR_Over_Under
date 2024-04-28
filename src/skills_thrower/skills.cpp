@@ -2,6 +2,28 @@
 
 LinkHelper* catcher_link = LinkHelper::createInstance(16, E_LINK_RX);
 
+void follow_path_thrower(std::vector<std::vector<double>>& path, double final_angle_deg, double min_rpm) {
+    followPathX(path, xdriveThrower, x_drive_odom, final_angle_deg, true, false, 0.25, 3.0, 200.0, 200.0, min_rpm);
+}
+
+void follow_path_thrower_timeout(std::vector<std::vector<double>>& path, double final_angle_deg, double min_rpm, double timeout) {
+
+    pros::Task path_task {[=] {
+        std::vector<std::vector<double>> path_follow = path;
+        follow_path_thrower(path_follow, final_angle_deg, min_rpm);
+    }};
+
+    const double kSTART_TIME = pros::millis();
+    while (path_task.get_state() != E_TASK_STATE_DELETED) {
+        if (pros::millis() >= kSTART_TIME + timeout) {
+            // abort path
+            path_task.suspend();
+            turnToAngleX(xdriveThrower, x_drive_odom, final_angle_deg, 3.0);
+            break;
+        }
+        pros::delay(50);
+    }
+}
 
 void cata_shoot_task() {
     SkillsCata* cata_inst = SkillsCata::getInstance();
@@ -46,8 +68,10 @@ void skills() {
         std::vector<std::vector<double>> path2={init,launch_pos};
         
         //followPathX(path_to_load, xdriveThrower, x_drive_odom, kSHOOT_ANGLE, true, false, 0.2);
-        followPathX(path1, xdriveThrower, x_drive_odom, kSHOOT_ANGLE, true, false, 0.2,5.0,200,200,100);
-        followPathX(path2, xdriveThrower, x_drive_odom, kSHOOT_ANGLE, true, false, 0.2,3,200,200,40);
+        follow_path_thrower(path1, kSHOOT_ANGLE, 100);
+        follow_path_thrower_timeout(path2, kSHOOT_ANGLE, 80, 5000);
+        // followPathX(path1, xdriveThrower, x_drive_odom, kSHOOT_ANGLE, true, false, 0.2,5.0,200,200,100);
+        // followPathX(path2, xdriveThrower, x_drive_odom, kSHOOT_ANGLE, true, false, 0.2,3,200,200,80);
 
     // pros::Task test_path_task {[=] {
     //     std::vector<std::vector<double>> straight_path = {start_pos, {0, 1.8}};
