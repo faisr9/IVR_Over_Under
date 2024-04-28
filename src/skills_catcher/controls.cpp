@@ -35,7 +35,6 @@ void controls()
 
     pros::lcd::set_text(5, "p is " + std::to_string(p));
 
-    // astdriveCatcher.run();
 
     pros::delay(20);
   }
