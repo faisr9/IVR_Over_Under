@@ -18,7 +18,7 @@ Motor_Group straight_left({left_middle_1, left_middle_2});
 Motor_Group straight_right({right_middle_1, right_middle_2});
 
 pros::Imu imu(13);
-Piston catcher_wings('A');
+Piston catcher_wings('A'); // port A
 
 // Tracking wheels and odom
 

@@ -15,16 +15,22 @@ void cata_shoot_task() {
     cata_inst->stop();
     
 }
-
+double meters(double inch)
+{
+    return inch*.0254;
+}
 
 void skills() {
 
     // Setup
 
     const double kP = 2.8;
-
-    std::vector<double> start_pos = {0.45, 0.45};
-    const double kSTARTING_ANGLE = 45.0; // 45˚ chosen for ease of setup, 60˚ is the actual angle
+    std::vector<double>  init= {meters(20), meters(20)};
+    
+    std::vector<double> start_pos = {meters(26.5), 0.165};
+    std::vector<double> launch_pos={.35,.35};//{meters(16.5),meters(19)};//{.45,.45};
+    const double kSTARTING_ANGLE = 90.0; // 45˚ chosen for ease of setup, 60˚ is the actual angle
+    const double kSHOOT_ANGLE = 60.0;
 
     x_drive_odom.initTracker(start_pos[0], start_pos[1], kSTARTING_ANGLE);
     pros::delay(50);
@@ -34,6 +40,14 @@ void skills() {
             pros::delay(50);
         }
     }};
+
+        //std::vector<std::vector<double>> path_to_load = {start_pos, init, launch_pos};
+        std::vector<std::vector<double>> path1={start_pos,init};
+        std::vector<std::vector<double>> path2={init,launch_pos};
+        
+        //followPathX(path_to_load, xdriveThrower, x_drive_odom, kSHOOT_ANGLE, true, false, 0.2);
+        followPathX(path1, xdriveThrower, x_drive_odom, kSHOOT_ANGLE, true, false, 0.2,5.0,200,200,100);
+        followPathX(path2, xdriveThrower, x_drive_odom, kSHOOT_ANGLE, true, false, 0.2,3,200,200,40);
 
     // pros::Task test_path_task {[=] {
     //     std::vector<std::vector<double>> straight_path = {start_pos, {0, 1.8}};

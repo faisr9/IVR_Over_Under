@@ -1,4 +1,5 @@
 #include "skills_thrower/controls.h"
+#include "skills_thrower/skills.h"
 
 void controls()
 {
@@ -27,6 +28,9 @@ void controls()
     if (ctrl_master.get_digital_new_press(E_CONTROLLER_DIGITAL_LEFT)) {
       SkillsCata::getInstance()->stop();
     }
+
+    if (ctrl_master.get_digital(E_CONTROLLER_DIGITAL_R2))
+      skills();
 
     // if (ctrl_master.get_digital_new_press(E_CONTROLLER_DIGITAL_Y)) {
     //   turnToAngleX(xdriveThrower, x_drive_odom, 0, 2, false, p, 200);
