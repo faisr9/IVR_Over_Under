@@ -33,7 +33,7 @@ Odom::~Odom() {
 // initializes the tracking variables so they can begin to be updated
 void Odom::initTracker(double initial_x, double initial_y, double initial_heading) {
     if (transverseWheel) transverseWheel->initialize_sensor();
-    radialWheel->initialize_sensor();
+    if (radialWheel) radialWheel->initialize_sensor();
 
     positionX = initial_x;
     positionY = initial_y;
@@ -61,7 +61,7 @@ double Odom::headingCorrection (double currentRotation) {
 // updatePosition does all the math with the heading and the sensor values to update the actual position coordinate
 void Odom::updatePosition() {       
     double deltaTransverse = (transverseWheel) ? (*transverseWheel).get_meters_travelled() : 0;
-    double deltaRadial = (*radialWheel).get_meters_travelled();
+    double deltaRadial = (radialWheel) ? (*radialWheel).get_meters_travelled() : 0;
 
     double currentHeading = headingCorrection(imu.get_rotation());
 
@@ -78,19 +78,23 @@ void Odom::updatePosition() {
         delta_theta += 360;
     }
 
+    // convert to radians
+    double curr_heading_rad = currentHeading * M_PI / 180.0;
+    double delta_theta_rad = delta_theta * M_PI / 180.0;
+
     double local_delt_x;
     double local_delt_y;
     if (delta_theta == 0) {
         local_delt_x = deltaTransverse;
         local_delt_y = deltaRadial;
     } else {
-        local_delt_x = 2 * sin(delta_theta * (M_PI / 180.0) / 2.0) * ((deltaTransverse / delta_theta) + TRANSVERSE_WHEEL_RAD_OFFSET);
-        local_delt_y = 2 * sin(delta_theta * (M_PI / 180.0) / 2.0) * ((deltaRadial / delta_theta) + RADIAL_WHEEL_TRANS_OFFSET);
+        local_delt_x = 2 * sin(delta_theta_rad / 2.0) * ((deltaTransverse / delta_theta_rad) + TRANSVERSE_WHEEL_RAD_OFFSET);
+        local_delt_y = 2 * sin(delta_theta_rad / 2.0) * ((deltaRadial / delta_theta_rad) + RADIAL_WHEEL_TRANS_OFFSET);
     }
-    double cosine = cos((currentHeading + delta_theta / 2) * M_PI / 180.0);
-    double sine = sin((currentHeading + delta_theta / 2) * M_PI / 180.0);
+    double cosine = cos(curr_heading_rad + delta_theta_rad / 2.0);
+    double sine = sin(curr_heading_rad + delta_theta_rad / 2.0);
 
-    double average_arc_angle = currentHeading + (delta_theta / 2);
+    double average_arc_angle = curr_heading_rad + (delta_theta_rad / 2.0);
     double global_delt_x = local_delt_y * sine + local_delt_x * cosine;
     double global_delt_y = local_delt_y * cosine + -1*(local_delt_x * sine);
 

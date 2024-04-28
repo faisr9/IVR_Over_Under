@@ -24,7 +24,7 @@ Piston catcher_wings('A'); // port A
 
 pros::Rotation radial_rot_sensor(6, false);
 pros::Rotation transverse_rot_sensor(8, true);
-Generic_Rotation_VEX_Rot* radial_tracker = new Generic_Rotation_VEX_Rot(radial_rot_sensor, 1.96 * 0.0254 / 2, convert::inToM(0.5));
+Generic_Rotation_VEX_Rot* radial_tracker = new Generic_Rotation_VEX_Rot(radial_rot_sensor, 1.96 * 0.0254 / 2, convert::inToM(-0.5));
 Generic_Rotation_VEX_Rot* transverse_tracker = new Generic_Rotation_VEX_Rot(transverse_rot_sensor, 1.96 * 0.0254 / 2, convert::inToM(5.125));
 Odom ast_odom(imu, transverse_tracker, radial_tracker);
 
