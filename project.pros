@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "Pure_Pursuit_Debug",
+    "project_name": "5DEV_Catcher_Skills",
     "target": "v5",
     "templates": {
       "kernel": {
@@ -309,7 +309,7 @@
       }
     },
     "upload_options": {
-      "slot": 6,
+      "slot": 5,
       "description": "Master Code",
       "icon": "clawbot",
       "after": "screen"

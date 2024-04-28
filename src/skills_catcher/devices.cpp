@@ -6,7 +6,7 @@ const char NET = 'A';
 
 Controller ctrl_master(E_CONTROLLER_MASTER);
 
-Motor front_left(12,1);
+Motor front_left(14,1);
 Motor front_right(1,1);
 Motor back_left(20,0);
 Motor back_right(7,0);
