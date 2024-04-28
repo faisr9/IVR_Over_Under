@@ -33,6 +33,6 @@ void autonomous() {
 /* Opcontrol method runs by default (unless connected to comp controller )*/
 void opcontrol() {
 	//skills();
-	// test_path_funct();
-	controls();
+	test_path_funct();
+	// controls();
 }

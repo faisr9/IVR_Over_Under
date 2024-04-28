@@ -19,7 +19,25 @@ void catcher_follow_path(std::vector<std::vector<double>>& path, double final_an
 
 
 void test_path_funct() {
-    ast_odom.initTracker(0, 0, 0);
+    // ast_odom.initTracker(0, 0, 0);
+    // pros::delay(50);
+    // pros::Task odom_task{[=] {
+    //     while (1) {
+    //         ast_odom.updatePosition();
+    //         pros::delay(50);
+    //     }
+    // }};
+
+    // std::vector<std::vector<double>> to_goal_path = {{0.0, 0.0}, {0.0, 1.2}};
+    // catcher_follow_path(to_goal_path, 0);
+
+    std::vector<double> start_pos = {0.9, 3.3}; // wrong for now
+    const double kSTARTING_ANGLE = 90.0;
+    const double kSTART_TIME = pros::millis();
+    const double kRECIEVE_FIRST_TIME = 20000; // how long should get triballs at first pos for in millis
+    const double kSKILLS_TIME = 45000;
+
+    ast_odom.initTracker(start_pos[0], start_pos[1], kSTARTING_ANGLE);
     pros::delay(50);
     pros::Task odom_task{[=] {
         while (1) {
@@ -28,8 +46,12 @@ void test_path_funct() {
         }
     }};
 
-    std::vector<std::vector<double>> to_goal_path = {{0.0, 0.0}, {0.0, 1.2}};
-    catcher_follow_path(to_goal_path, 0);
+    pros::lcd::set_text(1, "Skills Drive to Goal");
+    std::vector<std::vector<double>> to_goal_path = {start_pos, {2.7, 3.3}, {2.5, 2.1}};
+    catcher_follow_path(to_goal_path, 90);
+    pros::lcd::set_text(1, "At Goal");
+
+    odom_task.suspend();
 }
 
 void skills() {
