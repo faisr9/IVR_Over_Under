@@ -194,7 +194,7 @@ void test_path_funct() {
     }};
 
     pros::lcd::set_text(1, "Skills Drive to Goal");
-    std::vector<std::vector<double>> to_goal_path = {start_pos, {2.7, 3.3}, {2.5, 2.1}};
+    std::vector<std::vector<double>> to_goal_path = {start_pos, {0, 1.5}};
     catcher_follow_path(to_goal_path, 90);
     pros::lcd::set_text(1, "At Goal");
 
