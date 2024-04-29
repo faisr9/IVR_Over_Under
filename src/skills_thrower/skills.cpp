@@ -18,6 +18,7 @@ void follow_path_thrower_timeout(std::vector<std::vector<double>>& path, double 
         if (pros::millis() >= kSTART_TIME + timeout) {
             // abort path
             path_task.suspend();
+            xdriveThrower.stop();
             turnToAngleX(xdriveThrower, x_drive_odom, final_angle_deg, 3.0);
             break;
         }

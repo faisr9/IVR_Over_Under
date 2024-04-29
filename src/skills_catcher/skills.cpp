@@ -38,7 +38,6 @@ void push_in_v2(std::vector<double> back_point) {
     // astdriveCatcher.field_centric_move({1.0, 325.0 * M_PI / 180.0}, 0); // 0 seems to be towards goal ???
     astdriveCatcher.field_centric_move({1.0, 0}, 0); // 0 seems to be towards goal ???
     pros::delay(800);
-    catcher_wings.off();
 
     std::vector<std::vector<double>> back2_path = {{ast_odom.getX(), ast_odom.getY()}, back_point};
     catcher_follow_path(back2_path, 90);
