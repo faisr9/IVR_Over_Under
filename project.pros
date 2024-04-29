@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "6DEV_Skills_Catcher",
+    "project_name": "Thrower_Odom_Test",
     "target": "v5",
     "templates": {
       "kernel": {
