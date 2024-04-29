@@ -28,7 +28,7 @@ void catcher_follow_path(std::vector<std::vector<double>>& path, double final_an
 //     pros::delay(100);
 // }
 
-void push_in_v2() {
+void push_in_v2(std::vector<double> back_point) {
     catcher_wings.on();
 
     // positioned at (2.2 x, 2.1 y) facing 90
@@ -40,7 +40,7 @@ void push_in_v2() {
     pros::delay(800);
     catcher_wings.off();
 
-    std::vector<std::vector<double>> back2_path = {{ast_odom.getX(), ast_odom.getY()}, {2.3, 2.1}};
+    std::vector<std::vector<double>> back2_path = {{ast_odom.getX(), ast_odom.getY()}, back_point};
     catcher_follow_path(back2_path, 90);
 }
 
@@ -73,7 +73,7 @@ void skills() {
     }};
 
     pros::lcd::set_text(1, "Skills Drive to Goal");
-    std::vector<std::vector<double>> to_goal_path = {start_pos, {2.7, 3.3}, {2.7, 2.8}, {2.25, 2.1}};
+    std::vector<std::vector<double>> to_goal_path = {start_pos, {2.7, 3.3}, {2.7, 2.8}, {2.2, 2.1}};
     catcher_follow_path(to_goal_path, kSTARTING_ANGLE);
     pros::lcd::set_text(1, "At Goal");
     catcher_wings.on(); // turn wings on
@@ -119,7 +119,7 @@ void skills() {
 
         if (time_since_last_push > kPUSH_IN_AFTER) {
             time_since_last_push = 0; // set 0 first so if canceled while going back don't push in again
-            push_in_v2();
+            push_in_v2({2.2, 2.1});
             last_time = pros::millis(); // set last time last so don't account for time spent pushing
         }
 
@@ -137,7 +137,7 @@ void skills() {
     const double kLENIENT_PUSH_IN_AFTER = 2000; // something less than kPUSH_IN_AFTER to round up an extra triball
     // time should matter too much maybe bc other robot driving full field?
     if (time_since_last_push > 2000) {
-        push_in_v2();
+        push_in_v2({2.2, 2.1});
     } else {
         // stop the drive because it was probably still running when the task was canceled
         astdriveCatcher.stop();
@@ -145,7 +145,7 @@ void skills() {
 
 
     pros::lcd::set_text(1, "Skills move to second pos");
-    std::vector<std::vector<double>> to_second_score = {{ast_odom.getX(), ast_odom.getY()}, {2.5, 1.5}};
+    std::vector<std::vector<double>> to_second_score = {{ast_odom.getX(), ast_odom.getY()}, {2.2, 1.5}};
     catcher_follow_path(to_second_score, 90);
     pros::lcd::set_text(1, "Skills second push in cycling");
 
@@ -159,12 +159,12 @@ void skills() {
         last_time = pros::millis();
 
         if (time_since_last_push > kPUSH_IN_AFTER) {
-            push_in_v2();
+            push_in_v2({2.2, 1.5});
             time_since_last_push = 0;
         }
     }
 
-    push_in_v2();
+    push_in_v2({2.2, 1.5});
 
     pros::lcd::set_text(1, "Skills DONE");
 

@@ -14,7 +14,7 @@ void initialize() {
 	pros::delay(2000); // extra little delay so no finger pinchies
 	pros::lcd::set_text(1, "");
 	imu.tare();
-	ast_odom.initTracker(0, 0, 0);
+	// ast_odom.initTracker(0, 0, 0);
 }
 
 /* Runs when robot is disabled from competition controller after driver/auton */
@@ -32,7 +32,7 @@ void autonomous() {
 
 /* Opcontrol method runs by default (unless connected to comp controller )*/
 void opcontrol() {
-	// skills();
+	skills();
 	// test_path_funct();
 	controls();
 }
