@@ -8,6 +8,37 @@ void catcher_follow_path(std::vector<std::vector<double>>& path, double final_an
 }
 
 
+void bowl(int num_triballs) {
+    // assume started in correct position
+    // ideally do have a drive to point pid lol, wouldn't have to worry about rot for this one
+
+    // starting position of 0.6, 3.3
+
+    const int kSTART_ANGLE = 270;
+    const int kWHACK_ANGLE = 315;
+
+   
+    int cycles = 0;
+    const double kHP_WAIT_TIME = 1000;
+    const double kHP_FIRST_WAIT_TIME = 1000;
+    const int turn_amount = 45;
+    catcher_wings.on();
+    pros::delay(kHP_FIRST_WAIT_TIME);
+
+    while (cycles < num_triballs) {
+        // whack triball out of match load zone
+        turnToAngleX(astdriveCatcher, ast_odom, kWHACK_ANGLE, 6.0, false, 3.0, 10);
+        // turnToAngle(drive, kTURN_BACK_ANGLE - turn_amount, 6.0, false, 3.3, 10); // more p because triball is in the way and don't care as much about precision
+        // turn back so the human player can place another triball
+        turnToAngleX(astdriveCatcher, ast_odom, kSTART_ANGLE, 5.0, false, 2.7, 80);
+        // turnToAngle(drive, kTURN_BACK_ANGLE, 5.0, false, 1.9, 80);
+        pros::delay(kHP_WAIT_TIME);
+        num_triballs++;
+    }
+
+}
+
+
 // void push_in() {
 //     catcher_wings.off();
 //     turnToAngleX(astdriveCatcher, ast_odom, 90, 3.0);
@@ -56,8 +87,17 @@ void skills() {
 
     pros::lcd::set_text(1, "Skills Start");
 
-    std::vector<double> start_pos = {0.76, 3.3}; // x is with back against back part of first tile (close to wall part)
-    const double kSTARTING_ANGLE = 90.0;
+    const bool should_bowl = true;
+
+    std::vector<double> start_pos;
+    double kSTARTING_ANGLE = 90.0;
+    if (should_bowl) {
+        start_pos = {0.6, 3.3};
+        kSTARTING_ANGLE = 90.0;
+    } else {
+        start_pos = {0.76, 3.3}; // x is with back against back part of first tile (close to wall part)
+        kSTARTING_ANGLE = 270.0;
+    }
     const double kSTART_TIME = pros::millis();
     const double kRECIEVE_FIRST_TIME = 20000; // how long should get triballs at first pos for in millis
     const double kSKILLS_TIME = 55000;
@@ -70,6 +110,13 @@ void skills() {
             pros::delay(50);
         }
     }};
+
+
+    if (should_bowl) {
+        bowl(6);
+        turnToAngleX(astdriveCatcher, ast_odom, 90.0, 4.0, false, 2.7, 100);
+    }
+
 
     pros::lcd::set_text(1, "Skills Drive to Goal");
     std::vector<std::vector<double>> to_goal_path = {start_pos, {2.7, 3.3}, {2.7, 2.8}, {2.2, 2.1}};
