@@ -61,8 +61,13 @@ void main_auton(bool wp) {
 
         // Back up to push first ball
         vector<vector<double>> path_triball_1_1 = {{path_triball_1[2][0], path_triball_1[2][1]}, {57, 46.5}};
+        // pros::Task moveTask1 {[=] {move(path_triball_1_1, 279.5, true, false, 0.69, 0.33, 1.4, 45);}};
         move(path_triball_1_1, 279.5, true, false, 0.69, 0.33, 1.4, 45);
-        
+        // delay(500);
+        // double start_time = pros::millis();
+        // do {pros::delay(20);} while(pros::millis() - start_time < 2500-500 && moveTask1.get_state);
+        // if(moveTask1.get_state() != E_TASK_STATE_DELETED) {moveTask1.remove();}
+        // ctrl_master.rumble("-");
         // Turn to bar
         Intake::getInstance()->stop();
         turnToAngle(tank_drive_18, 89, 3, false, 2.1);

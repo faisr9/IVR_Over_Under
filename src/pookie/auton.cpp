@@ -144,10 +144,11 @@ void main_auton(bool wp) {
         turnToAngle(tank_drive_15, 250, 2);
         delay(50);
         Pneumatics::getInstance()->getWings()->on();
+        Intake::getInstance()->set_power(-12000);
         // vector<vector<double>> sweep = {{convert::mToIn(tank_drive_15.getOdom().getX()), convert::mToIn(tank_drive_15.getOdom().getY())},
         //                                     {100,33}, {84.5, 40}, {84, 61}, {91, 64}, {96, 64}, {115, 64}}; //pickup 2nd WP triball along path
         vector<vector<double>> sweep1 = {{convert::mToIn(tank_drive_15.getOdom().getX()), convert::mToIn(tank_drive_15.getOdom().getY())},
-                                            {100, 40}, {89, 40}}; //pickup 2nd WP triball along path
+                                            {100, 40}, {92, 40}}; //pickup 2nd WP triball along path
         move(sweep1, 270, false, false, 2, .35);
         turnToAngle(tank_drive_15, 0, 2);
         vector<vector<double>> sweep2 = {{convert::mToIn(tank_drive_15.getOdom().getX()), convert::mToIn(tank_drive_15.getOdom().getY())},

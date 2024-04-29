@@ -11,12 +11,14 @@ void controls() {
 
         //INTAKE CONTROLS
         if (ctrl_master.get_digital(BUTTON_R1)){
+            Pneumatics::getInstance()->getIntake()->off();
             Intake::getInstance()->toggle_on();
         }
         else if (ctrl_master.get_digital(BUTTON_R2)){
             Intake::getInstance()->toggle_reverse();
+            Pneumatics::getInstance()->getIntake()->on();
         } else {
-            Intake::getInstance()->stop();
+            Intake::getInstance()->set_power(3000);
         }
 
         //PNEUMATICS CONTROLS
@@ -29,6 +31,7 @@ void controls() {
         }   
 
         if(ctrl_master.get_digital_new_press(BUTTON_UP)) {
+            Pneumatics::getInstance()->getIntake()->on();
             Pneumatics::getInstance()->getTopHang()->toggle();
             pros::delay(25);
         }

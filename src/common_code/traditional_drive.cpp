@@ -105,11 +105,26 @@ void traditional_drive::toggle_drive_mode()
 };
 
 // operator control tank drive
+double turnDiff, z = 0;
+const double turnMod = 0.4;
 void traditional_drive::tank_drive()
 {
+    const double sin_scale_factor = 3.25;
+    const double turnDownScale = 0.6;
+    const double turnDownScaleThreshold = 0.2;
+    const double deadband = 0.1;
     // get joystick values and apply square scaling
-    left *= square_scale(normalize_joystick(master->get_analog(E_CONTROLLER_ANALOG_LEFT_Y)), 2.25);   // vertical input from left joystick
-    right *= square_scale(normalize_joystick(master->get_analog(E_CONTROLLER_ANALOG_RIGHT_Y)), 2.25); // vertical input from right joystick
+    left *= sin_scale(normalize_joystick(master->get_analog(E_CONTROLLER_ANALOG_LEFT_Y)), sin_scale_factor);   // vertical input from left joystick
+    right *= sin_scale(normalize_joystick(master->get_analog(E_CONTROLLER_ANALOG_RIGHT_Y)), sin_scale_factor); // vertical input from right joystick
+
+    double turn_diff = fabs(left - right);
+    bool both_sides_moving = (fabs(left) > deadband) && (fabs(right) > deadband);
+
+    if (turn_diff > turnDownScaleThreshold && both_sides_moving) {
+        double z = turn_diff * turnDownScale / 2.0;
+        left = left > right ? left - z : left + z;
+        right = right > left ? right - z : right + z;
+    }
 
     setV(); // set voltage to motors
 };
@@ -148,9 +163,8 @@ void traditional_drive::arcade_drive()
 {
     // get joystick values and apply square scaling
     fwd = square_scale(normalize_joystick(master->get_analog(E_CONTROLLER_ANALOG_LEFT_Y)));   // vertical input from left joystick
-    // turn = square_scale(normalize_joystick(master->get_analog(E_CONTROLLER_ANALOG_RIGHT_X))) / 2.1; // horizontal input from right joystick
-    turn = square_scale(normalize_joystick(master->get_analog(E_CONTROLLER_ANALOG_RIGHT_X)), 3) / 2;
-    // turn = sin_scale(normalize_joystick(master->get_analog(E_CONTROLLER_ANALOG_RIGHT_X)), 2);
+    turn = square_scale(normalize_joystick(master->get_analog(E_CONTROLLER_ANALOG_RIGHT_X))) / 2.7; // horizontal input from right joystick
+    // turn = square_scale(normalize_joystick(master->get_analog(E_CONTROLLER_ANALOG_RIGHT_X)), 3) / 2;
     // use fwd and turn to calculate voltage to send to motors
     left *= fwd + turn;
     right *= fwd - turn;
