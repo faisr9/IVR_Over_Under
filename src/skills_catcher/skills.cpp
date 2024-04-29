@@ -75,6 +75,21 @@ void push_in_v2(std::vector<double> back_point) {
 }
 
 
+void push_in_v3(std::vector<double> back_point) {
+
+    catcher_wings.on();
+
+    // wait at 2.7, 2.3
+
+    // start facing 180
+
+    // open wings and back up into pos
+    // open wings on path
+
+    
+}
+
+
 void skills() {
 
     /*
@@ -87,16 +102,19 @@ void skills() {
 
     pros::lcd::set_text(1, "Skills Start");
 
-    const bool should_bowl = true;
+    const bool should_v3 = true;
 
     std::vector<double> start_pos;
     double kSTARTING_ANGLE = 90.0;
-    if (should_bowl) {
-        start_pos = {0.6, 3.3};
-        kSTARTING_ANGLE = 90.0;
+    if (should_v3) {
+        // start_pos = {0.6, 3.3}; // bowl
+        // kSTARTING_ANGLE = 270.0;
+
+        start_pos = {0.76, 3.3};
+        kSTARTING_ANGLE = 180.0;
     } else {
         start_pos = {0.76, 3.3}; // x is with back against back part of first tile (close to wall part)
-        kSTARTING_ANGLE = 270.0;
+        kSTARTING_ANGLE = 90.0;
     }
     const double kSTART_TIME = pros::millis();
     const double kRECIEVE_FIRST_TIME = 20000; // how long should get triballs at first pos for in millis
@@ -111,18 +129,22 @@ void skills() {
         }
     }};
 
+    pros::lcd::set_text(1, "Skills Drive to Goal");
+    if (should_v3) {
+        // bowl(6); // bowl
+        // turnToAngleX(astdriveCatcher, ast_odom, 90.0, 4.0, false, 2.7, 100);
 
-    if (should_bowl) {
-        bowl(6);
-        turnToAngleX(astdriveCatcher, ast_odom, 90.0, 4.0, false, 2.7, 100);
+        std::vector<std::vector<double>> to_goal_path = {start_pos, {2.7, 3.3}, {2.7, 2.8}, {2.4, 2.1}, {2.7, 2.3}, {2.7, 2.5}};
+        catcher_follow_path(to_goal_path, kSTARTING_ANGLE);
+        catcher_wings.on();
+    } else {
+        std::vector<std::vector<double>> to_goal_path = {start_pos, {2.7, 3.3}, {2.7, 2.9}, {2.2, 2.1}};
+        catcher_follow_path(to_goal_path, kSTARTING_ANGLE);
+        catcher_wings.on(); // turn wings on
     }
 
 
-    pros::lcd::set_text(1, "Skills Drive to Goal");
-    std::vector<std::vector<double>> to_goal_path = {start_pos, {2.7, 3.3}, {2.7, 2.8}, {2.2, 2.1}};
-    catcher_follow_path(to_goal_path, kSTARTING_ANGLE);
     pros::lcd::set_text(1, "At Goal");
-    catcher_wings.on(); // turn wings on
 
     // pros::Task drive_to_goal_task {[=] {
     //     pros::lcd::set_text(1, "Skills Drive to Goal");
