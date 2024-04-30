@@ -143,7 +143,7 @@ void main_auton(bool wp) {
         // Intake::getInstance()->toggle_on(-150);
         turnToAngle(tank_drive_15, 250, 2);
         delay(50);
-        Pneumatics::getInstance()->getWings()->on();
+        pros::Task wings_sweep_delay {[=]{ delay(1500); Pneumatics::getInstance()->getWings()->on(); }};
         Intake::getInstance()->set_power(-12000);
         // vector<vector<double>> sweep = {{convert::mToIn(tank_drive_15.getOdom().getX()), convert::mToIn(tank_drive_15.getOdom().getY())},
         //                                     {100,33}, {84.5, 40}, {84, 61}, {91, 64}, {96, 64}, {115, 64}}; //pickup 2nd WP triball along path

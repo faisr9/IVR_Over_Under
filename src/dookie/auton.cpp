@@ -86,34 +86,34 @@ void main_auton(bool wp) {
         turnToAngle(tank_drive_18, 0, 1, false, 2.2);
 ///////////////////////////////////////////////////////////////////////////////////////////
 
-        // Move to get second ball
-        Intake::getInstance()->toggle_on();
-        vector<vector<double>> path_triball_2 = {{convert::mToIn(tank_drive_18.getOdom().getX()), convert::mToIn(tank_drive_18.getOdom().getY())},
-                                                    {convert::mToIn(tank_drive_18.getOdom().getX()), 61}};
-        move(path_triball_2, 0, false, false, 0.87, 0.5, 1.12, 45);
+        if(wp) {
+            // Move to get second ball
+            Intake::getInstance()->toggle_on();
+            vector<vector<double>> path_triball_2 = {{convert::mToIn(tank_drive_18.getOdom().getX()), convert::mToIn(tank_drive_18.getOdom().getY())},
+                                                        {convert::mToIn(tank_drive_18.getOdom().getX()), 61}};
+            move(path_triball_2, 0, false, false, 0.87, 0.5, 1.12, 45);
 
-        // Move to push second ball over bar
-        vector<vector<double>> path_triball_2_1 = {path_triball_2[1], {56, 40}};
-        move(path_triball_2_1, 310, true, false, 1, 0.5, 1.12, 45);
-        Intake::getInstance()->stop();
-        turnToAngle(tank_drive_18, 90, 3, false, 2.1);
+            // Move to push second ball over bar
+            vector<vector<double>> path_triball_2_1 = {path_triball_2[1], {56, 40}};
+            move(path_triball_2_1, 310, true, false, 1, 0.5, 1.12, 45);
+            Intake::getInstance()->stop();
+            turnToAngle(tank_drive_18, 90, 3, false, 2.1);
 
-        // Push second ball over bar and return
-        Pneumatics::getInstance()->getIntake()->on();
-        Intake::getInstance()->toggle_reverse();
-        delay(450);
-        tank_drive_18.move_with_power((5000.0/12000.0) * 127);
-        delay(430);
-        tank_drive_18.move_with_power((-5000.0/12000.0) * 127);
-        waitUntil(convert::mToIn(tank_drive_18.getOdom().getX()) <= 50+3);
-        tank_drive_18.brake();
-        delay(50);
-        Intake::getInstance()->stop();
+            // Push second ball over bar and return
+            Pneumatics::getInstance()->getIntake()->on();
+            Intake::getInstance()->toggle_reverse();
+            delay(450);
+            tank_drive_18.move_with_power((5000.0/12000.0) * 127);
+            delay(430);
+            tank_drive_18.move_with_power((-5000.0/12000.0) * 127);
+            waitUntil(convert::mToIn(tank_drive_18.getOdom().getX()) <= 50+3);
+            tank_drive_18.brake();
+            delay(50);
+            Intake::getInstance()->stop();
 ///////////////////////////////////////////////////////////////////////////////////////////
 /** NOTE: Robot thinks it is at X:~45.41 Y:~41.46 H:~ 87.361 */
 
-        // Move to push third ball
-        if(wp) {
+            // Move to push third ball
             turnToAngle(tank_drive_18, 0, 1, false, 2.1); // 59.45 51.25
             vector<vector<double>> path_triball_3 = {{convert::mToIn(tank_drive_18.getOdom().getX()), convert::mToIn(tank_drive_18.getOdom().getY())},
                                                     {58, 50.5}}; // 58, 50.55
@@ -171,7 +171,7 @@ void main_auton(bool wp) {
         if(wp) {
             // Bowl to other side
             vector<vector<double>> bowl_path = {{convert::mToIn(tank_drive_18.getOdom().getX()), convert::mToIn(tank_drive_18.getOdom().getY())},
-                                                    {34, 15}, {57, 9}, {66, 9}};
+                                                    {34, 15}, {57, 9.5}, {66, 9.5}};
             move(bowl_path, 50, false, false, 0.79, 0.43, 1.44, 45);
             
             // tank_drive_18.split_tank_with_power((110/600.0)*127, (175/600.0)*127);
@@ -194,7 +194,7 @@ void main_auton(bool wp) {
             }};
 
             vector<vector<double>> toOtherDepot = {{convert::mToIn(tank_drive_18.getOdom().getX()), convert::mToIn(tank_drive_18.getOdom().getY())}, 
-                                                {2*23.5, 14}, {4.5*23.5, 11.5}, {113, 13}}; //pickup 1st WP triball along path 
+                                                {2*23.5, 14}, {4.5*23.5, 9.5}, {113, 9.5}}; //pickup 1st WP triball along path 
             move(toOtherDepot, 45, false, true, 1);
             movePID(tank_drive_18, 22, 45, 1500);
             movePID(tank_drive_18, -9, 45, 1500);
