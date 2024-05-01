@@ -164,28 +164,33 @@ void main_auton(bool wp) {
             tank_drive_15.move_with_power(0);
             movePID(tank_drive_15, -14, 90, 1200);  
         }
+        tank_drive_15.move_with_power(-90);
+        delay(500);
+        tank_drive_15.brake();
+        // movePID(tank_drive_15, -14, 90, 1200);  
+        turnToAngle(tank_drive_15, 0, 5);
         /////
-        if(wp) {
-            // TO CLIMB
-            turnToAngle(tank_drive_15, 210, 3);
-            Pneumatics::getInstance()->getIntake()->on();
-            Intake::getInstance()->toggle_on(600);
-            // vector<vector<double>> toClimb = {{convert::mToIn(tank_drive_15.getOdom().getX()), convert::mToIn(tank_drive_15.getOdom().getY())}, 
-            //                                     {86.5, 27.5}};
-            //vector<vector<double>> toClimb = {{convert::mToIn(tank_drive_15.getOdom().getX()), convert::mToIn(tank_drive_15.getOdom().getY())}, 
-            //                                    {87, 24}};
-            // move(toClimb, 180, false, false, 1.65, .35);
-            //move(toClimb, 270, false, false, 1.65, .35);
-            movePID(tank_drive_15, 45, 210, 900);
-            turnToAngle(tank_drive_15, 270, 2);
-            movePID(tank_drive_15, 6, 270, 250);
+        // if(wp) {
+        //     // TO CLIMB
+        //     turnToAngle(tank_drive_15, 210, 3);
+        //     Pneumatics::getInstance()->getIntake()->on();
+        //     Intake::getInstance()->toggle_on(600);
+        //     // vector<vector<double>> toClimb = {{convert::mToIn(tank_drive_15.getOdom().getX()), convert::mToIn(tank_drive_15.getOdom().getY())}, 
+        //     //                                     {86.5, 27.5}};
+        //     //vector<vector<double>> toClimb = {{convert::mToIn(tank_drive_15.getOdom().getX()), convert::mToIn(tank_drive_15.getOdom().getY())}, 
+        //     //                                    {87, 24}};
+        //     // move(toClimb, 180, false, false, 1.65, .35);
+        //     //move(toClimb, 270, false, false, 1.65, .35);
+        //     movePID(tank_drive_15, 45, 210, 900);
+        //     turnToAngle(tank_drive_15, 270, 2);
+        //     movePID(tank_drive_15, 6, 270, 250);
 
             
 
-            tank_drive_15.split_tank_with_power(20, 0);
-            delay(250);
-            // tank_drive_15.split_tank_with_power(10,0);
-        }
+        //     tank_drive_15.split_tank_with_power(20, 0);
+        //     delay(250);
+        //     // tank_drive_15.split_tank_with_power(10,0);
+        // }
     }};
     // auton_task.set_priority(TASK_PRIORITY_MEDIUM_HIGH);
 	

@@ -21,9 +21,11 @@ void controls() {
         //INTAKE CONTROLS
         if (ctrl_master.get_digital(BUTTON_R1)){
             Intake::getInstance()->set_power(-12000);
+            Pneumatics::getInstance()->getIntake()->off();
         }
         else if (ctrl_master.get_digital(BUTTON_R2)){
             Intake::getInstance()->set_power(12000);
+            Pneumatics::getInstance()->getIntake()->on();
         } else {
             Intake::getInstance()->set_power(0);
         }

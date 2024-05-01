@@ -79,14 +79,13 @@ void main_auton(bool wp) {
         tank_drive_18.move_with_power((5000.0/12000.0) * 127);
         delay(370);
         tank_drive_18.move_with_power((-5000.0/12000.0) * 127);
-        waitUntil(convert::mToIn(tank_drive_18.getOdom().getX()) <= 50+3);
+        waitUntil(convert::mToIn(tank_drive_18.getOdom().getX()) <= 50+3.5);
         tank_drive_18.brake();
         Pneumatics::getInstance()->getIntake()->off();
         Intake::getInstance()->stop();
         turnToAngle(tank_drive_18, 0, 1, false, 2.2);
 ///////////////////////////////////////////////////////////////////////////////////////////
 
-        if(wp) {
             // Move to get second ball
             Intake::getInstance()->toggle_on();
             vector<vector<double>> path_triball_2 = {{convert::mToIn(tank_drive_18.getOdom().getX()), convert::mToIn(tank_drive_18.getOdom().getY())},
@@ -113,6 +112,7 @@ void main_auton(bool wp) {
 ///////////////////////////////////////////////////////////////////////////////////////////
 /** NOTE: Robot thinks it is at X:~45.41 Y:~41.46 H:~ 87.361 */
 
+        if(wp) {
             // Move to push third ball
             turnToAngle(tank_drive_18, 0, 1, false, 2.1); // 59.45 51.25
             vector<vector<double>> path_triball_3 = {{convert::mToIn(tank_drive_18.getOdom().getX()), convert::mToIn(tank_drive_18.getOdom().getY())},
@@ -186,15 +186,15 @@ void main_auton(bool wp) {
             Intake::getInstance()->stop();     
             // turnToAngle(tank_drive_18, 100, 2, false, 2.1);   
         } else {
-            pros::Task wing_void_task {[=] {
-                delay(1400);
-                Pneumatics::getInstance()->getWings()->off();
-                delay(1000);
-                Pneumatics::getInstance()->getWings()->on();
-            }};
+            // pros::Task wing_void_task {[=] {
+            //     delay(1400);
+            //     Pneumatics::getInstance()->getWings()->off();
+            //     delay(1000);
+            //     Pneumatics::getInstance()->getWings()->on();
+            // }};
 
             vector<vector<double>> toOtherDepot = {{convert::mToIn(tank_drive_18.getOdom().getX()), convert::mToIn(tank_drive_18.getOdom().getY())}, 
-                                                {2*23.5, 14}, {4.5*23.5, 9.5}, {113, 9.5}}; //pickup 1st WP triball along path 
+                                                {2*23.5, 12}, {4.5*23.5, 8}, {113, 8}}; //pickup 1st WP trib8all along path 
             move(toOtherDepot, 45, false, true, 1);
             movePID(tank_drive_18, 22, 45, 1500);
             movePID(tank_drive_18, -9, 45, 1500);
