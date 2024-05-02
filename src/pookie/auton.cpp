@@ -10,11 +10,11 @@ void ctrlerHold() {
 }
 
 // Auton Methods 
-void move(std::vector<std::vector<double>> moveVec, int angle, bool isReversed, bool isSpinAtEnd, double speedfactor, double lookAhead, double turnP){
+void move(std::vector<std::vector<double>> moveVec, int angle, bool isReversed, bool isSpinAtEnd, double speedfactor, double lookAhead, double turnP, double min_rpm){
 	for (auto& vec : moveVec) {
 		for (auto& val : vec) { val = convert::inToM(val); }
 	}
-	followPath(moveVec, tank_drive_15, angle, isReversed, isSpinAtEnd, false, lookAhead, 3.0, 200.0 / speedfactor, 450.0 / speedfactor, 40.0 / speedfactor, false, turnP);
+	followPath(moveVec, tank_drive_15, angle, isReversed, isSpinAtEnd, false, lookAhead, 3.0, 200.0 / speedfactor, 450.0 / speedfactor, ((min_rpm == -1) ? 40.0 / speedfactor : min_rpm), false, turnP);
 }
 
 // BEGIN AUTON METHODS //
@@ -87,17 +87,17 @@ void main_auton(bool wp) {
             tank_drive_15.brake();
             turnToAngle(tank_drive_15, 135, 7, false, 2.1);
 
-            pros::Task wing_void_task {[=] {
-                delay(1400);
-                Pneumatics::getInstance()->getWings()->off();
-                delay(1000);
-                Pneumatics::getInstance()->getWings()->on();
-            }};
+            // pros::Task wing_void_task {[=] {
+            //     delay(1400);
+            //     Pneumatics::getInstance()->getWings()->off();
+            //     delay(1000);
+            //     Pneumatics::getInstance()->getWings()->on();
+            // }};
         }
 
         vector<vector<double>> toOtherDepot = {{convert::mToIn(tank_drive_15.getOdom().getX()), convert::mToIn(tank_drive_15.getOdom().getY())}, 
                                                 {2*23.5, 6}, {4.5*23.5, 6.5}, {113, 8.5}}; //pickup 1st WP triball along path 
-        move(toOtherDepot, 50, false, true, 1);
+        move(toOtherDepot, 50, false, true, 1, 0.5, 2.1, 80); // min rpm of 80 so we go a little farther forward without risking driving against the bar
         Pneumatics::getInstance()->getWings()->on();
         turnToAngle(tank_drive_15, 50, 2);
         ////////
@@ -121,7 +121,8 @@ void main_auton(bool wp) {
             turnToAngle(tank_drive_15, 45, 2);
             movePID(tank_drive_15, 17, 45, 1700);
             movePID(tank_drive_15, -9, 45, 1700);
-            turnToAngle(tank_drive_15, 220, 2);
+            turnToAngle(tank_drive_15, 270, 10, 2.5); // fast turn and abrupt stop with a bit more p
+            turnToAngle(tank_drive_15, 220, 2); 
         }
         double heading_x = tank_drive_15.getOdom().getHeading();
         Pneumatics::getInstance()->getWings()->off();
@@ -233,6 +234,10 @@ void main_auton(bool wp) {
     // Wings Close
     // Pneumatics::getInstance()->getWings()->off();
 }
+
+
+
+
 
 // void non_win_point_auton() {
 
