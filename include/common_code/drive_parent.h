@@ -39,6 +39,21 @@ class DriveParent {
         */
         virtual void turn_with_power(double power) = 0;
 
+
+        /**
+         * For movement with pure pursuit
+         * 
+         * @param mag_angle_vector An std::pair of doubles containing (first) the magnitude of the desired
+         * movement vector and (second) the angle of the movement in [0, 360) in degrees, field relative.
+         * To only turn the robot simply pass a magnitude of 0 and the desired angle.
+         * 
+         * HAS NOT been fully used in pure pursuit so this might not work. This is left here as a reminder
+         * for the future that ideally pure pursuit uses drive parent and is unaware 
+         * of the robot's drive train :)
+         * 
+        */
+        virtual void app_move(std::pair<double, double> mag_angle_vector, double turn_rpm, double max_rpm, bool reversed) = 0;
+
         std::string get_drive_type() const;
 
         // normalize joystick values to -1 to 1
@@ -46,7 +61,7 @@ class DriveParent {
         // apply smooth sin scaling 
         static double sin_scale(double input, double sin_scale_factor);
         // apply square scaling
-        static double square_scale(double input);
+        static double square_scale(double input, double square_scale_factor=2.0);
         
     protected:
         // motors stored at child level

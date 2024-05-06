@@ -18,11 +18,11 @@ class traditional_drive : public DriveParent
         double maxspeed = 200.0;    // max speed of motors based on gearing
         double left=maxspeed, right=maxspeed; // velocity to send to motors (scalar factor of maxspeed)
         double fwd, turn; //helper variables
-        Controller *master_; // controller to get input from
+        Controller *master; // controller to get input from
         Imu *imu_; // inertial sensor to get angle from
         std::string drive_mode[3] = {"arcade", "tank", "hybrid"}; // drive mode string names
         int mode_; // current drive mode
-        Motor_Group *left_side_, *right_side_; // motor groups to send voltage to
+        Motor_Group *left_side, *right_side; // motor groups to send voltage to
         Odom* odom_inst_ = nullptr; // instance of the odom class on the heap
         /*
          * called by constructors to initialize variables
@@ -124,6 +124,13 @@ class traditional_drive : public DriveParent
          * @return Turns the robot with a rotational speed relative to power
          */
         void turn_with_power(double power);
+        
+        void move_with_power(double power);
+        void tank_with_power(double latPower, double turnPower);
+        void split_tank_with_power(double leftPow, double rightPow);
+
+        void app_move(std::pair<double, double> mag_angle_vector, double turn_rpm, double max_rpm, bool reversed);
+
         /**
          * Runs the drive system
          * mode 0 = arcade, 1 = tank, 2 = hybrid
@@ -161,4 +168,5 @@ class traditional_drive : public DriveParent
          * @return odom
          */
         Odom& getOdom();
+        void brake();
 };

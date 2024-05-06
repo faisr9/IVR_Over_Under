@@ -51,7 +51,7 @@ public:
      * @param turn_right_x turn right x
      * @return void
      */
-    void robot_centric_move(pair<double, double> movement_vector, double turn_right_x);
+    virtual void robot_centric_move(pair<double, double> movement_vector, double turn_right_x, double max_rpm = -1);
     /*
      * move in field centric coordinates
      * calculated offset based on imu angle and modifies
@@ -60,7 +60,7 @@ public:
      * @param movement_vector pair of magnitude and angle
      * @param turn_right_x turn right x
      */
-    void field_centric_move(pair<double, double> movement_vector, double turn_right_x);
+    void field_centric_move(pair<double, double> movement_vector, double turn_right_x, double max_rpm = -1);
     /*
      * move in robot centric coordinates
      * calls robot_centric_move with turn = 0
@@ -80,6 +80,8 @@ public:
      * brake all motors
      */
     void stop();
+    void app_move(std::pair<double, double> mag_angle_vector, double turn_rpm, double max_rpm, bool reversed);
+    double get_max_rpm() const;
 
 protected:
     Controller *master_; // controller to get input from
