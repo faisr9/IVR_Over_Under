@@ -285,7 +285,7 @@ void followPath(std::vector<std::vector<double>>& path, traditional_drive& drive
         if (last_current_index != currentIndex) {
             // for behind of currentIndex (bc of funny look ahead angle)
             remaining_dist = distances_to_end[currentIndex] + calculate_distance_two_points({positionX, positionY}, path[currentIndex]);
-            if (printMessages) ::lcd::set_text(3, "APP behind mode");
+            if (printMessages) pros::lcd::set_text(3, "APP behind mode");
         } else {
             // for ahead of currentIndex (normal for long path segments)
             remaining_dist = distances_to_end[currentIndex] - calculate_distance_two_points({positionX, positionY}, path[currentIndex]);

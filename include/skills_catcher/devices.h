@@ -22,20 +22,18 @@ extern Motor right_middle_2;
 extern Motor_Group straight_left;
 extern Motor_Group straight_right;
 
-// /* Pnuematics */
-// const char LEFT_WING;
-// const char RIGHT_WING; 
-// const char NET; 
-
 /* IMU */
 extern IMU imu;
 
 // /* Distance Sensors */
 // extern Distance distance_sensor_1;
 // extern Distance distance_sensor_2;
-// extern Rotation radial_rot_sensor;
-// extern Rotation transverse_rot_sensor;
+extern Rotation radial_rot_sensor;
+extern Rotation transverse_rot_sensor;
 
 
 /* asterisk drive */
 extern asterisk_drive astdriveCatcher;
+extern Odom ast_odom;
+
+extern Piston catcher_wings;

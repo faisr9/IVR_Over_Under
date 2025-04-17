@@ -21,7 +21,7 @@ SkillsCata* SkillsCata::getInstance(){
 
 
 SkillsCata::SkillsCata(pros::MotorGroup& motorgroup, pros::Rotation& rotation_sensor) : SubsystemParent("Skills_Cata"), motors(motorgroup), rotation_sensor(rotation_sensor), cata_task(cata_task_funct) {
-    cata_mode = CataMode::Stopped;
+    cata_mode = CataMode::Idle;
     motors.set_brake_modes(pros::E_MOTOR_BRAKE_BRAKE);
 }
 
@@ -41,20 +41,31 @@ void SkillsCata::stop(){
 
 // blocking function. Assumes the rotation value increases as the catapult goes towards firing
 void SkillsCata::cycle(bool stop_at_end){
-    motors.move_velocity(cata_rpm);
-    current_rot = 0; // set to 0 so we have a defined initial value for last_rot
+    // TODO: Update because the rot sensor loc is on the gear not motor, gear goes BACK AND FORTH not just one dir
+    // motors still only go one direction though
 
-    // stop when the value jumps from 36000 to 0
-    while (current_rot >= last_rot) {
+    motors.move_velocity(abs(cata_rpm)); // abs just to avoid disaster
+    double current_rot = rotation_sensor.get_angle(); // set to 0 so we have a defined initial value for last_rot
+    double last_rot = current_rot - 1;
+    int cycles_backwards = 0;
+
+    // stop when we go backwards for 2 cycles in a row
+    while (cycles_backwards < 2) {
+        current_rot = rotation_sensor.get_angle();
+
+        if (current_rot > last_rot) { // not = bc if told to stop externally we want it to exit from here
+            cycles_backwards++;
+        } else {
+            cycles_backwards = 0;
+        }
+
         last_rot = current_rot;
-        current_rot = rotation_sensor.get_angle() - upright_position;
-        if (current_rot < 0) current_rot += 36000; // centidegrees
 
-        pros::delay(50);
+        pros::delay(20);
     }
     // want to stop when jump from 36000 -> 0
 
-    if (!stop_at_end) {
+    if (stop_at_end) {
         stop();
     }
 }
@@ -79,7 +90,7 @@ void SkillsCata::set_cata_mode_internal(CataMode new_cata_mode) {
 }
 
 void SkillsCata::move_forward_manual() {
-    cata_motors.move_velocity(cata_rpm);
+    cata_motors.move_velocity(abs(cata_rpm));
 }
 
 
@@ -95,14 +106,13 @@ void cata_task_funct() {
     while (1) {
         SkillsCata::CataMode cata_mode = cata_inst->get_cata_mode();
 
-        if (cata_mode == SkillsCata::CataMode::Stopped) {
-            cata_inst->stop();
+        if (cata_mode == SkillsCata::CataMode::Idle) {
+            // do nothing
         } else if (cata_mode == SkillsCata::CataMode::Cycle) {
             cata_inst->cycle(true);
-            cata_inst->set_cata_mode_internal(SkillsCata::CataMode::Stopped);
+            cata_inst->set_cata_mode_internal(SkillsCata::CataMode::Idle);
         } else {
             pros::lcd::set_text(6, "Invalid cata_mode string!");
-            cata_inst->stop();
         }
 
         pros::delay(30);

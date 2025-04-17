@@ -14,9 +14,7 @@ void followPathX(std::vector<std::vector<double>>& path, x_drive& x_drive, Odom&
     bool readyForSpin = false;
 
     const double kMETERS_SEC_MAX_SPEED = (1.05 / 200.0) * std::min(200.0, MAX_TRANSLATIONAL_RPM); // 1.05 meters/sec at 200 rpm
-    // const double DEGREES_SEC_MAX_ROT = (320 / 200.0) * std::min(200.0, MAX_TRANSLATIONAL_RPM); // 320 degrees/sec at 200 rpm
-    const double kROT_SEC_TO_RPM = 100.0 / 0.4444; // 100rpm / 0.444 (rots/sec)
-    const double kMAX_ROT_RPM = 30;
+    const double kROT_SEC_TO_RPM = 100.0 / 0.43; // 100rpm / 0.444 (rots/sec)
 
     double lastSegDX = path[path.size() - 1][0] - path[path.size() - 2][0];
     double lastSegDY = path[path.size() - 1][1] - path[path.size() - 2][1];
@@ -152,7 +150,13 @@ void followPathX(std::vector<std::vector<double>>& path, x_drive& x_drive, Odom&
             }
 
             // If statement should be true once end of path is reached
-            if ((i == currentIndex) && (currentIndex == path.size() - 2) && (sqrt(pow(positionX - ORIGINAL_PATH_FINAL[0], 2) + pow(positionY - ORIGINAL_PATH_FINAL[1], 2)) < FINAL_LOCATION_TOLERANCE)) {
+            bool condition_1 = (i == currentIndex);
+            bool condition_2 = (currentIndex == path.size() - 2);
+            bool condition_3 = (sqrt(pow(positionX - ORIGINAL_PATH_FINAL[0], 2) + pow(positionY - ORIGINAL_PATH_FINAL[1], 2)) < FINAL_LOCATION_TOLERANCE);
+            pros::lcd::set_text(5, std::to_string(condition_1));
+            pros::lcd::set_text(6, std::to_string(condition_2));
+            pros::lcd::set_text(7, std::to_string(condition_3));
+            if (condition_1 && condition_2 && condition_3) {
                 // look ahead point has (most likely) gone off the edge of the extension on the final point, so the 
                 // robot is at the final point and should spin on spot (if applicable) or the program should terminate
                 readyForSpin = true;
@@ -186,7 +190,7 @@ void followPathX(std::vector<std::vector<double>>& path, x_drive& x_drive, Odom&
         if (last_current_index != currentIndex) {
             // for behind of currentIndex (bc of funny look ahead angle)
             remaining_dist = distances_to_end[currentIndex] + calculate_distance_two_points({positionX, positionY}, path[currentIndex]);
-            if (printMessages) ::lcd::set_text(3, "APP behind mode");
+            if (printMessages) pros::lcd::set_text(3, "APP behind mode");
         } else {
             // for ahead of currentIndex (normal for long path segments)
             remaining_dist = distances_to_end[currentIndex] - calculate_distance_two_points({positionX, positionY}, path[currentIndex]);
@@ -196,11 +200,15 @@ void followPathX(std::vector<std::vector<double>>& path, x_drive& x_drive, Odom&
         last_calculated_distance = distance_to_index;
         // if current index increments start adding calc_dist_two_points instead of subtracting until calculate_distance_two_points starts increasing again
 
-        if (printMessages) pros::lcd::set_text(2, "remaining dist: " + std::to_string(remaining_dist));
+        //if (printMessages) 
+        pros::lcd::set_text(6, "remaining dist: " + std::to_string(remaining_dist));
         // pros::lcd::set_text(2, "dist_to_end: " + std::to_string(distances_to_end[currentIndex]));
-        double translationalRPM = getTranslationalRPM(remaining_dist, MAX_TRANSLATIONAL_RPM, distances_to_end[0], minTransRPM, 400);
+        double translationalRPM = getTranslationalRPM(remaining_dist, MAX_TRANSLATIONAL_RPM, distances_to_end[0], minTransRPM, x_drive.get_rpm_per_meter());
+        pros::lcd::set_text(7, "trans rpm: " + std::to_string(translationalRPM));
+
+        
         // pros::lcd::set_text(3, "trans RPM: " + std::to_string(translationalRPM));
-        double rot_rpm = getRotationalRPM(odom.getHeading(), finalAngleDeg, false, turnP);
+        // double rot_rpm = getRotationalRPM(odom.getHeading(), finalAngleDeg, false, turnP);
         // need trans rpm beteween 0 and 1 !
 
         // have max rot!
@@ -211,13 +219,12 @@ void followPathX(std::vector<std::vector<double>>& path, x_drive& x_drive, Odom&
         double needed_rot_rpm = rots_per_sec * kROT_SEC_TO_RPM;
         // avoid severe jerky motions at the end of the path
         if (est_time_remaining < 0.4) { // arbitrary number
-            if (std::abs(angle_diff) < (final_angle_tolerance_deg / 2)) {
+            if (std::abs(angle_diff) < (final_angle_tolerance_deg)) {
                 needed_rot_rpm = 0; // if already in range well enough just don't turn anymore
             } else {
                 needed_rot_rpm = std::min(20.0, needed_rot_rpm); // if room for improvement use it but cap to avoid big jerky motions
             } 
         }
-         // std::min(rots_per_sec * kROT_SEC_TO_RPM, kMAX_ROT_RPM);
 
         x_drive.app_move({translationalRPM, desiredAngleX_Driv}, needed_rot_rpm, MAX_TRANSLATIONAL_RPM, false);
 

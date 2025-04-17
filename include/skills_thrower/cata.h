@@ -9,9 +9,11 @@ class SkillsCata : public SubsystemParent {
         ~SkillsCata();
         SkillsCata(const SkillsCata& other) = delete;
 
+        // use move forward manual or stop to do those things (no CataMode required)
+        // though catapult will ignore if you if it's doing a cycle
         enum CataMode {
-            Stopped,
-            Cycle
+            Idle, // do nothing
+            Cycle, // cycle once
         };
 
         void stop();
@@ -33,13 +35,10 @@ class SkillsCata : public SubsystemParent {
         pros::MotorGroup& motors;
         pros::Rotation& rotation_sensor;
         const int upright_position = 12000; //centidegrees, not sure if should be position or angle, temp value
-        const int cata_rpm = 100; // temp value
-
-        int current_rot;
-        int last_rot;
+        const int cata_rpm = 200; // temp value
 
         pros::Task cata_task;
-        CataMode cata_mode = CataMode::Stopped;
+        CataMode cata_mode = CataMode::Idle;
 };
 
 void cata_task_funct();

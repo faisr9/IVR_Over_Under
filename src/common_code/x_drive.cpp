@@ -108,6 +108,10 @@ double x_drive::get_max_rpm() const {
     return maxspeed;
 }
 
+double x_drive::get_rpm_per_meter() const {
+    return rpm_per_meter;
+}
+
 
 void x_drive::turn_with_power(double power)
 {

@@ -28,7 +28,8 @@ asterisk_drive::asterisk_drive(Controller &master, Motor &front_left, Motor &fro
         maxspeed = 600.0;  // max rpm
     else
         maxspeed = 200.0; // default max rpm
-
+    
+    rpm_per_meter = 450; // good value
 }
 
 // asterisk_drive::asterisk_drive(Controller &master, Motor &front_left, Motor &front_right, Motor &back_left, Motor &back_right, Motor &right_middle_1, Motor &right_middle_2, Motor &left_middle_1, Motor &left_middle_2, Imu &imu)
@@ -64,17 +65,20 @@ void asterisk_drive::stop()
     straight_right_.brake();
 }
 
-void asterisk_drive::robot_centric_move(pair<double, double> movement_vector, double turn)
+void asterisk_drive::robot_centric_move(pair<double, double> movement_vector, double turn, double max_rpm)
 {
+    if (max_rpm == -1) max_rpm = maxspeed;
+    else max_rpm = std::min(max_rpm, maxspeed);
+
     auto speed = 0.0;
     auto dir = movement_vector.second; // direction in radians
 
     auto move_1 = 0.0; // first diagonal component of movement
     auto move_2 = 0.0; // second diagonal component of movement
     auto scaling = 0.0; // scale factor for movement
-    if (movement_vector.first > 0.2) // consider joystick deadzone
+    if (movement_vector.first > 0.01) // consider joystick deadzone
     {
-        speed = maxspeed * movement_vector.first; // normalized speed of movement times max speed
+        speed = max_rpm * movement_vector.first; // normalized speed of movement times max speed
         dir -= M_PI / 4;                                 // adjust direction by 45˚ to get the diagonal components of movement
         move_1 = -1 * cos(dir);                          // opposite of cosine of direction
         move_2 = sin(dir);                               // sine of direction
@@ -83,13 +87,13 @@ void asterisk_drive::robot_centric_move(pair<double, double> movement_vector, do
     
     auto move_1_scaled = move_1 * scaling; // move speed
     auto move_2_scaled = move_2 * scaling; // move speed
-    auto turn_scaled = maxspeed * turn; // turn speed
+    auto turn_scaled = max_rpm * turn; // turn speed
     auto priority = 1.0; // priority of movement over turning (1.0=equal priority)
 
     // if the sum of the speeds is greater than the max speed, scale them down
-    if (max(abs(move_1_scaled),abs(move_2_scaled)) + abs(turn_scaled) > maxspeed) 
+    if (max(abs(move_1_scaled),abs(move_2_scaled)) + abs(turn_scaled) > max_rpm) 
     {
-        auto scale_factor = 1/(priority*max(abs(move_1_scaled),abs(move_2_scaled)) + abs(turn_scaled)) * maxspeed;
+        auto scale_factor = 1/(priority*max(abs(move_1_scaled),abs(move_2_scaled)) + abs(turn_scaled)) * max_rpm;
         move_1_scaled *= priority*scale_factor;
         move_2_scaled *= priority*scale_factor;
         turn_scaled *= scale_factor;
@@ -131,3 +135,6 @@ void asterisk_drive::robot_centric_move(pair<double, double> movement_vector, do
     straight_right_.move_velocity(sr_move); // move straight right Motor_Group
 }
 
+void asterisk_drive::app_move(std::pair<double, double> mag_angle_vector, double turn_rpm, double max_rpm, bool reversed) {
+    field_centric_move({mag_angle_vector.first / max_rpm, mag_angle_vector.second}, turn_rpm / max_rpm, max_rpm); // turn rpm 0 for now bc need to get constants for ast drive robot
+}

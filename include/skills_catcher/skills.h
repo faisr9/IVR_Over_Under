@@ -4,3 +4,4 @@
 #include "skills_catcher/devices.h"
 
 void skills();
+void test_path_funct();

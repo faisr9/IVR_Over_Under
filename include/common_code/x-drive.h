@@ -79,9 +79,10 @@ public:
      * stop the robot
      * brake all motors
      */
-    void stop();
-    void app_move(std::pair<double, double> mag_angle_vector, double turn_rpm, double max_rpm, bool reversed);
+    virtual void stop();
+    virtual void app_move(std::pair<double, double> mag_angle_vector, double turn_rpm, double max_rpm, bool reversed);
     double get_max_rpm() const;
+    double get_rpm_per_meter() const;
 
 protected:
     Controller *master_; // controller to get input from
@@ -92,4 +93,5 @@ protected:
     Motor *back_left_;   // back left motor
     Motor *back_right_;  // back right motor
     double maxspeed = 200.0; // max speed of motors
+    double rpm_per_meter = 400.0; // for pure pursuit
 };

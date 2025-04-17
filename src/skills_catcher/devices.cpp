@@ -6,22 +6,26 @@ const char NET = 'A';
 
 Controller ctrl_master(E_CONTROLLER_MASTER);
 
-Motor front_left(13,1);
+Motor front_left(14,1);
 Motor front_right(1,1);
 Motor back_left(20,0);
-Motor back_right(6,0);
+Motor back_right(7,0);
 Motor left_middle_1(16, GEARSET_06, 0);
 Motor left_middle_2(17, GEARSET_06, 0);
-Motor right_middle_1(5, GEARSET_06, 0);
-Motor right_middle_2(7, GEARSET_06, 0);
+Motor right_middle_1(9, GEARSET_06, 0);
+Motor right_middle_2(10, GEARSET_06, 0);
 Motor_Group straight_left({left_middle_1, left_middle_2});
 Motor_Group straight_right({right_middle_1, right_middle_2});
-// Motor_Group* left_=&straight_left;
-// Motor_Group* right_=&straight_right;
 
-Imu imu(10);
+pros::Imu imu(13);
+Piston catcher_wings('A'); // port A
 
+// Tracking wheels and odom
+
+pros::Rotation radial_rot_sensor(6, false);
+pros::Rotation transverse_rot_sensor(8, true);
+Generic_Rotation_VEX_Rot* radial_tracker = new Generic_Rotation_VEX_Rot(radial_rot_sensor, 1.96 * 0.0254 / 2, convert::inToM(-0.5)); // left neg
+Generic_Rotation_VEX_Rot* transverse_tracker = new Generic_Rotation_VEX_Rot(transverse_rot_sensor, 1.96 * 0.0254 / 2, convert::inToM(5.125)); // back pos
+Odom ast_odom(imu, transverse_tracker, radial_tracker);
 
 asterisk_drive astdriveCatcher(ctrl_master, front_left, front_right, back_left, back_right,straight_right, straight_left, imu);
-
-//asterisk_drive astdriveCatcher(ctrl_master, front_left, front_right, back_left, back_right,right_middle_1,right_middle_2,left_middle_1,left_middle_2, imu);

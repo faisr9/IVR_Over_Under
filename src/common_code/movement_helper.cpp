@@ -52,7 +52,7 @@ double getRotationalRPM(double curr_heading, double desiredAngleDeg, bool revers
     }
 }
 
-double getTranslationalRPM(double dist_to_goal_meters, double max_translational_rpm, double total_path_distance, double minimum_rpm, double rpm_per_meter) { // 540
+double getTranslationalRPM(double dist_to_goal_meters, double max_translational_rpm, double total_path_distance, double minimum_rpm, double rpm_per_meter) {
     // idk why I put this block here bc one can just set a minimum rpm that's slightly higher
     // if ((total_path_distance / 3) < std::abs(dist_to_goal_meters)) {
     //     // less than 2 thirds through path

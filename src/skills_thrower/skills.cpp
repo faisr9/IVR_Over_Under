@@ -1,37 +1,77 @@
 #include "skills_thrower/skills.h"
 
-// LinkHelper* catcher_link = LinkHelper::createInstance(16, E_LINK_RX);
+LinkHelper* catcher_link = LinkHelper::createInstance(16, E_LINK_RX);
 
-
-void cata_shoot_task() {
-    // SkillsCata* cata_inst = SkillsCata::getInstance();
-    // const int kNUM_FIRE = 21;
-
-    // for (int cycle_num = 0; cycle_num < kNUM_FIRE; cycle_num++) {
-    //     cata_inst->cycle(false);
-    // }
-    // cata_inst->stop();
-    pros::delay(3000);
+void follow_path_thrower(std::vector<std::vector<double>>& path, double final_angle_deg, double min_rpm) {
+    followPathX(path, xdriveThrower, x_drive_odom, final_angle_deg, true, false, 0.25, 3.0, 200.0, 200.0, min_rpm);
 }
 
+void follow_path_thrower_timeout(std::vector<std::vector<double>>& path, double final_angle_deg, double min_rpm, double timeout) {
+
+    pros::Task path_task {[=] {
+        std::vector<std::vector<double>> path_follow = path;
+        follow_path_thrower(path_follow, final_angle_deg, min_rpm);
+    }};
+
+    const double kSTART_TIME = pros::millis();
+    while (path_task.get_state() != E_TASK_STATE_DELETED) {
+        if (pros::millis() >= kSTART_TIME + timeout) {
+            // abort path
+            path_task.suspend();
+            xdriveThrower.stop();
+            turnToAngleX(xdriveThrower, x_drive_odom, final_angle_deg, 3.0);
+            break;
+        }
+        pros::delay(50);
+    }
+}
+
+void cata_shoot_task() {
+    SkillsCata* cata_inst = SkillsCata::getInstance();
+    const int kNUM_FIRE = 2;
+
+    for (int cycle_num = 0; cycle_num < kNUM_FIRE; cycle_num++) {
+        cata_inst->cycle(false);
+        cata_inst->cycle(true);
+        pros::delay(3000);
+    }
+    cata_inst->stop();
+    
+}
+double meters(double inch)
+{
+    return inch*.0254;
+}
 
 void skills() {
 
     // Setup
 
     const double kP = 2.8;
+    std::vector<double>  init= {meters(19), meters(19)};
+    
+    std::vector<double> start_pos = {meters(26.5), 0.165};
+    std::vector<double> launch_pos={.42,.37};//{meters(16.5),meters(19)};//{.45,.45};
+    const double kSTARTING_ANGLE = 90.0; // 45˚ chosen for ease of setup, 60˚ is the actual angle
+    const double kSHOOT_ANGLE = 60.0;
 
-    std::vector<double> start_pos = {0.45, 0.45};
-    const double kSTARTING_ANGLE = 60.0; // tenative, not used for now
-
-    x_drive_odom.initTracker(start_pos[0], start_pos[1], 0);
-    pros::delay(50);
+    x_drive_odom.initTracker(start_pos[0], start_pos[1], kSTARTING_ANGLE);
     pros::Task odom_task{[=] {
         while (1) {
             x_drive_odom.updatePosition();
-            pros::delay(50);
+            pros::delay(10);
         }
     }};
+
+        //std::vector<std::vector<double>> path_to_load = {start_pos, init, launch_pos};
+        std::vector<std::vector<double>> path1={start_pos,init};
+        std::vector<std::vector<double>> path2={init,launch_pos};
+        
+        //followPathX(path_to_load, xdriveThrower, x_drive_odom, kSHOOT_ANGLE, true, false, 0.2);
+        follow_path_thrower(path1, kSHOOT_ANGLE, 100);
+        follow_path_thrower_timeout(path2, kSHOOT_ANGLE, 150, 5000);
+        // followPathX(path1, xdriveThrower, x_drive_odom, kSHOOT_ANGLE, true, false, 0.2,5.0,200,200,100);
+        // followPathX(path2, xdriveThrower, x_drive_odom, kSHOOT_ANGLE, true, false, 0.2,3,200,200,80);
 
     // pros::Task test_path_task {[=] {
     //     std::vector<std::vector<double>> straight_path = {start_pos, {0, 1.8}};
@@ -84,6 +124,7 @@ void skills() {
     target_pos = {0.5, 3.1};
 
     pros::Task to_other_goal_task {[=] {
+        // catcher_link->notify();
         std::vector<std::vector<double>> path_to_other_load = {start_pos, {0.9, 0.9}, {0.9, 2.7}, target_pos};
         const double kNEXT_SHOT_ANGLE = 120.0;
         followPathX(path_to_other_load, xdriveThrower, x_drive_odom, kNEXT_SHOT_ANGLE, true, false, 0.2);
@@ -117,8 +158,6 @@ void skills() {
             pros::delay(500);
         }
     }};
-
-    // asterisk wheels no spin faster than 282 rpm !
 
     while (cata_shoot_task_2.get_state() != pros::E_TASK_STATE_DELETED) {
         pros::delay(100);
