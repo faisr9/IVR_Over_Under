@@ -11,27 +11,21 @@ void controls() {
 	// }};
 
     pros::lcd::set_text(1, "Running Controls");
+    tank_drive_15.change_drive_mode(0);
 
     while(1) {
         //ACTIVATE DRIVE
-        if(pros::competition::is_connected())
-            tank_drive_15.change_drive_mode(0);
-        else
-        {
-            if(gui::tank_drive)
-                tank_drive_15.change_drive_mode(1);
-            else
-                tank_drive_15.change_drive_mode(0);
-        }
         
         tank_drive_15.toggle_drive_mode();
 
         //INTAKE CONTROLS
         if (ctrl_master.get_digital(BUTTON_R1)){
             Intake::getInstance()->set_power(-12000);
+            Pneumatics::getInstance()->getIntake()->off();
         }
         else if (ctrl_master.get_digital(BUTTON_R2)){
             Intake::getInstance()->set_power(12000);
+            Pneumatics::getInstance()->getIntake()->on();
         } else {
             Intake::getInstance()->set_power(0);
         }
@@ -46,13 +40,15 @@ void controls() {
         }   
 
         if(ctrl_master.get_digital_new_press(BUTTON_UP)) {
+            Pneumatics::getInstance()->getIntake()->on();
+
             Pneumatics::getInstance()->getTopHang()->toggle();
-            pros::delay(25);
+            // pros::delay(25);
         }
 
         if(ctrl_master.get_digital_new_press(BUTTON_DOWN)) {
             Pneumatics::getInstance()->getSideHang()->toggle();
-            pros::delay(25);
+            // pros::delay(25);
         }
 
         // if(ctrl_master.get_digital_new_press(BUTTON_X)) {

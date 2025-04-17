@@ -1,42 +1,24 @@
 #include "dookie/controls.h"
 
-// Will add driver profiles later
 void controls() {
-
-
-    // for debugging
-	// pros::Task odom_task{[=] {
-	// 	while (1) {
-	// 		tank_drive_18.getOdom().updatePosition();
-	// 		pros::delay(50);
-	// 	}
-	// }};
-
-
     pros::lcd::set_text(1, "Running Controls");
 
     while(1) {
-        //ACTIVATE DRIVE
-        // if(pros::competition::is_connected())
-            tank_drive_18.change_drive_mode(1);
-        // else
-        // {
-        //     if(gui::tank_drive)
-        //         tank_drive_18.change_drive_mode(1);
-        //     else
-        //         tank_drive_18.change_drive_mode(0);
-        // }
+        // ACTIVATE DRIVE
+        tank_drive_18.change_drive_mode(1);
         
         tank_drive_18.toggle_drive_mode();
 
         //INTAKE CONTROLS
         if (ctrl_master.get_digital(BUTTON_R1)){
-            Intake::getInstance()->set_power(-12000);
+            Pneumatics::getInstance()->getIntake()->off();
+            Intake::getInstance()->toggle_on();
         }
         else if (ctrl_master.get_digital(BUTTON_R2)){
-            Intake::getInstance()->set_power(12000);
+            Intake::getInstance()->toggle_reverse();
+            Pneumatics::getInstance()->getIntake()->on();
         } else {
-            Intake::getInstance()->set_power(0);
+            Intake::getInstance()->set_power(3000);
         }
 
         //PNEUMATICS CONTROLS
@@ -49,6 +31,7 @@ void controls() {
         }   
 
         if(ctrl_master.get_digital_new_press(BUTTON_UP)) {
+            Pneumatics::getInstance()->getIntake()->on();
             Pneumatics::getInstance()->getTopHang()->toggle();
             pros::delay(25);
         }
