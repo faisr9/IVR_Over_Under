@@ -33,7 +33,7 @@ Odom::~Odom() {
 // initializes the tracking variables so they can begin to be updated
 void Odom::initTracker(double initial_x, double initial_y, double initial_heading) {
     if (transverseWheel) transverseWheel->initialize_sensor();
-    if (radialWheel) radialWheel->initialize_sensor();
+    radialWheel->initialize_sensor();
 
     positionX = initial_x;
     positionY = initial_y;
@@ -61,9 +61,24 @@ double Odom::headingCorrection (double currentRotation) {
 // updatePosition does all the math with the heading and the sensor values to update the actual position coordinate
 void Odom::updatePosition() {       
     double deltaTransverse = (transverseWheel) ? (*transverseWheel).get_meters_travelled() : 0;
-    double deltaRadial = (radialWheel) ? (*radialWheel).get_meters_travelled() : 0;
+    double deltaRadial = (*radialWheel).get_meters_travelled();
 
     double currentHeading = headingCorrection(imu.get_rotation());
+
+    double cosine = cos(currentHeading * M_PI / 180.0);
+    double sine = sin(currentHeading* M_PI / 180.0);
+
+    double radialDeltaY = (deltaRadial) * cosine;
+    double transverseDeltaY = -(deltaTransverse) * sine; // note the - sign
+    double deltaY = radialDeltaY + transverseDeltaY;
+
+    double radialDeltaX = (deltaRadial) * sine;
+    double transverseDeltaX = (deltaTransverse) * cosine;
+    double deltaX = radialDeltaX + transverseDeltaX;
+
+    positionX += isnan(deltaX) ? 0 : deltaX;
+    positionY += isnan(deltaY) ? 0 : deltaY;
+
 
     // Rotation correction code for odom wheels off its axis of rotation such that the wheel will
     // rotate when the robot spins on a point (which would cause error in the robot's position awareness,
@@ -78,52 +93,15 @@ void Odom::updatePosition() {
         delta_theta += 360;
     }
 
-    // convert to radians
-    double curr_heading_rad = currentHeading * M_PI / 180.0;
-    double delta_theta_rad = delta_theta * M_PI / 180.0;
+    // Use the arc length of a circle
+    double transverse_circumference = 2 * M_PI * TRANSVERSE_WHEEL_RAD_OFFSET * (delta_theta / 360.0);
+    double radial_circumference = 2 * M_PI * RADIAL_WHEEL_TRANS_OFFSET * (delta_theta / 360.0);
 
-    double local_delt_x;
-    double local_delt_y;
-    if (delta_theta == 0) {
-        local_delt_x = deltaTransverse;
-        local_delt_y = deltaRadial;
-    } else {
-        local_delt_x = 2 * sin(delta_theta_rad / 2.0) * ((deltaTransverse / delta_theta_rad) + TRANSVERSE_WHEEL_RAD_OFFSET);
-        local_delt_y = 2 * sin(delta_theta_rad / 2.0) * ((deltaRadial / delta_theta_rad) + RADIAL_WHEEL_TRANS_OFFSET);
-    }
-    double cosine = cos(curr_heading_rad + delta_theta_rad / 2.0);
-    double sine = sin(curr_heading_rad + delta_theta_rad / 2.0);
+    double rot_delta_Y = transverse_circumference * sine + radial_circumference * cosine;
+    double rot_delta_X = -transverse_circumference * cosine + radial_circumference * sine;
 
-    double average_arc_angle = curr_heading_rad + (delta_theta_rad / 2.0);
-    double global_delt_x = local_delt_y * sine + local_delt_x * cosine;
-    double global_delt_y = local_delt_y * cosine + -1*(local_delt_x * sine);
-
-    positionX += isnan(global_delt_x) ? 0 : global_delt_x;
-    positionY += isnan(global_delt_y) ? 0 : global_delt_y;
-
-
-
-    // double radialDeltaY = (deltaRadial) * cosine;
-    // double transverseDeltaY = -(deltaTransverse) * sine; // note the - sign
-    // double deltaY = radialDeltaY + transverseDeltaY;
-
-    // double radialDeltaX = (deltaRadial) * sine;
-    // double transverseDeltaX = (deltaTransverse) * cosine;
-    // double deltaX = radialDeltaX + transverseDeltaX;
-
-
-
-
-
-    // // Use the arc length of a circle
-    // double transverse_circumference = 2 * M_PI * TRANSVERSE_WHEEL_RAD_OFFSET * (delta_theta / 360.0);
-    // double radial_circumference = 2 * M_PI * RADIAL_WHEEL_TRANS_OFFSET * (delta_theta / 360.0);
-
-    // double rot_delta_Y = transverse_circumference * sine + radial_circumference * cosine;
-    // double rot_delta_X = -transverse_circumference * cosine + radial_circumference * sine;
-
-    // positionX += isnan(rot_delta_X) ? 0 : rot_delta_X;
-    // positionY += isnan(rot_delta_Y) ? 0 : rot_delta_Y;
+    positionX += isnan(rot_delta_X) ? 0 : rot_delta_X;
+    positionY += isnan(rot_delta_Y) ? 0 : rot_delta_Y;
 
     last_heading = currentHeading;
 
@@ -134,8 +112,8 @@ void Odom::updatePosition() {
     //     pros::lcd::set_text(6, "Radial Raw: " + std::to_string(radialWheel->get_raw_data()));
     // }
     pros::lcd::set_text(4, "IMU degrees: " + std::to_string(getHeading()));
-    pros::lcd::set_text(2, "Position X: " + std::to_string(positionX)+ " m  = "+std::to_string(positionX*3.281)+" ft");
-    pros::lcd::set_text(3, "Position Y: " + std::to_string(positionY)+ " m  = "+std::to_string(positionY*3.281)+" ft");
+    pros::lcd::set_text(2, "Position X: " + std::to_string(convert::mToIn(positionX)));
+    pros::lcd::set_text(3, "Position Y: " + std::to_string(convert::mToIn(positionY)));
 }
 
 double Odom::getX() { return positionX; }
